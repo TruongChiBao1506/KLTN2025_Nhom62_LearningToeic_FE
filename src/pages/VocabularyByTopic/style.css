@@ -1,0 +1,139 @@
+.table-row.shadow-on-hover:hover {
+    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
+}
+
+th {
+    color: #052649;
+    font-weight: bold;
+}
+
+td {
+    color: #052649;
+    font-weight: normal;
+}
+
+.input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+
+.input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+.form-select,
+.form-control {
+    font-size: 14px;
+}
+
+.table {
+    font-size: 13px;
+}
+
+.page-item .page-link {
+    font-size: 13px;
+}
+
+/* Vocabulary specific styles */
+.vocabulary-word {
+    font-weight: 600;
+    color: #2c5aa0;
+}
+
+.pronunciation {
+    font-style: italic;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.meaning-text {
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.example-text {
+    max-width: 250px;
+    word-wrap: break-word;
+    font-style: italic;
+}
+
+/* Audio button styling */
+.btn-audio {
+    background: none;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.btn-audio:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    transform: scale(1.1);
+}
+
+/* Status badge styling */
+.badge {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+/* Alert styling */
+.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d7ff;
+    color: #004085;
+}
+
+/* Button hover effects */
+.btn:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .input-group {
+        width: 100%;
+    }
+    
+    .table {
+        font-size: 11px;
+    }
+    
+    .meaning-text,
+    .example-text {
+        max-width: 150px;
+    }
+}
+
+/* Loading states */
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+/* Word pronunciation animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.btn-audio.playing {
+    animation: pulse 0.8s ease-in-out;
+    color: #0d6efd;
+}

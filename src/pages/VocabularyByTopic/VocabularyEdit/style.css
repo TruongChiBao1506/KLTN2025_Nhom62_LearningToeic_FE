@@ -1,0 +1,158 @@
+/* Existing styles... */
+
+/* Current image container */
+.current-image-container {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    background-color: #f8f9fa;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Image preview for both current and new images */
+.image-preview {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+/* No image placeholder */
+.no-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    color: #6c757d;
+}
+
+/* File status indicators */
+.text-success {
+    color: #198754 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Form group for image display */
+.form-group .current-image-container {
+    margin-top: 0.5rem;
+}
+
+/* Enhanced alert styling */
+.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d7ff;
+    color: #004085;
+    border-radius: 8px;
+}
+
+.alert-heading {
+    color: #004085;
+    font-weight: 600;
+}
+
+/* Error feedback specific for edit */
+.error-feedback {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Required field indicator */
+.required-field {
+    color: #dc3545;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+/* Form labels */
+label.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+    margin-bottom: 0.5rem;
+}
+
+/* Textarea specific styling */
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+/* File input improvements */
+.form-control[type="file"] {
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.form-control[type="file"]::-webkit-file-upload-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.form-control[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #5a6268;
+}
+
+/* Image container responsive */
+@media (max-width: 576px) {
+    .image-preview {
+        max-width: 150px;
+        max-height: 100px;
+    }
+    
+    .current-image-container {
+        min-height: 80px;
+        padding: 10px;
+    }
+}
+
+/* Modal body scrolling */
+.modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* Loading state styling */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Button disabled state */
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Form validation states */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.7.7 1.6-1.6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}

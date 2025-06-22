@@ -1,0 +1,579 @@
+label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+}
+
+.error-feedback {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+    display: block;
+}
+
+.required-field {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.custom-font {
+    font-size: 14px;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control:focus {
+    border-color: #1c75bc;
+    box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
+}
+
+.btn-primary {
+    background-color: #1c75bc;
+    border-color: #1c75bc;
+}
+
+.btn-primary:hover {
+    background-color: #145a91;
+    border-color: #145a91;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* ✅ Part 4 specific styling với dark theme */
+.row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.col-md-4 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* ✅ Group fields styling với Part 4 dark theme */
+.modal-body > .form-group:nth-child(1),
+.modal-body > .form-group:nth-child(2),
+.modal-body > .form-group:nth-child(3) {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 2px solid #4a5568;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.15s ease-in-out;
+    color: white;
+}
+
+.modal-body > .form-group:nth-child(1):hover,
+.modal-body > .form-group:nth-child(2):hover,
+.modal-body > .form-group:nth-child(3):hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+}
+
+.modal-body > .form-group:nth-child(1) {
+    border-left: 4px solid #e53e3e; /* Red for image */
+}
+
+.modal-body > .form-group:nth-child(2) {
+    border-left: 4px solid #d69e2e; /* Gold for audio */
+}
+
+.modal-body > .form-group:nth-child(3) {
+    border-left: 4px solid #38a169; /* Green for script */
+}
+
+.modal-body > .form-group:nth-child(1) label,
+.modal-body > .form-group:nth-child(2) label,
+.modal-body > .form-group:nth-child(3) label {
+    color: #f7fafc;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* ✅ File upload styling với dark theme */
+input[type="file"] {
+    cursor: pointer;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #4a5568;
+    color: white;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin-right: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    font-weight: 600;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background: linear-gradient(135deg, #5a6fd8, #6b46a3);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(102, 126, 234, 0.3);
+}
+
+/* ✅ File preview styling */
+.file-preview {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #f7fafc;
+}
+
+.image-preview, .audio-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-preview img {
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.image-preview img:hover {
+    transform: scale(1.05);
+}
+
+.img-thumbnail {
+    padding: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.25rem;
+    max-width: 100%;
+    height: auto;
+}
+
+/* ✅ Audio player styling */
+audio {
+    border-radius: 8px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+audio:focus {
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+}
+
+/* ✅ CKEditor styling cho Part 4 */
+.ckeditor-container {
+    border: 2px solid #4a5568;
+    border-radius: 10px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    overflow: hidden;
+    background: #2d3748;
+}
+
+.ckeditor-container:focus-within {
+    border-color: #38a169;
+    box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25);
+}
+
+.ck-editor__editable {
+    min-height: 170px !important;
+    max-height: 300px !important;
+    overflow-y: auto;
+    background: #2d3748 !important;
+    color: #f7fafc !important;
+}
+
+.ck-toolbar {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 2px solid #4a5568 !important;
+    background: linear-gradient(135deg, #4a5568, #2d3748) !important;
+}
+
+.ck-editor__editable {
+    border-radius: 0 0 10px 10px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ck-editor__editable:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ck-content {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ✅ HR styling với Part 4 theme */
+hr {
+    border: none;
+    height: 4px;
+    background: linear-gradient(to right, #e53e3e, #d69e2e, #38a169, #3182ce, #805ad5);
+    margin: 2rem 0;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Question cards styling với Part 4 dark theme */
+.col-md-4 .form-group {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #4a5568;
+    margin-bottom: 1rem;
+    transition: all 0.15s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.col-md-4 .form-group:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.col-md-4 .form-group label {
+    font-weight: 700;
+    color: #f7fafc;
+    border-bottom: 2px solid #4a5568;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    width: 100%;
+}
+
+/* ✅ Question numbering với different colors cho Part 4 */
+.col-md-4:nth-child(1) .form-group {
+    border-left: 4px solid #e53e3e; /* Red for Question 1 */
+}
+
+.col-md-4:nth-child(2) .form-group {
+    border-left: 4px solid #d69e2e; /* Gold for Question 2 */
+}
+
+.col-md-4:nth-child(3) .form-group {
+    border-left: 4px solid #3182ce; /* Blue for Question 3 */
+}
+
+.col-md-4:nth-child(1) input,
+.col-md-4:nth-child(1) select {
+    background: rgba(229, 62, 62, 0.1);
+    border-color: rgba(229, 62, 62, 0.3);
+    color: #f7fafc;
+}
+
+.col-md-4:nth-child(2) input,
+.col-md-4:nth-child(2) select {
+    background: rgba(214, 158, 46, 0.1);
+    border-color: rgba(214, 158, 46, 0.3);
+    color: #f7fafc;
+}
+
+.col-md-4:nth-child(3) input,
+.col-md-4:nth-child(3) select {
+    background: rgba(49, 130, 206, 0.1);
+    border-color: rgba(49, 130, 206, 0.3);
+    color: #f7fafc;
+}
+
+/* ✅ Radio buttons styling cho Part 4 */
+.form-check-inline {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.15s ease-in-out;
+}
+
+.form-check-inline:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-check-input {
+    margin: 0 0.5rem 0 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-weight: 700;
+    color: #f7fafc;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ Select dropdown styling cho Part 4 */
+.form-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f7fafc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+}
+
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-select option {
+    background: #2d3748;
+    color: #f7fafc;
+}
+
+/* ✅ Form inputs styling cho Part 4 */
+.form-control, .form-select {
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all 0.15s ease-in-out;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f7fafc;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+}
+
+.form-control::placeholder {
+    color: rgba(247, 250, 252, 0.6);
+    font-style: italic;
+}
+
+/* ✅ Error states */
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #fc8181 !important;
+    background-color: rgba(252, 129, 129, 0.1);
+    color: #f7fafc;
+}
+
+.ckeditor-container.is-invalid {
+    border-color: #fc8181;
+}
+
+.ckeditor-container.is-invalid:focus-within {
+    border-color: #fc8181;
+    box-shadow: 0 0 0 0.2rem rgba(252, 129, 129, 0.25);
+}
+
+/* ✅ Responsive design */
+@media (max-width: 992px) {
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+    }
+    
+    .ck-editor__editable {
+        min-height: 120px !important;
+    }
+    
+    .col-md-4 .form-group {
+        padding: 0.75rem;
+    }
+    
+    input[type="file"]::-webkit-file-upload-button {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+    
+    .form-check-inline {
+        margin-right: 0.5rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* ✅ Animation effects */
+.form-group {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.modal-body > .form-group:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.modal-body > .form-group:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.modal-body > .form-group:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.col-md-4:nth-child(1) .form-group {
+    animation-delay: 0.4s;
+}
+
+.col-md-4:nth-child(2) .form-group {
+    animation-delay: 0.5s;
+}
+
+.col-md-4:nth-child(3) .form-group {
+    animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✅ Loading states */
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: rgba(74, 85, 104, 0.5);
+    opacity: 0.7;
+    color: rgba(247, 250, 252, 0.6);
+}
+
+.ck-editor__editable.ck-blurred {
+    opacity: 0.7;
+}
+
+/* ✅ Button styling */
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
+}
+
+.btn-secondary:focus,
+.btn-secondary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+
+/* ✅ File validation states */
+input[type="file"].is-invalid {
+    border-color: #fc8181;
+    background-color: rgba(252, 129, 129, 0.1);
+}
+
+input[type="file"].is-invalid:focus {
+    border-color: #fc8181;
+    box-shadow: 0 0 0 0.2rem rgba(252, 129, 129, 0.25);
+}
+
+/* ✅ Enhanced group headers cho Part 4 */
+.modal-body > .form-group:nth-child(1) label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #e53e3e;
+    border-radius: 2px;
+}
+
+.modal-body > .form-group:nth-child(2) label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #d69e2e;
+    border-radius: 2px;
+}
+
+.modal-body > .form-group:nth-child(3) label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #38a169;
+    border-radius: 2px;
+}
+
+/* ✅ Part 4 specific question type styling */
+.form-select option[value*="Part 4"] {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    color: #f7fafc;
+    font-weight: 600;
+}
+
+/* ✅ Dark theme scrollbars */
+.ck-editor__editable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ck-editor__editable::-webkit-scrollbar-track {
+    background: #2d3748;
+}
+
+.ck-editor__editable::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+}
+
+.ck-editor__editable::-webkit-scrollbar-thumb:hover {
+    background: #667eea;
+}

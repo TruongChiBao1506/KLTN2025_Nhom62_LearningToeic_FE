@@ -1,0 +1,85 @@
+.button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+  background-color: #fff;
+  color: #052649;
+  border: 1px solid #052649;
+}
+
+.button i {
+  font-size: 20px;
+  color: #000;
+}
+
+label {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgb(44, 44, 44);
+}
+
+.error-feedback {
+  color: red;
+  font-size: 13px;
+}
+
+.required-field {
+  color: red;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* Additional styles for better form presentation */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  margin-bottom: 0.5rem;
+}
+
+.form-check-inline {
+  margin-right: 1rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.custom-font {
+  font-family: inherit;
+}
+
+.border-secondary {
+  border-color: #6c757d !important;
+}
+
+/* CKEditor custom styling */
+.ck-editor__editable {
+  min-height: 170px;
+}
+
+/* Bootstrap overrides if needed */
+.btn {
+  margin-right: 0.5rem;
+}
+
+.btn:last-child {
+  margin-right: 0;
+}

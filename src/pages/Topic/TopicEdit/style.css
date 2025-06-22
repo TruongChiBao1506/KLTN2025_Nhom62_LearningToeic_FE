@@ -1,0 +1,29 @@
+label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+}
+
+.error-feedback {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.required-field {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.custom-font {
+    font-family: inherit;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}

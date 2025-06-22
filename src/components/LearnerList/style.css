@@ -1,0 +1,107 @@
+@import "../../assets/breadcrumb.css";
+
+.table-row.shadow-on-hover:hover {
+    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
+}
+
+th {
+    color: #052649;
+    font-weight: bold;
+}
+
+td {
+    color: #052649;
+    font-weight: normal;
+}
+
+.topic-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+
+.input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+.form-select,
+.form-control {
+    font-size: 14px;
+}
+
+.table {
+    font-size: 13px;
+}
+
+.page-item .page-link {
+    font-size: 13px;
+}
+
+/* Custom pagination button styles */
+.page-link {
+    border: none;
+    background: none;
+    color: #052649;
+}
+
+.page-link:hover {
+    background-color: #f8f9fa;
+    color: #052649;
+}
+
+.page-item.active .page-link {
+    background-color: #052649;
+    border-color: #052649;
+    color: white;
+}
+
+/* Button styles */
+.btn-white {
+    background-color: white;
+}
+
+.btn-white:hover {
+    background-color: #f8f9fa;
+}
+
+/* Badge styles */
+.badge {
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.text-bg-success {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.text-bg-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Card styles */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.section {
+    padding: 1rem;
+}

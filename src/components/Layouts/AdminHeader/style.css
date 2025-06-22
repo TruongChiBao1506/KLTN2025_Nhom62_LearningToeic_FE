@@ -1,0 +1,181 @@
+.custom-dropdown {
+    position: absolute;
+    left: -100px;
+    top: 50px;
+}
+
+.dropdown-menu {
+    cursor: pointer;
+}
+
+/* Cải thiện dropdown hover experience */
+.navbar .navbar-nav .dropdown {
+    position: relative;
+}
+
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    position: absolute;
+    top: 100%;
+    left: -150px;
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    margin-top: 0;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    padding: 8px; /* Thêm padding cho dropdown */
+    overflow: hidden; /* Đảm bảo nội dung không tràn ra ngoài */
+}
+
+/* Tạo vùng hover lớn hơn */
+.navbar .navbar-nav .dropdown::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -130px;
+    right: -10px;
+    bottom: -10px;
+    z-index: 999;
+    background: transparent;
+}
+
+/* Khi hover vào dropdown container */
+.navbar .navbar-nav .dropdown:hover .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Styling cho dropdown items - FIX CHÍNH Ở ĐÂY */
+.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
+    padding: 12px 16px;
+    color: #212529;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border-radius: 6px; /* Tăng border-radius */
+    margin: 2px 0; /* Chỉ margin top/bottom, bỏ left/right */
+    display: flex;
+    align-items: center;
+    width: calc(100% - 4px); /* Đảm bảo không tràn ra ngoài */
+    box-sizing: border-box; /* Bao gồm padding trong width */
+    position: relative; /* Để có thể kiểm soát vị trí */
+}
+
+.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
+    background-color: #1c75bc;
+    color: #fff;
+    border-radius: 50px;
+    transform: translateX(2px);
+    margin-left: 2px; /* Compensate cho translateX */
+    width: calc(100% - 6px); /* Điều chỉnh width khi hover */
+}
+
+/* Đảm bảo Link wrapper không ảnh hưởng */
+.navbar .navbar-nav .dropdown .dropdown-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .navbar-nav .dropdown .dropdown-menu li a {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Dropdown divider styling */
+.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-divider {
+    margin: 8px 0;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar styling */
+.navbar .navbar-nav .dropdown .dropdown-toggle img {
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.navbar .navbar-nav .dropdown:hover .dropdown-toggle img {
+    border-color: #1c75bc;
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar .navbar-nav .dropdown .dropdown-menu {
+        left: -80px;
+        min-width: 180px;
+    }
+    
+    .navbar .navbar-nav .dropdown::before {
+        left: -90px;
+    }
+}
+
+/* Animation cho smooth experience */
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar .navbar-nav .dropdown:hover .dropdown-menu {
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+/* Đảm bảo dropdown không bị che bởi các elements khác */
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    z-index: 1050 !important;
+}
+
+/* Tăng delay khi rời chuột để tránh đóng quá nhanh */
+.navbar .navbar-nav .dropdown {
+    transition: all 0.1s ease;
+}
+
+.dropdown-toggle::after {
+    display: none; 
+}
+
+/* Logo responsive */
+@media (max-width: 768px) {
+    .logo {
+        width: 80px;
+    }
+}
+
+/* Additional fixes để đảm bảo dropdown items không tràn */
+.dropdown-menu li:first-child .dropdown-item {
+    margin-top: 0;
+}
+
+.dropdown-menu li:last-child .dropdown-item {
+    margin-bottom: 0;
+}
+
+/* Nếu vẫn có vấn đề, có thể thêm max-width */
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    max-width: 220px; /* Giới hạn width tối đa */
+}
+
+.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

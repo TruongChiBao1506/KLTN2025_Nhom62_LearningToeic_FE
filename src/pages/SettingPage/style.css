@@ -1,0 +1,180 @@
+.settings-container {
+    padding: 20px;
+    background-color: #bcd9f5;
+    min-height: 100vh;
+}
+
+/* Card */
+.card {
+    padding: 0;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: white;
+}
+
+/* Navigation */
+.nav-link {
+    color: rgb(110, 110, 110);
+    font-weight: 500;
+    border: none;
+    background: none;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #55c57a;
+}
+
+.nav-link.active {
+    color: black !important;
+    background-color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-weight: 600;
+    border-bottom: 2px solid #55c57a;
+}
+
+.nav-pills .nav-link.active {
+    color: black;
+    background-color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-weight: 600;
+}
+
+.tab-content {
+    padding-bottom: 1.3rem;
+}
+
+/* Form controls */
+.form-control {
+    background-color: rgb(241, 243, 247);
+    border: none;
+}
+
+.form-control:focus {
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 7px rgba(0, 0, 0, 0.2);
+    background-color: rgb(241, 243, 247);
+    border-color: #55c57a;
+}
+
+/* Third tab specific */
+.third {
+    padding: 0 1.5rem 0 1.5rem;
+}
+
+label {
+    font-weight: 500;
+    color: rgb(104, 104, 104);
+}
+
+.settings-container span.badge {
+    margin-left: 0.5rem;
+    padding: 1px 10px;
+    color: white;
+    background-color: rgb(143, 143, 143);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.btn-success {
+    float: right;
+    background-color: #55c57a;
+    border-color: #55c57a;
+}
+
+.btn-success:hover {
+    background-color: #4caf6d;
+    border-color: #4caf6d;
+}
+
+select {
+    text-indent: 1px;
+    text-overflow: "";
+}
+
+/* First tab - System settings */
+ul {
+    list-style: none;
+    margin-top: 1rem;
+    padding-inline-start: 0;
+}
+
+.search {
+    padding: 0 1rem 0 1rem;
+}
+
+.ccontent li .wrapp {
+    padding: 0.3rem 1rem 0.001rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ccontent li .wrapp div {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.ccontent li .wrapp p {
+    font-weight: 360;
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.ccontent li:hover {
+    background-color: rgb(117, 93, 255);
+    color: white;
+    border-radius: 4px;
+}
+
+.ccontent li:hover .wrapp p {
+    color: white;
+}
+
+/* Second tab */
+.addinfo {
+    padding: 0 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 10px;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    .third {
+        padding: 0 1rem 0 1rem;
+    }
+}
+
+/* Animation for tab transitions */
+.tab-pane {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.tab-pane.fade {
+    opacity: 0;
+}
+
+.tab-pane.fade.show.active {
+    opacity: 1;
+}
+
+/* Button styling */
+.nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
