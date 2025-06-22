@@ -1,0 +1,66 @@
+.table-row.shadow-on-hover:hover {
+    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
+}
+
+th {
+    color: #052649;
+    font-weight: bold;
+}
+
+td {
+    color: #052649;
+    font-weight: normal;
+}
+
+.question-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+audio {
+    width: 100%;
+    max-width: 300px;
+}
+
+.input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+
+.input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    padding: 10px;
+}
+
+.form-select,
+.form-control {
+    font-size: 14px;
+}
+
+.table {
+    font-size: 13px;
+
+}
+
+.page-item .page-link {
+    font-size: 13px;
+}

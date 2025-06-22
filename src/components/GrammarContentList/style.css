@@ -1,0 +1,135 @@
+.table-row.shadow-on-hover:hover {
+    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
+}
+
+th {
+    color: #052649;
+    font-weight: bold;
+}
+
+td {
+    color: #052649;
+    font-weight: normal;
+}
+
+.modal.zoom .modal-dialog {
+    transition: transform 0.2s ease-out;
+    transform: scale(0.4);
+}
+
+.modal.zoom.show .modal-dialog {
+    transform: scale(1);
+}
+
+.input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+
+.input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+.form-select,
+.form-control {
+    font-size: 14px;
+}
+
+.table {
+    font-size: 13px;
+}
+
+.page-item .page-link {
+    font-size: 13px;
+}
+
+/* Additional React-specific styles */
+.page-link {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+}
+
+.page-item.disabled .page-link {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+/* Status badges */
+.badge {
+    transition: all 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+/* Loading state */
+.spinner-border {
+    animation: spinner-border 0.75s linear infinite;
+}
+
+/* Empty state */
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .input-group {
+        width: 100%;
+    }
+    
+    .table {
+        font-size: 12px;
+    }
+    
+    .col-2, .col-6, .col-4 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Content preview styling */
+td div[dangerouslySetInnerHTML] {
+    max-height: 40px;
+    overflow: hidden;
+    line-height: 1.2;
+}
+
+/* Action buttons */
+.btn-white {
+    transition: all 0.2s ease;
+}
+
+.btn-white:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.1);
+}
+
+/* Table responsiveness */
+@media (max-width: 992px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}

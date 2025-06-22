@@ -216,13 +216,13 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                             </thead>
                             <tbody>
                                 {paginatedGrammars.map((grammar, index) => (
-                                    <tr key={grammar.grammarId || grammar._id} className="table-row shadow-on-hover align-middle">
+                                    <tr key={grammar._id} className="table-row shadow-on-hover align-middle">
                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                         <td>{grammar.grammarName}</td>
                                         <td>
                                             {grammar.grammarStatus === 1 ? (
                                                 <span 
-                                                    onClick={() => toggleStatus(grammar.grammarId || grammar._id, 0)}
+                                                    onClick={() => toggleStatus(grammar._id, 0)}
                                                     className="btn badge text-bg-success"
                                                     style={{cursor: 'pointer'}}
                                                 >
@@ -230,7 +230,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                                 </span>
                                             ) : (
                                                 <span 
-                                                    onClick={() => toggleStatus(grammar.grammarId || grammar._id, 1)}
+                                                    onClick={() => toggleStatus(grammar._id, 1)}
                                                     className="btn badge text-bg-danger"
                                                     style={{cursor: 'pointer'}}
                                                 >
@@ -246,7 +246,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                                 <button 
                                                     type="button" 
                                                     className="btn btn-white border-0" 
-                                                    onClick={() => handleShowEditModal(grammar.grammarId || grammar._id)}
+                                                    onClick={() => handleShowEditModal(grammar._id)}
                                                     title={`Chỉnh sửa [${grammar.grammarName}]`}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{color: 'rgb(192, 129, 13)'}} />
@@ -255,7 +255,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                                 {/* Delete button */}
                                                 <button 
                                                     type="button" 
-                                                    onClick={() => deleteGrammar(grammar.grammarId || grammar._id)}
+                                                    onClick={() => deleteGrammar(grammar._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${grammar.grammarName}]`}
                                                 >
@@ -265,11 +265,11 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                         </td>
                                         <td>
                                             <div className="d-flex justify-content-center">
-                                                <Link to={`/admin/grammar-content/grammar/${grammar.grammarId || grammar._id}`}>
+                                                <Link to={`/admin/grammar/${grammar._id}/grammar-content`}>
                                                     <button className="glowing-button ms-2">Grammar Content</button>
                                                 </Link>
 
-                                                <Link to={`/admin/grammar-question/grammar/${grammar.grammarId || grammar._id}`}>
+                                                <Link to={`/admin/grammar/${grammar._id}/grammar-question`}>
                                                     <button className="glowing-button ms-2">Question</button>
                                                 </Link>
                                             </div>

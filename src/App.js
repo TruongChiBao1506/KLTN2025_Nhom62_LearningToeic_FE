@@ -24,6 +24,10 @@ import LessonBySection from './pages/LessonBySection';
 import LessonContent from './pages/LessonContent';
 import TestBySection from './pages/TestBySection';
 import VocabularyByTopic from './pages/VocabularyByTopic';
+import VocabularyQuestion from './pages/VocabularyQuestion';
+import GrammarContent from './pages/GrammarContent';
+import GrammarQuestion from './pages/GrammarQuestion';
+import ExamQuestion from './pages/ExamQuestion';
 
 function App() {
   return (
@@ -47,12 +51,19 @@ function App() {
 
           <Route path="topic" element={<Topic />} />
             <Route path="topic/:topicId/vocabulary" element={<VocabularyByTopic />} />
+            <Route path="topic/:topicId/vocabulary-question" element={<VocabularyQuestion />} />
+
           
           {/* Protected Route */}
           <Route path="grammar" element={<Grammar />} />
+            <Route path="grammar/:grammarId/grammar-content" element={<GrammarContent />} />
+            <Route path="grammar/:grammarId/grammar-question" element={<GrammarQuestion />} />
           <Route path="setting" element={<Settings />} />
           <Route path="learner" element={<Learner />} />
           <Route path="exam" element={<Exam />} />
+            <Route path="exam/:examId/exam-question" element={<ExamQuestion />} />
+
+          {/* Protected Routes */}
           <Route path="feedback" element={<Feedback />} />
           <Route path="free-material" element={<FreeMaterial />} />
 

@@ -39,7 +39,7 @@ class VocabularyService {
     }
 
     async getVocabularyByTopic(topicId) {
-        const response = await axiosClient.get(`${this.baseUrl}/topic/${topicId}`);
+        const response = await axiosClient.get(`${this.baseUrl}/by-topic/${topicId}`);
         return response;
     }
 
@@ -80,10 +80,10 @@ class VocabularyService {
     }
 
     async updateStatus(vocabularyId, newStatus) {
-        const response = await axiosClient.patch(`${this.baseUrl}/${vocabularyId}/status`, {
+        const response = await axiosClient.put(`${this.baseUrl}/${vocabularyId}/status`, {
             status: newStatus
         });
-        return response.data;
+        return response;
     }
 
     async search(query) {

@@ -37,7 +37,7 @@ const VocabularyByTopic = () => {
             
             // Gọi API để lấy danh sách từ vựng dựa trên topicId
             const result = await VocabularyService.getVocabularyByTopic(topicId);
-            setVocabularies(result.vocabularies);
+            setVocabularies(result);
             console.log('Vocabularies:', result);
         } catch (error) {
             console.log('Error fetching vocabularies:', error);

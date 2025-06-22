@@ -124,7 +124,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
                 console.log(`FormData ${key}:`, value);
             }
 
-            await VocabularyService.create(topicId, formData);
+            await VocabularyService.create(formData);
             console.log('✅ Vocabulary created successfully');
             
             retrieveVocabularies();

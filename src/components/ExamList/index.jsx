@@ -230,7 +230,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                             </thead>
                             <tbody>
                                 {paginatedExams.map((exam, index) => (
-                                    <tr key={exam.examId || exam._id} className="table-row shadow-on-hover align-middle">
+                                    <tr key={exam._id} className="table-row shadow-on-hover align-middle">
                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                         <td>{exam.examName}</td>
                                         <td>{getExamType(exam.examType)}</td>
@@ -238,7 +238,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                         <td>
                                             {exam.examStatus === 1 ? (
                                                 <span 
-                                                    onClick={() => toggleStatus(exam.examId || exam._id, 0)}
+                                                    onClick={() => toggleStatus(exam._id, 0)}
                                                     className="btn badge text-bg-success"
                                                     style={{cursor: 'pointer'}}
                                                 >
@@ -246,7 +246,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                                 </span>
                                             ) : (
                                                 <span 
-                                                    onClick={() => toggleStatus(exam.examId || exam._id, 1)}
+                                                    onClick={() => toggleStatus(exam._id, 1)}
                                                     className="btn badge text-bg-danger"
                                                     style={{cursor: 'pointer'}}
                                                 >
@@ -262,7 +262,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                                 <button 
                                                     type="button" 
                                                     className="btn btn-white border-0" 
-                                                    onClick={() => handleShowEditModal(exam.examId || exam._id)}
+                                                    onClick={() => handleShowEditModal(exam._id)}
                                                     title={`Chỉnh sửa [${exam.examName}]`}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{color: 'rgb(192, 129, 13)'}} />
@@ -271,7 +271,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                                 {/* Delete button */}
                                                 <button 
                                                     type="button" 
-                                                    onClick={() => deleteExam(exam.examId || exam._id)}
+                                                    onClick={() => deleteExam(exam._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${exam.examName}]`}
                                                 >
@@ -281,7 +281,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                         </td>
                                         <td className="align-middle">
                                             <div className="d-flex justify-content-center">
-                                                <Link to={`/admin/exam-question/exam/${exam.examId || exam._id}`}>
+                                                <Link to={`/admin/exam/${exam._id}/exam-question`}>
                                                     <button className="glowing-button ms-2">Exam Questions Details</button>
                                                 </Link>
                                             </div>
