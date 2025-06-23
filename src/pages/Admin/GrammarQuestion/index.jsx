@@ -8,7 +8,7 @@ import 'aos/dist/aos.css';
 
 import GrammarQuestionService from '../../../services/grammarQuestionService';
 import GrammarQuestionList from '../../../components/Admin/GrammarQuestionList';
-import '../../assets/breadcrumb.css';
+import '../../../assets/breadcrumb.css';
 
 const GrammarQuestion = () => {
     const { grammarId } = useParams();

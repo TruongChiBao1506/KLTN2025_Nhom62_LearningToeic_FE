@@ -6,7 +6,7 @@ import { Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileImport, faImage, faVolumeUp, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
-import ExamQuestionService from '../../../services/examQuestionService';
+import ExamQuestionService from '../../../../services/examQuestionService';
 import './style.css';
 
 const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {

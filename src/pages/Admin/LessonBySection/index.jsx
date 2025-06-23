@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import LessonService from '../../services/lessonService';
-import LessonList from '../../components/Admin/LessonBySectionList';
-import '../../assets/breadcrumb.css';
+import LessonService from '../../../services/lessonService';
+import LessonList from '../../../components/Admin/LessonBySectionList';
+import '../../../assets/breadcrumb.css';
 
 const Lesson = () => {
     const { sectionId } = useParams(); // Lấy sectionId từ URL params

@@ -3,8 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CKEditorOptimized from '../../../components/EditorOptimized';
-import LessonContentService from '../../../services/lessonContentService';
+import CKEditorOptimized from '../../../../components/Admin/EditorOptimized';
+import LessonContentService from '../../../../services/lessonContentService';
 import './style.css';
 
 const AddLessonContent = ({ lessonId, retrieveLessonContents, onClose }) => {

@@ -1,4 +1,4 @@
-@import url('../../assets/breadcrumb.css');
+@import url('../../../assets/breadcrumb.css');
 
 .card-with-effect {
     transition: transform 0.3s;

@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import VocabularyService from '../../services/vocabularyService';
-import VocabularyList from '../../components/Admin/VocabularyByTopicList';
-import '../../assets/breadcrumb.css';
+import VocabularyService from '../../../services/vocabularyService';
+import VocabularyList from '../../../components/Admin/VocabularyByTopicList';
+import '../../../assets/breadcrumb.css';
 
 const VocabularyByTopic = () => {
     const { topicId } = useParams(); // Lấy topicId từ URL params

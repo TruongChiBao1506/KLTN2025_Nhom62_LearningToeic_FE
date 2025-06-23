@@ -8,7 +8,7 @@ import 'aos/dist/aos.css';
 
 import ExamQuestionService from '../../../services/examQuestionService';
 import ExamQuestionList from '../../../components/Admin/ExamQuestionList';
-import '../../assets/breadcrumb.css';
+import '../../../assets/breadcrumb.css';
 
 const ExamQuestion = () => {
     const { examId } = useParams();

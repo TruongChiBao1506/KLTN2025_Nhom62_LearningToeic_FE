@@ -4,9 +4,9 @@ import { faSection } from '@fortawesome/free-solid-svg-icons';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import SectionService from '../../services/sectionsService';
-import SectionList from '../../components/Admin/SectionList';
-import '../../assets/breadcrumb.css';
+import SectionService from '../../../services/sectionsService';
+import SectionList from '../../../components/Admin/SectionList';
+import '../../../assets/breadcrumb.css';
 
 const Section = () => {
     const [sections, setSections] = useState([]);

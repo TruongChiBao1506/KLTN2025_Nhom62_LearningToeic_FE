@@ -9,8 +9,8 @@ import {
     faUser, 
     faRightFromBracket 
 } from '@fortawesome/free-solid-svg-icons';
-import { useAdminStore } from '../../../hooks/useAdminStore';
-import userService from '../../../services/userService';
+import { useAdminStore } from '../../../../hooks/useAdminStore';
+import userService from '../../../../services/userService';
 import { jwtDecode } from 'jwt-decode';
 import './style.css';
 

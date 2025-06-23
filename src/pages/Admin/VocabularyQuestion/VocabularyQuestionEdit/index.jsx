@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import VocabularyQuestionService from '../../../services/vocabularyQuestionService';
+import VocabularyQuestionService from '../../../../services/vocabularyQuestionService';
 import './style.css';
 
 const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabularyQuestions, onClose }) => {

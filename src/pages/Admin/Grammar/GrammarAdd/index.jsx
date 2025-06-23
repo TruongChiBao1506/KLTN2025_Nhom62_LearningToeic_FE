@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import GrammarService from '../../../services/grammarService';
+import GrammarService from '../../../../services/grammarService';
 import './style.css';
 
 const GrammarAdd = ({ retrieveGrammars, onClose }) => {

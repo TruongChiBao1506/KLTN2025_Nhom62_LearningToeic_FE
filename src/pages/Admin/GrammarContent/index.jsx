@@ -8,7 +8,7 @@ import 'aos/dist/aos.css';
 
 import GrammarContentService from '../../../services/grammarContentService';
 import GrammarContentList from '../../../components/Admin/GrammarContentList';
-import '../../assets/breadcrumb.css';
+import '../../../assets/breadcrumb.css';
 
 const GrammarContent = () => {
     const { grammarId } = useParams(); // Lấy grammarId từ URL params

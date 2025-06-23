@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import TestService from '../../services/testService';
-import TestList from '../../components/Admin/TestBySectionList';
-import '../../assets/breadcrumb.css';
+import TestService from '../../../services/testService';
+import TestList from '../../../components/Admin/TestBySectionList';
+import '../../../assets/breadcrumb.css';
 
 const Test = () => {
     const { sectionId } = useParams(); // Lấy sectionId từ URL params

@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-import SectionService from '../../../services/sectionsService';
+import SectionService from '../../../../services/sectionsService';
 
 const SectionAdd = ({ retrieveSections, onClose }) => {
     const [selectedFile, setSelectedFile] = useState(null);

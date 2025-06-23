@@ -1,5 +1,5 @@
 /* Import breadcrumb styles */
-@import "../../assets/breadcrumb.css";
+@import "../../../assets/breadcrumb.css";
 
 /* Additional styles matching the Topic component */
 .spinner-border {

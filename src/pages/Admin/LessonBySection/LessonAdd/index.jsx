@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-import LessonService from '../../../services/lessonService';
+import LessonService from '../../../../services/lessonService';
 import './style.css';
 
 const LessonAdd = ({ sectionId, retrieveLessons, onClose }) => {

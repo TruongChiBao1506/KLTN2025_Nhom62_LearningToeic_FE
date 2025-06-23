@@ -6,7 +6,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
 
-import GrammarQuestionService from '../../../services/grammarQuestionService';
+import GrammarQuestionService from '../../../../services/grammarQuestionService';
 import './style.css';
 
 const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) => {

@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TopicService from '../../../services/topicService';
+import TopicService from '../../../../services/topicService';
 import './style.css';
 
 const EditTopic = ({ topicId, retrieveTopics, onClose }) => {

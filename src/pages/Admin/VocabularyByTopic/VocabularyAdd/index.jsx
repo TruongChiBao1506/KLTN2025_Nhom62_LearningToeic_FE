@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-import VocabularyService from '../../../services/vocabularyService';
+import VocabularyService from '../../../../services/vocabularyService';
 import './style.css';
 
 const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {

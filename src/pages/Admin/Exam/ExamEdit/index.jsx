@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ExamService from '../../../services/examService';
+import ExamService from '../../../../services/examService';
 import './style.css';
 
 const EditExam = ({ examId, retrieveExams, onClose }) => {

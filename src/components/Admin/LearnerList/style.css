@@ -1,4 +1,4 @@
-@import "../../assets/breadcrumb.css";
+@import "../../../assets/breadcrumb.css";
 
 .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);

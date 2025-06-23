@@ -11,7 +11,7 @@ import 'aos/dist/aos.css';
 
 import UserService from '../../../services/userService';
 import ProfileImageService from '../../../services/profileImageService';
-import '../../assets/breadcrumb.css';
+import '../../../assets/breadcrumb.css';
 import './style.css';
 
 const Profile = () => {

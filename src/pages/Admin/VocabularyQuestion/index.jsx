@@ -8,7 +8,7 @@ import 'aos/dist/aos.css';
 
 import VocabularyQuestionService from '../../../services/vocabularyQuestionService';
 import VocabularyQuestionList from '../../../components/Admin/VocabularyQuestionList';
-import '../../assets/breadcrumb.css';
+import '../../../assets/breadcrumb.css';
 
 const VocabularyQuestion = () => {
     const { topicId } = useParams(); // Lấy topicId từ URL params

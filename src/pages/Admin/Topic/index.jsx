@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
-import TopicList from '../../components/Admin/TopicList';
-import TopicService from '../../services/topicService';
+import TopicList from '../../../components/Admin/TopicList';
+import TopicService from '../../../services/topicService';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import './style.css';

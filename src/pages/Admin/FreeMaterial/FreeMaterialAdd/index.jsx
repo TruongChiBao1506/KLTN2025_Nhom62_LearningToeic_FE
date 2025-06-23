@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import FreeMaterialService from '../../../services/freeMaterialService';
+import FreeMaterialService from '../../../../services/freeMaterialService';
 import './style.css';
 
 const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {

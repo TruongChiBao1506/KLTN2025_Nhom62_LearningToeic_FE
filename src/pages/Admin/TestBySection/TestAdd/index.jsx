@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-import TestService from '../../../services/testService';
+import TestService from '../../../../services/testService';
 import './style.css';
 
 const TestAdd = ({ sectionId, retrieveTests, onClose }) => {

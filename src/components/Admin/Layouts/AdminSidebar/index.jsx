@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
-import toeic_logo from '../../../assets/Toeic_logo.png';
+import toeic_logo from '../../../../assets/Toeic_logo.png';
 
 const Sidebar = ({ isToggled }) => {
     const navigate = useNavigate();
