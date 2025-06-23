@@ -5,29 +5,29 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 
 // Protected pages
-import AdminDashboard from './pages/AdminDashboard';
-import ProtectedRoute from './components/ProtectedRoute';
+import AdminDashboard from './pages/Admin/AdminDashboard';
+import ProtectedRoute from './components/Admin/ProtectedRoute';
 
 // Admin
-import AdminSignIn from './pages/AdminSignIn';
-import AdminLayout from './pages/AdminLayout';
-import AdminProfile from './pages/AdminProfile';
-import Section from './pages/Section';
-import Topic from './pages/Topic';
-import Grammar from './pages/Grammar';
-import Settings from './pages/SettingPage';
-import Learner from './pages/Learner';
-import Exam from './pages/Exam';
-import Feedback from './pages/Feedback';
-import FreeMaterial from './pages/FreeMaterial';
-import LessonBySection from './pages/LessonBySection';
-import LessonContent from './pages/LessonContent';
-import TestBySection from './pages/TestBySection';
-import VocabularyByTopic from './pages/VocabularyByTopic';
-import VocabularyQuestion from './pages/VocabularyQuestion';
-import GrammarContent from './pages/GrammarContent';
-import GrammarQuestion from './pages/GrammarQuestion';
-import ExamQuestion from './pages/ExamQuestion';
+import AdminSignIn from './pages/Admin/AdminSignIn';
+import AdminLayout from './pages/Admin/AdminLayout';
+import AdminProfile from './pages/Admin/AdminProfile';
+import Section from './pages/Admin/Section';
+import Topic from './pages/Admin/Topic';
+import Grammar from './pages/Admin/Grammar';
+import Settings from './pages/Admin/SettingPage';
+import Learner from './pages/Admin/Learner';
+import Exam from './pages/Admin/Exam';
+import Feedback from './pages/Admin/Feedback';
+import FreeMaterial from './pages/Admin/FreeMaterial';
+import LessonBySection from './pages/Admin/LessonBySection';
+import LessonContent from './pages/Admin/LessonContent';
+import TestBySection from './pages/Admin/TestBySection';
+import VocabularyByTopic from './pages/Admin/VocabularyByTopic';
+import VocabularyQuestion from './pages/Admin/VocabularyQuestion';
+import GrammarContent from './pages/Admin/GrammarContent';
+import GrammarQuestion from './pages/Admin/GrammarQuestion';
+import ExamQuestion from './pages/Admin/ExamQuestion';
 
 function App() {
   return (

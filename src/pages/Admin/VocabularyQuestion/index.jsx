@@ -1,0 +1,199 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpellCheck, faBook } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+import VocabularyQuestionService from '../../../services/vocabularyQuestionService';
+import VocabularyQuestionList from '../../../components/Admin/VocabularyQuestionList';
+import '../../assets/breadcrumb.css';
+
+const VocabularyQuestion = () => {
+    const { topicId } = useParams(); // Lấy topicId từ URL params
+    const [vocabularyQuestions, setVocabularyQuestions] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        document.title = "Admin - Vocabulary Question";
+    }, []);
+
+    // Initialize AOS
+    useEffect(() => {
+        AOS.init({
+            duration: 150,
+            delay: 0,
+            easing: 'ease-in-out',
+            once: true,
+            disable: 'mobile'
+        });
+    }, []);
+
+    const retrieveVocabularyQuestions = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            console.log('Topic ID:', topicId);
+
+            const result = await VocabularyQuestionService.getVocabularyQuestionsByTopic(topicId);
+            setVocabularyQuestions(result || []);
+            console.log('Vocabulary Questions:', result);
+
+        } catch (error) {
+            console.log('Error fetching vocabulary questions:', error);
+
+            // Check if it's a 404 (no data) vs real error
+            if (error.response?.status === 404) {
+                console.log('📝 Topic chưa có vocabulary questions - hiển thị empty state');
+                setVocabularyQuestions([]);
+                setError(null); // Don't show error for empty data
+            } else {
+                setError(error.message || 'Có lỗi xảy ra khi tải dữ liệu');
+                setVocabularyQuestions([]);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (topicId) {
+            retrieveVocabularyQuestions();
+        }
+    }, [topicId]);
+
+    // Error state
+    if (error) {
+        return (
+            <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                {/* Breadcrumb */}
+                <div
+                    className="mt-2 bg-white shadow-lg rounded-1"
+                    data-aos="fade-down"
+                    data-aos-duration="800"
+                    data-aos-delay="100"
+                >
+                    <nav>
+                        <ol className="cd-breadcrumb custom-separator">
+                            <li>
+                                <FontAwesomeIcon icon={faSpellCheck} />
+                                <Link to="/admin/vocabulary">
+                                    <button className="btn btn-link text-decoration-none fw-bolder">
+                                        Vocabulary
+                                    </button>
+                                </Link>
+                            </li>
+                            <li className="current">
+                                <FontAwesomeIcon icon={faBook} />
+                                <button className="btn btn-link text-decoration-none fw-bolder">
+                                    Vocabulary Question
+                                </button>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                {/* Error message */}
+                <div
+                    className="alert alert-danger mt-3"
+                    role="alert"
+                    data-aos="zoom-in"
+                    data-aos-duration="600"
+                >
+                    <h4 className="alert-heading">
+                        <FontAwesomeIcon icon={faBook} className="me-2" />
+                        Lỗi tải dữ liệu
+                    </h4>
+                    <p className="mb-2">{error}</p>
+                    <hr />
+                    <button
+                        className="btn btn-outline-danger"
+                        onClick={retrieveVocabularyQuestions}
+                    >
+                        <i className="fas fa-redo me-2"></i>
+                        Thử lại
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+            {/* Breadcrumb with AOS */}
+            <div
+                className="mt-2 bg-white shadow-lg rounded-1"
+                data-aos="fade-down"
+                data-aos-duration="800"
+                data-aos-delay="100"
+            >
+                <nav>
+                    <ol className="cd-breadcrumb custom-separator">
+                        <li>
+                            <FontAwesomeIcon icon={faSpellCheck} />
+                            <Link to="/admin/vocabulary">
+                                <button className="btn btn-link text-decoration-none fw-bolder">
+                                    Vocabulary
+                                </button>
+                            </Link>
+                        </li>
+                        <li className="current">
+                            <FontAwesomeIcon icon={faBook} />
+                            <button className="btn btn-link text-decoration-none fw-bolder">
+                                Vocabulary Question
+                            </button>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+
+            {/* VocabularyQuestionList with AOS */}
+            <div
+                data-aos="fade-up"
+                data-aos-duration="1000"
+                data-aos-delay="400"
+            >
+                {isLoading ? (
+                    <div
+                        className="text-center py-5"
+                        data-aos="zoom-in"
+                        data-aos-duration="600"
+                    >
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <p className="mt-2 text-muted">
+                            Đang tải dữ liệu vocabulary questions cho topic {topicId}...
+                        </p>
+                    </div>
+                ) : vocabularyQuestions.length === 0 ? (
+                    <div
+                        className="alert alert-info mt-3"
+                        role="alert"
+                        data-aos="zoom-in"
+                        data-aos-duration="600"
+                    >
+                        <h4 className="alert-heading">
+                            <FontAwesomeIcon icon={faBook} className="me-2" />
+                            Chưa có vocabulary questions
+                        </h4>
+                        <p className="mb-0">
+                            Topic này chưa có vocabulary questions nào. Hãy thêm vocabulary questions mới.
+                        </p>
+                    </div>
+                ) : (
+                    <VocabularyQuestionList
+                        vocabularyQuestions={vocabularyQuestions}
+                        topicId={topicId}
+                        retrieveVocabularyQuestions={retrieveVocabularyQuestions}
+                        isLoading={isLoading}
+                    />
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default VocabularyQuestion;
