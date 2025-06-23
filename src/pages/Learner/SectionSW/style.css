@@ -1,0 +1,77 @@
+.overflow-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h1,
+h5 {
+  font-weight: 700;
+  color: #34447c;
+}
+
+.custom-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-button:hover {
+  background-color: #fff;
+  color: #052649;
+}
+
+.custom-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.card-text {
+  flex-grow: 1;
+}
+
+.custom-card:hover {
+  color: #007aff;
+}
+
+.card {
+  position: relative;
+  transition: transform 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(72, 87, 219, 0.1);
+  border-radius: 10px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(26, 25, 128, 0.2);
+}
+
+.test-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #34447c;
+}
+
+.test-info {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.col-lg-2 {
+  flex: 0 0 20%;
+  max-width: 20%;
+}

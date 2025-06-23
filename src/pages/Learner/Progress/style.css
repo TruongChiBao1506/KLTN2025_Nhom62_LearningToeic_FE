@@ -1,0 +1,219 @@
+.progress-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.progress-title {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eaeaea;
+}
+
+.progress-card {
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  transition: transform 0.3s;
+}
+
+.progress-card:hover {
+  transform: translateY(-5px);
+}
+
+.progress-stat {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.progress-stat-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 15px;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.progress-stat-label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-bottom: 5px;
+}
+
+.progress-stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.chart-container {
+  height: 300px;
+  margin: 20px 0;
+}
+
+.progress-table {
+  width: 100%;
+}
+
+.progress-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.progress-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.progress-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-listening {
+  background-color: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.badge-reading {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.badge-grammar {
+  background-color: rgba(155, 89, 182, 0.2);
+  color: #9b59b6;
+}
+
+.badge-vocabulary {
+  background-color: rgba(243, 156, 18, 0.2);
+  color: #f39c12;
+}
+
+.activity-item {
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: white;
+}
+
+.activity-content {
+  flex-grow: 1;
+}
+
+.activity-title {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.activity-meta {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.activity-score {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  padding-left: 10px;
+}
+
+.progress-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.chart-selector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.chart-selector button {
+  padding: 8px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f8f9fa;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chart-selector button.active {
+  background-color: #3498db;
+  color: white;
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.tag {
+  background-color: #f8f9fa;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.tag.strength {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.tag.weakness {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}

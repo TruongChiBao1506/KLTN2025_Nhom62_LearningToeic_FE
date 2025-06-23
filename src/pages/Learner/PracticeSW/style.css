@@ -1,0 +1,60 @@
+.card {
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(7, 6, 6, 0.1);
+  cursor: pointer;
+  border-color: rgb(255, 255, 255, 0);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-body {
+  padding: 20px;
+  background-color: #fff;
+  height: 200px;
+}
+
+.card-text {
+  font-size: 14px;
+  color: #555;
+}
+
+h1 {
+  font-weight: 700;
+  color: #34447c;
+}
+
+#test p {
+  font-size: 16px;
+  color: #8293d0;
+  text-align: center;
+  line-height: 1.5;
+  margin: 20px 100px;
+  font-weight: 700;
+}
+
+.card-background-1 .card-body {
+  background-image: url("../../../assets/img/vocabulary.png");
+  background-size: cover;
+  background-position: center;
+  border-radius: 30px;
+}
+
+.card-background-2 .card-body {
+  background-image: url("../../../assets/img/grammar.png");
+  background-size: cover;
+  background-position: center;
+  border-radius: 30px;
+}
+
+.row-title {
+  color: white;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+.row-text {
+  color: white;
+}

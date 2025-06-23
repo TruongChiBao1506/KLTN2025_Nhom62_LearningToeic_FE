@@ -1,0 +1,659 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHouse,
+  faFileAlt,
+  faArrowLeft,
+  faClock,
+  faCheck,
+  faExclamationCircle,
+  faQuestionCircle,
+  faChevronLeft,
+  faChevronRight,
+  faFlag,
+  faSave,
+} from "@fortawesome/free-solid-svg-icons";
+import learnerExamService from "../../../services/learnerExamService";
+import "./style.css";
+
+const ExamDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [exam, setExam] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [userAnswers, setUserAnswers] = useState({});
+  const [flaggedQuestions, setFlaggedQuestions] = useState([]);
+  const [remainingTime, setRemainingTime] = useState(null);
+  const [examStarted, setExamStarted] = useState(false);
+  const [examSubmitted, setExamSubmitted] = useState(false);
+  const [examResult, setExamResult] = useState(null);
+  const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
+  const [savedProgress, setSavedProgress] = useState(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    fetchExam();
+  }, [id]);
+
+  const fetchExam = async () => {
+    try {
+      setLoading(true);
+      const response = await learnerExamService.getExamById(id);
+      setExam(response.exam);
+      // Nếu bài thi đã có tiến trình lưu, tải lên
+      if (response.exam.progress) {
+        setUserAnswers(response.exam.progress.answers || {});
+        setFlaggedQuestions(response.exam.progress.flaggedQuestions || []);
+        setRemainingTime(
+          response.exam.progress.remainingTime || response.exam.duration * 60
+        );
+        setSavedProgress(true);
+      } else {
+        setRemainingTime(response.exam.duration * 60); // Chuyển đổi phút sang giây
+      }
+
+      // Nếu bài thi đã hoàn thành, tải kết quả
+      if (response.exam.status === "completed") {
+        const resultResponse = await learnerExamService.getExamResult(
+          response.exam.lastAttemptId
+        );
+        setExamResult(resultResponse.result);
+        setExamSubmitted(true);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Lỗi khi tải bài thi:", error);
+      setError("Không thể tải bài thi. Vui lòng thử lại sau.");
+      setLoading(false);
+    }
+  };
+  const startExam = () => {
+    setExamStarted(true);
+    document.title = `Đang làm bài thi: ${exam ? exam.name : "Bài thi TOEIC"}`;
+    // Bắt đầu đếm ngược thời gian
+    timerRef.current = setInterval(() => {
+      setRemainingTime((prevTime) => {
+        if (prevTime <= 1) {
+          submitExam();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  }; // Dọn dẹp bộ đếm thời gian khi component bị hủy
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleAnswerSelect = (questionId, answer) => {
+    setUserAnswers((prev) => ({
+      ...prev,
+      [questionId]: answer,
+    }));
+  };
+
+  const toggleFlagQuestion = (questionId) => {
+    setFlaggedQuestions((prev) => {
+      if (prev.includes(questionId)) {
+        return prev.filter((id) => id !== questionId);
+      } else {
+        return [...prev, questionId];
+      }
+    });
+  };
+
+  const goToNextQuestion = () => {
+    if (currentQuestionIndex < exam.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const goToPrevQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+  const goToQuestion = (index) => {
+    if (index >= 0 && index < exam.questions.length) {
+      setCurrentQuestionIndex(index);
+    }
+  };
+
+  const saveProgress = async () => {
+    try {
+      await learnerExamService.saveProgress(
+        id,
+        userAnswers,
+        exam.duration * 60 - remainingTime,
+        flaggedQuestions
+      );
+      setSavedProgress(true);
+      // Hiển thị thông báo đã lưu tạm thời
+      setTimeout(() => {
+        setSavedProgress(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Lỗi khi lưu tiến trình:", error);
+    }
+  };
+  const submitExam = async () => {
+    // Dừng bộ đếm thời gian
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    try {
+      setLoading(true);
+      const response = await learnerExamService.submitExam(id, userAnswers);
+      setExamSubmitted(true);
+      setExamResult(response.result);
+      setLoading(false);
+    } catch (error) {
+      console.error("Lỗi khi nộp bài thi:", error);
+      setError("Không thể nộp bài thi. Vui lòng thử lại.");
+      setLoading(false);
+    }
+  };
+
+  if (loading && !exam) {
+    return (
+      <div className="exam-detail-container">
+        <div className="text-center my-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Đang tải...</span>
+          </div>
+          <p className="mt-3">Đang tải bài thi...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="exam-detail-container">
+        <div className="alert alert-danger m-4" role="alert">
+          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
+          {error}
+        </div>
+        <div className="text-center">
+          <Link to="/learner/exams" className="btn btn-outline-primary">
+            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+            Quay lại Danh sách bài thi
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!exam) {
+    return (
+      <div className="exam-detail-container">
+        <div className="alert alert-warning m-4" role="alert">
+          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
+          Không tìm thấy bài thi.
+        </div>
+        <div className="text-center">
+          <Link to="/learner/exams" className="btn btn-outline-primary">
+            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+            Quay lại Danh sách bài thi
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Exam results view when exam is submitted
+  if (examSubmitted && examResult) {
+    return (
+      <div className="exam-detail-container">
+        {/* Breadcrumb */}{" "}
+        <div className="breadcrumb-container">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <Link to="/learner/dashboard">
+                  <FontAwesomeIcon icon={faHouse} className="me-2" />
+                  Trang chủ
+                </Link>
+              </li>
+              <li className="breadcrumb-item">
+                <Link to="/learner/exams">
+                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+                  Bài thi thực hành
+                </Link>
+              </li>
+              <li className="breadcrumb-item active">{exam.name} - Kết quả</li>
+            </ol>
+          </nav>
+        </div>
+        <div className="exam-results-container">
+          {" "}
+          <div className="results-header">
+            <h3>Kết quả bài thi: {exam.name}</h3>
+            <div className="result-score">
+              <div className="score-circle">
+                {examResult.score}/{examResult.totalPossible}
+              </div>
+              <h4>{examResult.percentage}%</h4>
+            </div>
+          </div>{" "}
+          <div className="result-statistics">
+            <div className="row">
+              <div className="col-md-3">
+                <div className="stat-item">
+                  <h5>Số câu đúng</h5>
+                  <p className="text-success">{examResult.correctCount}</p>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-item">
+                  <h5>Số câu sai</h5>
+                  <p className="text-danger">{examResult.incorrectCount}</p>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-item">
+                  <h5>Số câu chưa trả lời</h5>
+                  <p className="text-warning">{examResult.unansweredCount}</p>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-item">
+                  <h5>Thời gian làm bài</h5>
+                  <p>{formatTime(examResult.timeSpent)}</p>
+                </div>
+              </div>
+            </div>
+          </div>{" "}
+          <div className="question-review-section">
+            <h4>Xem lại câu trả lời</h4>
+            <p>Xem lại các câu trả lời và giải thích cho từng câu hỏi.</p>
+
+            <div className="question-review-list">
+              {exam.questions.map((question, index) => {
+                const isCorrect =
+                  userAnswers[question.id] === question.correctAnswer;
+                const isAnswered = userAnswers[question.id] !== undefined;
+
+                return (
+                  <div
+                    key={question.id}
+                    className={`question-review-item ${
+                      !isAnswered
+                        ? "unanswered"
+                        : isCorrect
+                        ? "correct"
+                        : "incorrect"
+                    }`}
+                  >
+                    <div className="question-number">{index + 1}</div>
+                    <div className="question-content">
+                      <h5>{question.text}</h5>
+                      <div className="options-review">
+                        {question.options.map((option, optionIndex) => {
+                          const optionLetter = String.fromCharCode(
+                            65 + optionIndex
+                          ); // A, B, C, D... cho các lựa chọn
+                          const isUserSelected =
+                            userAnswers[question.id] === option.id;
+                          const isCorrectAnswer =
+                            question.correctAnswer === option.id;
+
+                          return (
+                            <div
+                              key={option.id}
+                              className={`option-item ${
+                                isUserSelected
+                                  ? isCorrectAnswer
+                                    ? "selected-correct"
+                                    : "selected-incorrect"
+                                  : isCorrectAnswer
+                                  ? "correct-answer"
+                                  : ""
+                              }`}
+                            >
+                              <span className="option-letter">
+                                {optionLetter}
+                              </span>
+                              <span className="option-text">{option.text}</span>
+                            </div>
+                          );
+                        })}
+                      </div>{" "}
+                      {question.explanation && (
+                        <div className="explanation-section">
+                          <h6>Giải thích:</h6>
+                          <p>{question.explanation}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>{" "}
+          <div className="result-actions mt-4">
+            <button
+              className="btn btn-primary me-3"
+              onClick={() => navigate("/learner/exams")}
+            >
+              <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+              Thêm bài thi luyện tập
+            </button>
+
+            <button
+              className="btn btn-outline-secondary"
+              onClick={() => navigate("/learner/dashboard")}
+            >
+              <FontAwesomeIcon icon={faHouse} className="me-2" />
+              Quay lại Trang chủ
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Exam start/intro view when not yet started
+  if (!examStarted) {
+    return (
+      <div className="exam-detail-container">
+        {/* Breadcrumb */}{" "}
+        <div className="breadcrumb-container">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <Link to="/learner/dashboard">
+                  <FontAwesomeIcon icon={faHouse} className="me-2" />
+                  Trang chủ
+                </Link>
+              </li>
+              <li className="breadcrumb-item">
+                <Link to="/learner/exams">
+                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+                  Bài thi thực hành
+                </Link>
+              </li>
+              <li className="breadcrumb-item active">{exam.name}</li>
+            </ol>
+          </nav>
+        </div>
+        <div className="exam-intro-container">
+          <div className="exam-intro-header">
+            <h2>{exam.name}</h2>
+            <div className="exam-badges">
+              {" "}
+              <span className="badge bg-info me-2">
+                <FontAwesomeIcon icon={faClock} className="me-1" />
+                {exam.duration} phút
+              </span>
+              <span className="badge bg-primary">
+                <FontAwesomeIcon icon={faQuestionCircle} className="me-1" />
+                {exam.questions.length} câu hỏi
+              </span>
+            </div>
+          </div>{" "}
+          <div className="exam-description">
+            <h4>Mô tả</h4>
+            <p>{exam.description}</p>
+          </div>
+          <div className="exam-instructions">
+            <h4>Hướng dẫn</h4>
+            <ul>
+              <li>Bài thi này có {exam.questions.length} câu hỏi.</li>
+              <li>Bạn có {exam.duration} phút để hoàn thành bài thi này.</li>
+              <li>Bạn có thể đánh dấu các câu hỏi để xem lại sau.</li>
+              <li>Bạn có thể lưu tiến trình và tiếp tục sau.</li>
+              <li>Sau khi nộp bài, bạn không thể thay đổi câu trả lời.</li>
+            </ul>
+          </div>{" "}
+          {savedProgress && (
+            <div className="alert alert-info" role="alert">
+              <FontAwesomeIcon icon={faCheck} className="me-2" />
+              Bạn có một phiên đã lưu cho bài thi này. Bạn có thể tiếp tục từ
+              nơi bạn đã dừng lại.
+            </div>
+          )}{" "}
+          <div className="exam-intro-actions">
+            <button className="btn btn-primary btn-lg" onClick={startExam}>
+              {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
+            </button>
+            <Link
+              to="/learner/exams"
+              className="btn btn-outline-secondary btn-lg ms-3"
+            >
+              Quay lại
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main exam taking view
+  const currentQuestion = exam.questions[currentQuestionIndex];
+
+  return (
+    <div className="exam-container">
+      {/* Exam Header */}
+      <div className="exam-header">
+        <div className="exam-title">
+          <h4>{exam.name}</h4>
+        </div>
+        <div className="exam-timer">
+          <FontAwesomeIcon icon={faClock} className="me-2" />
+          <span className="timer-text">{formatTime(remainingTime)}</span>
+        </div>
+      </div>
+
+      {/* Main Exam Content */}
+      <div className="exam-content">
+        {/* Question Navigation Sidebar */}
+        <div className="question-nav">
+          {" "}
+          <div className="question-nav-header">
+            <h5>Câu hỏi</h5>
+          </div>
+          <div className="question-nav-list">
+            {exam.questions.map((q, index) => (
+              <button
+                key={q.id}
+                className={`question-nav-item ${
+                  index === currentQuestionIndex ? "active" : ""
+                } ${userAnswers[q.id] !== undefined ? "answered" : ""} ${
+                  flaggedQuestions.includes(q.id) ? "flagged" : ""
+                }`}
+                onClick={() => goToQuestion(index)}
+              >
+                {index + 1}
+                {flaggedQuestions.includes(q.id) && (
+                  <FontAwesomeIcon icon={faFlag} className="flag-icon" />
+                )}
+              </button>
+            ))}
+          </div>{" "}
+          <div className="question-nav-legend">
+            <div className="legend-item">
+              <div className="legend-color current"></div>
+              <span>Hiện tại</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color answered"></div>
+              <span>Đã trả lời</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color flagged"></div>
+              <span>Đã đánh dấu</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Question Content */}
+        <div className="question-content">
+          {" "}
+          <div className="question-header">
+            <h5>
+              Câu hỏi {currentQuestionIndex + 1} / {exam.questions.length}
+            </h5>
+            <button
+              className={`flag-button ${
+                flaggedQuestions.includes(currentQuestion.id) ? "flagged" : ""
+              }`}
+              onClick={() => toggleFlagQuestion(currentQuestion.id)}
+            >
+              <FontAwesomeIcon icon={faFlag} />
+              {flaggedQuestions.includes(currentQuestion.id)
+                ? " Bỏ đánh dấu"
+                : " Đánh dấu xem lại"}
+            </button>
+          </div>
+          {currentQuestion.image && (
+            <div className="question-image">
+              <img src={currentQuestion.image} alt="Hình ảnh câu hỏi" />
+            </div>
+          )}
+          {currentQuestion.audio && (
+            <div className="question-audio mb-3">
+              <audio controls>
+                <source src={currentQuestion.audio} type="audio/mpeg" />
+                Trình duyệt của bạn không hỗ trợ phát âm thanh.
+              </audio>
+            </div>
+          )}
+          <div className="question-text">
+            <p>{currentQuestion.text}</p>
+          </div>
+          <div className="answer-options">
+            {currentQuestion.options.map((option, optionIndex) => {
+              const optionLetter = String.fromCharCode(65 + optionIndex); // A, B, C, D... cho các lựa chọn
+              return (
+                <div className="answer-option" key={option.id}>
+                  <input
+                    type="radio"
+                    id={`option-${option.id}`}
+                    name={`question-${currentQuestion.id}`}
+                    value={option.id}
+                    checked={userAnswers[currentQuestion.id] === option.id}
+                    onChange={() =>
+                      handleAnswerSelect(currentQuestion.id, option.id)
+                    }
+                  />
+                  <label htmlFor={`option-${option.id}`}>
+                    <span className="option-letter">{optionLetter}</span>
+                    <span className="option-text">{option.text}</span>
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+          {/* Navigation buttons */}
+          <div className="question-navigation">
+            {" "}
+            <button
+              className="btn btn-outline-secondary"
+              onClick={goToPrevQuestion}
+              disabled={currentQuestionIndex === 0}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} className="me-2" />
+              Câu trước
+            </button>
+            <div className="center-buttons">
+              <button
+                className="btn btn-outline-info me-2"
+                onClick={saveProgress}
+              >
+                <FontAwesomeIcon icon={faSave} className="me-1" />
+                {savedProgress ? "Đã lưu" : "Lưu tiến trình"}
+              </button>
+
+              <button
+                className="btn btn-success"
+                onClick={() => setShowConfirmSubmit(true)}
+              >
+                <FontAwesomeIcon icon={faCheck} className="me-1" />
+                Nộp bài
+              </button>
+            </div>
+            <button
+              className="btn btn-outline-primary"
+              onClick={goToNextQuestion}
+              disabled={currentQuestionIndex === exam.questions.length - 1}
+            >
+              Câu tiếp
+              <FontAwesomeIcon icon={faChevronRight} className="ms-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Confirm Submit Modal */}
+      {showConfirmSubmit && (
+        <div className="modal-overlay">
+          <div className="confirm-modal">
+            <h4>Nộp bài?</h4>
+            <p>
+              Bạn có chắc chắn muốn nộp bài thi? Bạn không thể thay đổi câu trả
+              lời sau khi đã nộp.
+            </p>
+
+            <div className="stats-summary">
+              <div className="stat">
+                <span>Đã trả lời:</span>
+                <strong>
+                  {Object.keys(userAnswers).length}/{exam.questions.length}
+                </strong>
+              </div>
+              <div className="stat">
+                <span>Chưa trả lời:</span>
+                <strong>
+                  {exam.questions.length - Object.keys(userAnswers).length}
+                </strong>
+              </div>
+              <div className="stat">
+                <span>Đã đánh dấu:</span>
+                <strong>{flaggedQuestions.length}</strong>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowConfirmSubmit(false)}
+              >
+                Tiếp tục làm bài
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={submitExam}
+                disabled={loading}
+              >
+                {loading ? "Đang nộp bài..." : "Nộp bài ngay"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ExamDetail;

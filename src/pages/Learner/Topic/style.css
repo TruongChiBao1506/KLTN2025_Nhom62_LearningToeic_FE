@@ -1,0 +1,47 @@
+.specific-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.specific-card .card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.specific-card .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-content {
+  padding: 20px;
+}
+
+.grammar-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.test {
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.test:hover {
+  background-color: #e9ecef;
+}
+
+.custom-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.custom-card:hover {
+  background-color: #e9ecef;
+  color: #4a6fdc;
+}

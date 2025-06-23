@@ -1,0 +1,53 @@
+.topic-header {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #4a6fdc;
+}
+
+.vocabulary-table th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+}
+
+.vocabulary-table tr {
+  transition: background-color 0.3s;
+}
+
+.vocabulary-table tr:hover {
+  background-color: #f0f7ff;
+}
+
+.search-box {
+  position: relative;
+  max-width: 300px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.search-box input {
+  padding-left: 35px;
+  border-radius: 20px;
+}
+
+.practice-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-left: 4px solid #4a6fdc;
+}
+
+.practice-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.practice-options {
+  margin-top: 30px;
+}

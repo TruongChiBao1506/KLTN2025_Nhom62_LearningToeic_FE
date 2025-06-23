@@ -1,0 +1,41 @@
+.note-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-left: 3px solid #4a6fdc;
+}
+
+.note-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.note-card-edit {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid #28a745;
+}
+
+.note-content {
+  white-space: pre-line;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.note-actions {
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.note-card:hover .note-actions {
+  opacity: 1;
+}
+
+.required-field {
+  color: red;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.error-feedback {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
