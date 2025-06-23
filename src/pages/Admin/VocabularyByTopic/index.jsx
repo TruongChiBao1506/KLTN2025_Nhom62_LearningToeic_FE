@@ -22,9 +22,9 @@ const VocabularyByTopic = () => {
     // Initialize AOS
     useEffect(() => {
         AOS.init({
-            duration: 150,
+            duration: 100,
             delay: 0,
-            easing: 'ease-in-out',
+            easing: 'ease-out',
             once: true,
             disable: 'mobile'
         });
@@ -54,13 +54,13 @@ const VocabularyByTopic = () => {
     }, [topicId]);
 
     return (
-        <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+        <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {/* Breadcrumb with AOS */}
             <div
                 className="mt-2 bg-white shadow-lg rounded-1"
                 data-aos="fade-down"
-                data-aos-duration="800"
-                data-aos-delay="100"
+                data-aos-duration="400"
+                data-aos-delay="50"
             >
                 <nav>
                     <ol className="cd-breadcrumb custom-separator">
@@ -85,8 +85,8 @@ const VocabularyByTopic = () => {
             {/* VocabularyList with AOS */}
             <div
                 data-aos="fade-up"
-                data-aos-duration="1000"
-                data-aos-delay="400"
+                data-aos-duration="500"
+                data-aos-delay="200"
             >
                 {isLoading ? (
                     <div

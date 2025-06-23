@@ -12,7 +12,7 @@ import './style.css';
 const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) => {
     const [explanationEditorData, setExplanationEditorData] = useState('');
 
-    // ✅ Validation schema
+    // Validation schema
     const validationSchema = Yup.object().shape({
         questionContent: Yup.string()
             .required('Question Content phải có giá trị.')
@@ -42,7 +42,7 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
             .min(5, 'Question Explanation phải ít nhất 5 ký tự.')
     });
 
-    // ✅ Formik setup
+    // Formik setup
     const formik = useFormik({
         initialValues: {
             questionContent: '',
@@ -59,57 +59,35 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
         }
     });
 
-    // ✅ Add grammar question function
+    // Add grammar question function
     const addGrammarQuestion = async (values, resetForm) => {
         try {
             console.log('🚀 Starting addGrammarQuestion with values:', values);
             console.log('🚀 Grammar ID:', grammarId);
 
-            // ✅ Create FormData like Vue version
-            const formData = new FormData();
-            formData.append("grammarId", grammarId);
-            formData.append("questionContent", values.questionContent.trim());
-            formData.append("optionA", values.optionA.trim());
-            formData.append("optionB", values.optionB.trim());
-            formData.append("optionC", values.optionC.trim());
-            formData.append("optionD", values.optionD.trim());
+            // Create JSON object instead of FormData
+            const questionData = {
+                grammarId: grammarId,
+                questionContent: values.questionContent.trim(),
+                optionA: values.optionA.trim(),
+                optionB: values.optionB.trim(),
+                optionC: values.optionC.trim(),
+                optionD: values.optionD.trim(),
+                correctOption: values.correctOption, // Send letter directly (A, B, C, D)
+                questionExplanation: values.questionExplanation
+            };
 
-            // ✅ Determine correct option like Vue version
-            let correctOptionValue = '';
-            switch (values.correctOption) {
-                case "A":
-                    correctOptionValue = values.optionA.trim();
-                    break;
-                case "B":
-                    correctOptionValue = values.optionB.trim();
-                    break;
-                case "C":
-                    correctOptionValue = values.optionC.trim();
-                    break;
-                case "D":
-                    correctOptionValue = values.optionD.trim();
-                    break;
-                default:
-                    correctOptionValue = "";
-            }
+            console.log('📤 JSON data to send:', questionData);
 
-            formData.append("correctOption", correctOptionValue);
-            formData.append("questionExplanation", values.questionExplanation);
-
-            console.log('📤 FormData entries:');
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
-            await GrammarQuestionService.create(formData);
+            await GrammarQuestionService.create(questionData);
             console.log('✅ Grammar question created successfully');
-            
+
             retrieveGrammarQuestions();
-            
+
             // Reset form và states
             resetForm();
             setExplanationEditorData('');
-            
+
             // Close modal
             if (onClose) {
                 onClose();
@@ -120,9 +98,9 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
             });
         } catch (error) {
             console.log('❌ Error creating grammar question:', error);
-            
+
             let errorMessage = 'Lỗi khi thêm câu hỏi ngữ pháp';
-            
+
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.response?.data?.errors) {
@@ -141,7 +119,7 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
         }
     };
 
-    // ✅ CKEditor configuration
+    // CKEditor configuration
     const editorConfiguration = {
         toolbar: [
             'heading',
@@ -205,9 +183,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                             type="text"
                             id="questionContent"
                             name="questionContent"
-                            className={`form-control border-secondary custom-font ${
-                                formik.touched.questionContent && formik.errors.questionContent ? 'is-invalid' : ''
-                            }`}
+                            className={`form-control border-secondary custom-font ${formik.touched.questionContent && formik.errors.questionContent ? 'is-invalid' : ''
+                                }`}
                             value={formik.values.questionContent}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -227,9 +204,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                             type="text"
                             id="optionA"
                             name="optionA"
-                            className={`form-control border-secondary custom-font ${
-                                formik.touched.optionA && formik.errors.optionA ? 'is-invalid' : ''
-                            }`}
+                            className={`form-control border-secondary custom-font ${formik.touched.optionA && formik.errors.optionA ? 'is-invalid' : ''
+                                }`}
                             value={formik.values.optionA}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -249,9 +225,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                             type="text"
                             id="optionB"
                             name="optionB"
-                            className={`form-control border-secondary custom-font ${
-                                formik.touched.optionB && formik.errors.optionB ? 'is-invalid' : ''
-                            }`}
+                            className={`form-control border-secondary custom-font ${formik.touched.optionB && formik.errors.optionB ? 'is-invalid' : ''
+                                }`}
                             value={formik.values.optionB}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -271,9 +246,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                             type="text"
                             id="optionC"
                             name="optionC"
-                            className={`form-control border-secondary custom-font ${
-                                formik.touched.optionC && formik.errors.optionC ? 'is-invalid' : ''
-                            }`}
+                            className={`form-control border-secondary custom-font ${formik.touched.optionC && formik.errors.optionC ? 'is-invalid' : ''
+                                }`}
                             value={formik.values.optionC}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -293,9 +267,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                             type="text"
                             id="optionD"
                             name="optionD"
-                            className={`form-control border-secondary custom-font ${
-                                formik.touched.optionD && formik.errors.optionD ? 'is-invalid' : ''
-                            }`}
+                            className={`form-control border-secondary custom-font ${formik.touched.optionD && formik.errors.optionD ? 'is-invalid' : ''
+                                }`}
                             value={formik.values.optionD}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -379,9 +352,8 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                         <label className="form-label">
                             Question Explanation<span className="required-field">*</span>
                         </label>
-                        <div className={`ckeditor-wrapper ${
-                            formik.touched.questionExplanation && formik.errors.questionExplanation ? 'is-invalid' : ''
-                        }`}>
+                        <div className={`ckeditor-wrapper ${formik.touched.questionExplanation && formik.errors.questionExplanation ? 'is-invalid' : ''
+                            }`}>
                             <CKEditor
                                 editor={ClassicEditor}
                                 config={editorConfiguration}
@@ -398,15 +370,15 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={onClose}
                     >
                         Đóng
                     </button>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary"
                         disabled={formik.isSubmitting || !formik.isValid}
                     >

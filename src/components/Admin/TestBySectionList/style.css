@@ -15,7 +15,7 @@ td {
 .glowing-button {
     padding: 10px 20px;
     font-size: 13px;
-    background: linear-gradient(45deg, rgb(59, 99, 126), #0b3142);
+    background: linear-gradient(45deg, #1c75bc, #145a91);
     color: white;
     border: none;
     border-radius: 25px;
@@ -112,12 +112,12 @@ td {
     .input-group {
         width: 100%;
     }
-    
+
     .glowing-button {
         font-size: 11px;
         padding: 8px 16px;
     }
-    
+
     .table {
         font-size: 11px;
     }

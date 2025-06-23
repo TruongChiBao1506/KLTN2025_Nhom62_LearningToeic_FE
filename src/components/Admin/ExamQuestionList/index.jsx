@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faCirclePlus, 
-    faEdit, 
-    faTrash, 
+import {
+    faCirclePlus,
+    faEdit,
+    faTrash,
     faSearch,
     faFileDownload,
     faVolumeUp,
@@ -17,21 +17,21 @@ import ExamQuestionService from '../../../services/examQuestionService';
 import AddExamQuestionModal from './AddExamQuestionModal';
 import './style.css';
 
-const ExamQuestionList = ({ 
-    examQuestions = [], 
-    examId, 
-    retrieveExamQuestions, 
+const ExamQuestionList = ({
+    examQuestions = [],
+    examId,
+    retrieveExamQuestions,
     isLoading = false,
-    pagination 
+    pagination
 }) => {
     // ✅ Ensure examQuestions is always an array
     const normalizedExamQuestions = Array.isArray(examQuestions) ? examQuestions : [];
-    
+
     // States
     const [searchText, setSearchText] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(25);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     // Modal states
     const [showAddModal, setShowAddModal] = useState(false);
 
@@ -47,7 +47,7 @@ const ExamQuestionList = ({
             return normalizedExamQuestions;
         }
         return normalizedExamQuestions.filter((examQuestion) =>
-            Object.values(examQuestion).some((value) => 
+            Object.values(examQuestion).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
             )
         );
@@ -64,7 +64,7 @@ const ExamQuestionList = ({
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         console.log('Pagination:', { startIndex, endIndex, currentPage, itemsPerPage });
-        
+
         // ✅ Add order number to each question
         return filteredExamQuestions.slice(startIndex, endIndex).map((question, index) => ({
             ...question,
@@ -73,13 +73,13 @@ const ExamQuestionList = ({
     }, [filteredExamQuestions, currentPage, itemsPerPage]);
 
     // Pagination info
-    const firstRowNumber = useMemo(() => 
-        (currentPage - 1) * itemsPerPage + 1, 
+    const firstRowNumber = useMemo(() =>
+        (currentPage - 1) * itemsPerPage + 1,
         [currentPage, itemsPerPage]
     );
 
-    const lastRowNumber = useMemo(() => 
-        Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredExamQuestions.length), 
+    const lastRowNumber = useMemo(() =>
+        Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredExamQuestions.length),
         [currentPage, itemsPerPage, filteredExamQuestions.length]
     );
 
@@ -99,8 +99,8 @@ const ExamQuestionList = ({
 
     // ✅ Helper function to get status
     const getItemStatus = (item) => {
-        return item.questionStatus !== undefined ? item.questionStatus : 
-               (item.examQuestionStatus !== undefined ? item.examQuestionStatus :
+        return item.questionStatus !== undefined ? item.questionStatus :
+            (item.examQuestionStatus !== undefined ? item.examQuestionStatus :
                 (item.status !== undefined ? item.status : 1));
     };
 
@@ -122,16 +122,16 @@ const ExamQuestionList = ({
     // Format date
     const formatDate = (dateTimeString) => {
         if (!dateTimeString) return 'N/A';
-        
-        const options = { 
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
+
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         };
-        
+
         const date = new Date(dateTimeString);
         return date.toLocaleDateString('en-GB', options);
     };
@@ -208,10 +208,10 @@ const ExamQuestionList = ({
         try {
             console.log('Exam Question ID:', examQuestionId);
             console.log('New Status:', newStatus);
-            
+
             await ExamQuestionService.updateStatus(examQuestionId, newStatus);
             retrieveExamQuestions();
-            
+
             toast.success(`${newStatus === 1 ? 'Kích hoạt' : 'Vô hiệu hóa'} exam question thành công`, {
                 autoClose: 1000,
             });
@@ -240,7 +240,7 @@ const ExamQuestionList = ({
                 console.log('🗑️ Deleting all questions for exam:', examId);
                 await ExamQuestionService.deleteExamQuestionsByExamId(examId);
                 retrieveExamQuestions();
-                
+
                 Swal.fire({
                     title: 'Xóa 200 câu hỏi thành công!',
                     icon: 'success',
@@ -274,8 +274,8 @@ const ExamQuestionList = ({
                     <div className="row">
                         {/* Items per page */}
                         <div className="col-2 mt-4">
-                            <select 
-                                className="form-select ms-3 w-50" 
+                            <select
+                                className="form-select ms-3 w-50"
                                 value={itemsPerPage}
                                 onChange={(e) => {
                                     setItemsPerPage(Number(e.target.value));
@@ -293,12 +293,12 @@ const ExamQuestionList = ({
                         {/* Search */}
                         <div className="col-6 mt-4">
                             <div className="input-group">
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
+                                <input
+                                    type="text"
+                                    className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm" 
+                                    placeholder="Tìm kiếm"
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -313,9 +313,9 @@ const ExamQuestionList = ({
                             {/* Conditional buttons */}
                             {showImportButton ? (
                                 <div>
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-success mb-3 me-3" 
+                                    <button
+                                        type="button"
+                                        className="btn btn-success mb-3 me-3"
                                         onClick={handleShowAddModal}
                                         title="Import exam questions"
                                     >
@@ -323,8 +323,8 @@ const ExamQuestionList = ({
                                     </button>
                                 </div>
                             ) : (
-                                <button 
-                                    className="btn btn-danger mb-3 ms-2" 
+                                <button
+                                    className="btn btn-danger mb-3 ms-2"
                                     onClick={deleteAllQuestions}
                                     title="Delete all questions"
                                 >
@@ -332,9 +332,9 @@ const ExamQuestionList = ({
                                 </button>
                             )}
 
-                            <button 
-                                type="button" 
-                                className="btn btn-success mb-3 ms-2 me-3" 
+                            <button
+                                type="button"
+                                className="btn btn-success mb-3 ms-2 me-3"
                                 onClick={downloadTemplate}
                                 title="Export template"
                             >
@@ -381,8 +381,9 @@ const ExamQuestionList = ({
                                                 </thead>
                                                 <tbody>
                                                     {paginatedExamQuestions.map((examQuestion, index) => (
-                                                        <tr 
-                                                            key={getItemId(examQuestion) || `question-${index}`} 
+
+                                                        <tr
+                                                            key={getItemId(examQuestion) || `question-${index}`}
                                                             className="table-row shadow-on-hover align-middle"
                                                         >
                                                             <td>{examQuestion.orderNumber}</td>
@@ -420,9 +421,9 @@ const ExamQuestionList = ({
                                                             </td>
                                                             <td>
                                                                 {examQuestion.questionImage && examQuestion.questionImage !== '' ? (
-                                                                    <img 
-                                                                        src={getImageUrl(examQuestion.questionImage)} 
-                                                                        alt="Question" 
+                                                                    <img
+                                                                        src={getImageUrl(examQuestion.questionImage)}
+                                                                        alt="Question"
                                                                         className="question-image"
                                                                         title={`Image: ${examQuestion.questionImage}`}
                                                                     />
@@ -432,8 +433,8 @@ const ExamQuestionList = ({
                                                             </td>
                                                             <td>
                                                                 {examQuestion.questionAudio && examQuestion.questionAudio !== '' ? (
-                                                                    <audio 
-                                                                        controls 
+                                                                    <audio
+                                                                        controls
                                                                         src={getAudioUrl(examQuestion.questionAudio)}
                                                                         title={`Audio: ${examQuestion.questionAudio}`}
                                                                     >
@@ -444,32 +445,38 @@ const ExamQuestionList = ({
                                                                 )}
                                                             </td>
                                                             <td>
-                                                                <div 
+                                                                <div
                                                                     title={examQuestion.questionScript || 'No script'}
-                                                                    dangerouslySetInnerHTML={{ 
-                                                                        __html: getLimitedScript(examQuestion.questionScript || '') 
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: getLimitedScript(examQuestion.questionScript || '')
                                                                     }}
                                                                 />
                                                             </td>
                                                             <td>
-                                                                <div 
+                                                                <div
                                                                     title={examQuestion.questionPassage || 'No passage'}
-                                                                    dangerouslySetInnerHTML={{ 
-                                                                        __html: getLimitedPassage(examQuestion.questionPassage || '') 
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: getLimitedPassage(examQuestion.questionPassage || '')
                                                                     }}
                                                                 />
                                                             </td>
                                                             <td>
-                                                                <div 
+                                                                <div
                                                                     title={examQuestion.questionExplanation || 'No explanation'}
-                                                                    dangerouslySetInnerHTML={{ 
-                                                                        __html: getLimitedExplanation(examQuestion.questionExplanation || '') 
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: getLimitedExplanation(examQuestion.questionExplanation || '')
                                                                     }}
                                                                 />
                                                             </td>
                                                             <td>
                                                                 <span className="badge bg-info">
-                                                                    {examQuestion.questionPart || 'N/A'}
+                                                                    {(() => {
+                                                                        const part = examQuestion.questionPart || examQuestion.partNumber;
+                                                                        if (part !== undefined && part !== null && part !== '') {
+                                                                            return `Part ${part}`;
+                                                                        }
+                                                                        return 'N/A';
+                                                                    })()}
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -488,8 +495,8 @@ const ExamQuestionList = ({
                                             <nav aria-label="Page navigation">
                                                 <ul className="pagination justify-content-center">
                                                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                                        <button 
-                                                            className="page-link" 
+                                                        <button
+                                                            className="page-link"
                                                             onClick={() => changePage(currentPage - 1)}
                                                             disabled={currentPage === 1}
                                                         >
@@ -497,12 +504,12 @@ const ExamQuestionList = ({
                                                         </button>
                                                     </li>
                                                     {Array.from({ length: totalPageCount }, (_, i) => i + 1).map((pageNumber) => (
-                                                        <li 
-                                                            key={pageNumber} 
+                                                        <li
+                                                            key={pageNumber}
                                                             className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
                                                         >
-                                                            <button 
-                                                                className="page-link" 
+                                                            <button
+                                                                className="page-link"
                                                                 onClick={() => changePage(pageNumber)}
                                                             >
                                                                 {pageNumber}
@@ -510,8 +517,8 @@ const ExamQuestionList = ({
                                                         </li>
                                                     ))}
                                                     <li className={`page-item ${currentPage === totalPageCount ? 'disabled' : ''}`}>
-                                                        <button 
-                                                            className="page-link" 
+                                                        <button
+                                                            className="page-link"
                                                             onClick={() => changePage(currentPage + 1)}
                                                             disabled={currentPage === totalPageCount}
                                                         >
@@ -544,7 +551,7 @@ const ExamQuestionList = ({
                                                 <p className="text-muted">
                                                     Không có exam question nào khớp với từ khóa "{searchText}"
                                                 </p>
-                                                <button 
+                                                <button
                                                     className="btn btn-outline-secondary"
                                                     onClick={() => setSearchText('')}
                                                 >
@@ -563,7 +570,7 @@ const ExamQuestionList = ({
                                         <p className="text-muted">
                                             Exam này chưa có questions. Hãy import questions đầu tiên.
                                         </p>
-                                        <button 
+                                        <button
                                             className="btn btn-success"
                                             onClick={handleShowAddModal}
                                         >
@@ -579,7 +586,7 @@ const ExamQuestionList = ({
             </section>
 
             {/* Add Modal */}
-            <AddExamQuestionModal 
+            <AddExamQuestionModal
                 show={showAddModal}
                 onHide={handleCloseAddModal}
                 examId={examId}

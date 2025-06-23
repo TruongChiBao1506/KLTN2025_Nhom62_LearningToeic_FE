@@ -126,7 +126,7 @@ class GrammarContentService {
         try {
             console.log('🔄 Updating grammar content status:', grammarContentId, newStatus);
             const response = await axiosClient.put(`${this.baseUrl}/${grammarContentId}/status`, {
-                grammarContentStatus: newStatus
+                status: newStatus
             });
             console.log('✅ Grammar content status updated:', response);
             return response;

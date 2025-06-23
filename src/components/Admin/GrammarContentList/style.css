@@ -1,3 +1,4 @@
+/* ✅ CSS matching Vue version exactly */
 .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
@@ -54,82 +55,56 @@ td {
     font-size: 13px;
 }
 
-/* Additional React-specific styles */
-.page-link {
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.page-link:hover {
-    background-color: #e9ecef;
-}
-
-.page-item.disabled .page-link {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.page-item.active .page-link {
-    background-color: #007bff;
-    border-color: #007bff;
-    color: white;
-}
-
-/* Status badges */
+/* ✅ Enhanced badge styling */
 .badge {
+    cursor: pointer;
     transition: all 0.2s ease;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .badge:hover {
     transform: scale(1.05);
-    opacity: 0.8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Loading state */
-.spinner-border {
-    animation: spinner-border 0.75s linear infinite;
+.text-bg-success {
+    background-color: #198754 !important;
+    color: white !important;
 }
 
-/* Empty state */
-.text-muted {
-    color: #6c757d !important;
+.text-bg-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .input-group {
-        width: 100%;
-    }
-    
-    .table {
-        font-size: 12px;
-    }
-    
-    .col-2, .col-6, .col-4 {
-        margin-bottom: 1rem;
-    }
+.text-bg-success:hover {
+    background-color: #157347 !important;
 }
 
-/* Content preview styling */
-td div[dangerouslySetInnerHTML] {
-    max-height: 40px;
-    overflow: hidden;
-    line-height: 1.2;
+.text-bg-danger:hover {
+    background-color: #bb2d3b !important;
 }
 
-/* Action buttons */
+/* ✅ Button styling */
 .btn-white {
+    background-color: white;
     transition: all 0.2s ease;
 }
 
 .btn-white:hover {
-    background-color: #f8f9fa;
-    transform: scale(1.1);
+    background-color: #f8f9fa !important;
+    transform: scale(1.05);
 }
 
-/* Table responsiveness */
-@media (max-width: 992px) {
-    .table-responsive {
-        overflow-x: auto;
-    }
+/* ✅ Action buttons */
+.table td:nth-child(7) .d-flex {
+    gap: 8px;
+}
+
+.table td:nth-child(7) .btn {
+    padding: 8px 10px;
+    font-size: 1rem;
 }

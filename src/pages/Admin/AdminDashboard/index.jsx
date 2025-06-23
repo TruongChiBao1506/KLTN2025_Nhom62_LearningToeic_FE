@@ -43,9 +43,9 @@ const Dashboard = () => {
     // Initialize AOS
     useEffect(() => {
         AOS.init({
-            duration: 150,
+            duration: 100,
             delay: 0,
-            easing: 'ease-in-out',
+            easing: 'ease-out',
             once: true,
             disable: 'mobile' 
         });
@@ -295,7 +295,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+        <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {/* Breadcrumb */}
             <div className="mt-2 bg-white shadow-lg rounded-1">
                 <nav>

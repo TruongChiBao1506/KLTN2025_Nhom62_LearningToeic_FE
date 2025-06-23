@@ -97,49 +97,28 @@ const GrammarContentList = ({
         setSelectedGrammarContentId(null);
     };
 
-    // ...existing functions...
-
-    // ✅ Helper function to get field value with fallback
-    const getFieldValue = (item, primaryField, fallbackField, defaultValue = '') => {
-        return item[primaryField] || item[fallbackField] || defaultValue;
-    };
-
-    // ✅ Helper function to get ID with different possible field names
+    // ✅ Helper function to get ID - matching Vue version field names
     const getItemId = (item) => {
-        return item._id || item.contentId || item.grammarContentId || item.id;
+        return item.contentId || item._id || item.grammarContentId || item.id;
     };
 
-    // ✅ Helper function to get title with different possible field names
+    // ✅ Helper function to get title - matching Vue version
     const getItemTitle = (item) => {
-        return item.grammarContentTitle || item.title || item.name || 'No title';
+        return item.title || item.grammarContentTitle || item.name || 'No title';
     };
 
-    // ✅ Helper function to get content/description
+    // ✅ Helper function to get content - matching Vue version
     const getItemContent = (item) => {
-        return item.grammarContentDescription || item.content || item.description || 'No content';
+        return item.content || item.grammarContentDescription || item.description || 'No content';
     };
 
-    // ✅ Helper function to get status
+    // ✅ Helper function to get status - matching Vue version
     const getItemStatus = (item) => {
-        return item.grammarContentStatus !== undefined ? item.grammarContentStatus : (item.status !== undefined ? item.status : 1);
+        return item.grammarContentStatus !== undefined ? item.grammarContentStatus : 
+               (item.status !== undefined ? item.status : 1);
     };
 
-    // Truncate text for display
-    const truncateText = (text, maxLength) => {
-        if (!text) return '';
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength) + '...';
-    };
-
-    // Strip HTML tags from content for preview
-    const stripHtml = (html) => {
-        if (!html) return '';
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
-    };
-
-    // Format date
+    // Format date - matching Vue version
     const formatDate = (dateTimeString) => {
         if (!dateTimeString) return 'N/A';
         
@@ -156,7 +135,7 @@ const GrammarContentList = ({
         return date.toLocaleDateString('en-GB', options);
     };
 
-    // Delete grammar content
+    // Delete grammar content - matching Vue version
     const deleteGrammarContent = async (grammarContentId) => {
         const result = await Swal.fire({
             title: 'Bạn muốn xóa nội dung ngữ pháp này?',
@@ -191,7 +170,7 @@ const GrammarContentList = ({
         }
     };
 
-    // Toggle status
+    // Toggle status - matching Vue version
     const toggleStatus = async (grammarContentId, newStatus) => {
         try {
             console.log('Grammar Content ID:', grammarContentId);
@@ -199,15 +178,8 @@ const GrammarContentList = ({
             
             await GrammarContentService.updateStatus(grammarContentId, newStatus);
             retrieveGrammarContents();
-            
-            toast.success(`${newStatus === 1 ? 'Kích hoạt' : 'Vô hiệu hóa'} grammar content thành công`, {
-                autoClose: 1000,
-            });
         } catch (error) {
             console.error(error);
-            toast.error('Lỗi khi cập nhật trạng thái', {
-                autoClose: 2000,
-            });
         }
     };
 
@@ -250,7 +222,7 @@ const GrammarContentList = ({
                                     className="form-control" 
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm grammar content..." 
+                                    placeholder="Tìm kiếm" 
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -295,8 +267,7 @@ const GrammarContentList = ({
                                                         <button className="btn btn-success rounded-5 disabled">No.</button>
                                                     </th>
                                                     <th>TITLE</th>
-                                                    <th>DESCRIPTION</th>
-                                                    <th>EXAMPLE</th>
+                                                    <th>CONTENT</th>
                                                     <th>STATUS</th>
                                                     <th>CREATED_AT</th>
                                                     <th>UPDATED_AT</th>
@@ -310,27 +281,12 @@ const GrammarContentList = ({
                                                         className="table-row shadow-on-hover align-middle"
                                                     >
                                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                                        <td>
-                                                            <div title={getItemTitle(grammarContent)}>
-                                                                {truncateText(getItemTitle(grammarContent), 30)}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div 
-                                                                title={stripHtml(getItemContent(grammarContent))}
-                                                                dangerouslySetInnerHTML={{ 
-                                                                    __html: truncateText(getItemContent(grammarContent), 50) 
-                                                                }}
-                                                            />
-                                                        </td>
-                                                        <td>
-                                                            <div 
-                                                                title={grammarContent.grammarContentExample || 'No example'}
-                                                                dangerouslySetInnerHTML={{ 
-                                                                    __html: truncateText(grammarContent.grammarContentExample || 'No example', 50) 
-                                                                }}
-                                                            />
-                                                        </td>
+                                                        <td>{getItemTitle(grammarContent)}</td>
+                                                        <td 
+                                                            dangerouslySetInnerHTML={{ 
+                                                                __html: getItemContent(grammarContent) 
+                                                            }}
+                                                        />
                                                         <td>
                                                             {getItemStatus(grammarContent) === 1 ? (
                                                                 <span 
@@ -361,7 +317,7 @@ const GrammarContentList = ({
                                                                     type="button" 
                                                                     className="btn btn-white border-0" 
                                                                     onClick={() => handleShowEditModal(getItemId(grammarContent))}
-                                                                    title={`Chỉnh sửa [${truncateText(getItemTitle(grammarContent), 15)}]`}
+                                                                    title={`Chỉnh sửa [${getItemTitle(grammarContent)}]`}
                                                                 >
                                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                                 </button>
@@ -371,7 +327,7 @@ const GrammarContentList = ({
                                                                     type="button" 
                                                                     onClick={() => deleteGrammarContent(getItemId(grammarContent))}
                                                                     className="btn btn-white border-0"
-                                                                    title={`Xóa [${truncateText(getItemTitle(grammarContent), 15)}]`}
+                                                                    title={`Xóa [${getItemTitle(grammarContent)}]`}
                                                                 >
                                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                                 </button>
@@ -381,13 +337,13 @@ const GrammarContentList = ({
                                                 ))}
                                                 {paginatedGrammarContents.length === 0 && filteredGrammarContents.length > 0 && (
                                                     <tr key="no-data">
-                                                        <td colSpan="8">No data available on this page</td>
+                                                        <td colSpan="7">No data available on this page</td>
                                                     </tr>
                                                 )}
                                             </tbody>
                                         </table>
 
-                                        {/* Pagination */}
+                                        {/* Pagination - matching Vue version */}
                                         {filteredGrammarContents.length > 0 && (
                                             <nav aria-label="Page navigation">
                                                 <ul className="pagination justify-content-center">
@@ -426,14 +382,11 @@ const GrammarContentList = ({
                                             </nav>
                                         )}
 
-                                        {/* Results info */}
+                                        {/* Results info - matching Vue version */}
                                         {filteredGrammarContents.length > 0 && (
                                             <div className="d-flex justify-content-center mt-3 fw-lighter fst-italic">
                                                 <p>
                                                     {firstRowNumber} - {lastRowNumber} trên {filteredGrammarContents.length} kết quả
-                                                    {pagination && (
-                                                        <> | Server: {pagination.totalItems} total items</>
-                                                    )}
                                                 </p>
                                             </div>
                                         )}
@@ -488,6 +441,7 @@ const GrammarContentList = ({
                 onHide={handleCloseAddModal}
                 grammarId={grammarId}
                 retrieveGrammarContents={retrieveGrammarContents}
+                grammarContents={grammarContents}
             />
 
             <EditGrammarContentModal 
@@ -496,6 +450,7 @@ const GrammarContentList = ({
                 grammarContentId={selectedGrammarContentId}
                 grammarId={grammarId}
                 retrieveGrammarContents={retrieveGrammarContents}
+                grammarContents={grammarContents}
             />
         </div>
     );
