@@ -18,7 +18,7 @@ class GrammarContentService {
             };
             
             const response = await axiosClient.post(`${this.baseUrl}`, data, { headers });
-            console.log('✅ Grammar content created:', response);
+            console.log('  Grammar content created:', response);
             return response;
         } catch (error) {
             console.error('❌ Error creating grammar content:', error);
@@ -30,7 +30,7 @@ class GrammarContentService {
         try {
             console.log('🔍 Getting all grammar contents');
             const response = await axiosClient.get(`${this.baseUrl}`);
-            console.log('✅ All grammar contents retrieved:', response);
+            console.log('  All grammar contents retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting all grammar contents:', error);
@@ -42,7 +42,7 @@ class GrammarContentService {
         try {
             console.log('🔍 Getting grammar content with ID:', id);
             const response = await axiosClient.get(`${this.baseUrl}/${id}`);
-            console.log('✅ Grammar content retrieved:', response);
+            console.log('  Grammar content retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting grammar content:', error);
@@ -64,7 +64,7 @@ class GrammarContentService {
             };
             
             const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, { headers });
-            console.log('✅ Grammar content updated:', response);
+            console.log('  Grammar content updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating grammar content:', error);
@@ -76,7 +76,7 @@ class GrammarContentService {
         try {
             console.log('🗑️ Deleting grammar content:', id);
             const response = await axiosClient.delete(`${this.baseUrl}/${id}`);
-            console.log('✅ Grammar content deleted:', response);
+            console.log('  Grammar content deleted:', response);
             return response;
         } catch (error) {
             console.error('❌ Error deleting grammar content:', error);
@@ -88,7 +88,7 @@ class GrammarContentService {
         try {
             console.log('🔍 Getting grammar contents for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}`);
-            console.log('✅ Grammar contents retrieved:', response);
+            console.log('  Grammar contents retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting grammar contents by grammar:', error);
@@ -107,7 +107,7 @@ class GrammarContentService {
         try {
             console.log('🔍 Getting enabled grammar contents for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}/enable`);
-            console.log('✅ Enabled grammar contents retrieved:', response);
+            console.log('  Enabled grammar contents retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting enabled grammar contents by grammar:', error);
@@ -128,7 +128,7 @@ class GrammarContentService {
             const response = await axiosClient.put(`${this.baseUrl}/${grammarContentId}/status`, {
                 status: newStatus
             });
-            console.log('✅ Grammar content status updated:', response);
+            console.log('  Grammar content status updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating grammar content status:', error);
@@ -140,7 +140,7 @@ class GrammarContentService {
         try {
             console.log('🔍 Searching grammar contents:', query);
             const response = await axiosClient.get(`${this.baseUrl}/search?q=${encodeURIComponent(query)}`);
-            console.log('✅ Search results:', response);
+            console.log('  Search results:', response);
             return response;
         } catch (error) {
             console.error('❌ Error searching grammar contents:', error);
@@ -177,7 +177,7 @@ class GrammarContentService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Template exported successfully');
+            console.log('  Template exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting template:', error);
@@ -207,7 +207,7 @@ class GrammarContentService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Contents exported successfully');
+            console.log('  Contents exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting contents by grammar:', error);
@@ -234,7 +234,7 @@ class GrammarContentService {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log('✅ Contents imported successfully:', response);
+            console.log('  Contents imported successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error importing template:', error);
@@ -250,7 +250,7 @@ class GrammarContentService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Bulk import successful:', response);
+            console.log('  Bulk import successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk importing:', error);
@@ -262,7 +262,7 @@ class GrammarContentService {
         try {
             console.log('📊 Getting statistics for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/statistics/${grammarId}`);
-            console.log('✅ Statistics retrieved:', response);
+            console.log('  Statistics retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting statistics:', error);
@@ -277,7 +277,7 @@ class GrammarContentService {
                 grammarContentIds,
                 status: newStatus
             });
-            console.log('✅ Bulk status update successful:', response);
+            console.log('  Bulk status update successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk updating status:', error);
@@ -291,7 +291,7 @@ class GrammarContentService {
             const response = await axiosClient.post(`${this.baseUrl}/${grammarContentId}/duplicate`, {
                 targetGrammarId
             });
-            console.log('✅ Grammar content duplicated successfully:', response);
+            console.log('  Grammar content duplicated successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error duplicating grammar content:', error);
@@ -305,7 +305,7 @@ class GrammarContentService {
             const response = await axiosClient.delete(`${this.baseUrl}/bulk-delete`, {
                 data: { grammarContentIds }
             });
-            console.log('✅ Bulk delete successful:', response);
+            console.log('  Bulk delete successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk deleting:', error);
@@ -315,11 +315,11 @@ class GrammarContentService {
 
     async validateContent(content) {
         try {
-            console.log('✅ Validating grammar content');
+            console.log('  Validating grammar content');
             const response = await axiosClient.post(`${this.baseUrl}/validate`, {
                 content
             });
-            console.log('✅ Content validation successful:', response);
+            console.log('  Content validation successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error validating content:', error);
@@ -331,7 +331,7 @@ class GrammarContentService {
         try {
             console.log('📜 Getting content history for:', grammarContentId);
             const response = await axiosClient.get(`${this.baseUrl}/${grammarContentId}/history`);
-            console.log('✅ Content history retrieved:', response);
+            console.log('  Content history retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting content history:', error);
@@ -343,7 +343,7 @@ class GrammarContentService {
         try {
             console.log('🔄 Restoring version:', versionId, 'for content:', grammarContentId);
             const response = await axiosClient.post(`${this.baseUrl}/${grammarContentId}/restore/${versionId}`);
-            console.log('✅ Version restored successfully:', response);
+            console.log('  Version restored successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error restoring version:', error);

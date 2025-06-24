@@ -69,7 +69,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
             console.log('🔍 Getting grammar question with ID:', grammarQuestionId);
 
             const data = await GrammarQuestionService.get(grammarQuestionId);
-            console.log('✅ Grammar question data:', data);
+            console.log('  Grammar question data:', data);
 
             setGrammarQuestion(data);
 
@@ -121,7 +121,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
             console.log('📤 JSON data to send:', questionData);
 
             await GrammarQuestionService.update(grammarQuestionId, questionData);
-            console.log('✅ Grammar question updated successfully');
+            console.log('  Grammar question updated successfully');
 
             retrieveGrammarQuestions();
 

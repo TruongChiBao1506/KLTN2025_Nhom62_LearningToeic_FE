@@ -86,7 +86,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
                 image: null // Don't set existing image as file
             });
             
-            console.log('✅ Vocabulary data loaded successfully');
+            console.log('  Vocabulary data loaded successfully');
             
         } catch (error) {
             console.log('❌ Error fetching vocabulary:', error);
@@ -168,7 +168,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
             }
 
             await VocabularyService.update(vocabularyId, formData);
-            console.log('✅ Vocabulary updated successfully');
+            console.log('  Vocabulary updated successfully');
             
             retrieveVocabularies();
             
@@ -245,7 +245,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateVocabulary(formik.values, formik.resetForm);
     };

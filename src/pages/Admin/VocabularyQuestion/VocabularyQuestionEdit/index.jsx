@@ -105,7 +105,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
             // Set editor data
             setEditorData(data.questionExplanation || '');
 
-            console.log('✅ Vocabulary question data loaded successfully');
+            console.log('  Vocabulary question data loaded successfully');
             console.log('Selected option:', selectedOption);
 
         } catch (error) {
@@ -176,7 +176,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
             console.log('Payload:', payload);
 
             await VocabularyQuestionService.update(vocabularyQuestionId, payload);
-            console.log('✅ Vocabulary question updated successfully');
+            console.log('  Vocabulary question updated successfully');
 
             retrieveVocabularyQuestions();
 
@@ -247,7 +247,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateVocabularyQuestion(formik.values, formik.resetForm);
     };

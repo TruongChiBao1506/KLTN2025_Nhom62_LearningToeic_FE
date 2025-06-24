@@ -73,7 +73,7 @@ label {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ Two-column layout styling */
+/*   Two-column layout styling */
 .row {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
@@ -84,7 +84,7 @@ label {
     padding-right: 0.75rem;
 }
 
-/* ✅ Left column - Options styling */
+/*   Left column - Options styling */
 .col:first-child .form-group {
     background: linear-gradient(135deg, #e8f5e8 0%, #ffffff 100%);
     padding: 1rem;
@@ -99,7 +99,7 @@ label {
     transform: translateY(-1px);
 }
 
-/* ✅ Right column - Media & Script styling */
+/*   Right column - Media & Script styling */
 .col:last-child .form-group {
     background: linear-gradient(135deg, #e8f4f8 0%, #ffffff 100%);
     padding: 1rem;
@@ -114,7 +114,7 @@ label {
     transform: translateY(-1px);
 }
 
-/* ✅ Option fields specific styling */
+/*   Option fields specific styling */
 .col:first-child .form-group:nth-child(1) {
     border-left-color: #dc3545; /* Red for Option A */
 }
@@ -131,7 +131,7 @@ label {
     border-left-color: #6f42c1; /* Purple for Option D */
 }
 
-/* ✅ Radio buttons styling */
+/*   Radio buttons styling */
 .d-flex {
     gap: 1rem;
     align-items: center;
@@ -163,7 +163,7 @@ label {
     margin: 0;
 }
 
-/* ✅ Select dropdown styling */
+/*   Select dropdown styling */
 .form-select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
@@ -174,7 +174,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-/* ✅ File upload styling */
+/*   File upload styling */
 input[type="file"] {
     cursor: pointer;
     padding: 0.5rem;
@@ -195,7 +195,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
     border-color: #adb5bd;
 }
 
-/* ✅ File preview styling */
+/*   File preview styling */
 .file-preview {
     padding: 0.75rem;
     background-color: #f8f9fa;
@@ -229,7 +229,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
     height: auto;
 }
 
-/* ✅ Audio player styling */
+/*   Audio player styling */
 audio {
     border-radius: 6px;
     outline: none;
@@ -239,7 +239,7 @@ audio:focus {
     box-shadow: 0 0 0 2px rgba(28, 117, 188, 0.25);
 }
 
-/* ✅ CKEditor styling */
+/*   CKEditor styling */
 .ckeditor-container {
     border: 1px solid #ced4da;
     border-radius: 8px;
@@ -280,7 +280,7 @@ audio:focus {
     line-height: 1.6;
 }
 
-/* ✅ Form inputs styling */
+/*   Form inputs styling */
 .form-control, .form-select {
     border-radius: 6px;
     padding: 0.75rem 1rem;
@@ -300,7 +300,7 @@ audio:focus {
     font-style: italic;
 }
 
-/* ✅ Error states */
+/*   Error states */
 .form-control.is-invalid, .form-select.is-invalid {
     border-color: #dc3545 !important;
     padding-right: calc(1.5em + 0.75rem);
@@ -319,7 +319,7 @@ audio:focus {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/* ✅ Responsive design */
+/*   Responsive design */
 @media (max-width: 768px) {
     .row {
         flex-direction: column;
@@ -352,7 +352,7 @@ audio:focus {
     }
 }
 
-/* ✅ Animation effects */
+/*   Animation effects */
 .form-group {
     animation: fadeInUp 0.3s ease forwards;
 }
@@ -404,7 +404,7 @@ audio:focus {
     }
 }
 
-/* ✅ Loading states */
+/*   Loading states */
 .form-control:disabled,
 .form-control[readonly] {
     background-color: #e9ecef;
@@ -415,7 +415,7 @@ audio:focus {
     opacity: 0.8;
 }
 
-/* ✅ Button styling */
+/*   Button styling */
 .btn-primary:focus,
 .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
@@ -426,7 +426,7 @@ audio:focus {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/* ✅ File validation states */
+/*   File validation states */
 input[type="file"].is-invalid {
     border-color: #dc3545;
 }

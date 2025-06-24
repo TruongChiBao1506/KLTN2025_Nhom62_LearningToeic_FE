@@ -77,7 +77,7 @@ const EditExam = ({ examId, retrieveExams, onClose }) => {
 
             console.log('📤 Sending update request to server...');
             await ExamService.update(examId, formData);
-            console.log('✅ Exam updated successfully');
+            console.log('  Exam updated successfully');
             
             retrieveExams();
 
@@ -138,7 +138,7 @@ const EditExam = ({ examId, retrieveExams, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateExam(formik.values);
     };

@@ -77,7 +77,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
             resetForm();
             setSelectedFile(null);
             
-            // ✅ Close modal
+            //   Close modal
             if (onClose) {
                 onClose();
             }

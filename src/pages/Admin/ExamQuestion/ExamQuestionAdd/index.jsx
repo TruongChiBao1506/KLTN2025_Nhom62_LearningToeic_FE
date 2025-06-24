@@ -102,7 +102,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 console.log(`📸 Uploading image ${index + 1}:`, imageFile.name);
                 try {
                     const imageResponse = await ExamQuestionService.uploadExamQuestionImages(imageFile);
-                    console.log(`✅ Image ${index + 1} uploaded:`, imageResponse);
+                    console.log(`  Image ${index + 1} uploaded:`, imageResponse);
                     return imageResponse;
                 } catch (error) {
                     console.error(`❌ Error uploading image ${index + 1}:`, error);
@@ -116,7 +116,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 console.log(`🔊 Uploading audio ${index + 1}:`, audioFile.name);
                 try {
                     const audioResponse = await ExamQuestionService.uploadExamQuestionAudios(audioFile);
-                    console.log(`✅ Audio ${index + 1} uploaded:`, audioResponse);
+                    console.log(`  Audio ${index + 1} uploaded:`, audioResponse);
                     return audioResponse;
                 } catch (error) {
                     console.error(`❌ Error uploading audio ${index + 1}:`, error);
@@ -130,7 +130,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 Promise.all(audioUploadPromises)
             ]);
 
-            console.log('✅ All uploads completed:', {
+            console.log('  All uploads completed:', {
                 images: imageResults.length,
                 audios: audioResults.length
             });
@@ -138,7 +138,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
             // Import Excel
             console.log('📋 Importing Excel file:', excelFile.name);
             const excelResponse = await ExamQuestionService.importTemplate(excelFile, examId);
-            console.log('✅ Excel import completed:', excelResponse);
+            console.log('  Excel import completed:', excelResponse);
 
             // Refresh data
             if (retrieveExamQuestions) {

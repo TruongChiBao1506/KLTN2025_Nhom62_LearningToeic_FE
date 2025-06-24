@@ -42,7 +42,7 @@ const LessonContent = () => {
             }
 
             const data = await LessonContentService.getLessonContentsByLesson(lessonId);
-            console.log('✅ Lesson contents loaded:', data);
+            console.log('  Lesson contents loaded:', data);
             setLessonContents(data);
         } catch (error) {
             console.error('❌ Error loading lesson contents:', error);

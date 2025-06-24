@@ -42,7 +42,7 @@ const AddExam = ({ retrieveExams, onClose }) => {
             
             console.log('📤 Sending request to server...');
             await ExamService.create(formData);
-            console.log('✅ Exam created successfully');
+            console.log('  Exam created successfully');
             
             retrieveExams();
             
@@ -109,7 +109,7 @@ const AddExam = ({ retrieveExams, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addExam(formik.values, formik.resetForm);
     };

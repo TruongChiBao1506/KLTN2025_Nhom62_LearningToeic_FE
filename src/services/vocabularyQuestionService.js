@@ -13,7 +13,7 @@ class VocabularyQuestionService {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('✅ Vocabulary question created:', response);
+            console.log('  Vocabulary question created:', response);
             return response;
         } catch (error) {
             console.error('❌ Error creating vocabulary question:', error);
@@ -35,7 +35,7 @@ class VocabularyQuestionService {
         try {
             console.log('🔍 Getting vocabulary question with ID:', id);
             const response = await axiosClient.get(`${this.baseUrl}/${id}`);
-            console.log('✅ Vocabulary question retrieved:', response);
+            console.log('  Vocabulary question retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting vocabulary question:', error);
@@ -51,7 +51,7 @@ class VocabularyQuestionService {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('✅ Vocabulary question updated:', response);
+            console.log('  Vocabulary question updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating vocabulary question:', error);
@@ -63,7 +63,7 @@ class VocabularyQuestionService {
         try {
             console.log('🗑️ Deleting vocabulary question:', id);
             const response = await axiosClient.delete(`${this.baseUrl}/${id}`);
-            console.log('✅ Vocabulary question deleted:', response);
+            console.log('  Vocabulary question deleted:', response);
             return response;
         } catch (error) {
             console.error('❌ Error deleting vocabulary question:', error);
@@ -75,7 +75,7 @@ class VocabularyQuestionService {
         try {
             console.log('🔍 Getting vocabulary questions for topic:', topicId);
             const response = await axiosClient.get(`${this.baseUrl}/by-topic/${topicId}`);
-            console.log('✅ Vocabulary questions retrieved:', response);
+            console.log('  Vocabulary questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting vocabulary questions by topic:', error);
@@ -94,7 +94,7 @@ class VocabularyQuestionService {
         try {
             console.log('🔍 Getting enabled vocabulary questions for topic:', topicId);
             const response = await axiosClient.get(`${this.baseUrl}/by-topic/${topicId}/enable`);
-            console.log('✅ Enabled vocabulary questions retrieved:', response);
+            console.log('  Enabled vocabulary questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting enabled vocabulary questions by topic:', error);
@@ -115,7 +115,7 @@ class VocabularyQuestionService {
             const response = await axiosClient.put(`${this.baseUrl}/${questionId}/status`, {
                 status: newStatus
             });
-            console.log('✅ Vocabulary question status updated:', response);
+            console.log('  Vocabulary question status updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating vocabulary question status:', error);
@@ -128,7 +128,7 @@ class VocabularyQuestionService {
         try {
             console.log('🔍 Searching vocabulary questions:', query);
             const response = await axiosClient.get(`${this.baseUrl}/search?q=${encodeURIComponent(query)}`);
-            console.log('✅ Search results:', response);
+            console.log('  Search results:', response);
             return response;
         } catch (error) {
             console.error('❌ Error searching vocabulary questions:', error);
@@ -147,7 +147,7 @@ class VocabularyQuestionService {
         try {
             console.log('📊 Getting vocabulary question statistics for topic:', topicId);
             const response = await axiosClient.get(`${this.baseUrl}/statistics/${topicId}`);
-            console.log('✅ Statistics retrieved:', response);
+            console.log('  Statistics retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting vocabulary question statistics:', error);
@@ -178,7 +178,7 @@ class VocabularyQuestionService {
                 questionIds,
                 status: newStatus
             });
-            console.log('✅ Bulk status update completed:', response);
+            console.log('  Bulk status update completed:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk updating vocabulary question status:', error);
@@ -192,7 +192,7 @@ class VocabularyQuestionService {
             const response = await axiosClient.post(`${this.baseUrl}/${questionId}/duplicate`, {
                 targetTopicId
             });
-            console.log('✅ Vocabulary question duplicated:', response);
+            console.log('  Vocabulary question duplicated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error duplicating vocabulary question:', error);
@@ -222,7 +222,7 @@ class VocabularyQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Template exported successfully');
+            console.log('  Template exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting template:', error);
@@ -242,7 +242,7 @@ class VocabularyQuestionService {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log('✅ Questions imported successfully:', response);
+            console.log('  Questions imported successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error importing template:', error);
@@ -272,7 +272,7 @@ class VocabularyQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Questions exported successfully');
+            console.log('  Questions exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting questions by topic:', error);
@@ -295,7 +295,7 @@ class VocabularyQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Bulk import completed:', response);
+            console.log('  Bulk import completed:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk importing vocabulary questions:', error);
@@ -307,7 +307,7 @@ class VocabularyQuestionService {
         try {
             console.log('🔍 Getting vocabulary questions by difficulty:', difficulty, 'for topic:', topicId);
             const response = await axiosClient.get(`${this.baseUrl}/by-topic/${topicId}/difficulty/${difficulty}`);
-            console.log('✅ Questions by difficulty retrieved:', response);
+            console.log('  Questions by difficulty retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting questions by difficulty:', error);
@@ -326,7 +326,7 @@ class VocabularyQuestionService {
         try {
             console.log('🎲 Getting random vocabulary questions for topic:', topicId, 'limit:', limit);
             const response = await axiosClient.get(`${this.baseUrl}/by-topic/${topicId}/random?limit=${limit}`);
-            console.log('✅ Random questions retrieved:', response);
+            console.log('  Random questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting random questions:', error);
@@ -343,9 +343,9 @@ class VocabularyQuestionService {
 
     async validateQuestion(questionData) {
         try {
-            console.log('✅ Validating vocabulary question data:', questionData);
+            console.log('  Validating vocabulary question data:', questionData);
             const response = await axiosClient.post(`${this.baseUrl}/validate`, questionData);
-            console.log('✅ Question validation completed:', response);
+            console.log('  Question validation completed:', response);
             return response;
         } catch (error) {
             console.error('❌ Error validating question:', error);

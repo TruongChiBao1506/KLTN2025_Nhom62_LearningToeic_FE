@@ -1,4 +1,4 @@
-// ✅ Create src/components/Admin/ScoreTableEdit/index.jsx
+//   Create src/components/Admin/ScoreTableEdit/index.jsx
 import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -12,7 +12,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
     const [tableScore, setTableScore] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // ✅ Validation schema
+    //   Validation schema
     const tableScoreFormSchema = Yup.object().shape({
         score: Yup
             .string()
@@ -20,7 +20,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
             .matches(/^\d+$/, "Điểm phải là số nguyên dương")
     });
 
-    // ✅ Formik form handling
+    //   Formik form handling
     const formik = useFormik({
         initialValues: {
             score: ''
@@ -31,7 +31,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
         }
     });
 
-    // ✅ Get score data
+    //   Get score data
     const getScore = async () => {
         try {
             setIsLoading(true);
@@ -42,7 +42,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
             
             setTableScore(data);
             
-            // ✅ Set form values
+            //   Set form values
             formik.setValues({
                 score: data.score || ''
             });
@@ -57,25 +57,25 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
         }
     };
 
-    // ✅ Update score
+    //   Update score
     const updateScore = async (values) => {
         try {
             setIsLoading(true);
             console.log('Updating score:', values.score);
             
-            // ✅ Create JSON data (not FormData like Vue version)
+            //   Create JSON data (not FormData like Vue version)
             const scoreData = {
                 score: parseInt(values.score, 10) // Convert to number
             };
             
             await ScoreTableService.update(scoreTableId, scoreData);
             
-            // ✅ Refresh score list
+            //   Refresh score list
             if (getTableScores) {
                 getTableScores();
             }
             
-            // ✅ Close modal
+            //   Close modal
             if (onClose) {
                 onClose();
             }
@@ -106,7 +106,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
         }
     };
 
-    // ✅ Load score data on component mount
+    //   Load score data on component mount
     useEffect(() => {
         if (scoreTableId) {
             getScore();

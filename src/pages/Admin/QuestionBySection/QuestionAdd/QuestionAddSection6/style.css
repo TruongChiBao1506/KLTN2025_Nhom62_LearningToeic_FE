@@ -66,7 +66,7 @@ label {
     display: inline-block;
 }
 
-/* ✅ Part 6 specific styling với sophisticated gradient theme */
+/*   Part 6 specific styling với sophisticated gradient theme */
 .row {
     margin-left: -0.5rem;
     margin-right: -0.5rem;
@@ -77,7 +77,7 @@ label {
     padding-right: 0.5rem;
 }
 
-/* ✅ Group Passage styling với Part 6 sophisticated theme */
+/*   Group Passage styling với Part 6 sophisticated theme */
 .modal-body > .form-group:first-child {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem;
@@ -117,7 +117,7 @@ label {
     z-index: 1;
 }
 
-/* ✅ CKEditor styling cho Part 6 */
+/*   CKEditor styling cho Part 6 */
 .ckeditor-container {
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 12px;
@@ -166,7 +166,7 @@ label {
     line-height: 1.6;
 }
 
-/* ✅ HR styling với Part 6 theme */
+/*   HR styling với Part 6 theme */
 hr {
     border: none;
     height: 6px;
@@ -191,7 +191,7 @@ hr::after {
     filter: blur(4px);
 }
 
-/* ✅ Question cards styling với Part 6 sophisticated theme */
+/*   Question cards styling với Part 6 sophisticated theme */
 .col-md-6 .form-group {
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     padding: 1.25rem;
@@ -232,7 +232,7 @@ hr::after {
     font-size: 15px;
 }
 
-/* ✅ Question numbering với different gradient themes cho Part 6 */
+/*   Question numbering với different gradient themes cho Part 6 */
 .question-column-0 .form-group::before {
     background: linear-gradient(to right, #667eea, #764ba2); /* Purple gradient for Question 1 */
 }
@@ -273,7 +273,7 @@ hr::after {
     background: rgba(67, 233, 123, 0.05);
 }
 
-/* ✅ Focus states for different questions */
+/*   Focus states for different questions */
 .question-column-0 input:focus,
 .question-column-0 select:focus {
     border-color: #667eea;
@@ -298,7 +298,7 @@ hr::after {
     box-shadow: 0 0 0 0.2rem rgba(67, 233, 123, 0.25);
 }
 
-/* ✅ Radio buttons styling cho Part 6 */
+/*   Radio buttons styling cho Part 6 */
 .form-check-inline {
     display: inline-flex;
     align-items: center;
@@ -346,7 +346,7 @@ hr::after {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ Select dropdown styling cho Part 6 */
+/*   Select dropdown styling cho Part 6 */
 .form-select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
@@ -372,7 +372,7 @@ hr::after {
     font-weight: 600;
 }
 
-/* ✅ Form inputs styling cho Part 6 */
+/*   Form inputs styling cho Part 6 */
 .form-control, .form-select {
     border-radius: 8px;
     padding: 0.75rem 1rem;
@@ -394,7 +394,7 @@ hr::after {
     font-style: italic;
 }
 
-/* ✅ Error states */
+/*   Error states */
 .form-control.is-invalid, .form-select.is-invalid {
     border-color: #dc3545 !important;
     background-color: rgba(220, 53, 69, 0.05);
@@ -419,7 +419,7 @@ hr::after {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/* ✅ Responsive design */
+/*   Responsive design */
 @media (max-width: 992px) {
     .col-md-6 {
         flex: 0 0 100%;
@@ -453,7 +453,7 @@ hr::after {
     }
 }
 
-/* ✅ Animation effects */
+/*   Animation effects */
 .form-group {
     animation: fadeInUp 0.4s ease forwards;
 }
@@ -489,7 +489,7 @@ hr::after {
     }
 }
 
-/* ✅ Loading states */
+/*   Loading states */
 .form-control:disabled,
 .form-control[readonly] {
     background-color: #e9ecef;
@@ -500,7 +500,7 @@ hr::after {
     opacity: 0.8;
 }
 
-/* ✅ Button styling */
+/*   Button styling */
 .btn-primary:focus,
 .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
@@ -511,14 +511,14 @@ hr::after {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/* ✅ Part 6 specific question type styling */
+/*   Part 6 specific question type styling */
 .form-select option[value*="Part 6"] {
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
     color: #2c3e50;
     font-weight: 700;
 }
 
-/* ✅ Enhanced sophisticated look */
+/*   Enhanced sophisticated look */
 .col-md-6 .form-group:nth-child(even) {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
@@ -527,7 +527,7 @@ hr::after {
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 }
 
-/* ✅ Sophisticated scrollbars */
+/*   Sophisticated scrollbars */
 .ck-editor__editable::-webkit-scrollbar {
     width: 8px;
 }
@@ -545,18 +545,18 @@ hr::after {
     background: rgba(102, 126, 234, 0.6);
 }
 
-/* ✅ Glassmorphism effects */
+/*   Glassmorphism effects */
 .modal-body > .form-group:first-child {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
 
-/* ✅ Enhanced hover effects */
+/*   Enhanced hover effects */
 .col-md-6:hover .form-group {
     box-shadow: 0 12px 40px rgba(102, 126, 234, 0.1);
 }
 
-/* ✅ Special styling for explanation fields */
+/*   Special styling for explanation fields */
 .form-group:last-child {
     border: 2px dashed #e9ecef;
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);

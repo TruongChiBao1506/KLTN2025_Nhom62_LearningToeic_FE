@@ -80,7 +80,7 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
             console.log('📤 JSON data to send:', questionData);
 
             await GrammarQuestionService.create(questionData);
-            console.log('✅ Grammar question created successfully');
+            console.log('  Grammar question created successfully');
 
             retrieveGrammarQuestions();
 

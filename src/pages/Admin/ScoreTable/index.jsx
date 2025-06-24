@@ -11,7 +11,7 @@ import './style.css';
 const ScoreTable = () => {
     const [tableScores, setTableScores] = useState([]);
     const [showListeningScore, setShowListeningScore] = useState(true);
-    const [isLoading, setIsLoading] = useState(true); // ✅ Add loading state
+    const [isLoading, setIsLoading] = useState(true); //   Add loading state
 
     // Set document title
     useEffect(() => {

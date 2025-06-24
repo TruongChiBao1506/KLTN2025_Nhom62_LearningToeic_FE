@@ -80,7 +80,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
             // Clear validation errors
             formik.setFieldError('image', undefined);
 
-            console.log('✅ File set to formik:', file);
+            console.log('  File set to formik:', file);
         } else {
             setSelectedFile(null);
             formik.setFieldValue('image', null);
@@ -103,7 +103,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
 
             console.log('📤 Sending request to server...');
             await TopicService.create(formData);
-            console.log('✅ Topic created successfully');
+            console.log('  Topic created successfully');
 
             retrieveTopics();
 
@@ -191,7 +191,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
                 // Clear validation errors
                 formik.setFieldError('image', undefined);
 
-                console.log('✅ File set to formik:', file);
+                console.log('  File set to formik:', file);
             } else {
                 setSelectedFile(null);
                 formik.setFieldValue('image', null);
@@ -209,7 +209,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addTopic(formik.values, formik.resetForm);
     };

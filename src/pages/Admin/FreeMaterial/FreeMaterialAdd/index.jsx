@@ -83,7 +83,7 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
             // Clear validation errors
             formik.setFieldError('filePdf', undefined);
 
-            console.log('✅ File set to formik:', filePdf);
+            console.log('  File set to formik:', filePdf);
         } else {
             setSelectedFile(null);
             formik.setFieldValue('filePdf', null);
@@ -107,7 +107,7 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
 
             console.log('📤 Sending request to server...');
             await FreeMaterialService.create(formData);
-            console.log('✅ Free Material created successfully');
+            console.log('  Free Material created successfully');
 
             retrieveFreeMaterials();
 
@@ -188,7 +188,7 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addFreeMaterial(formik.values, formik.resetForm);
     };

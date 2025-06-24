@@ -107,8 +107,8 @@ const ExamQuestion = () => {
                         _original: question
                     }));
 
-                    console.log('✅ Mapped questions sample:', mappedQuestions[0]);
-                    console.log('✅ Question part value:', mappedQuestions[0]?.questionPart);
+                    console.log('  Mapped questions sample:', mappedQuestions[0]);
+                    console.log('  Question part value:', mappedQuestions[0]?.questionPart);
 
                     setExamQuestions(mappedQuestions);
                     setPagination({
@@ -166,7 +166,7 @@ const ExamQuestion = () => {
                         _original: question
                     }));
 
-                    console.log('✅ Direct array mapped questions:', mappedQuestions[0]);
+                    console.log('  Direct array mapped questions:', mappedQuestions[0]);
 
                     setExamQuestions(mappedQuestions);
                     setPagination({

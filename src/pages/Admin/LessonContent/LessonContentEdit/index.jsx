@@ -58,7 +58,7 @@ const EditLessonContent = ({ lessonContentId, lessonId, retrieveLessonContents, 
                 content: data.content || ''
             });
 
-            console.log('✅ Lesson content loaded successfully');
+            console.log('  Lesson content loaded successfully');
         } catch (error) {
             console.log('❌ Error loading lesson content:', error);
             toast.error('Lỗi khi tải dữ liệu lesson content', {
@@ -109,7 +109,7 @@ const EditLessonContent = ({ lessonContentId, lessonId, retrieveLessonContents, 
 
             console.log('📤 Sending update request to server...');
             await LessonContentService.update(lessonContentId, updateData);
-            console.log('✅ Lesson content updated successfully');
+            console.log('  Lesson content updated successfully');
             
             retrieveLessonContents();
 
@@ -176,7 +176,7 @@ const EditLessonContent = ({ lessonContentId, lessonId, retrieveLessonContents, 
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateLessonContent(formik.values);
     };

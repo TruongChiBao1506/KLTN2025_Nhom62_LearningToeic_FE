@@ -17,7 +17,7 @@ class GrammarQuestionService {
             };
             
             const response = await axiosClient.post(`${this.baseUrl}`, data, { headers });
-            console.log('✅ Grammar question created:', response);
+            console.log('  Grammar question created:', response);
             return response;
         } catch (error) {
             console.error('❌ Error creating grammar question:', error);
@@ -29,7 +29,7 @@ class GrammarQuestionService {
         try {
             console.log('🔍 Getting all grammar questions');
             const response = await axiosClient.get(`${this.baseUrl}`);
-            console.log('✅ All grammar questions retrieved:', response);
+            console.log('  All grammar questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting all grammar questions:', error);
@@ -41,7 +41,7 @@ class GrammarQuestionService {
         try {
             console.log('🔍 Getting grammar question with ID:', id);
             const response = await axiosClient.get(`${this.baseUrl}/${id}`);
-            console.log('✅ Grammar question retrieved:', response);
+            console.log('  Grammar question retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting grammar question:', error);
@@ -62,7 +62,7 @@ class GrammarQuestionService {
             };
             
             const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, { headers });
-            console.log('✅ Grammar question updated:', response);
+            console.log('  Grammar question updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating grammar question:', error);
@@ -74,7 +74,7 @@ class GrammarQuestionService {
         try {
             console.log('🗑️ Deleting grammar question:', id);
             const response = await axiosClient.delete(`${this.baseUrl}/${id}`);
-            console.log('✅ Grammar question deleted:', response);
+            console.log('  Grammar question deleted:', response);
             return response;
         } catch (error) {
             console.error('❌ Error deleting grammar question:', error);
@@ -86,7 +86,7 @@ class GrammarQuestionService {
         try {
             console.log('🔍 Getting grammar questions for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}`);
-            console.log('✅ Grammar questions retrieved:', response);
+            console.log('  Grammar questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting grammar questions by grammar:', error);
@@ -105,7 +105,7 @@ class GrammarQuestionService {
         try {
             console.log('🔍 Getting enabled grammar questions for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}/enable`);
-            console.log('✅ Enabled grammar questions retrieved:', response);
+            console.log('  Enabled grammar questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting enabled grammar questions by grammar:', error);
@@ -126,7 +126,7 @@ class GrammarQuestionService {
             const response = await axiosClient.put(`${this.baseUrl}/${questionId}/status`, {
                 status: newStatus
             });
-            console.log('✅ Grammar question status updated:', response);
+            console.log('  Grammar question status updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating grammar question status:', error);
@@ -134,12 +134,12 @@ class GrammarQuestionService {
         }
     }
 
-    // ✅ Additional useful methods for enhanced functionality
+    //   Additional useful methods for enhanced functionality
     async search(query) {
         try {
             console.log('🔍 Searching grammar questions:', query);
             const response = await axiosClient.get(`${this.baseUrl}/search?q=${encodeURIComponent(query)}`);
-            console.log('✅ Search results:', response);
+            console.log('  Search results:', response);
             return response;
         } catch (error) {
             console.error('❌ Error searching grammar questions:', error);
@@ -173,7 +173,7 @@ class GrammarQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Template exported successfully');
+            console.log('  Template exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting template:', error);
@@ -201,7 +201,7 @@ class GrammarQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Questions exported successfully');
+            console.log('  Questions exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting questions by grammar:', error);
@@ -227,7 +227,7 @@ class GrammarQuestionService {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log('✅ Questions imported successfully:', response);
+            console.log('  Questions imported successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error importing template:', error);
@@ -241,7 +241,7 @@ class GrammarQuestionService {
             const response = await axiosClient.delete(`${this.baseUrl}/bulk-delete`, {
                 data: { grammarQuestionIds }
             });
-            console.log('✅ Bulk delete successful:', response);
+            console.log('  Bulk delete successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk deleting:', error);
@@ -256,7 +256,7 @@ class GrammarQuestionService {
                 grammarQuestionIds,
                 status: newStatus
             });
-            console.log('✅ Bulk status update successful:', response);
+            console.log('  Bulk status update successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk updating status:', error);
@@ -268,7 +268,7 @@ class GrammarQuestionService {
         try {
             console.log('📊 Getting statistics for grammar:', grammarId);
             const response = await axiosClient.get(`${this.baseUrl}/statistics/${grammarId}`);
-            console.log('✅ Statistics retrieved:', response);
+            console.log('  Statistics retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting statistics:', error);
@@ -278,9 +278,9 @@ class GrammarQuestionService {
 
     async validateQuestion(questionData) {
         try {
-            console.log('✅ Validating grammar question');
+            console.log('  Validating grammar question');
             const response = await axiosClient.post(`${this.baseUrl}/validate`, questionData);
-            console.log('✅ Question validation successful:', response);
+            console.log('  Question validation successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error validating question:', error);
@@ -292,7 +292,7 @@ class GrammarQuestionService {
         try {
             console.log('🔍 Getting questions by difficulty:', grammarId, difficulty);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}/difficulty/${difficulty}`);
-            console.log('✅ Questions by difficulty retrieved:', response);
+            console.log('  Questions by difficulty retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting questions by difficulty:', error);
@@ -310,7 +310,7 @@ class GrammarQuestionService {
         try {
             console.log('📋 Duplicating grammar question:', questionId);
             const response = await axiosClient.post(`${this.baseUrl}/${questionId}/duplicate`);
-            console.log('✅ Question duplicated successfully:', response);
+            console.log('  Question duplicated successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error duplicating question:', error);
@@ -322,7 +322,7 @@ class GrammarQuestionService {
         try {
             console.log('🎲 Getting random questions for grammar:', grammarId, 'count:', count);
             const response = await axiosClient.get(`${this.baseUrl}/by-grammar/${grammarId}/random?count=${count}`);
-            console.log('✅ Random questions retrieved:', response);
+            console.log('  Random questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting random questions:', error);

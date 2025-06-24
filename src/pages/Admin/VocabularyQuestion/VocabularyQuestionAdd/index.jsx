@@ -120,7 +120,7 @@ const VocabularyQuestionAdd = ({ topicId, retrieveVocabularyQuestions, onClose }
             console.log('JSON Payload:', JSON.stringify(payload, null, 2));
 
             await VocabularyQuestionService.create(payload);
-            console.log('✅ Vocabulary question created successfully');
+            console.log('  Vocabulary question created successfully');
 
             retrieveVocabularyQuestions();
 
@@ -198,7 +198,7 @@ const VocabularyQuestionAdd = ({ topicId, retrieveVocabularyQuestions, onClose }
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addVocabularyQuestion(formik.values, formik.resetForm);
     };

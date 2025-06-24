@@ -41,7 +41,7 @@ const EditorOptimized = ({
                 if (isMounted) {
                     setCKEditor(() => ckEditorModule.CKEditor);
                     setClassicEditor(() => classicEditorModule.default);
-                    console.log('✅ CKEditor loaded successfully');
+                    console.log('  CKEditor loaded successfully');
                 }
             } catch (error) {
                 console.error('❌ Error loading CKEditor:', error);

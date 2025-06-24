@@ -38,7 +38,7 @@ const TestAdd = ({ sectionId, retrieveTests, onClose }) => {
 
             console.log('📤 Sending request to server...');
             await TestService.create(sectionId, testData);
-            console.log('✅ Test created successfully');
+            console.log('  Test created successfully');
             
             retrieveTests();
             
@@ -103,7 +103,7 @@ const TestAdd = ({ sectionId, retrieveTests, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addTest(formik.values, formik.resetForm);
     };

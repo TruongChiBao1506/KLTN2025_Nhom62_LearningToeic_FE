@@ -52,7 +52,7 @@ const GrammarContentAdd = ({ grammarId, retrieveGrammarContents, onClose }) => {
             console.log('JSON Payload:', JSON.stringify(payload, null, 2));
 
             await GrammarContentService.create(payload);
-            console.log('✅ Grammar content created successfully');
+            console.log('  Grammar content created successfully');
             
             retrieveGrammarContents();
             

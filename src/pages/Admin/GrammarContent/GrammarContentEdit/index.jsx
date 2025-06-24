@@ -45,7 +45,7 @@ const GrammarContentEdit = ({ grammarContentId, grammarId, retrieveGrammarConten
             console.log('🔍 Getting grammar content with ID:', grammarContentId);
             
             const data = await GrammarContentService.get(grammarContentId);
-            console.log('✅ Grammar content retrieved:', data);
+            console.log('  Grammar content retrieved:', data);
             
             setGrammarContent(data);
             
@@ -87,7 +87,7 @@ const GrammarContentEdit = ({ grammarContentId, grammarId, retrieveGrammarConten
             console.log('JSON Payload:', JSON.stringify(payload, null, 2));
 
             await GrammarContentService.update(grammarContentId, payload);
-            console.log('✅ Grammar content updated successfully');
+            console.log('  Grammar content updated successfully');
             
             retrieveGrammarContents();
             

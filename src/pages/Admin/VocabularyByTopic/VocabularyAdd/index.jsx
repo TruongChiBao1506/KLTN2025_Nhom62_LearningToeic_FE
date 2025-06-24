@@ -125,7 +125,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
             }
 
             await VocabularyService.create(formData);
-            console.log('✅ Vocabulary created successfully');
+            console.log('  Vocabulary created successfully');
             
             retrieveVocabularies();
             
@@ -212,7 +212,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addVocabulary(formik.values, formik.resetForm);
     };

@@ -1,167 +1,611 @@
-.custom-list-item.active {
-    background-color: #1c75bc;
-    color: white;
-    border-left: 5px solid #139896;
-}
+/*   Complete Updated AdminSidebar CSS với #1c75bc theme */
 
+/*   Liquid Glass Menu Item Base Styling */
 .custom-list-item {
-    font-family: "Roboto", sans-serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: #333;
-    background-color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px 0;
+    font-family: "Inter", "Roboto", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(74, 85, 104, 0.9);
+
+    /*   Liquid Glass Effect */
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 25%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.05) 75%,
+            rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin: 4px 12px;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+    overflow: hidden;
+
+    /*   Liquid Animation */
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+
+    /*  Glass Shadow */
+    box-shadow:
+        0 8px 32px rgba(31, 38, 135, 0.37),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 
+/*   Liquid Glass Ripple Effect */
+.custom-list-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center,
+            rgba(28, 117, 188, 0.3) 0%,
+            rgba(28, 117, 188, 0.1) 30%,
+            transparent 70%);
+    transform: scale(0);
+    opacity: 0;
+    border-radius: 50%;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/*   Icon Container - Liquid Glass */
+.menu-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
+    border-radius: 12px;
+    position: relative;
+    z-index: 2;
+
+    /*   Mini Glass Effect */
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/*   Icon Styling */
+.menu-icon-container .fa-icon {
+    color: rgba(107, 114, 128, 0.8);
+    font-size: 14px;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/*   Menu Text - Liquid Style */
+.menu-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/*   Chevron - Liquid Glass */
+.menu-chevron {
+    opacity: 0;
+    transform: translateX(-15px) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/*   HOVER STATE - Liquid Glass Activation với #1c75bc */
 .custom-list-item:hover {
-    background-color: #1c75bc;
+    /* 🎨 Enhanced Glass Effect với #1c75bc đậm hơn */
+    background: linear-gradient(135deg,
+            rgba(28, 117, 188, 0.25) 0%,
+            rgba(28, 117, 188, 0.18) 25%,
+            rgba(28, 117, 188, 0.22) 50%,
+            rgba(28, 117, 188, 0.18) 75%,
+            rgba(28, 117, 188, 0.25) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(28, 117, 188, 0.5);
+
+    /* 🌊 Liquid Transform */
+    transform: translateY(-4px) translateX(6px) scale(1.02);
+
+    /* 🌟 Enhanced Glow với #1c75bc đậm hơn */
+    box-shadow:
+        0 20px 40px rgba(28, 117, 188, 0.35),
+        0 8px 16px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+        0 0 60px rgba(28, 117, 188, 0.3);
+}
+
+.custom-list-item:hover::before {
+    transform: scale(1.2);
+    opacity: 1;
+    background: radial-gradient(circle at center,
+            rgba(28, 117, 188, 0.4) 0%,
+            rgba(28, 117, 188, 0.2) 30%,
+            transparent 70%);
+}
+
+.custom-list-item:hover .menu-icon-container {
+    background: linear-gradient(135deg,
+            rgba(28, 117, 188, 0.5) 0%,
+            rgba(28, 117, 188, 0.3) 100%);
+    backdrop-filter: blur(15px);
+    transform: scale(1.1) rotate(5deg);
+    border-color: rgba(28, 117, 188, 0.4);
+    box-shadow:
+        0 8px 25px rgba(28, 117, 188, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.custom-list-item:hover .menu-icon-container .fa-icon {
+    color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+
+.custom-list-item:hover .menu-text {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-list-item:hover .menu-chevron {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/*   ACTIVE STATE - Liquid Glass Selected với #1c75bc */
+.custom-list-item.active {
+    /* 🎨 Vibrant Glass Effect với #1c75bc đậm hơn */
+    background: linear-gradient(135deg,
+            rgba(28, 117, 188, 0.4) 0%,
+            rgba(28, 117, 188, 0.32) 25%,
+            rgba(28, 117, 188, 0.45) 50%,
+            rgba(28, 117, 188, 0.32) 75%,
+            rgba(28, 117, 188, 0.4) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    color: rgba(255, 255, 255, 1);
+    border: 2px solid rgba(28, 117, 188, 0.6);
+    border-left: 6px solid rgba(28, 117, 188, 1);
+
+    /* 🌊 Active Transform */
+    transform: translateX(8px) scale(1.02);
+
+    /* 🌟 Intense Glow với #1c75bc đậm hơn */
+    box-shadow:
+        0 25px 50px rgba(28, 117, 188, 0.5),
+        0 10px 20px rgba(28, 117, 188, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.15),
+        0 0 80px rgba(28, 117, 188, 0.5);
+
+    /* 🌊 Liquid Pulse Animation với #1c75bc đậm hơn */
+    animation: liquidPulse 3s ease-in-out infinite;
+}
+
+/*   Updated Pulse Animation với #1c75bc */
+@keyframes liquidPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 25px 50px rgba(28, 117, 188, 0.5),
+            0 10px 20px rgba(28, 117, 188, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 80px rgba(28, 117, 188, 0.5);
+    }
+
+    50% {
+        box-shadow:
+            0 30px 60px rgba(28, 117, 188, 0.6),
+            0 15px 30px rgba(28, 117, 188, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 0 100px rgba(28, 117, 188, 0.6);
+    }
+}
+
+.custom-list-item.active .menu-icon-container {
+    background: linear-gradient(135deg,
+            rgba(28, 117, 188, 0.7) 0%,
+            rgba(28, 117, 188, 0.5) 100%);
+    backdrop-filter: blur(20px);
+    transform: scale(1.15);
+    border: 1px solid rgba(28, 117, 188, 0.6);
+    box-shadow:
+        0 10px 30px rgba(28, 117, 188, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.custom-list-item.active .menu-icon-container .fa-icon {
+    color: rgba(255, 255, 255, 1);
+    transform: scale(1.2);
+}
+
+.custom-list-item.active .menu-text {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.custom-list-item.active .menu-chevron {
+    opacity: 1;
+    transform: translateX(2px) scale(1.1);
+    color: rgba(28, 117, 188, 1);
+}
+
+/*   Badge - Liquid Glass Style với #1c75bc theme */
+.menu-badge {
+    background: linear-gradient(135deg,
+            rgba(28, 117, 188, 0.9) 0%,
+            rgba(28, 117, 188, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: 8px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    box-shadow:
+        0 4px 15px rgba(28, 117, 188, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.custom-icon {
-    margin-right: 10px;
+.custom-list-item:hover .menu-badge {
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(240, 249, 255, 0.9) 100%);
+    color: rgba(28, 117, 188, 1);
+    transform: scale(1.1);
+    box-shadow:
+        0 6px 20px rgba(28, 117, 188, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Sidebar toggle styles */
-#sidebar-wrapper {
-    transition: margin-left 0.25s ease-out;
-    margin-left: -15rem;
-    min-height: 100vh;
-    width: 15rem;
+/*   Focus State - Liquid Glass với #1c75bc */
+.custom-list-item:focus {
+    outline: none;
+    border-color: rgba(28, 117, 188, 0.7);
+    box-shadow:
+        0 0 0 4px rgba(28, 117, 188, 0.25),
+        0 15px 35px rgba(28, 117, 188, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-#sidebar-wrapper.active {
-    margin-left: 0;
+/*   Click Animation - Liquid Ripple với #1c75bc */
+.custom-list-item:active {
+    transform: translateY(-2px) translateX(4px) scale(0.98);
+    transition: all 0.1s ease;
 }
 
-/* Responsive styles */
-@media (min-width: 768px) {
-    #sidebar-wrapper {
-        margin-left: 0;
-    }
-
-    #sidebar-wrapper.active {
-        margin-left: -15rem;
-    }
-}
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.custom-list-item:active::before {
+    transform: scale(1.5);
+    opacity: 0.8;
+    transition: all 0.1s ease;
+    background: radial-gradient(circle at center,
+            rgba(28, 117, 188, 0.5) 0%,
+            rgba(28, 117, 188, 0.3) 30%,
+            transparent 70%);
 }
 
-@keyframes pulse {
-    0%, 100% { 
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% { 
-        transform: scale(1.05);
-        opacity: 0.7;
-    }
+.custom-list-item.active.variant-intense {
+    background: linear-gradient(135deg,
+        rgba(28, 117, 188, 0.5) 0%,
+        rgba(28, 117, 188, 0.4) 25%,
+        rgba(28, 117, 188, 0.55) 50%,
+        rgba(28, 117, 188, 0.4) 75%,
+        rgba(28, 117, 188, 0.5) 100%
+    );
+}
+.custom-list-item:hover.variant-intense {
+    background: linear-gradient(135deg,
+        rgba(28, 117, 188, 0.3) 0%,
+        rgba(28, 117, 188, 0.22) 25%,
+        rgba(28, 117, 188, 0.28) 50%,
+        rgba(28, 117, 188, 0.22) 75%,
+        rgba(28, 117, 188, 0.3) 100%
+    );
 }
 
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-}
-
-/* Logo hover effects */
-.logo-header-container:hover {
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
-}
-
-.logo-header-glass:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transition: all 0.3s ease;
-}
-
-/* Responsive adjustments */
+/*   Responsive Liquid Glass */
 @media (max-width: 768px) {
-    .logo-header-container,
-    .logo-header-glass,
-    .logo-minimalist {
-        padding: 15px !important;
-        margin-bottom: 20px !important;
+    .custom-list-item {
+        padding: 14px 18px;
+        margin: 6px 10px;
+        border-radius: 14px;
+        backdrop-filter: blur(8px);
     }
-    
-    .logo-header-container img,
-    .logo-header-glass img,
-    .logo-minimalist img {
-        width: 60px !important;
-        height: 60px !important;
+
+    .menu-icon-container {
+        width: 28px;
+        height: 28px;
+        margin-right: 14px;
+        border-radius: 10px;
     }
-}
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+
+    .menu-icon-container .fa-icon {
+        font-size: 12px;
+    }
+
+    .menu-text {
+        font-size: 13px;
+    }
+
+    /*  Responsive hover effects */
+    .custom-list-item:hover {
+        background: linear-gradient(135deg,
+                rgba(28, 117, 188, 0.22) 0%,
+                rgba(28, 117, 188, 0.16) 25%,
+                rgba(28, 117, 188, 0.20) 50%,
+                rgba(28, 117, 188, 0.16) 75%,
+                rgba(28, 117, 188, 0.22) 100%);
+        box-shadow:
+            0 15px 30px rgba(28, 117, 188, 0.3),
+            0 6px 12px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .custom-list-item.active {
+        background: linear-gradient(135deg,
+                rgba(28, 117, 188, 0.37) 0%,
+                rgba(28, 117, 188, 0.30) 25%,
+                rgba(28, 117, 188, 0.42) 50%,
+                rgba(28, 117, 188, 0.30) 75%,
+                rgba(28, 117, 188, 0.37) 100%);
+        box-shadow:
+            0 20px 40px rgba(28, 117, 188, 0.4),
+            0 8px 16px rgba(28, 117, 188, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 }
 
-@keyframes pulse {
-    0%, 100% { 
-        transform: scale(1);
+/*   Dark Theme Liquid Glass với #1c75bc */
+@media (prefers-color-scheme: dark) {
+    .custom-list-item {
+        background: linear-gradient(135deg,
+                rgba(255, 254, 254, 0.6) 0%,
+                rgba(245, 244, 244, 0.4) 100%);
+        border-color: rgba(75, 85, 99, 0.3);
+    }
+
+    .menu-icon-container {
+        background: linear-gradient(135deg,
+                rgba(75, 85, 99, 0.4) 0%,
+                rgba(55, 65, 81, 0.3) 100%);
+        border-color: rgba(156, 163, 175, 0.2);
+    }
+
+    .menu-icon-container .fa-icon {
+        color: rgba(156, 163, 175, 0.8);
+    }
+
+    /* Dark theme hover với #1c75bc */
+    .custom-list-item:hover {
+        background: linear-gradient(135deg,
+                rgba(28, 117, 188, 0.25) 0%,
+                rgba(28, 117, 188, 0.20) 50%,
+                rgba(28, 117, 188, 0.25) 100%);
+    }
+
+    .custom-list-item.active {
+        background: linear-gradient(135deg,
+                rgba(28, 117, 188, 0.4) 0%,
+                rgba(28, 117, 188, 0.35) 50%,
+                rgba(28, 117, 188, 0.4) 100%);
+    }
+}
+
+/*   Loading State - Liquid Glass với #1c75bc */
+.custom-list-item.loading {
+    pointer-events: none;
+    opacity: 0.8;
+    backdrop-filter: blur(5px);
+}
+
+.custom-list-item.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(28, 117, 188, 0.3),
+            transparent);
+    animation: liquidShimmer 2s ease-in-out infinite;
+    opacity: 1;
+    z-index: 3;
+}
+
+@keyframes liquidShimmer {
+    0% {
+        transform: translateX(-100%) scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
         opacity: 1;
+        transform: translateX(0%) scale(1);
     }
-    50% { 
-        transform: scale(1.05);
-        opacity: 0.7;
+
+    100% {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
     }
 }
 
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
+/*   Liquid Glass Glow Keyframes với #1c75bc */
+@keyframes liquidGlow {
 
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-}
-
-/* Logo hover effects */
-.logo-header-container:hover {
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
-}
-
-.logo-header-glass:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transition: all 0.3s ease;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .logo-header-container,
-    .logo-header-glass,
-    .logo-minimalist {
-        padding: 15px !important;
-        margin-bottom: 20px !important;
+    0%,
+    100% {
+        box-shadow:
+            0 8px 32px rgba(31, 38, 135, 0.37),
+            0 0 40px rgba(28, 117, 188, 0.2);
     }
-    
-    .logo-header-container img,
-    .logo-header-glass img,
-    .logo-minimalist img {
-        width: 60px !important;
-        height: 60px !important;
+
+    50% {
+        box-shadow:
+            0 12px 40px rgba(31, 38, 135, 0.5),
+            0 0 60px rgba(28, 117, 188, 0.3);
     }
+}
+
+/*   Menu Separator - Liquid Glass với #1c75bc */
+.menu-separator {
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(28, 117, 188, 0.3),
+            transparent);
+    backdrop-filter: blur(10px);
+    margin: 20px 24px;
+    position: relative;
+    border-radius: 2px;
+}
+
+.menu-separator::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 6px;
+    background: linear-gradient(45deg,
+            rgba(28, 117, 188, 0.8),
+            rgba(28, 117, 188, 0.9));
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(28, 117, 188, 0.3);
+}
+
+/*   Enhanced Logo Area với #1c75bc theme */
+.logo-header-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 25px 20px;
+    border: 1px solid rgba(28, 117, 188, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 0 40px rgba(28, 117, 188, 0.1);
+    position: relative;
+}
+
+/*   Logo pulse animation với #1c75bc */
+@keyframes pulse {
+
+    0%,
+    100% {
+        border-color: rgba(28, 117, 188, 0.3);
+        box-shadow: 0 0 30px rgba(28, 117, 188, 0.3);
+    }
+
+    50% {
+        border-color: rgba(28, 117, 188, 0.5);
+        box-shadow: 0 0 40px rgba(28, 117, 188, 0.5);
+    }
+}
+
+/*   Brand color cho text elements */
+.logo-header-glass h4 {
+    color: #1c75bc !important;
+    font-size: 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-header-glass .badge.bg-success {
+    background: linear-gradient(45deg, #1c75bc, rgba(28, 117, 188, 0.8)) !important;
+}
+
+/*  Disabled state (if needed) */
+.custom-list-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.custom-list-item:disabled:hover {
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    color: rgba(74, 85, 104, 0.9);
+    transform: none;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+/*   Additional utility classes */
+.menu-item-highlight {
+    animation: liquidGlow 2s ease-in-out infinite;
+}
+
+.menu-item-new {
+    position: relative;
+}
+
+.menu-item-new::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: rgba(28, 117, 188, 1);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(28, 117, 188, 0.6);
+    animation: liquidPulse 2s ease-in-out infinite;
+}
+
+/*   Smooth enter/exit animations */
+.menu-enter {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+}
+
+.menu-enter-active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    transition: all 0.3s ease-out;
+}
+
+.menu-exit {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.menu-exit-active {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+    transition: all 0.2s ease-in;
 }

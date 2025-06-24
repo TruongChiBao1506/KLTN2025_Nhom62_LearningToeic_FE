@@ -71,7 +71,7 @@ const GrammarEdit = ({ grammarId, retrieveGrammars, onClose }) => {
 
             console.log('📤 Sending update request to server...');
             await GrammarService.update(grammarId, formData);
-            console.log('✅ Grammar updated successfully');
+            console.log('  Grammar updated successfully');
             
             retrieveGrammars();
 
@@ -131,7 +131,7 @@ const GrammarEdit = ({ grammarId, retrieveGrammars, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateGrammar(formik.values);
     };

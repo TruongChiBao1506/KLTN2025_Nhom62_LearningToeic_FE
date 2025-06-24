@@ -64,7 +64,7 @@ const AddLessonContent = ({ lessonId, retrieveLessonContents, onClose }) => {
             };
 
             await LessonContentService.create(lessonId, lessonContentData);
-            console.log('✅ Lesson content created successfully');
+            console.log('  Lesson content created successfully');
 
             retrieveLessonContents();
 
@@ -125,7 +125,7 @@ const AddLessonContent = ({ lessonId, retrieveLessonContents, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         await addLessonContent(formik.values, formik.resetForm);
     };
 

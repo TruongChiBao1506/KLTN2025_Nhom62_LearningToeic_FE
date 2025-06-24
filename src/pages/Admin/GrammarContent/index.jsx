@@ -61,8 +61,8 @@ const GrammarContent = () => {
                     itemsPerPage: result.itemsPerPage || 10
                 });
                 
-                console.log('✅ Grammar Contents extracted:', contents);
-                console.log('✅ Pagination info:', {
+                console.log('  Grammar Contents extracted:', contents);
+                console.log('  Pagination info:', {
                     currentPage: result.currentPage,
                     totalPages: result.totalPages,
                     totalItems: result.totalItems,
@@ -77,7 +77,7 @@ const GrammarContent = () => {
                     totalItems: result.length,
                     itemsPerPage: result.length || 10
                 });
-                console.log('✅ Grammar Contents (direct array):', result);
+                console.log('  Grammar Contents (direct array):', result);
             } else {
                 // Empty or null result
                 setGrammarContents([]);

@@ -37,7 +37,7 @@ const GrammarAdd = ({ retrieveGrammars, onClose }) => {
             
             console.log('📤 Sending request to server...');
             await GrammarService.create(formData);
-            console.log('✅ Grammar created successfully');
+            console.log('  Grammar created successfully');
             
             retrieveGrammars();
             
@@ -103,7 +103,7 @@ const GrammarAdd = ({ retrieveGrammars, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await addGrammar(formik.values, formik.resetForm);
     };

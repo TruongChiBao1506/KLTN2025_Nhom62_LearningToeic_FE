@@ -35,7 +35,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
                 return isValid;
             })
             .test("fileSize", "Tệp ảnh quá lớn", (value) => {
-                console.log('📏 Validating file size:', value?.size); // ✅ Debug
+                console.log('📏 Validating file size:', value?.size); //   Debug
 
                 // Nếu không có file thì pass
                 if (!value) return true;

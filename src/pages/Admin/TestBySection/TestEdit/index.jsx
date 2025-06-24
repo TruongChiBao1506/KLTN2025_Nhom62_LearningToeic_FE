@@ -48,7 +48,7 @@ const TestEdit = ({ testId, sectionId, retrieveTests, onClose }) => {
                 testName: data.testName || ''
             });
             
-            console.log('✅ Test data loaded successfully');
+            console.log('  Test data loaded successfully');
             
         } catch (error) {
             console.log('❌ Error fetching test:', error);
@@ -75,7 +75,7 @@ const TestEdit = ({ testId, sectionId, retrieveTests, onClose }) => {
             
             console.log('📤 Sending update request to server...');
             await TestService.update(testId, updateData);
-            console.log('✅ Test updated successfully');
+            console.log('  Test updated successfully');
             
             retrieveTests();
             
@@ -138,7 +138,7 @@ const TestEdit = ({ testId, sectionId, retrieveTests, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateTest(formik.values, formik.resetForm);
     };

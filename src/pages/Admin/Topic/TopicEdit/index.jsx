@@ -114,7 +114,7 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
             // Clear previous validation errors
             formik.setFieldError('image', undefined);
             
-            console.log('✅ File set to formik:', file);
+            console.log('  File set to formik:', file);
         } else {
             setSelectedFile(null);
             formik.setFieldValue('image', null);
@@ -138,7 +138,7 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
 
             console.log('📤 Sending update request to server...');
             await TopicService.update(topicId, formData);
-            console.log('✅ Topic updated successfully');
+            console.log('  Topic updated successfully');
             
             retrieveTopics();
 
@@ -200,7 +200,7 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
             return;
         }
 
-        console.log('✅ Validation passed, submitting...');
+        console.log('  Validation passed, submitting...');
         // Submit form
         await updateTopic(formik.values);
     };

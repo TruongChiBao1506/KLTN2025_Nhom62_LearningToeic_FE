@@ -17,7 +17,7 @@ class ExamQuestionService {
             };
             
             const response = await axiosClient.post(`${this.baseUrl}`, data, { headers });
-            console.log('✅ Exam question created:', response);
+            console.log('  Exam question created:', response);
             return response;
         } catch (error) {
             console.error('❌ Error creating exam question:', error);
@@ -29,7 +29,7 @@ class ExamQuestionService {
         try {
             console.log('🔍 Getting all exam questions');
             const response = await axiosClient.get(`${this.baseUrl}`);
-            console.log('✅ All exam questions retrieved:', response);
+            console.log('  All exam questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting all exam questions:', error);
@@ -41,7 +41,7 @@ class ExamQuestionService {
         try {
             console.log('🔍 Getting exam question with ID:', id);
             const response = await axiosClient.get(`${this.baseUrl}/${id}`);
-            console.log('✅ Exam question retrieved:', response);
+            console.log('  Exam question retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting exam question:', error);
@@ -62,7 +62,7 @@ class ExamQuestionService {
             };
             
             const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, { headers });
-            console.log('✅ Exam question updated:', response);
+            console.log('  Exam question updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating exam question:', error);
@@ -74,7 +74,7 @@ class ExamQuestionService {
         try {
             console.log('🗑️ Deleting exam question:', id);
             const response = await axiosClient.delete(`${this.baseUrl}/${id}`);
-            console.log('✅ Exam question deleted:', response);
+            console.log('  Exam question deleted:', response);
             return response;
         } catch (error) {
             console.error('❌ Error deleting exam question:', error);
@@ -82,14 +82,14 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Main method used in component
+    //   Main method used in component
     async getQuestionsByExamId(examId) {
         try {
             console.log('🔍 Getting exam questions for exam:', examId);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}`);
-            console.log('✅ Exam questions retrieved:', response);
+            console.log('  Exam questions retrieved:', response);
             
-            // ✅ Log để debug response structure
+            //   Log để debug response structure
             console.log('📊 Response structure:', {
                 hasExamQuestions: !!response.examQuestions,
                 questionsLength: response.examQuestions?.length || (Array.isArray(response) ? response.length : 0),
@@ -117,7 +117,7 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ IMPORT + EXPORT methods
+    //   IMPORT + EXPORT methods
     async exportTemplate() {
         try {
             console.log('📥 Exporting exam question template');
@@ -140,7 +140,7 @@ class ExamQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('✅ Template exported successfully');
+            console.log('  Template exported successfully');
             return response;
         } catch (error) {
             console.error('❌ Error exporting template:', error);
@@ -160,7 +160,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Import completed successfully:', response);
+            console.log('  Import completed successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error importing template:', error);
@@ -168,7 +168,7 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Upload methods
+    //   Upload methods
     async uploadExamQuestionImages(imageFiles) {
         try {
             console.log('📸 Uploading exam question images:', imageFiles.name || imageFiles.length);
@@ -180,7 +180,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Images uploaded successfully:', response);
+            console.log('  Images uploaded successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error uploading images:', error);
@@ -199,7 +199,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Audios uploaded successfully:', response);
+            console.log('  Audios uploaded successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error uploading audios:', error);
@@ -207,14 +207,14 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Status update method
+    //   Status update method
     async updateStatus(examQuestionId, newStatus) {
         try {
             console.log('🔄 Updating exam question status:', examQuestionId, newStatus);
             const response = await axiosClient.put(`${this.baseUrl}/${examQuestionId}/status`, {
                 status: newStatus
             });
-            console.log('✅ Exam question status updated:', response);
+            console.log('  Exam question status updated:', response);
             return response;
         } catch (error) {
             console.error('❌ Error updating exam question status:', error);
@@ -222,12 +222,12 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Delete all questions by exam ID
+    //   Delete all questions by exam ID
     async deleteExamQuestionsByExamId(examId) {
         try {
             console.log('🗑️ Deleting all questions for exam:', examId);
             const response = await axiosClient.delete(`${this.baseUrl}/delete-by-exam/${examId}`);
-            console.log('✅ All questions deleted successfully:', response);
+            console.log('  All questions deleted successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error deleting all questions:', error);
@@ -235,12 +235,12 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Additional useful methods
+    //   Additional useful methods
     async getEnabledQuestionsByExamId(examId) {
         try {
             console.log('🔍 Getting enabled exam questions for exam:', examId);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/enabled`);
-            console.log('✅ Enabled exam questions retrieved:', response);
+            console.log('  Enabled exam questions retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting enabled exam questions:', error);
@@ -258,7 +258,7 @@ class ExamQuestionService {
         try {
             console.log('🔍 Getting questions by type:', examId, questionType);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/type/${questionType}`);
-            console.log('✅ Questions by type retrieved:', response);
+            console.log('  Questions by type retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting questions by type:', error);
@@ -276,7 +276,7 @@ class ExamQuestionService {
         try {
             console.log('🔍 Getting questions by part:', examId, partNumber);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/part/${partNumber}`);
-            console.log('✅ Questions by part retrieved:', response);
+            console.log('  Questions by part retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting questions by part:', error);
@@ -301,7 +301,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Audio uploaded successfully:', response);
+            console.log('  Audio uploaded successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error uploading audio:', error);
@@ -320,7 +320,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Image uploaded successfully:', response);
+            console.log('  Image uploaded successfully:', response);
             return response;
         } catch (error) {
             console.error('❌ Error uploading image:', error);
@@ -340,7 +340,7 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('✅ Bulk import successful:', response);
+            console.log('  Bulk import successful:', response);
             return response;
         } catch (error) {
             console.error('❌ Error bulk importing:', error);
@@ -348,12 +348,12 @@ class ExamQuestionService {
         }
     }
 
-    // ✅ Statistics methods
+    //   Statistics methods
     async getExamStatistics(examId) {
         try {
             console.log('📊 Getting exam statistics for:', examId);
             const response = await axiosClient.get(`${this.baseUrl}/statistics/${examId}`);
-            console.log('✅ Exam statistics retrieved:', response);
+            console.log('  Exam statistics retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting exam statistics:', error);
@@ -365,7 +365,7 @@ class ExamQuestionService {
         try {
             console.log('📊 Getting overall question statistics');
             const response = await axiosClient.get(`${this.baseUrl}/statistics`);
-            console.log('✅ Question statistics retrieved:', response);
+            console.log('  Question statistics retrieved:', response);
             return response;
         } catch (error) {
             console.error('❌ Error getting question statistics:', error);
