@@ -4,6 +4,12 @@ import LearnerLayout from "../layouts/LearnerLayout";
 import LearnerDashboard from "../pages/Learner/LearnerDashboard";
 import ExamList from "../pages/Learner/ExamList";
 import ExamDetail from "../pages/Learner/ExamDetail";
+import ExamFullTest from "../pages/Learner/ExamFullTest";
+import ExamMiniTest from "../pages/Learner/ExamMiniTest";
+import ExamQuestion from "../pages/Learner/ExamQuestion";
+import ExamResult from "../pages/Learner/ExamResult";
+import UserVocabulary from "../pages/Learner/UserVocabulary";
+import Dictionary from "../pages/Learner/Dictionary";
 import LearningMaterials from "../pages/Learner/LearningMaterials";
 import Progress from "../pages/Learner/Progress";
 import Profile from "../pages/Learner/Profile";
@@ -39,8 +45,13 @@ const LearnerRoutes = () => {
         <Route
           path="section/:sectionId/lesson/:lessonId"
           element={<Lesson />}
-        />
-        <Route path="section/:sectionId/study/:testId" element={<Study />} />
+        />        <Route path="section/:sectionId/study/:testId" element={<Study />} />
+        <Route path="section/:sectionId/study-sw/:testId" element={<StudySW />} />        <Route path="full-test" element={<ExamFullTest />} />
+        <Route path="mini-test" element={<ExamMiniTest />} />
+        <Route path="exam-question/:examId" element={<ExamQuestion />} />
+        <Route path="exam-result/:userExamId" element={<ExamResult />} />
+        <Route path="vocabulary" element={<UserVocabulary />} />
+        <Route path="dictionary" element={<Dictionary />} />
       </Route>
     </Routes>
   );

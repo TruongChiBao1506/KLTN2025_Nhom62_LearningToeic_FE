@@ -3,11 +3,15 @@ import axiosClient from './axiosClient';
 class ExamService {
     constructor(baseUrl = '/exam') {
         this.baseUrl = baseUrl;
-    }
-
-    // Get FullTest exams
+    }    // Get FullTest exams
     async getFullTest() {
         const response = await axiosClient.get(`${this.baseUrl}/full/tests`);
+        return response;
+    }
+    
+    // Get enabled FullTest exams
+    async getEnableFullTest() {
+        const response = await axiosClient.get(`${this.baseUrl}/full-tests/enable`);
         return response;
     }
 
