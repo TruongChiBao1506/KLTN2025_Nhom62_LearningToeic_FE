@@ -1,0 +1,163 @@
+/* Scope all styles to ScoreTableList component */
+.score-table-list .table-row.shadow-on-hover:hover {
+    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+.score-table-list th {
+    color: #052649;
+    font-weight: bold;
+}
+
+.score-table-list td {
+    color: #052649;
+    font-weight: normal;
+}
+
+.score-table-list h1 {
+    font-weight: 600;
+    color: #34447c;
+}
+
+.score-table-list .input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+
+.score-table-list .input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.score-table-list .input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+.score-table-list .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    padding: 10px;
+}
+
+.score-table-list .form-select,
+.score-table-list .form-control {
+    font-size: 14px;
+}
+
+.score-table-list .table {
+    font-size: 13px;
+}
+
+.score-table-list .page-item .page-link {
+    font-size: 13px;
+}
+
+.score-table-list .btn-white:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+/* Scoped table alignment fixes */
+.score-table-list .table th,
+.score-table-list .table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 1rem 0.75rem;
+}
+
+.score-table-list .table th {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.score-table-list .table thead th {
+    position: relative;
+    background-color: #f8f9fa;
+}
+
+.score-table-list .table tbody td {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Scoped button in header styling */
+.score-table-list .table th .btn {
+    min-width: 120px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Scoped content alignment - THIS WAS THE PROBLEM */
+.score-table-list .table tbody td {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.score-table-list .table tbody td .fw-bold {
+    font-size: 16px;
+    color: #052649;
+}
+
+/* Scoped badge styling */
+.score-table-list .table tbody td .badge {
+    font-size: 14px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+
+/* Scoped action button styling */
+.score-table-list .table tbody td .btn-white {
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.score-table-list .table tbody td .btn-white:hover {
+    background-color: #f8f9fa !important;
+    transform: scale(1.1);
+}
+
+/* Scoped column widths */
+.score-table-list .table th:nth-child(1),
+.score-table-list .table td:nth-child(1) {
+    width: 30%;
+}
+
+.score-table-list .table th:nth-child(2),
+.score-table-list .table td:nth-child(2) {
+    width: 40%;
+}
+
+.score-table-list .table th:nth-child(3),
+.score-table-list .table td:nth-child(3) {
+    width: 30%;
+}
+
+/* Scoped text alignment */
+.score-table-list .table * {
+    text-align: inherit;
+}
+
+/* Scoped responsive improvements */
+@media (max-width: 768px) {
+    .score-table-list .input-group {
+        width: 100%;
+    }
+    
+    .score-table-list .table {
+        font-size: 12px;
+    }
+    
+    .score-table-list .form-select {
+        width: 100% !important;
+    }
+}

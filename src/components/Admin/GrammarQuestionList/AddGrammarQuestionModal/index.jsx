@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import GrammarQuestionAdd from '../../../../pages/Admin/GrammarQuestion/GrammarQuestionAdd';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const AddGrammarQuestionModal = ({ show, onHide, grammarId, retrieveGrammarQuestions }) => {
     return (
@@ -12,9 +14,9 @@ const AddGrammarQuestionModal = ({ show, onHide, grammarId, retrieveGrammarQuest
             keyboard={false}
             className="zoom"
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <i className="fas fa-plus-circle me-2"></i>
+                    <FontAwesomeIcon icon={faCirclePlus} className="text-primary me-2" />
                     Thêm Grammar Question
                 </Modal.Title>
             </Modal.Header>

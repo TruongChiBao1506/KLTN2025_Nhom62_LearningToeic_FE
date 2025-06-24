@@ -2,11 +2,13 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
 import toeic_logo from '../../../../assets/Toeic_logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({ isToggled }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Define menu items with their routes and details
     const menuItems = [
         {
@@ -78,24 +80,87 @@ const Sidebar = ({ isToggled }) => {
     };
 
     return (
-        <div 
-            className={`border-end bg-white p-2 ${isToggled ? 'active' : ''}`} 
+        <div
+            className="border-end bg-white p-2"
             id="sidebar-wrapper"
+            style={{
+                /* Remove any inline styles that might hide sidebar */
+                display: 'block',
+                visibility: 'visible',
+                opacity: 1
+            }}
         >
             {/* Logo/Header */}
-            <div 
-                className="d-flex justify-content-center align-items-center mb-4 border rounded-5" 
-                style={{ backgroundColor: '#1c75bc' }}
+            <div
+                className="logo-header-glass mb-4"
+                style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '25px',
+                    padding: '25px 20px',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    position: 'relative'
+                }}
             >
-                <img 
-                    className="rounded-circle my-2"
-                    src={toeic_logo}
-                    alt="TOEIC Image" 
-                    width="100" 
-                    height="100"
-                />
+                <div className="d-flex flex-column align-items-center">
+                    {/* Logo with glow effect */}
+                    <div
+                        className="position-relative mb-3"
+                        style={{
+                            background: 'linear-gradient(145deg, #ffffff, #f0f0f0)',
+                            borderRadius: '50%',
+                            padding: '12px',
+                            boxShadow: '0 0 30px rgba(28, 117, 188, 0.5)',
+                            border: '2px solid rgba(28, 117, 188, 0.3)'
+                        }}
+                    >
+                        <img
+                            src={toeic_logo}
+                            alt="TOEIC Admin"
+                            width="90"
+                            height="90"
+                            className="rounded-circle"
+                            style={{
+                                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
+                                transition: 'all 0.3s ease'
+                            }}
+                        />
+
+                        {/* Pulse animation ring */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '-5px',
+                                left: '-5px',
+                                right: '-5px',
+                                bottom: '-5px',
+                                borderRadius: '50%',
+                                border: '2px solid rgba(28, 117, 188, 0.3)',
+                                animation: 'pulse 2s infinite'
+                            }}
+                        ></div>
+                    </div>
+
+                    {/* Brand info */}
+                    <div className="text-center">
+                        <h4 className="fw-bold mb-2" style={{
+                            color: '#1c75bc',
+                            fontSize: '16px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        }}>
+                            🎓 TOEIC ACADEMY
+                        </h4>
+                        <div className="d-flex align-items-center justify-content-center">
+                            <span className="badge bg-success me-2" style={{ fontSize: '10px' }}>
+                                ADMIN
+                            </span>
+                            <small className="text-muted">Dashboard</small>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
+
             {/* Menu Items */}
             <div className="list-group list-group-flush">
                 {menuItems.map((item) => (
@@ -105,14 +170,18 @@ const Sidebar = ({ isToggled }) => {
                         onClick={() => handleNavigation(item.path)}
                         type="button"
                     >
-                        <div className="row">
+                        <div className="row align-items-center">
                             <div className="col-10 d-flex justify-content-start align-items-center">
                                 <i className={`${item.icon} me-2`}></i>
                                 <span>{item.label}</span>
                             </div>
-                            <div className="col text-end">
+                            <div className="col-2 text-end d-flex justify-content-end align-items-center">
                                 {isActiveRoute(item.path) && (
-                                    <i className="fa-solid fa-chevron-right"></i>
+                                    <FontAwesomeIcon
+                                        icon={faChevronRight}
+                                        className="text-white"
+                                        style={{ fontSize: '12px' }}
+                                    />
                                 )}
                             </div>
                         </div>

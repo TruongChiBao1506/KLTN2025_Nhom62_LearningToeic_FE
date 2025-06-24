@@ -22,7 +22,7 @@ const GrammarContentList = ({
     isLoading = false,
     pagination 
 }) => {
-    // ✅ Ensure grammarContents is always an array
+    // Ensure grammarContents is always an array
     const normalizedGrammarContents = Array.isArray(grammarContents) ? grammarContents : [];
     
     // States
@@ -97,22 +97,22 @@ const GrammarContentList = ({
         setSelectedGrammarContentId(null);
     };
 
-    // ✅ Helper function to get ID - matching Vue version field names
+    // Helper function to get ID - matching Vue version field names
     const getItemId = (item) => {
         return item.contentId || item._id || item.grammarContentId || item.id;
     };
 
-    // ✅ Helper function to get title - matching Vue version
+    // Helper function to get title - matching Vue version
     const getItemTitle = (item) => {
         return item.title || item.grammarContentTitle || item.name || 'No title';
     };
 
-    // ✅ Helper function to get content - matching Vue version
+    // Helper function to get content - matching Vue version
     const getItemContent = (item) => {
         return item.content || item.grammarContentDescription || item.description || 'No content';
     };
 
-    // ✅ Helper function to get status - matching Vue version
+    // Helper function to get status - matching Vue version
     const getItemStatus = (item) => {
         return item.grammarContentStatus !== undefined ? item.grammarContentStatus : 
                (item.status !== undefined ? item.status : 1);
@@ -291,7 +291,7 @@ const GrammarContentList = ({
                                                             {getItemStatus(grammarContent) === 1 ? (
                                                                 <span 
                                                                     onClick={() => toggleStatus(getItemId(grammarContent), 0)}
-                                                                    className="btn badge text-bg-success"
+                                                                    className="btn badge text-bg-success rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để vô hiệu hóa"
                                                                 >
@@ -300,7 +300,7 @@ const GrammarContentList = ({
                                                             ) : (
                                                                 <span 
                                                                     onClick={() => toggleStatus(getItemId(grammarContent), 1)}
-                                                                    className="btn badge text-bg-danger"
+                                                                    className="btn badge text-bg-danger rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để kích hoạt"
                                                                 >

@@ -223,7 +223,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                             {grammar.grammarStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(grammar._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -231,7 +231,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(grammar._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable

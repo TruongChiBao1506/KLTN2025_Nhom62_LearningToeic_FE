@@ -147,7 +147,7 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
         }
     };
 
-    // ✅ Handle explanation editor
+    // Handle explanation editor
     const handleExplanationEditorReady = (editor) => {
         console.log('📝 Explanation CKEditor is ready to use!', editor);
         editor.editing.view.change(writer => {
@@ -165,7 +165,7 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
         formik.setFieldTouched('questionExplanation', true);
     };
 
-    // ✅ Sync editor data with formik
+    // Sync editor data with formik
     useEffect(() => {
         formik.setFieldValue('questionExplanation', explanationEditorData);
     }, [explanationEditorData]);

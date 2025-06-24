@@ -14,7 +14,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
     const [explanationEditorData, setExplanationEditorData] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    // ✅ Validation schema
+    // Validation schema
     const validationSchema = Yup.object().shape({
         questionContent: Yup.string()
             .required('Question Content phải có giá trị.')
@@ -44,7 +44,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
             .min(5, 'Question Explanation phải ít nhất 5 ký tự.')
     });
 
-    // ✅ Formik setup
+    // Formik setup
     const formik = useFormik({
         initialValues: {
             questionContent: '',
@@ -56,13 +56,13 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
             questionExplanation: ''
         },
         validationSchema,
-        enableReinitialize: true, // ✅ Important for editing
+        enableReinitialize: true, // Important for editing
         onSubmit: (values) => {
             updateGrammarQuestion(values);
         }
     });
 
-    // ✅ Get grammar question data
+    // Get grammar question data
     const getGrammarQuestion = async () => {
         try {
             setIsLoading(true);
@@ -73,10 +73,10 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
 
             setGrammarQuestion(data);
 
-            // ✅ Server returns correctOption as letter (A, B, C, D), use it directly
+            // Server returns correctOption as letter (A, B, C, D), use it directly
             const correctOptionLetter = data.correctOption || '';
 
-            // ✅ Set form values
+            // Set form values
             formik.setValues({
                 questionContent: data.questionContent || '',
                 optionA: data.optionA || '',
@@ -87,7 +87,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                 questionExplanation: data.questionExplanation || ''
             });
 
-            // ✅ Set editor data
+            // Set editor data
             setExplanationEditorData(data.questionExplanation || '');
 
         } catch (error) {
@@ -106,7 +106,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
             console.log('🚀 Grammar ID:', grammarId);
             console.log('🚀 Grammar Question ID:', grammarQuestionId);
 
-            // ✅ Create JSON object instead of FormData
+            // Create JSON object instead of FormData
             const questionData = {
                 grammarId: grammarId,
                 questionContent: values.questionContent.trim(),
@@ -156,7 +156,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
         }
     };
 
-    // ✅ CKEditor configuration
+    // CKEditor configuration
     const editorConfiguration = {
         toolbar: [
             'heading',
@@ -184,7 +184,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
         }
     };
 
-    // ✅ Handle explanation editor
+    // Handle explanation editor
     const handleExplanationEditorReady = (editor) => {
         console.log('📝 Explanation CKEditor is ready to use!', editor);
         editor.editing.view.change(writer => {
@@ -202,19 +202,19 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
         formik.setFieldTouched('questionExplanation', true);
     };
 
-    // ✅ Load data on mount
+    // Load data on mount
     useEffect(() => {
         if (grammarQuestionId) {
             getGrammarQuestion();
         }
     }, [grammarQuestionId]);
 
-    // ✅ Sync editor data with formik
+    // Sync editor data with formik
     useEffect(() => {
         formik.setFieldValue('questionExplanation', explanationEditorData);
     }, [explanationEditorData]);
 
-    // ✅ Helper function to check if correct option matches current option value
+    // Helper function to check if correct option matches current option value
     const isCorrectOptionChecked = (optionLetter) => {
         return formik.values.correctOption === optionLetter;
     };

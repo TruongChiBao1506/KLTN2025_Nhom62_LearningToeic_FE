@@ -1,11 +1,13 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import GrammarContentAdd from '../../../../pages/Admin/GrammarContent/GrammarContentAdd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddGrammarContentModal = ({ show, onHide, grammarId, retrieveGrammarContents }) => {
     return (
-        <Modal 
-            show={show} 
+        <Modal
+            show={show}
             onHide={onHide}
             size="lg"
             centered
@@ -15,12 +17,12 @@ const AddGrammarContentModal = ({ show, onHide, grammarId, retrieveGrammarConten
         >
             <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <i className="fa-solid fa-circle-plus me-2"></i>
+                    <FontAwesomeIcon icon={faCirclePlus} className="text-primary me-2" />
                     Add Grammar Content
                 </Modal.Title>
             </Modal.Header>
-            
-            <GrammarContentAdd 
+
+            <GrammarContentAdd
                 grammarId={grammarId}
                 retrieveGrammarContents={retrieveGrammarContents}
                 onClose={onHide}

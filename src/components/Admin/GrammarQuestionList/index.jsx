@@ -22,7 +22,7 @@ const GrammarQuestionList = ({
     isLoading = false,
     pagination
 }) => {
-    // ✅ Ensure grammarQuestions is always an array
+    // Ensure grammarQuestions is always an array
     const normalizedGrammarQuestions = Array.isArray(grammarQuestions) ? grammarQuestions : [];
 
     // States
@@ -128,7 +128,7 @@ const GrammarQuestionList = ({
 
         if (result.isConfirmed) {
             try {
-                // ✅ Fix: Use GrammarQuestionService instead of GrammarContentService
+                // Use GrammarQuestionService instead of GrammarContentService
                 await GrammarQuestionService.delete(grammarQuestionId);
                 retrieveGrammarQuestions();
 
@@ -243,7 +243,7 @@ const GrammarQuestionList = ({
                                         <table className="table text-center table-hover shadow">
                                             <thead className="shadow">
                                                 <tr className="align-middle">
-                                                    {/* ✅ Fix: Use <th> for all header cells, not <td> */}
+                                                    {/* Use <th> for all header cells, not <td> */}
                                                     <th>
                                                         <button className="btn btn-success rounded-5 disabled">No.</button>
                                                     </th>
@@ -279,7 +279,7 @@ const GrammarQuestionList = ({
                                                             {getQuestionStatus(grammarQuestion) === 1 ? (
                                                                 <span
                                                                     onClick={() => toggleStatus(getItemId(grammarQuestion), 0)}
-                                                                    className="btn badge text-bg-success"
+                                                                    className="btn badge text-bg-success rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để vô hiệu hóa"
                                                                 >
@@ -288,7 +288,7 @@ const GrammarQuestionList = ({
                                                             ) : (
                                                                 <span
                                                                     onClick={() => toggleStatus(getItemId(grammarQuestion), 1)}
-                                                                    className="btn badge text-bg-danger"
+                                                                    className="btn badge text-bg-danger rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để kích hoạt"
                                                                 >
@@ -321,7 +321,7 @@ const GrammarQuestionList = ({
                                                         </td>
                                                     </tr>
                                                 ))}
-                                                {/* ✅ Fix: Update colspan to match number of columns (10) */}
+                                                {/* Update colspan to match number of columns (10) */}
                                                 {paginatedGrammarQuestions.length === 0 && filteredGrammarQuestions.length > 0 && (
                                                     <tr key="no-data">
                                                         <td colSpan="10">No data available on this page</td>

@@ -61,7 +61,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
         setCurrentPage(1);
     }, [lessons]);
 
-    // ✅ Modal handlers
+    // Modal handlers
     const handleShowAddModal = () => {
         console.log('Opening Add Modal');
         setShowAddModal(true);
@@ -190,7 +190,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                             </div>
                         </div>
 
-                        {/* ✅ Add button - dùng onClick thay vì data-bs-toggle */}
+                        {/* Add button - dùng onClick thay vì data-bs-toggle */}
                         <div className="col-4 mt-4 d-flex justify-content-end">
                             <button 
                                 type="button" 
@@ -228,7 +228,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                             {lesson.lessonStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(lesson._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -236,7 +236,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(lesson._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable
@@ -247,7 +247,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                         <td>{formatDate(lesson.updatedAt)}</td>
                                         <td>
                                             <div className="d-flex justify-content-center">
-                                                {/* ✅ Edit button - dùng onClick */}
+                                                {/* Edit button - dùng onClick */}
                                                 <button 
                                                     type="button" 
                                                     className="btn btn-white border-0"
@@ -340,7 +340,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                 </div>
             </div>
 
-            {/* ✅ Use React Bootstrap Modals */}
+            {/* Use React Bootstrap Modals */}
             <AddLessonModal 
                 show={showAddModal}
                 onHide={handleCloseAddModal}

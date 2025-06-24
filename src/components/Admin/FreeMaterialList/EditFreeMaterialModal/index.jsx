@@ -18,7 +18,7 @@ const EditFreeMaterialModal = ({ show, onHide, materialId, retrieveFreeMaterials
             style={{ zIndex: 1050 }}
             className="zoom"
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-warning text-white">
                 <Modal.Title>
                     <FontAwesomeIcon icon={faEdit} className="me-2" style={{color: 'rgb(192, 129, 13)'}} />
                     Edit Free Material

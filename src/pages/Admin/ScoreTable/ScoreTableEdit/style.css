@@ -1,0 +1,40 @@
+/* ✅ Create src/components/Admin/ScoreTableEdit/style.css */
+label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+}
+
+.error-feedback {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.required-field {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.custom-font {
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: #1c75bc;
+    box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+}

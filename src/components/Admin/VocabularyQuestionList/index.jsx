@@ -310,7 +310,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                                             {vocabularyQuestion.questionStatus === 1 ? (
                                                                 <span
                                                                     onClick={() => toggleStatus(vocabularyQuestion.questionId || vocabularyQuestion._id, 0)}
-                                                                    className="btn badge text-bg-success"
+                                                                    className="btn badge text-bg-success rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để vô hiệu hóa"
                                                                 >
@@ -319,7 +319,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                                             ) : (
                                                                 <span
                                                                     onClick={() => toggleStatus(vocabularyQuestion.questionId || vocabularyQuestion._id, 1)}
-                                                                    className="btn badge text-bg-danger"
+                                                                    className="btn badge text-bg-danger rounded-5"
                                                                     style={{ cursor: 'pointer' }}
                                                                     title="Click để kích hoạt"
                                                                 >

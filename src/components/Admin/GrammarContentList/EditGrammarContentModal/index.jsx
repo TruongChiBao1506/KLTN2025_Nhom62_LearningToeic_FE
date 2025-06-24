@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import GrammarContentEdit from '../../../../pages/Admin/GrammarContent/GrammarContentEdit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const EditGrammarContentModal = ({ show, onHide, grammarContentId, grammarId, retrieveGrammarContents }) => {
     return (
@@ -15,7 +17,7 @@ const EditGrammarContentModal = ({ show, onHide, grammarContentId, grammarId, re
         >
             <Modal.Header closeButton className="bg-warning text-white">
                 <Modal.Title>
-                    <i className="fa-solid fa-edit me-2"></i>
+                    <FontAwesomeIcon icon={faEdit} className="me-2" style={{color: 'rgb(192, 129, 13)'}} />
                     Edit Grammar Content
                 </Modal.Title>
             </Modal.Header>

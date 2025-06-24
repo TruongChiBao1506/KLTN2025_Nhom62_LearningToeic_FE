@@ -81,7 +81,7 @@ const GrammarQuestion = () => {
                 </nav>
             </div>
 
-            {/* ✅ GrammarQuestionList with AOS and loading state - matching Learner page */}
+            {/* GrammarQuestionList with AOS and loading state - matching Learner page */}
             <div
                 data-aos="fade-up"
                 data-aos-duration="500"

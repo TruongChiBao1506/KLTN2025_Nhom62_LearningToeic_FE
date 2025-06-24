@@ -17,7 +17,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
     const audioInputRef = useRef(null);
     const excelInputRef = useRef(null);
 
-    // ✅ Validation schema - Có thể uncomment các rules khi cần
+    // Validation schema - Có thể uncomment các rules khi cần
     const validationSchema = Yup.object().shape({
         // Hiện tại không có validation, có thể thêm sau
         // questionImage: Yup.mixed()
@@ -45,7 +45,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
         //     })
     });
 
-    // ✅ Formik setup
+    // Formik setup
     const formik = useFormik({
         initialValues: {
             questionImage: null,
@@ -74,7 +74,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 excelFile: !!excelFile
             });
 
-            // ✅ Kiểm tra xem đã chọn ít nhất một tệp trong mỗi loại
+            // Kiểm tra xem đã chọn ít nhất một tệp trong mỗi loại
             if (!imageFiles || imageFiles.length === 0) {
                 toast.error('Vui lòng chọn ít nhất một tệp hình ảnh', {
                     autoClose: 2000
@@ -96,7 +96,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 return;
             }
 
-            // ✅ Upload tất cả hình ảnh
+            // Upload tất cả hình ảnh
             console.log('📸 Processing image files...');
             const imageUploadPromises = Array.from(imageFiles).map(async (imageFile, index) => {
                 console.log(`📸 Uploading image ${index + 1}:`, imageFile.name);
@@ -110,7 +110,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 }
             });
 
-            // ✅ Upload tất cả âm thanh
+            // Upload tất cả âm thanh
             console.log('🔊 Processing audio files...');
             const audioUploadPromises = Array.from(audioFiles).map(async (audioFile, index) => {
                 console.log(`🔊 Uploading audio ${index + 1}:`, audioFile.name);
@@ -124,7 +124,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 }
             });
 
-            // ✅ Chờ tất cả upload hoàn thành
+            // Chờ tất cả upload hoàn thành
             const [imageResults, audioResults] = await Promise.all([
                 Promise.all(imageUploadPromises),
                 Promise.all(audioUploadPromises)
@@ -135,20 +135,20 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 audios: audioResults.length
             });
 
-            // ✅ Import Excel
+            // Import Excel
             console.log('📋 Importing Excel file:', excelFile.name);
             const excelResponse = await ExamQuestionService.importTemplate(excelFile, examId);
             console.log('✅ Excel import completed:', excelResponse);
 
-            // ✅ Refresh data
+            // Refresh data
             if (retrieveExamQuestions) {
                 retrieveExamQuestions();
             }
 
-            // ✅ Clear form
+            // Clear form
             resetForm();
 
-            // ✅ Close modal
+            // Close modal
             if (onClose) {
                 onClose();
             }
@@ -182,7 +182,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
         }
     };
 
-    // ✅ Reset form function
+    // Reset form function
     const resetForm = () => {
         formik.resetForm();
         if (imageInputRef.current) imageInputRef.current.value = '';
@@ -190,7 +190,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
         if (excelInputRef.current) excelInputRef.current.value = '';
     };
 
-    // ✅ Handle file selection
+    // Handle file selection
     const handleFileChange = (fieldName, files) => {
         formik.setFieldValue(fieldName, files);
         formik.setFieldTouched(fieldName, true);

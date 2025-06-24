@@ -1,15 +1,19 @@
-import React from 'react';
+// Update src/components/Admin/AdminSignInForm/index.jsx
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './style.css';
 
+const AdminLogin = ({ onSubmit, onSubmitSignIn }) => {
+  // Add state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
-const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
   const initialValues = {
     username: '',
     password: '',
   };
-  
 
   const signInFormSchema = Yup.object().shape({
     username: Yup.string().required('Username không được để trống.'),
@@ -17,7 +21,6 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
   });
 
   const handleSubmit = (values) => {
-    // Use whichever prop is available
     if (onSubmitSignIn && typeof onSubmitSignIn === 'function') {
       onSubmitSignIn(values);
     } else if (onSubmit && typeof onSubmit === 'function') {
@@ -25,6 +28,11 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
     } else {
       console.error('No submit handler provided');
     }
+  };
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
   };
 
   return (
@@ -53,6 +61,8 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
             <Form className="mt-3">
               <div className="p-5 bg-white rounded-4 shadow-lg">
                 <h3 className="mb-2 text-center pt-5">ADMIN LOGIN</h3>
+                
+                {/* Username Field */}
                 <label
                   htmlFor="username"
                   className="font-500 text-secondary fst-bolder d-flex justify-content-start"
@@ -66,6 +76,8 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
                   className="form-control form-control-lg mb-3"
                 />
                 <ErrorMessage name="username" component="div" className="error-feedback d-flex justify-content-start" />
+                
+                {/* Password Field with toggle button */}
                 <label
                   htmlFor="password"
                   className="font-500 text-secondary fst-bolder d-flex justify-content-start"
@@ -73,13 +85,46 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn }) => { // Accept both props
                 >
                   Password
                 </label>
-                <Field
-                  name="password"
-                  type="password"
-                  className="form-control form-control-lg"
-                />
+                
+                {/* Password input container with relative positioning */}
+                <div className="position-relative">
+                  <Field
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="form-control form-control-lg"
+                    style={{ paddingRight: '50px' }} // Make space for the button
+                  />
+                  {/* Toggle password visibility button */}
+                  <button
+                    type="button"
+                    className="btn position-absolute"
+                    style={{
+                      right: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      color: '#6c757d',
+                      padding: '0.375rem',
+                      zIndex: 10
+                    }}
+                    onClick={togglePasswordVisibility}
+                    title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  >
+                    <FontAwesomeIcon 
+                      icon={showPassword ? faEyeSlash : faEye} 
+                      style={{ fontSize: '1.1rem' }}
+                    />
+                  </button>
+                </div>
+                
                 <ErrorMessage name="password" component="div" className="error-feedback d-flex justify-content-start" />
-                <button type="submit" className="btn btn-primary btn-lg w-100 shadow-lg mt-3">
+                
+                <button 
+                  type="submit" 
+                  style={{backgroundColor:"#1c75bc", color:"#fff", height:"50px"}} 
+                  className="btn btn-lg w-100 rounded-5 shadow-lg mt-3"
+                >
                   SIGN IN
                 </button>
               </div>

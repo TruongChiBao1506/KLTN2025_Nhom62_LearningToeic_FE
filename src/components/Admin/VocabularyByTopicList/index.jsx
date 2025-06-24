@@ -368,7 +368,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                             {vocabulary.vocabularyStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(vocabulary._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -376,7 +376,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(vocabulary._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable

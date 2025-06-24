@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import TestAdd from '../../../../pages/Admin/TestBySection/TestAdd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddTestModal = ({ show, onHide, sectionId, retrieveTests }) => {
     console.log('AddTestModal render:', { show, sectionId });
@@ -17,7 +19,7 @@ const AddTestModal = ({ show, onHide, sectionId, retrieveTests }) => {
         >
             <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <i className="fas fa-plus-circle me-2"></i>
+                    <FontAwesomeIcon icon={faCirclePlus} className="text-primary me-2" />
                     Thêm Test Mới
                 </Modal.Title>
             </Modal.Header>

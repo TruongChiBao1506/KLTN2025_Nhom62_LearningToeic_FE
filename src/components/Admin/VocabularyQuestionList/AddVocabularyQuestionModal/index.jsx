@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import VocabularyQuestionAdd from '../../../../pages/Admin/VocabularyQuestion/VocabularyQuestionAdd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddVocabularyQuestionModal = ({ show, onHide, topicId, retrieveVocabularyQuestions }) => {
     return (
@@ -15,7 +17,7 @@ const AddVocabularyQuestionModal = ({ show, onHide, topicId, retrieveVocabularyQ
         >
             <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <i className="fa-solid fa-circle-plus me-2"></i>
+                    <FontAwesomeIcon icon={faCirclePlus} className="text-primary me-2" />
                     Add Vocabulary Question
                 </Modal.Title>
             </Modal.Header>

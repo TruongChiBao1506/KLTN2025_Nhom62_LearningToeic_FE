@@ -12,9 +12,9 @@ const AddExamQuestionModal = ({ show, onHide, examId, retrieveExamQuestions }) =
             keyboard={false}
             className="zoom"
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <i className="fa-solid fa-circle-plus text-success me-2"></i>
+                    <i className="fa-solid fa-circle-plus text-primary me-2"></i>
                     Import Exam Questions
                 </Modal.Title>
             </Modal.Header>

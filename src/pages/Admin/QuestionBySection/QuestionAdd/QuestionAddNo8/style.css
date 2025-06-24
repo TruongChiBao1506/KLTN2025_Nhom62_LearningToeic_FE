@@ -72,7 +72,7 @@ label {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ Enhanced form group styling for Part 8 */
+/* Enhanced form group styling for Part 8 */
 .form-group {
     position: relative;
     padding: 1.25rem;
@@ -110,7 +110,7 @@ label {
     border-radius: 1px;
 }
 
-/* ✅ Question text specific styling */
+/* Question text specific styling */
 .form-group:nth-child(1) {
     background: linear-gradient(135deg, #e8f4f8 0%, #ffffff 100%);
     border-left: 4px solid #1c75bc;
@@ -121,7 +121,7 @@ label {
     border-bottom-color: #1c75bc;
 }
 
-/* ✅ Suggested answer specific styling (enhanced for Part 8) */
+/* Suggested answer specific styling (enhanced for Part 8) */
 .form-group:nth-child(2) {
     background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
     border-left: 4px solid #28a745;
@@ -132,7 +132,7 @@ label {
     border-bottom-color: #28a745;
 }
 
-/* ✅ CKEditor styling with larger height */
+/* CKEditor styling with larger height */
 .ckeditor-container {
     border: 1px solid #ced4da;
     border-radius: 8px;
@@ -220,7 +220,7 @@ label {
     margin-bottom: 0.25rem;
 }
 
-/* ✅ Character counter styling */
+/* Character counter styling */
 .character-counter {
     font-size: 12px;
     color: #6c757d;
@@ -245,7 +245,7 @@ label {
     font-weight: 600;
 }
 
-/* ✅ Input field styling */
+/* Input field styling */
 .form-control {
     border-radius: 8px;
     padding: 0.75rem 1rem;
@@ -265,7 +265,7 @@ label {
     font-style: italic;
 }
 
-/* ✅ Error states */
+/* Error states */
 .form-control.is-invalid {
     border-color: #dc3545 !important;
     padding-right: calc(1.5em + 0.75rem);
@@ -284,7 +284,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/* ✅ Responsive design */
+/* Responsive design */
 @media (max-width: 768px) {
     .modal-body {
         padding: 1rem;
@@ -313,7 +313,7 @@ label {
     }
 }
 
-/* ✅ Animation effects */
+/* Animation effects */
 .form-group {
     animation: fadeInUp 0.4s ease forwards;
 }
@@ -337,7 +337,7 @@ label {
     }
 }
 
-/* ✅ Loading states */
+/* Loading states */
 .ck-editor__editable.ck-blurred {
     opacity: 0.8;
 }
@@ -348,7 +348,7 @@ label {
     opacity: 1;
 }
 
-/* ✅ Button styling */
+/* Button styling */
 .btn-primary:focus,
 .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
@@ -359,7 +359,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/* ✅ CKEditor toolbar enhancements */
+/* CKEditor toolbar enhancements */
 .ck-toolbar .ck-button {
     border-radius: 4px !important;
 }
@@ -373,7 +373,7 @@ label {
     color: #1c75bc !important;
 }
 
-/* ✅ Custom placeholder styling */
+/* Custom placeholder styling */
 .ck-editor__editable .ck-placeholder::before {
     color: #adb5bd;
     font-style: italic;

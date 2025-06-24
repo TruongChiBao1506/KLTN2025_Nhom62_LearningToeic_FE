@@ -48,7 +48,7 @@ const GrammarContent = () => {
             
             console.log('🔍 Raw API response:', result);
             
-            // ✅ Handle the correct response structure from server
+            // Handle the correct response structure from server
             if (result && typeof result === 'object') {
                 // Server returns: { grammarContents: [...], currentPage: 1, totalPages: 1, ... }
                 const contents = result;

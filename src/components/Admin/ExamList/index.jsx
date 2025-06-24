@@ -239,7 +239,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                             {exam.examStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(exam._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -247,7 +247,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(exam._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable

@@ -24,7 +24,7 @@ const ExamQuestionList = ({
     isLoading = false,
     pagination
 }) => {
-    // ✅ Ensure examQuestions is always an array
+    // Ensure examQuestions is always an array
     const normalizedExamQuestions = Array.isArray(examQuestions) ? examQuestions : [];
 
     // States
@@ -65,7 +65,7 @@ const ExamQuestionList = ({
         const endIndex = startIndex + itemsPerPage;
         console.log('Pagination:', { startIndex, endIndex, currentPage, itemsPerPage });
 
-        // ✅ Add order number to each question
+        // Add order number to each question
         return filteredExamQuestions.slice(startIndex, endIndex).map((question, index) => ({
             ...question,
             orderNumber: startIndex + index + 1
@@ -92,12 +92,12 @@ const ExamQuestionList = ({
     const handleShowAddModal = () => setShowAddModal(true);
     const handleCloseAddModal = () => setShowAddModal(false);
 
-    // ✅ Helper function to get ID with different possible field names
+    // Helper function to get ID with different possible field names
     const getItemId = (item) => {
         return item.examQuestionId || item._id || item.questionId || item.id;
     };
 
-    // ✅ Helper function to get status
+    // Helper function to get status
     const getItemStatus = (item) => {
         return item.questionStatus !== undefined ? item.questionStatus :
             (item.examQuestionStatus !== undefined ? item.examQuestionStatus :
@@ -136,7 +136,7 @@ const ExamQuestionList = ({
         return date.toLocaleDateString('en-GB', options);
     };
 
-    // ✅ Media URL helpers (matching Vue version)
+    // Media URL helpers (matching Vue version)
     const getImageUrl = (imageName) => {
         if (imageName) {
             return `http://localhost:9004/images/${imageName}`;
@@ -151,7 +151,7 @@ const ExamQuestionList = ({
         return "";
     };
 
-    // ✅ Text limitation helpers (matching Vue version)
+    // Text limitation helpers (matching Vue version)
     const getLimitedPassage = (passage) => {
         const MAX_SCRIPT_LENGTH = 200;
         if (!passage) return '';
@@ -182,7 +182,7 @@ const ExamQuestionList = ({
         }
     };
 
-    // ✅ Show import button logic
+    // Show import button logic
     const showImportButton = useMemo(() => {
         return normalizedExamQuestions.length === 0;
     }, [normalizedExamQuestions.length]);

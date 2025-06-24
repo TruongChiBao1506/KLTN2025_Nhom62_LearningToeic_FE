@@ -252,7 +252,7 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                             {freeMaterial.materialStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(freeMaterial._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -260,7 +260,7 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(freeMaterial._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable

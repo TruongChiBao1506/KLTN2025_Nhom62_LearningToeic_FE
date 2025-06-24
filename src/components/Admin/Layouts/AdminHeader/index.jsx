@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faHome, 
-    faBell, 
-    faBars, 
-    faGear, 
-    faUser, 
-    faRightFromBracket 
+import {
+    faHome,
+    faBell,
+    faBars,
+    faGear,
+    faUser,
+    faRightFromBracket
 } from '@fortawesome/free-solid-svg-icons';
 import { useAdminStore } from '../../../../hooks/useAdminStore';
 import userService from '../../../../services/userService';
@@ -27,12 +27,12 @@ const HeaderComponent = ({ toggleSidebar }) => {
     const signOut = async () => {
         try {
             const result = await userService.signOut();
-            
+
             localStorage.removeItem('adminRefreshToken');
             localStorage.removeItem('adminToken');
             localStorage.removeItem('adminAccessTokenExpirationTime');
             localStorage.removeItem('adminRefreshTokenExpirationTime');
-            
+
             setIsAuthenticatedAdmin(false);
             navigate('/admin/signin');
         } catch (error) {
@@ -43,6 +43,14 @@ const HeaderComponent = ({ toggleSidebar }) => {
             localStorage.removeItem('adminRefreshTokenExpirationTime');
             setIsAuthenticatedAdmin(false);
             navigate('/admin/signin');
+        }
+    };
+    const handleToggleClick = () => {
+        console.log('🔘 Sidebar toggle button clicked');
+        if (toggleSidebar) {
+            toggleSidebar();
+        } else {
+            console.error('❌ toggleSidebar function not provided');
         }
     };
 
@@ -63,23 +71,23 @@ const HeaderComponent = ({ toggleSidebar }) => {
 
             const decoded = jwtDecode(adminToken);
             const username = decoded.username;
-            
+
             const userIdResult = await userService.getUserIdByUsername(username);
             let actualUserId;
-            
-            if(userIdResult !== null){
+
+            if (userIdResult !== null) {
                 actualUserId = userIdResult.userId;
             }
-            
+
             setUserId(actualUserId);
 
             const userDataResult = await userService.getUserById(actualUserId);
             let userData;
-            
+
             if (userDataResult !== null) {
                 userData = userDataResult;
             }
-            
+
             console.log('User data:', userData);
             setProfileImage(userData.image);
             console.log('Profile image:', userData.image);
@@ -106,7 +114,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
 
     useEffect(() => {
         getUserById();
-        
+
         // Cleanup timeout khi component unmount
         return () => {
             if (timeoutRef.current) {
@@ -118,10 +126,10 @@ const HeaderComponent = ({ toggleSidebar }) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-lg mt-2 rounded-1">
             <div className="container-fluid">
-                <button 
-                    className="btn btn-white border-0" 
-                    id="sidebarToggle" 
-                    onClick={toggleSidebar}
+                <button
+                    className="btn btn-white border-0"
+                    id="sidebarToggle"
+                    onClick={handleToggleClick}
                 >
                     <FontAwesomeIcon icon={faBars} />
                 </button>
@@ -134,7 +142,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                 <FontAwesomeIcon icon={faHome} />
                             </Link>
                         </li>
-                        
+
                         {/* Notification bell */}
                         <li className="nav-item me-2" style={{ fontSize: '18px' }}>
                             <a className="nav-link" href="#!">
@@ -143,27 +151,27 @@ const HeaderComponent = ({ toggleSidebar }) => {
                         </li>
 
                         {/* User dropdown với improved hover */}
-                        <li 
+                        <li
                             className="nav-item dropdown"
                             ref={dropdownRef}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                         >
-                            <a 
-                                href="#" 
+                            <a
+                                href="#"
                                 className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                                style={{ marginTop: '4px' }} 
+                                style={{ marginTop: '4px' }}
                                 aria-expanded={isDropdownOpen}
                             >
-                                <img 
-                                    src={getImageUrl(profileImage)} 
-                                    alt="User avatar" 
-                                    width="32" 
-                                    height="32" 
+                                <img
+                                    src={getImageUrl(profileImage)}
+                                    alt="User avatar"
+                                    width="32"
+                                    height="32"
                                     className="rounded-circle"
                                 />
                             </a>
-                            <ul 
+                            <ul
                                 className={`dropdown-menu text-small custom-dropdown ${isDropdownOpen ? 'show' : ''}`}
                                 style={{
                                     visibility: isDropdownOpen ? 'visible' : 'hidden',
@@ -172,9 +180,9 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                 }}
                             >
                                 <li>
-                                    <Link 
-                                        to="/admin/score-table/all" 
-                                        className="text-decoration-none text-dark"
+                                    <Link
+                                        to="/admin/score-table/all"
+                                        className="text-dark"
                                     >
                                         <div className="dropdown-item">
                                             <FontAwesomeIcon icon={faGear} className="me-2" />
@@ -183,9 +191,9 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link 
-                                        to="/admin/profile" 
-                                        className="text-decoration-none text-dark"
+                                    <Link
+                                        to="/admin/profile"
+                                        className="text-dark"
                                     >
                                         <div className="dropdown-item">
                                             <FontAwesomeIcon icon={faUser} className="me-2" />
@@ -197,8 +205,8 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                     <hr className="dropdown-divider" />
                                 </li>
                                 <li>
-                                    <div 
-                                        className="dropdown-item" 
+                                    <div
+                                        className="dropdown-item"
                                         onClick={signOut}
                                         style={{ cursor: 'pointer' }}
                                     >

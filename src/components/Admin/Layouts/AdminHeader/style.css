@@ -8,7 +8,6 @@
     cursor: pointer;
 }
 
-/* Cải thiện dropdown hover experience */
 .navbar .navbar-nav .dropdown {
     position: relative;
 }
@@ -30,31 +29,26 @@
     min-width: 200px;
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     pointer-events: none;
-    padding: 8px; /* Thêm padding cho dropdown */
-    overflow: hidden; /* Đảm bảo nội dung không tràn ra ngoài */
+    padding: 8px;
+    overflow: hidden;
 }
 
-/* Tạo vùng hover lớn hơn */
-.navbar .navbar-nav .dropdown::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -130px;
-    right: -10px;
-    bottom: -10px;
-    z-index: 999;
-    background: transparent;
-}
-
-/* Khi hover vào dropdown container */
-.navbar .navbar-nav .dropdown:hover .dropdown-menu {
+/* Chỉ hover chính xác vào dropdown item */
+.navbar .navbar-nav .dropdown:hover .dropdown-menu,
+.navbar .navbar-nav .dropdown .dropdown-menu:hover {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
 
-/* Styling cho dropdown items - FIX CHÍNH Ở ĐÂY */
+/* Giới hạn hover area chỉ trong avatar */
+.navbar .navbar-nav .dropdown > a {
+    display: inline-block;
+    padding: 4px; /* Nhỏ gọn hover area */
+}
+
+/* Styling cho dropdown items */
 .navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
     padding: 12px 16px;
     color: #212529;
@@ -62,13 +56,13 @@
     line-height: 1.5;
     white-space: nowrap;
     transition: all 0.2s ease;
-    border-radius: 6px; /* Tăng border-radius */
-    margin: 2px 0; /* Chỉ margin top/bottom, bỏ left/right */
+    border-radius: 6px;
+    margin: 2px 0;
     display: flex;
     align-items: center;
-    width: calc(100% - 4px); /* Đảm bảo không tràn ra ngoài */
-    box-sizing: border-box; /* Bao gồm padding trong width */
-    position: relative; /* Để có thể kiểm soát vị trí */
+    width: calc(100% - 4px);
+    box-sizing: border-box;
+    position: relative;
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
@@ -76,8 +70,8 @@
     color: #fff;
     border-radius: 50px;
     transform: translateX(2px);
-    margin-left: 2px; /* Compensate cho translateX */
-    width: calc(100% - 6px); /* Điều chỉnh width khi hover */
+    margin-left: 2px;
+    width: calc(100% - 6px);
 }
 
 /* Đảm bảo Link wrapper không ảnh hưởng */
@@ -99,7 +93,7 @@
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Avatar styling */
+/* Avatar styling với limited hover */
 .navbar .navbar-nav .dropdown .dropdown-toggle img {
     border-radius: 50%;
     transition: all 0.2s ease;
@@ -111,6 +105,29 @@
     transform: scale(1.05);
 }
 
+/* Nav items spacing để tránh overlap */
+.navbar .navbar-nav .nav-item {
+    margin: 0 8px; /* Tạo khoảng cách giữa các nav items */
+}
+
+.navbar .navbar-nav .nav-item:last-child {
+    margin-right: 0;
+}
+
+/* Home và Bell icons hover states */
+.navbar .navbar-nav .nav-item .nav-link {
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: #6c757d;
+}
+
+.navbar .navbar-nav .nav-item .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #1c75bc;
+    transform: translateY(-1px);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .navbar .navbar-nav .dropdown .dropdown-menu {
@@ -118,8 +135,8 @@
         min-width: 180px;
     }
     
-    .navbar .navbar-nav .dropdown::before {
-        left: -90px;
+    .navbar .navbar-nav .nav-item {
+        margin: 0 4px;
     }
 }
 
@@ -139,14 +156,9 @@
     animation: dropdownFadeIn 0.2s ease-out;
 }
 
-/* Đảm bảo dropdown không bị che bởi các elements khác */
+/* Z-index để dropdown không bị che */
 .navbar .navbar-nav .dropdown .dropdown-menu {
     z-index: 1050 !important;
-}
-
-/* Tăng delay khi rời chuột để tránh đóng quá nhanh */
-.navbar .navbar-nav .dropdown {
-    transition: all 0.1s ease;
 }
 
 .dropdown-toggle::after {
@@ -160,7 +172,7 @@
     }
 }
 
-/* Additional fixes để đảm bảo dropdown items không tràn */
+/* Additional fixes */
 .dropdown-menu li:first-child .dropdown-item {
     margin-top: 0;
 }
@@ -169,13 +181,29 @@
     margin-bottom: 0;
 }
 
-/* Nếu vẫn có vấn đề, có thể thêm max-width */
 .navbar .navbar-nav .dropdown .dropdown-menu {
-    max-width: 220px; /* Giới hạn width tối đa */
+    max-width: 220px;
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Ensure hover only works on specific area */
+.navbar .navbar-nav .dropdown .dropdown-toggle {
+    border-radius: 50%;
+    padding: 2px !important; /* Giới hạn padding */
+    margin: 0 !important;
+}
+
+/* Prevent dropdown from affecting other nav items */
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    pointer-events: none;
+}
+
+.navbar .navbar-nav .dropdown:hover .dropdown-menu,
+.navbar .navbar-nav .dropdown .dropdown-menu:hover {
+    pointer-events: auto;
 }

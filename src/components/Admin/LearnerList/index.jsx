@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import {
     faTrashCan,
     faUserCheck,
     faUserTimes,
@@ -16,7 +16,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     const [searchText, setSearchText] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(25);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
 
     // Filtered learners based on search text
@@ -24,11 +24,11 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
         if (!learners || !Array.isArray(learners)) {
             return [];
         }
-        
+
         if (!searchText) {
             return learners.slice();
         }
-        
+
         return learners.filter((learner) =>
             Object.values(learner).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
@@ -38,12 +38,12 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredLearners.length / itemsPerPage);
-    
+
     const paginatedLearners = useMemo(() => {
         if (!filteredLearners || filteredLearners.length === 0) {
             return [];
         }
-        
+
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return filteredLearners.slice(startIndex, endIndex);
@@ -84,38 +84,80 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
         }
     };
 
-    // Toggle user status (block/unblock)
-    const toggleUserStatus = async (learnerId, isBlocked, learnerName) => {
+    // toggle user status function
+    const toggleUserStatus = async (learnerId, newStatus) => {
         try {
-            if (isBlocked) {
-                await UserService.unblockUser(learnerId);
-                toast.success(`Bỏ chặn learner "${learnerName}" thành công!`, {
-                    autoClose: 1000,
-                });
-            } else {
-                await UserService.blockUser(learnerId);
-                toast.success(`Chặn learner "${learnerName}" thành công!`, {
-                    autoClose: 1000,
-                });
+            // Add confirmation dialog
+            const isBlocking = newStatus === 0; // 0 = block, 1 = unblock
+            const action = isBlocking ? 'chặn' : 'bỏ chặn';
+
+            const result = await Swal.fire({
+                title: `Bạn muốn ${action} learner này?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: isBlocking ? '#d33' : '#3085d6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: action.charAt(0).toUpperCase() + action.slice(1),
+                cancelButtonText: 'Hủy',
+            });
+
+            if (!result.isConfirmed) {
+                return;
             }
+
+            // Call API with proper data structure
+            await UserService.updateUserStatus(learnerId, newStatus);
+            console.log(`User ${learnerId} status updated to ${newStatus}`);
+
+            // Show success message
+            toast.success(`${action.charAt(0).toUpperCase() + action.slice(1)} thành công!`, {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+
+            // Refresh data
             getAllLearners();
         } catch (error) {
-            console.log(error);
+            console.error('Toggle status error:', error);
             toast.error('Có lỗi xảy ra khi cập nhật trạng thái!', {
+                position: "top-right",
                 autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
             });
         }
     };
 
+    // Helper function to check if user is blocked
+    const isUserBlocked = (learner) => {
+        // Check multiple possible status fields
+        if (learner.hasOwnProperty('status')) {
+            return learner.status === 0; // status: 0 = blocked, 1 = active
+        }
+        if (learner.hasOwnProperty('isActive')) {
+            return learner.isActive === 0; // isActive: 0 = blocked, 1 = active
+        }
+        if (learner.hasOwnProperty('isBlocked')) {
+            return learner.isBlocked === true; // isBlocked: true = blocked
+        }
+        return false; // Default to not blocked
+    };
+
     // Format date
     const formatDate = (dateTimeString) => {
-        const options = { 
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         };
         const date = new Date(dateTimeString);
         return date.toLocaleDateString('en-GB', options);
@@ -132,8 +174,8 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                     <div className="row">
                         {/* Items per page selector */}
                         <div className="col-2 mt-4">
-                            <select 
-                                className="form-select ms-3 w-50" 
+                            <select
+                                className="form-select ms-3 w-50"
                                 value={itemsPerPage}
                                 onChange={(e) => {
                                     setItemsPerPage(Number(e.target.value));
@@ -151,12 +193,12 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                         {/* Search input */}
                         <div className="col-7 mt-4">
                             <div className="input-group">
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
+                                <input
+                                    type="text"
+                                    className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm" 
+                                    placeholder="Tìm kiếm"
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -166,7 +208,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                             </div>
                         </div>
 
-                        {/* Empty space (no add button for learners) */}
+                        {/* Empty space */}
                         <div className="col-3 mt-4 d-flex justify-content-end">
                             {/* No add button for learners */}
                         </div>
@@ -189,12 +231,12 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                             <tbody>
                                 {paginatedLearners.length > 0 ? (
                                     paginatedLearners.map((learner, index) => (
-                                        <tr key={learner.userId || learner._id || index} className="table-row shadow-on-hover align-middle">
+                                        <tr key={learner._id || learner.userId || index} className="table-row shadow-on-hover align-middle">
                                             <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                             <td>
                                                 <img
                                                     src={learner.avatar || "https://via.placeholder.com/40x40?text=User"}
-                                                    alt={learner.username || 'User'}
+                                                    alt={learner.username || learner.name || 'User'}
                                                     className="topic-image rounded-5"
                                                     style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                                                 />
@@ -206,28 +248,32 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                 <span className="text-muted">{learner.email}</span>
                                             </td>
                                             <td>
-                                                {learner.isBlocked ? (
-                                                    <span 
+                                                {isUserBlocked(learner) ? (
+                                                    <span
                                                         onClick={() => toggleUserStatus(
-                                                            learner.userId || learner._id,
-                                                            learner.isBlocked,
+                                                            learner._id,
+                                                            1, // unblock (change status to 1)
                                                             learner.username || learner.name
                                                         )}
-                                                        className="btn badge text-bg-danger"
-                                                        style={{cursor: 'pointer'}}
+                                                        className="btn badge text-bg-danger rounded-5"
+                                                        style={{ cursor: 'pointer' }}
+                                                        title="Click để bỏ chặn"
                                                     >
+                                                        <FontAwesomeIcon icon={faUserTimes} className="me-1" />
                                                         Blocked
                                                     </span>
                                                 ) : (
-                                                    <span 
+                                                    <span
                                                         onClick={() => toggleUserStatus(
-                                                            learner.userId || learner._id,
-                                                            learner.isBlocked,
+                                                            learner._id,
+                                                            0, // block (change status to 0)
                                                             learner.username || learner.name
                                                         )}
-                                                        className="btn badge text-bg-success"
-                                                        style={{cursor: 'pointer'}}
+                                                        className="btn badge text-bg-success rounded-5"
+                                                        style={{ cursor: 'pointer' }}
+                                                        title="Click để chặn"
                                                     >
+                                                        <FontAwesomeIcon icon={faUserCheck} className="me-1" />
                                                         Active
                                                     </span>
                                                 )}
@@ -236,10 +282,10 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                             <td>
                                                 <div className="d-flex justify-content-center">
                                                     {/* Delete button */}
-                                                    <button 
-                                                        type="button" 
+                                                    <button
+                                                        type="button"
                                                         onClick={() => handleDeleteLearner(
-                                                            learner.userId || learner._id,
+                                                            learner._id || learner.userId,
                                                             learner.username || learner.name
                                                         )}
                                                         className="btn btn-white border-0"
@@ -264,8 +310,8 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                             <nav aria-label="Page navigation">
                                 <ul className="pagination justify-content-center">
                                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage - 1)}
                                             disabled={currentPage === 1}
                                         >
@@ -273,12 +319,12 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                         </button>
                                     </li>
                                     {Array.from({ length: totalPageCount }, (_, i) => i + 1).map((pageNumber) => (
-                                        <li 
-                                            key={pageNumber} 
+                                        <li
+                                            key={pageNumber}
                                             className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
                                         >
-                                            <button 
-                                                className="page-link" 
+                                            <button
+                                                className="page-link"
                                                 onClick={() => changePage(pageNumber)}
                                             >
                                                 {pageNumber}
@@ -286,8 +332,8 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                         </li>
                                     ))}
                                     <li className={`page-item ${currentPage === totalPageCount ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage + 1)}
                                             disabled={currentPage === totalPageCount}
                                         >

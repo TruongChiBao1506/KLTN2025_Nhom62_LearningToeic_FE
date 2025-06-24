@@ -86,7 +86,7 @@ const Dashboard = () => {
     const countTotalExams = async () => {
         try {
             const result = await examService.countTotalExams();
-            const count = result.totalExams;
+            const count = result;
             console.log('Count exams:', count);
             return count;
         } catch (error) {
@@ -160,7 +160,7 @@ const Dashboard = () => {
                             data: columnChartData.map((item) => item.y),
                             color: '#17a2b8'
                         }],
-                        // ✅ Tắt accessibility thay vì bật
+                        // Tắt accessibility thay vì bật
                         accessibility: {
                             enabled: false
                         }

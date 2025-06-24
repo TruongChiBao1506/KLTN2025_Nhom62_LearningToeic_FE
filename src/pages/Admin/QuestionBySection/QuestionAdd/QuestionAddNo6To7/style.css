@@ -72,7 +72,7 @@ label {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ CKEditor styling */
+/* CKEditor styling */
 .ckeditor-container {
     border: 1px solid #ced4da;
     border-radius: 4px;
@@ -85,7 +85,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-/* ✅ Multiple CKEditor instances styling */
+/* Multiple CKEditor instances styling */
 .form-group:nth-child(1) .ckeditor-container {
     border-left: 4px solid #28a745; /* Green for question text */
 }
@@ -146,7 +146,7 @@ label {
     color: #6c757d;
 }
 
-/* ✅ Enhanced form group styling */
+/* Enhanced form group styling */
 .form-group {
     position: relative;
     padding: 1rem;
@@ -171,7 +171,7 @@ label {
     width: 100%;
 }
 
-/* ✅ Question text specific styling */
+/* Question text specific styling */
 .form-group:nth-child(1) {
     background: linear-gradient(135deg, #f8fff9 0%, #f8f9fa 100%);
     border-left: 4px solid #28a745;
@@ -182,7 +182,7 @@ label {
     border-bottom-color: #28a745;
 }
 
-/* ✅ Suggested answer specific styling */
+/* Suggested answer specific styling */
 .form-group:nth-child(2) {
     background: linear-gradient(135deg, #f0f8ff 0%, #f8f9fa 100%);
     border-left: 4px solid #1c75bc;
@@ -193,7 +193,7 @@ label {
     border-bottom-color: #1c75bc;
 }
 
-/* ✅ Error states */
+/* Error states */
 .ckeditor-container.is-invalid {
     border-color: #dc3545;
 }
@@ -203,7 +203,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/* ✅ Responsive design */
+/* Responsive design */
 @media (max-width: 768px) {
     .modal-body {
         padding: 1rem;
@@ -223,7 +223,7 @@ label {
     }
 }
 
-/* ✅ Loading states */
+/* Loading states */
 .ck-editor__editable.ck-blurred {
     opacity: 0.7;
 }
@@ -234,20 +234,20 @@ label {
     opacity: 1;
 }
 
-/* ✅ Focus states */
+/* Focus states */
 .form-control:focus {
     outline: 0;
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-/* ✅ Custom placeholder styling */
+/* Custom placeholder styling */
 .ck-editor__editable .ck-placeholder::before {
     color: #6c757d;
     font-style: italic;
 }
 
-/* ✅ Button styling */
+/* Button styling */
 .btn-primary:focus,
 .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
@@ -258,7 +258,7 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/* ✅ Animation effects */
+/* Animation effects */
 .form-group {
     animation: fadeInUp 0.3s ease forwards;
 }
@@ -282,7 +282,7 @@ label {
     }
 }
 
-/* ✅ CKEditor table styling */
+/* CKEditor table styling */
 .ck-content .table {
     margin: 1rem 0;
 }
@@ -303,7 +303,7 @@ label {
     font-weight: bold;
 }
 
-/* ✅ CKEditor image styling */
+/* CKEditor image styling */
 .ck-content .image {
     display: table;
     clear: both;

@@ -231,7 +231,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                                             {test.testStatus === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(test.testId || test._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -239,7 +239,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(test.testId || test._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable

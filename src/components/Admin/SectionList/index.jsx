@@ -61,7 +61,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
         setCurrentPage(1);
     }, [sections]);
 
-    // ✅ Modal handlers
+    // Modal handlers
     const handleShowAddModal = () => {
         console.log('Opening Add Modal');
         setShowAddModal(true);
@@ -199,7 +199,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                             </div>
                         </div>
 
-                        {/* ✅ Add button - dùng onClick thay vì data-bs-toggle */}
+                        {/* Add button - dùng onClick thay vì data-bs-toggle */}
                         <div className="col-3 mt-4 d-flex justify-content-end">
                             <button 
                                 type="button" 
@@ -244,7 +244,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                             {section.status === 1 ? (
                                                 <span 
                                                     onClick={() => toggleStatus(section._id, 0)}
-                                                    className="btn badge text-bg-success"
+                                                    className="btn badge text-bg-success rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Enable
@@ -252,7 +252,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                             ) : (
                                                 <span 
                                                     onClick={() => toggleStatus(section._id, 1)}
-                                                    className="btn badge text-bg-danger"
+                                                    className="btn badge text-bg-danger rounded-5"
                                                     style={{cursor: 'pointer'}}
                                                 >
                                                     Disable
@@ -261,7 +261,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                         </td>
                                         <td>
                                             <div className="d-flex justify-content-center">
-                                                {/* ✅ Edit button - dùng onClick */}
+                                                {/* Edit button - dùng onClick */}
                                                 <button 
                                                     type="button" 
                                                     className="btn btn-white border-0" 

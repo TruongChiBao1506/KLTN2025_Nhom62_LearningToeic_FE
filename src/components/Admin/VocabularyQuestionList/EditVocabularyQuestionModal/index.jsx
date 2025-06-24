@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import VocabularyQuestionEdit from '../../../../pages/Admin/VocabularyQuestion/VocabularyQuestionEdit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const EditVocabularyQuestionModal = ({ show, onHide, vocabularyQuestionId, topicId, retrieveVocabularyQuestions }) => {
     return (
@@ -15,7 +17,7 @@ const EditVocabularyQuestionModal = ({ show, onHide, vocabularyQuestionId, topic
         >
             <Modal.Header closeButton className="bg-warning text-dark">
                 <Modal.Title>
-                    <i className="fas fa-edit me-2"></i>
+                    <FontAwesomeIcon icon={faEdit} className="me-2" style={{color: 'rgb(192, 129, 13)'}} />
                     Edit Vocabulary Question
                 </Modal.Title>
             </Modal.Header>

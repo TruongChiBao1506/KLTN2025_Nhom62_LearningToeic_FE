@@ -39,7 +39,7 @@ const LessonAdd = ({ sectionId, retrieveLessons, onClose }) => {
             // Reset form
             resetForm();
             
-            // ✅ Close modal
+            // Close modal
             if (onClose) {
                 onClose();
             }

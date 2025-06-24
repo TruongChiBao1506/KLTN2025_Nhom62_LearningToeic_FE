@@ -7,13 +7,13 @@ class ExamService {
 
     // Get FullTest exams
     async getFullTest() {
-        const response = await axiosClient.get(`${this.baseUrl}/full/tests`);
+        const response = await axiosClient.get(`${this.baseUrl}/full-tests`);
         return response;
     }
 
     // Get MiniTest exams
     async getMiniTest() {
-        const response = await axiosClient.get(`${this.baseUrl}/mini/tests`);
+        const response = await axiosClient.get(`${this.baseUrl}/mini-tests`);
         return response;
     }
 
@@ -31,21 +31,13 @@ class ExamService {
 
     // Create new exam
     async create(data) {
-        const response = await axiosClient.post(`${this.baseUrl}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        const response = await axiosClient.post(`${this.baseUrl}`, data);
         return response;
     }
 
     // Update exam
     async update(id, data) {
-        const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        const response = await axiosClient.put(`${this.baseUrl}/${id}`, data);
         return response;
     }
 
@@ -65,7 +57,7 @@ class ExamService {
 
     // Count total exams
     async countTotalExams() {
-        const response = await axiosClient.get(`${this.baseUrl}/count/total`);
+        const response = await axiosClient.get(`${this.baseUrl}/total`);
         return response;
     }
 

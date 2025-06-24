@@ -28,6 +28,7 @@ import VocabularyQuestion from './pages/Admin/VocabularyQuestion';
 import GrammarContent from './pages/Admin/GrammarContent';
 import GrammarQuestion from './pages/Admin/GrammarQuestion';
 import ExamQuestion from './pages/Admin/ExamQuestion';
+import ScoreTable from './pages/Admin/ScoreTable';
 
 function App() {
   return (
@@ -66,6 +67,7 @@ function App() {
           {/* Protected Routes */}
           <Route path="feedback" element={<Feedback />} />
           <Route path="free-material" element={<FreeMaterial />} />
+          <Route path="score-table/all" element={<ScoreTable />} />
 
 
           {/* Thêm các route con khác ở đây */}

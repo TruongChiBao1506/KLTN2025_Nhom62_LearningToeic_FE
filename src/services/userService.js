@@ -42,7 +42,9 @@ class UserService {
     }
 
     async updateUserStatus(userId, newStatus) {
-        const response = await axiosClient.put(`${this.baseUrl}/${userId}/status`, newStatus);
+        const response = await axiosClient.put(`${this.baseUrl}/${userId}/status`, {
+            status: newStatus
+        });
         return response;
     }
     async deleteUser(userId) {

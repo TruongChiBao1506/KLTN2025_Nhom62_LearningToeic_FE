@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import GrammarQuestionEdit from '../../../../pages/Admin/GrammarQuestion/GrammarQuestionEdit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const EditGrammarQuestionModal = ({ 
     show, 
@@ -18,9 +20,9 @@ const EditGrammarQuestionModal = ({
             keyboard={false}
             className="zoom"
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-warning text-white">
                 <Modal.Title>
-                    <i className="fas fa-edit me-2"></i>
+                    <FontAwesomeIcon icon={faEdit} className="me-2" style={{color: 'rgb(192, 129, 13)'}} />
                     Chỉnh sửa Grammar Question
                 </Modal.Title>
             </Modal.Header>

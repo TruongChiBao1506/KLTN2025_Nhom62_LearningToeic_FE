@@ -15,9 +15,9 @@ const AddExamModal = ({ show, onHide, retrieveExams }) => {
             keyboard={false}
             className="zoom"
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-success text-white">
                 <Modal.Title>
-                    <FontAwesomeIcon icon={faCirclePlus} className="text-success me-2" />
+                    <FontAwesomeIcon icon={faCirclePlus} className="text-primary me-2" />
                     Add Exam
                 </Modal.Title>
             </Modal.Header>

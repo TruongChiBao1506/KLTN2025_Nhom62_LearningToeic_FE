@@ -37,7 +37,7 @@ const ExamQuestion = () => {
         });
     }, []);
 
-    // ✅ Fix the mapping logic
+    // Fix the mapping logic
     const retrieveExamQuestions = async () => {
         try {
             setIsLoading(true);
@@ -129,7 +129,7 @@ const ExamQuestion = () => {
                         // Content
                         questionContent: question.questionContent || question.examQuestionContent,
 
-                        // Parts - ✅ Important fix here
+                        // Parts - Important fix here
                         questionPart: question.questionPart || question.partNumber,
                         partNumber: question.partNumber || question.questionPart,
 

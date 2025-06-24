@@ -18,7 +18,7 @@ const EditLessonModal = ({ show, onHide, lessonId, sectionId, retrieveLessons })
             className="zoom"
             style={{ zIndex: 1050 }}
         >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="bg-warning text-white">
                 <Modal.Title>
                     <FontAwesomeIcon icon={faEdit} className="me-2" style={{color: 'rgb(192, 129, 13)'}} />
                     Edit Lesson
