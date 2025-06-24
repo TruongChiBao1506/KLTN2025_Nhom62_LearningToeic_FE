@@ -1,0 +1,131 @@
+.button {
+  background-color: #052649;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0a3a6d;
+}
+
+.button.bg-primary {
+  background-color: #0d6efd;
+}
+
+.writing-item {
+  margin-top: 20px;
+}
+
+.question-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.badge {
+  padding: 8px 12px;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.rounded-pill {
+  border-radius: 50rem !important;
+}
+
+.bg-primary-subtle {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.border-primary-subtle {
+  border-color: rgba(13, 110, 253, 0.3) !important;
+}
+
+.text-primary-emphasis {
+  color: #0a58ca !important;
+}
+
+.bg-success-subtle {
+  background-color: rgba(25, 135, 84, 0.1);
+}
+
+.border-successs-subtle {
+  border-color: rgba(25, 135, 84, 0.3) !important;
+}
+
+.text-success-emphasis {
+  color: #146c43 !important;
+}
+
+.bg-info-subtle {
+  background-color: rgba(13, 202, 240, 0.1);
+}
+
+.border-info-subtle {
+  border-color: rgba(13, 202, 240, 0.3) !important;
+}
+
+.text-info-emphasis {
+  color: #087990 !important;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+button.button5 {
+  background-color: #e8f2ff;
+  color: #35509a;
+  border: none;
+  font-weight: bold;
+}
+
+.form-floating {
+  position: relative;
+}
+
+.form-floating textarea.form-control {
+  height: 200px;
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.form-floating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0.75rem;
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transform-origin: 0 0;
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.form-floating textarea.form-control:focus~label,
+.form-floating textarea.form-control:not(:placeholder-shown)~label {
+  opacity: 0.65;
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #198754;
+  border-color: #198754;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #157347;
+  border-color: #146c43;
+}

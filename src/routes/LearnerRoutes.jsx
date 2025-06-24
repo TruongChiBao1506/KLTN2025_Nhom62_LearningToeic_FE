@@ -16,6 +16,7 @@ import Section from "../pages/Learner/Section";
 import SectionSW from "../pages/Learner/SectionSW";
 import Lesson from "../pages/Learner/Lesson";
 import Study from "../pages/Learner/Study";
+import StudySW from "../pages/Learner/StudySW";
 
 const LearnerRoutes = () => {
   return (
