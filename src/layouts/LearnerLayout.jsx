@@ -19,6 +19,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
+import CheckAccessToken from "../components/Learner/Layouts/CheckAccessToken";
+import authService from "../services/authService";
 
 import "./LearnerLayout.css";
 
@@ -37,11 +39,25 @@ const LearnerLayout = () => {
       location.pathname === path || location.pathname.startsWith(`${path}/`)
     );
   };
-
   const handleLogout = async () => {
     try {
-      await dispatch(logout());
+      // Sử dụng authService để đăng xuất
+      await authService.signOut();
+      
+      // Xóa thông tin người học trong localStorage
+      localStorage.removeItem("learnerToken");
+      localStorage.removeItem("learnerRefreshToken");
+      localStorage.removeItem("learnerAccessTokenExpirationTime");
+      localStorage.removeItem("learnerRefreshTokenExpirationTime");
+      localStorage.removeItem("LearnerAuthenticated");
+      
+      // Cập nhật Redux store nếu cần
+      dispatch(logout());
+      
       toast.success("Đăng xuất thành công!");
+      
+      // Chuyển hướng về trang đăng nhập
+      window.location.href = "/signin";
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       toast.error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
@@ -106,9 +122,9 @@ const LearnerLayout = () => {
 
     fetchNotifications();
   }, []);
-
   return (
     <div className="learner-layout">
+      <CheckAccessToken />
       {/* Mobile Menu Overlay */}
       <div
         className={`mobile-menu-overlay ${mobileMenuOpen ? "active" : ""}`}

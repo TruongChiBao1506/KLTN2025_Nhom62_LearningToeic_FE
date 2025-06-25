@@ -45,11 +45,18 @@ class UserService {
         const response = await axiosClient.put(`${this.baseUrl}/${userId}/status`, newStatus);
         return response;
     }
+
     async deleteUser(userId) {
         const response = await axiosClient.delete(`${this.baseUrl}/${userId}`);
         return response;
     }
-
+      // Phương thức kiểm tra email đã tồn tại chưa
+    async checkEmailExists(email) {
+        const response = await axiosClient.get(`/auth/check-email-exists`, {
+            params: { email }
+        });
+        return response.data;
+    }
 }
 
 export default new UserService();

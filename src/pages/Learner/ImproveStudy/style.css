@@ -1,0 +1,38 @@
+.button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  border: none;
+}
+
+.button:hover {
+  background-color: #fff;
+  color: #052649;
+  border: 1px solid #052649;
+}
+
+button i {
+  font-size: 20px;
+  color: #000;
+}
+
+h2 {
+  color: #052649;
+  font-weight: bold;
+}
+
+.highlight-row {
+  background-color: #e9ecef;
+  font-weight: 500;
+}
+
+.form-select:focus {
+  border-color: #052649;
+  box-shadow: 0 0 0 0.25rem rgba(5, 38, 73, 0.25);
+}
