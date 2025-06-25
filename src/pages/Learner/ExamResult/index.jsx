@@ -5,8 +5,8 @@ import 'react-circular-progressbar/dist/styles.css';
 import userExamService from '../../../services/userExamService';
 import userExamQuestionService from '../../../services/userExamQuestionService';
 import './style.css';
-import BangDiem1 from '../../../assets/images/bang-diem-toeic-1.jpg';
-import BangDiem2 from '../../../assets/images/bang-diem-toeic-2.jpg';
+import BangDiem1 from '../../../assets/bang-diem-toeic-1.jpg';
+import BangDiem2 from '../../../assets/bang-diem-toeic-2.jpg';
 
 const ExamResult = () => {
   const { userExamId } = useParams();
@@ -25,11 +25,29 @@ const ExamResult = () => {
   const [translatedTextTemp, setTranslatedTextTemp] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-
   const maxScore = 990;
   const maxListeningScore = 495;
   const maxReadingScore = 495;
   const allParts = [1, 2, 3, 4, 5, 6, 7];
+  
+  // Các hàm tiện ích
+  const formatTime = (time) => {
+    let formattedTime = "";
+
+    if (time >= 3600) {
+      const hours = Math.floor(time / 3600);
+      formattedTime += `${padZero(hours)}:${padZero(Math.floor((time % 3600) / 60))}:${padZero(time % 60)}`;
+    } else if (time >= 60) {
+      formattedTime += `${padZero(Math.floor(time / 60))}:${padZero(time % 60)}`;
+    } else {
+      formattedTime += `00:00:${padZero(time)}`;
+    }
+    return formattedTime;
+  };
+
+  const padZero = (number) => {
+    return number.toString().padStart(2, "0");
+  };
 
   useEffect(() => {
     const retrieveUserExamById = async () => {
@@ -69,33 +87,12 @@ const ExamResult = () => {
       } catch (error) {
         console.error('Lỗi khi lấy danh sách câu hỏi theo nhóm:', error);
       } finally {
-        setLoading(false);
-      }
-    };
-
-    retrieveUserExamById();
+        setLoading(false);      }
+    };    retrieveUserExamById();
     retrieveQuestionsByUserExamId();
     getQuestionsByUserExamIdGroupedByType();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userExamId]);
-
-  // Các hàm tiện ích
-  const formatTime = (time) => {
-    let formattedTime = "";
-
-    if (time >= 3600) {
-      const hours = Math.floor(time / 3600);
-      formattedTime += `${padZero(hours)}:${padZero(Math.floor((time % 3600) / 60))}:${padZero(time % 60)}`;
-    } else if (time >= 60) {
-      formattedTime += `${padZero(Math.floor(time / 60))}:${padZero(time % 60)}`;
-    } else {
-      formattedTime += `00:00:${padZero(time)}`;
-    }
-    return formattedTime;
-  };
-
-  const padZero = (number) => {
-    return number.toString().padStart(2, "0");
-  };
 
   // Phân tích câu hỏi theo nhóm
   const calculateCorrectCount = (questions) => {
@@ -142,7 +139,6 @@ const ExamResult = () => {
     }
     return grouped;
   };
-
   const groupedQuestions = groupQuestionsByAudioOrPassage(filteredQuestionsByPart());
 
   // Hiển thị audio, hình ảnh, đoạn văn
@@ -247,9 +243,9 @@ const ExamResult = () => {
       console.error("Lỗi khi dịch văn bản:", error);
     }
   };
-
   useEffect(() => {
     translateText(textToTranslate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [textToTranslate]);
 
   // Xử lý chuyển đổi văn bản thành giọng nói
@@ -563,11 +559,10 @@ const ExamResult = () => {
                         <p className="total-score">TOTAL SCORE</p>
                       </div>
 
-                      <div className="col-8">
-                        <div className="card-footer border-0 d-flex justify-content-center">
-                          <a href="#" className="btn btn-light">
+                      <div className="col-8">                        <div className="card-footer border-0 d-flex justify-content-center">
+                          <button className="btn btn-light">
                             <span style={{ fontSize: '20px' }}>🎯 Mục tiêu: {userExamById.goalScore}</span>
-                          </a>
+                          </button>
                         </div>
 
                         <div className="card-body border mt-3 me-3">
@@ -750,10 +745,9 @@ const ExamResult = () => {
                                 )}
 
                                 <div className="row">
-                                  <div className={`
-                                    ${(shouldDisplayImage(groupQuestions[0]) || shouldDisplayPassage(groupQuestions[0])) && groupQuestions.length >= 2 ? 'col-md-6' : ''}
+                                  <div className={`                                    ${(shouldDisplayImage(groupQuestions[0]) || shouldDisplayPassage(groupQuestions[0])) && groupQuestions.length >= 2 ? 'col-md-6' : ''}
                                     ${shouldDisplayImage(groupQuestions[0]) && groupQuestions.length === 1 ? 'col-md-12' : ''}
-                                    ${(shouldDisplayImage(groupQuestions[0]) || shouldDisplayPassage(groupQuestions[0]) && groupQuestions.length >= 2) ? 'bg-light rounded' : ''}
+                                    ${((shouldDisplayImage(groupQuestions[0]) || (shouldDisplayPassage(groupQuestions[0]) && groupQuestions.length >= 2))) ? 'bg-light rounded' : ''}
                                     ${shouldDisplayPassage(groupQuestions[0]) && groupQuestions.length >= 4 ? 'scrollable-container' : ''}
                                   `}>
                                     <div className="audio-image-container mt-3">

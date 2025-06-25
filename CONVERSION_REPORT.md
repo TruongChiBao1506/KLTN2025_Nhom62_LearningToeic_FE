@@ -51,12 +51,14 @@
    - commentService - Service quản lý bình luận
    - userExamService - Service quản lý bài thi của người dùng
    - userExamQuestionService - Service quản lý câu trả lời của người dùng
-   - userVocabularyService - Service quản lý từ vựng người dùng
-   - scoreTableService - Service quản lý bảng điểm
+   - userVocabularyService - Service quản lý từ vựng của người dùng
+   - scoreTableService - Service quản lý bảng điểm TOEIC
    - userGoalService - Service quản lý mục tiêu học tập
    - questionService - Service quản lý câu hỏi
    - authService - Service quản lý xác thực người dùng
    - userService - Service quản lý thông tin người dùng
+   - learnerExamService - Service quản lý bài thi cho learner (đã chuẩn hóa)
+   - learnerProgressService - Service quản lý tiến độ của learner (đã chuẩn hóa)
 
 4. **Tối ưu hóa Services:**
    - Đã tối ưu lại phân chia trách nhiệm giữa `authService` và `userService`
@@ -135,6 +137,10 @@
 - **Tổng số trang đã chuyển đổi**: 17/19 (89%)
 - **Tổng số component đã chuyển đổi**: 14/14 (100%)
 - **Tổng số service đã cập nhật**: 14/14 (100%)
+- **Lỗi đã giải quyết**: 
+  - ✅ Sửa lỗi import date-fns trong CommentComponent
+  - ✅ Tạo và cập nhật các file CSS thiếu (test.css, navtab.css)
+  - ✅ Chuẩn hóa import asset thông qua process.env trực tiếp
 
 1. **Đã hoàn thiện toàn bộ các trang đã lên kế hoạch:**
    - ✅ Blog - Hoàn thành ngày 25/06/2025
@@ -146,6 +152,7 @@
    - ✅ Kiểm thử thủ công toàn bộ các chức năng
    - ✅ Kiểm tra tương thích trên các trình duyệt khác nhau (Chrome, Firefox, Edge)
    - ✅ Tối ưu hiệu suất tải trang
+   - ✅ Sửa lỗi build liên quan đến dependencies và assets
    - Viết unit test cho các component chính (đang thực hiện)
 
 ---

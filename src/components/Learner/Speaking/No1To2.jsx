@@ -7,7 +7,7 @@ import {
   faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import "./style.css";
-import TestService from "../../../../services/testService";
+import TestService from "../../../services/testService";
 
 const No1To2 = ({ testId }) => {
   const [questions, setQuestions] = useState([]);

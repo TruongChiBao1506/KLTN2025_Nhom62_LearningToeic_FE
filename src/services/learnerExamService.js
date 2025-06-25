@@ -1,14 +1,13 @@
-import axios from "axios";
-import { API_URL } from "../config";
+import axiosClient from "./axiosClient";
 
 const learnerExamService = {
   // Get all exams available for the learner
   getAllExams: async () => {
     try {
-      const response = await axios.get(`${API_URL}/learner/exams`);
-      return response.data;
+      const response = await axiosClient.get(`/learner/exams`);
+      return response;
     } catch (error) {
-      console.error("Error fetching all exams:", error);
+      console.error("Lỗi khi tải tất cả bài thi:", error);
       throw error;
     }
   },
@@ -16,10 +15,10 @@ const learnerExamService = {
   // Get an exam by ID
   getExamById: async (examId) => {
     try {
-      const response = await axios.get(`${API_URL}/learner/exams/${examId}`);
-      return response.data;
+      const response = await axiosClient.get(`/learner/exams/${examId}`);
+      return response;
     } catch (error) {
-      console.error(`Error fetching exam ${examId}:`, error);
+      console.error(`Lỗi khi tải bài thi ${examId}:`, error);
       throw error;
     }
   },
@@ -27,13 +26,13 @@ const learnerExamService = {
   // Submit an exam attempt
   submitExam: async (examId, answers) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/learner/exams/${examId}/submit`,
+      const response = await axiosClient.post(
+        `/learner/exams/${examId}/submit`,
         { answers }
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error submitting exam:", error);
+      console.error("Lỗi khi nộp bài thi:", error);
       throw error;
     }
   },
@@ -41,16 +40,16 @@ const learnerExamService = {
   // Save progress for an exam (for resuming later)
   saveProgress: async (examId, answers, timeSpent) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/learner/exams/${examId}/save-progress`,
+      const response = await axiosClient.post(
+        `/learner/exams/${examId}/save-progress`,
         {
           answers,
           timeSpent,
         }
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error saving exam progress:", error);
+      console.error("Lỗi khi lưu tiến trình bài thi:", error);
       throw error;
     }
   },
@@ -58,12 +57,12 @@ const learnerExamService = {
   // Get exam result by attempt ID
   getExamResult: async (attemptId) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/learner/exam-results/${attemptId}`
+      const response = await axiosClient.get(
+        `/learner/exam-results/${attemptId}`
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error fetching exam result:", error);
+      console.error("Lỗi khi tải kết quả bài thi:", error);
       throw error;
     }
   },
@@ -71,10 +70,10 @@ const learnerExamService = {
   // Get all exam results for the learner
   getExamResults: async () => {
     try {
-      const response = await axios.get(`${API_URL}/learner/exam-results`);
-      return response.data;
+      const response = await axiosClient.get(`/learner/exam-results`);
+      return response;
     } catch (error) {
-      console.error("Error fetching exam results:", error);
+      console.error("Lỗi khi tải kết quả bài thi:", error);
       throw error;
     }
   },
@@ -82,12 +81,12 @@ const learnerExamService = {
   // Get count of completed exams
   getCompletedExamsCount: async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/learner/exams/completed/count`
+      const response = await axiosClient.get(
+        `/learner/exams/completed/count`
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error fetching completed exams count:", error);
+      console.error("Lỗi khi tải số lượng bài thi đã hoàn thành:", error);
       throw error;
     }
   },
@@ -95,12 +94,12 @@ const learnerExamService = {
   // Get average score of all completed exams
   getAverageScore: async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/learner/exams/average-score`
+      const response = await axiosClient.get(
+        `/learner/exams/average-score`
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error fetching average score:", error);
+      console.error("Lỗi khi tải điểm trung bình:", error);
       throw error;
     }
   },
@@ -108,10 +107,10 @@ const learnerExamService = {
   // Get upcoming scheduled exam
   getUpcomingExam: async () => {
     try {
-      const response = await axios.get(`${API_URL}/learner/exams/upcoming`);
-      return response.data;
+      const response = await axiosClient.get(`/learner/exams/upcoming`);
+      return response;
     } catch (error) {
-      console.error("Error fetching upcoming exam:", error);
+      console.error("Lỗi khi tải bài thi sắp tới:", error);
       throw error;
     }
   },
@@ -119,15 +118,14 @@ const learnerExamService = {
   // Get recent exam attempts
   getRecentExams: async (limit = 5) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/learner/exams/recent?limit=${limit}`
+      const response = await axiosClient.get(
+        `/learner/exams/recent?limit=${limit}`
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error("Error fetching recent exams:", error);
+      console.error("Lỗi khi tải bài thi gần đây:", error);
       throw error;
-    }
-  },
+    }  },
 };
 
 export default learnerExamService;

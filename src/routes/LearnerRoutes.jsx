@@ -33,132 +33,206 @@ import ProtectedRoute from "../components/Learner/ProtectedRoute";
 
 const LearnerRoutes = () => {
   return (
-    <Routes>      <Route path="/signin" element={<SignIn />} />
+    <Routes>
+      {" "}
+      <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/verification" element={<Verification />} />
-        <Route path="/" element={<LearnerLayout />}>
-        <Route index element={
-          <ProtectedRoute>
-            <LearnerDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="dashboard" element={
-          <ProtectedRoute>
-            <LearnerDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="exams" element={
-          <ProtectedRoute>
-            <ExamList />
-          </ProtectedRoute>
-        } />
-        <Route path="exams/:id" element={
-          <ProtectedRoute>
-            <ExamDetail />
-          </ProtectedRoute>
-        } />
-        <Route path="materials" element={
-          <ProtectedRoute>
-            <LearningMaterials />
-          </ProtectedRoute>
-        } />
-        <Route path="progress" element={
-          <ProtectedRoute>
-            <Progress />
-          </ProtectedRoute>
-        } />
-        <Route path="profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
-        <Route path="grammar" element={
-          <ProtectedRoute>
-            <Grammar />
-          </ProtectedRoute>
-        } />
-        <Route path="grammar/:grammarId" element={
-          <ProtectedRoute>
-            <GrammarDetail />
-          </ProtectedRoute>
-        } />
-        <Route path="notes" element={
-          <ProtectedRoute>
-            <Note />
-          </ProtectedRoute>
-        } />
-        <Route path="topics" element={
-          <ProtectedRoute>
-            <Topic />
-          </ProtectedRoute>
-        } />
-        <Route path="topic/:topicId" element={
-          <ProtectedRoute>
-            <TopicDetail />
-          </ProtectedRoute>
-        } />
-        <Route path="section/:sectionId" element={
-          <ProtectedRoute>
-            <Section />
-          </ProtectedRoute>
-        } />
-        <Route path="practice-sw/:sectionId" element={
-          <ProtectedRoute>
-            <SectionSW />
-          </ProtectedRoute>
-        } />
-        <Route path="section/:sectionId/lesson/:lessonId" element={
-          <ProtectedRoute>
-            <Lesson />
-          </ProtectedRoute>
-        } />
-        <Route path="section/:sectionId/study/:testId" element={
-          <ProtectedRoute>
-            <Study />
-          </ProtectedRoute>
-        } />
-        <Route path="section/:sectionId/study-sw/:testId" element={
-          <ProtectedRoute>
-            <StudySW />
-          </ProtectedRoute>
-        } />
-        <Route path="full-test" element={
-          <ProtectedRoute>
-            <ExamFullTest />
-          </ProtectedRoute>
-        } />
-        <Route path="mini-test" element={
-          <ProtectedRoute>
-            <ExamMiniTest />
-          </ProtectedRoute>
-        } />
-        <Route path="exam-question/:examId" element={
-          <ProtectedRoute>
-            <ExamQuestion />
-          </ProtectedRoute>
-        } />
-        <Route path="exam-result/:userExamId" element={
-          <ProtectedRoute>
-            <ExamResult />
-          </ProtectedRoute>
-        } />
-        <Route path="vocabulary" element={
-          <ProtectedRoute>
-            <UserVocabulary />
-          </ProtectedRoute>
-        } />
+      <Route path="/" element={<LearnerLayout />}>
+        <Route
+          index
+          element={
+            <ProtectedRoute>
+              <LearnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <LearnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="exams"
+          element={
+            <ProtectedRoute>
+              <ExamList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="exams/:id"
+          element={
+            <ProtectedRoute>
+              <ExamDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="materials"
+          element={
+            <ProtectedRoute>
+              <LearningMaterials />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="progress"
+          element={
+            <ProtectedRoute>
+              <Progress />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="grammar"
+          element={
+            <ProtectedRoute>
+              <Grammar />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="grammar/:grammarId"
+          element={
+            <ProtectedRoute>
+              <GrammarDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="notes"
+          element={
+            <ProtectedRoute>
+              <Note />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="topics"
+          element={
+            <ProtectedRoute>
+              <Topic />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="topic/:topicId"
+          element={
+            <ProtectedRoute>
+              <TopicDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="section/:sectionId"
+          element={
+            <ProtectedRoute>
+              <Section />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="practice-sw/:sectionId"
+          element={
+            <ProtectedRoute>
+              <SectionSW />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="section/:sectionId/lesson/:lessonId"
+          element={
+            <ProtectedRoute>
+              <Lesson />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="section/:sectionId/study/:testId"
+          element={
+            <ProtectedRoute>
+              <Study />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="section/:sectionId/study-sw/:testId"
+          element={
+            <ProtectedRoute>
+              <StudySW />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="full-test"
+          element={
+            <ProtectedRoute>
+              <ExamFullTest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="mini-test"
+          element={
+            <ProtectedRoute>
+              <ExamMiniTest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="exam-question/:examId"
+          element={
+            <ProtectedRoute>
+              <ExamQuestion />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="exam-result/:userExamId"
+          element={
+            <ProtectedRoute>
+              <ExamResult />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vocabulary"
+          element={
+            <ProtectedRoute>
+              <UserVocabulary />
+            </ProtectedRoute>
+          }
+        />
         <Route path="dictionary" element={<Dictionary />} />
-        <Route path="improve" element={
-          <ProtectedRoute>
-            <ImproveStudy />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="improve"
+          element={
+            <ProtectedRoute>
+              <ImproveStudy />
+            </ProtectedRoute>
+          }
+        />
         <Route path="blog" element={<Blog />} />
-        <Route path="notifications" element={
-          <ProtectedRoute>
-            <Notification />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="notifications"
+          element={
+            <ProtectedRoute>
+              <Notification />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   );

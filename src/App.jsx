@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import AdminRoutes from "./routes/AdminRoutes";
 import LearnerRoutes from "./routes/LearnerRoutes";
 import Login from "./pages/Auth/Login";
 import NotFound from "./pages/NotFound";
@@ -18,7 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Admin Routes */}
-        <Route path="/admin/*" element={<AdminRoutes />} />
+        {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
 
         {/* Learner Routes */}
         <Route path="/learner/*" element={<LearnerRoutes />} />

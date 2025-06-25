@@ -10,7 +10,7 @@ import {
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import "./style.css";
 
 // Import services
@@ -40,7 +40,7 @@ const Note = () => {
       try {
         const learnerToken = localStorage.getItem("learnerToken");
         if (learnerToken) {
-          const decoded = jwt_decode(learnerToken);
+          const decoded = jwtDecode(learnerToken);
           setUserId(decoded.id);
         }
       } catch (error) {

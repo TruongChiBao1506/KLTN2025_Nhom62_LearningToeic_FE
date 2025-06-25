@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import "./style.css";
-import TestService from "../../../../services/testService";
+import TestService from "../../../services/testService";
 
 const No1To5 = ({ testId }) => {
   const [questions, setQuestions] = useState([]);

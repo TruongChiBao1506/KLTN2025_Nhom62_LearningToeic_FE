@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import commentService from '../../../services/commentService';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import vi from 'date-fns/locale/vi';
 import { toast } from 'react-toastify';
 import './style.css';
 

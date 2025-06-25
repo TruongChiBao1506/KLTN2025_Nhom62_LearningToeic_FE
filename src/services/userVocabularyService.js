@@ -1,12 +1,12 @@
 import axiosClient from "./axiosClient";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 // Hàm helper để lấy userId từ token
 const getUserIdFromToken = () => {
   try {
     const token = localStorage.getItem("learnerToken");
     if (token) {
-      const decoded = jwt_decode(token);
+      const decoded = jwtDecode(token);
       return decoded.id;
     }
     return null;
