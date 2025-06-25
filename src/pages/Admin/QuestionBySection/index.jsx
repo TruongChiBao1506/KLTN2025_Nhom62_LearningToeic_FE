@@ -15,7 +15,8 @@ const QuestionBySection = () => {
         try {
             setIsLoading(true);
             const data = await QuestionService.getQuestionsBySection(sectionId);
-            setQuestions(data.questions || []);
+            setQuestions(data || []);
+            console.log("Retrieved questions:", data);
         } catch (error) {
             console.log(error);
             setQuestions([]);

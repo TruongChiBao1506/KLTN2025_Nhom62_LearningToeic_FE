@@ -27,7 +27,7 @@ const QuestionListSection3 = ({
   const groupedQuestionMap = useMemo(() => {
     const groups = {};
     paginatedQuestions.forEach((question) => {
-      const groupId = question.questionGroup.groupId;
+      const groupId = question.questionGroup._id;
       if (!groups[groupId]) {
         groups[groupId] = [question];
       } else {
@@ -115,7 +115,7 @@ const QuestionListSection3 = ({
           {groupKeys.map((groupId, groupIndex) => {
             const groupedQuestions = groupedQuestionMap[groupId];
             return groupedQuestions.map((question, index) => (
-              <tr key={question.Id} className="table-row align-middle">
+              <tr key={question._id} className="table-row align-middle">
                 {index === 0 && (
                   <td rowSpan={groupedQuestions.length}>{groupIndex + 1}</td>
                 )}
@@ -132,7 +132,7 @@ const QuestionListSection3 = ({
                     rowSpan={groupedQuestions.length}
                   >
                     <img
-                      src={getImageUrl(question.questionGroup.groupImage) || ""}
+                      src={getImageUrl(question.questionGroup.questionImage) || ""}
                       style={{ width: "100px" }}
                       alt=""
                     />
@@ -179,7 +179,7 @@ const QuestionListSection3 = ({
                       <span
                         onClick={() =>
                           toggleStatus(
-                            groupedQuestions.map((q) => q.questionId),
+                            groupedQuestions.map((q) => q._id),
                             1
                           )
                         }
@@ -199,7 +199,7 @@ const QuestionListSection3 = ({
                         type="button"
                         className="btn btn-white border-0"
                         data-bs-toggle="modal"
-                        data-bs-target={`#editQuestionModal-${question.questionGroup.groupId}`}
+                        data-bs-target={`#editQuestionModal-${question.questionGroup._id}`}
                       >
                         <i
                           className="fas fa-edit"
@@ -208,10 +208,10 @@ const QuestionListSection3 = ({
                       </button>
                       {/* Modal */}
                       <div
-                        id={`editQuestionModal-${question.questionGroup.groupId}`}
+                        id={`editQuestionModal-${question.questionGroup._id}`}
                         className="modal zoom"
                         tabIndex="-1"
-                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup.groupId}`}
+                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup._id}`}
                         aria-hidden="true"
                       >
                         <div className="modal-dialog modal-xl">
@@ -219,7 +219,7 @@ const QuestionListSection3 = ({
                             <div className="modal-header">
                               <h1
                                 className="modal-title fs-5"
-                                id={`editQuestionModalLabel-${question.questionGroup.groupId}`}
+                                id={`editQuestionModalLabel-${question.questionGroup._id}`}
                               >
                                 <i
                                   className="fas fa-edit"
@@ -235,7 +235,7 @@ const QuestionListSection3 = ({
                               ></button>
                             </div>
                             <QuestionEditSection3
-                              groupId={question.questionGroup.groupId}
+                              groupId={question.questionGroup._id}
                               sectionId={sectionId}
                               retrieveQuestions={retrieveQuestions}
                             />
@@ -247,7 +247,7 @@ const QuestionListSection3 = ({
                         type="button"
                         onClick={() =>
                           deleteQuestions(
-                            groupedQuestions.map((q) => q.questionId)
+                            groupedQuestions.map((q) => q._id)
                           )
                         }
                         className="btn btn-white border-0"

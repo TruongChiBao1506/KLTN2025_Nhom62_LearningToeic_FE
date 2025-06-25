@@ -115,7 +115,7 @@ const QuestionListSection4 = ({
           {groupKeys.map((groupId, groupIndex) => {
             const groupedQuestions = groupedQuestionMap[groupId];
             return groupedQuestions.map((question, index) => (
-              <tr key={question.Id} className="table-row align-middle">
+              <tr key={question._id} className="table-row align-middle">
                 {index === 0 && (
                   <td rowSpan={groupedQuestions.length}>{groupIndex + 1}</td>
                 )}
@@ -163,7 +163,7 @@ const QuestionListSection4 = ({
                       <span
                         onClick={() =>
                           toggleStatus(
-                            groupedQuestions.map((q) => q.questionId),
+                            groupedQuestions.map((q) => q._id),
                             0
                           )
                         }
@@ -176,7 +176,7 @@ const QuestionListSection4 = ({
                       <span
                         onClick={() =>
                           toggleStatus(
-                            groupedQuestions.map((q) => q.questionId),
+                            groupedQuestions.map((q) => q._id),
                             1
                           )
                         }
@@ -196,7 +196,7 @@ const QuestionListSection4 = ({
                         type="button"
                         className="btn btn-white border-0"
                         data-bs-toggle="modal"
-                        data-bs-target={`#editQuestionModal-${question.questionGroup.groupId}`}
+                        data-bs-target={`#editQuestionModal-${question.questionGroup._id}`}
                       >
                         <i
                           className="fas fa-edit"
@@ -205,10 +205,10 @@ const QuestionListSection4 = ({
                       </button>
                       {/* Modal */}
                       <div
-                        id={`editQuestionModal-${question.questionGroup.groupId}`}
+                        id={`editQuestionModal-${question.questionGroup._id}`}
                         className="modal zoom"
                         tabIndex="-1"
-                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup.groupId}`}
+                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup._id}`}
                         aria-hidden="true"
                       >
                         <div className="modal-dialog modal-xl">
@@ -216,7 +216,7 @@ const QuestionListSection4 = ({
                             <div className="modal-header">
                               <h1
                                 className="modal-title fs-5"
-                                id={`editQuestionModalLabel-${question.questionGroup.groupId}`}
+                                id={`editQuestionModalLabel-${question.questionGroup._id}`}
                               >
                                 <i
                                   className="fas fa-edit"
@@ -232,7 +232,7 @@ const QuestionListSection4 = ({
                               ></button>
                             </div>
                             <QuestionEditSection4
-                              groupId={question.questionGroup.groupId}
+                              groupId={question.questionGroup._id}
                               sectionId={sectionId}
                               retrieveQuestions={retrieveQuestions}
                             />
@@ -244,7 +244,7 @@ const QuestionListSection4 = ({
                         type="button"
                         onClick={() =>
                           deleteQuestions(
-                            groupedQuestions.map((q) => q.questionId)
+                            groupedQuestions.map((q) => q._id)
                           )
                         }
                         className="btn btn-white border-0"

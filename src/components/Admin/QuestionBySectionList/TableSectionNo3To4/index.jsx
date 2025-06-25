@@ -75,7 +75,7 @@ const TableSection3To4 = ({
             </tr>
           )}
           {paginatedQuestions.map((question, index) => (
-            <tr key={question.questionId} className="table-row shadow-on-hover align-middle">
+            <tr key={question._id} className="table-row shadow-on-hover align-middle">
               <td>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
               <td>
                 <img
@@ -88,7 +88,7 @@ const TableSection3To4 = ({
               <td>
                 {question.questionStatus === 1 ? (
                   <span
-                    onClick={() => toggleStatus(question.questionId, 0)}
+                    onClick={() => toggleStatus(question._id, 0)}
                     className="btn badge text-bg-success"
                     style={{ cursor: "pointer" }}
                   >
@@ -96,7 +96,7 @@ const TableSection3To4 = ({
                   </span>
                 ) : (
                   <span
-                    onClick={() => toggleStatus(question.questionId, 1)}
+                    onClick={() => toggleStatus(question._id, 1)}
                     className="btn badge text-bg-danger"
                     style={{ cursor: "pointer" }}
                   >
@@ -111,7 +111,7 @@ const TableSection3To4 = ({
                     type="button"
                     className="btn btn-white border-0"
                     data-bs-toggle="modal"
-                    data-bs-target={`#editQuestionModal-${question.questionId}`}
+                    data-bs-target={`#editQuestionModal-${question._id}`}
                   >
                     <i
                       className="fas fa-edit"
@@ -120,10 +120,10 @@ const TableSection3To4 = ({
                   </button>
                   {/* Modal */}
                   <div
-                    id={`editQuestionModal-${question.questionId}`}
+                    id={`editQuestionModal-${question._id}`}
                     className="modal zoom"
                     tabIndex="-1"
-                    aria-labelledby={`editQuestionModalLabel-${question.questionId}`}
+                    aria-labelledby={`editQuestionModalLabel-${question._id}`}
                     aria-hidden="true"
                   >
                     <div className="modal-dialog modal-xl">
@@ -131,7 +131,7 @@ const TableSection3To4 = ({
                         <div className="modal-header">
                           <h1
                             className="modal-title fs-5"
-                            id={`editQuestionModalLabel-${question.questionId}`}
+                            id={`editQuestionModalLabel-${question._id}`}
                           >
                             <i
                               className="fas fa-edit"
@@ -147,7 +147,7 @@ const TableSection3To4 = ({
                           ></button>
                         </div>
                         <QuestionEditNo3To4
-                          questionId={question.questionId}
+                          questionId={question._id}
                           sectionId={sectionId}
                           retrieveQuestions={retrieveQuestions}
                         />
@@ -157,7 +157,7 @@ const TableSection3To4 = ({
                   {/* Delete */}
                   <button
                     type="button"
-                    onClick={() => deleteQuestion(question.questionId)}
+                    onClick={() => deleteQuestion(question._id)}
                     className="btn btn-white border-0"
                   >
                     <i className="fas fa-trash text-danger"></i>
