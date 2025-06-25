@@ -1,56 +1,55 @@
-/* Base styles from QuestionAddNo8To10 */
-label {
+.question-add-section1-page label {
     font-weight: 600;
     font-size: 14px;
     color: rgb(44, 44, 44);
 }
 
-.error-feedback {
+.question-add-section1-page .error-feedback {
     color: red;
     font-size: 13px;
     margin-top: 5px;
     display: block;
 }
 
-.required-field {
+.question-add-section1-page .required-field {
     color: red;
     font-size: 14px;
     margin-left: 4px;
 }
 
-.custom-font {
+.question-add-section1-page .custom-font {
     font-size: 14px;
 }
 
-.form-control.is-invalid {
+.question-add-section1-page .form-control.is-invalid {
     border-color: #dc3545;
 }
 
-.form-control:focus {
+.question-add-section1-page .form-control:focus {
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-.btn-primary {
+.question-add-section1-page .btn-primary {
     background-color: #1c75bc;
     border-color: #1c75bc;
 }
 
-.btn-primary:hover {
+.question-add-section1-page .btn-primary:hover {
     background-color: #145a91;
     border-color: #145a91;
 }
 
-.btn-primary:disabled {
+.question-add-section1-page .btn-primary:disabled {
     background-color: #6c757d;
     border-color: #6c757d;
 }
 
-.modal-body {
+.question-add-section1-page .modal-body {
     padding: 1.5rem;
 }
 
-.modal-footer {
+.question-add-section1-page .modal-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;
     display: flex;
@@ -58,34 +57,34 @@ label {
     gap: 0.5rem;
 }
 
-.form-group {
+.question-add-section1-page .form-group {
     margin-bottom: 1rem;
 }
 
-.form-label {
+.question-add-section1-page .form-label {
     margin-bottom: 0.5rem;
     display: inline-block;
 }
 
-.page {
+.question-add-section1-page.page {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/*   Two-column layout styling */
-.row {
+/* Two-column layout styling */
+.question-add-section1-page .row {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
 }
 
-.col {
+.question-add-section1-page .col {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
 }
 
-/*   Left column - Options styling */
-.col:first-child .form-group {
+/* Left column - Options styling */
+.question-add-section1-page .col:first-child .form-group {
     background: linear-gradient(135deg, #e8f5e8 0%, #ffffff 100%);
     padding: 1rem;
     border-radius: 8px;
@@ -94,13 +93,13 @@ label {
     transition: all 0.15s ease-in-out;
 }
 
-.col:first-child .form-group:hover {
+.question-add-section1-page .col:first-child .form-group:hover {
     box-shadow: 0 3px 6px rgba(40, 167, 69, 0.1);
     transform: translateY(-1px);
 }
 
-/*   Right column - Media & Script styling */
-.col:last-child .form-group {
+/* Right column - Media & Script styling */
+.question-add-section1-page .col:last-child .form-group {
     background: linear-gradient(135deg, #e8f4f8 0%, #ffffff 100%);
     padding: 1rem;
     border-radius: 8px;
@@ -109,78 +108,75 @@ label {
     transition: all 0.15s ease-in-out;
 }
 
-.col:last-child .form-group:hover {
+.question-add-section1-page .col:last-child .form-group:hover {
     box-shadow: 0 3px 6px rgba(0, 123, 255, 0.1);
     transform: translateY(-1px);
 }
 
-/*   Option fields specific styling */
-.col:first-child .form-group:nth-child(1) {
+/* Option fields specific styling */
+.question-add-section1-page .col:first-child .form-group:nth-child(1) {
     border-left-color: #dc3545; /* Red for Option A */
 }
-
-.col:first-child .form-group:nth-child(2) {
+.question-add-section1-page .col:first-child .form-group:nth-child(2) {
     border-left-color: #ffc107; /* Yellow for Option B */
 }
-
-.col:first-child .form-group:nth-child(3) {
+.question-add-section1-page .col:first-child .form-group:nth-child(3) {
     border-left-color: #17a2b8; /* Teal for Option C */
 }
-
-.col:first-child .form-group:nth-child(4) {
+.question-add-section1-page .col:first-child .form-group:nth-child(4) {
     border-left-color: #6f42c1; /* Purple for Option D */
 }
 
-/*   Radio buttons styling */
-.d-flex {
+/* Radio buttons styling */
+.question-add-section1-page .d-flex {
     gap: 1rem;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.form-check {
+.question-add-section1-page .form-check {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
-.form-check-input {
+.question-add-section1-page .form-check-input {
     margin: 0;
     width: 1.25rem;
     height: 1.25rem;
     cursor: pointer;
 }
 
-.form-check-input:checked {
+.question-add-section1-page .form-check-input:checked {
     background-color: #28a745;
     border-color: #28a745;
 }
 
-.form-check-label {
+.question-add-section1-page .form-check-label {
     cursor: pointer;
     font-weight: 600;
     color: #495057;
     margin: 0;
 }
 
-/*   Select dropdown styling */
-.form-select {
+/* Select dropdown styling */
+.question-add-section1-page .form-select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
 }
 
-.form-select:focus {
+.question-add-section1-page .form-select:focus {
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-/*   File upload styling */
-input[type="file"] {
+/* File upload styling */
+.question-add-section1-page input[type="file"] {
     cursor: pointer;
     padding: 0.5rem;
 }
 
-input[type="file"]::-webkit-file-upload-button {
+.question-add-section1-page input[type="file"]::-webkit-file-upload-button {
     background-color: #f8f9fa;
     border: 1px solid #ced4da;
     border-radius: 4px;
@@ -190,13 +186,13 @@ input[type="file"]::-webkit-file-upload-button {
     transition: all 0.15s ease-in-out;
 }
 
-input[type="file"]::-webkit-file-upload-button:hover {
+.question-add-section1-page input[type="file"]::-webkit-file-upload-button:hover {
     background-color: #e9ecef;
     border-color: #adb5bd;
 }
 
-/*   File preview styling */
-.file-preview {
+/* File preview styling */
+.question-add-section1-page .file-preview {
     padding: 0.75rem;
     background-color: #f8f9fa;
     border: 1px solid #e9ecef;
@@ -204,23 +200,24 @@ input[type="file"]::-webkit-file-upload-button:hover {
     font-size: 0.875rem;
 }
 
-.image-preview, .audio-preview {
+.question-add-section1-page .image-preview, 
+.question-add-section1-page .audio-preview {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.image-preview img {
+.question-add-section1-page .image-preview img {
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
 }
 
-.image-preview img:hover {
+.question-add-section1-page .image-preview img:hover {
     transform: scale(1.05);
 }
 
-.img-thumbnail {
+.question-add-section1-page .img-thumbnail {
     padding: 0.25rem;
     background-color: #fff;
     border: 1px solid #dee2e6;
@@ -229,59 +226,60 @@ input[type="file"]::-webkit-file-upload-button:hover {
     height: auto;
 }
 
-/*   Audio player styling */
-audio {
+/* Audio player styling */
+.question-add-section1-page audio {
     border-radius: 6px;
     outline: none;
 }
 
-audio:focus {
+.question-add-section1-page audio:focus {
     box-shadow: 0 0 0 2px rgba(28, 117, 188, 0.25);
 }
 
-/*   CKEditor styling */
-.ckeditor-container {
+/* CKEditor styling */
+.question-add-section1-page .ckeditor-container {
     border: 1px solid #ced4da;
     border-radius: 8px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     overflow: hidden;
 }
 
-.ckeditor-container:focus-within {
+.question-add-section1-page .ckeditor-container:focus-within {
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.ck-editor__editable {
+.question-add-section1-page .ck-editor__editable {
     min-height: 250px !important;
     max-height: 350px !important;
     overflow-y: auto;
 }
 
-.ck-toolbar {
+.question-add-section1-page .ck-toolbar {
     border-radius: 8px 8px 0 0 !important;
     border-bottom: 1px solid #ced4da !important;
 }
 
-.ck-editor__editable {
+.question-add-section1-page .ck-editor__editable {
     border-radius: 0 0 8px 8px !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-.ck-editor__editable:focus {
+.question-add-section1-page .ck-editor__editable:focus {
     border: none !important;
     box-shadow: none !important;
 }
 
-.ck-content {
+.question-add-section1-page .ck-content {
     font-family: inherit;
     font-size: 14px;
     line-height: 1.6;
 }
 
-/*   Form inputs styling */
-.form-control, .form-select {
+/* Form inputs styling */
+.question-add-section1-page .form-control, 
+.question-add-section1-page .form-select {
     border-radius: 6px;
     padding: 0.75rem 1rem;
     font-size: 14px;
@@ -289,19 +287,21 @@ audio:focus {
     transition: all 0.15s ease-in-out;
 }
 
-.form-control:focus, .form-select:focus {
+.question-add-section1-page .form-control:focus, 
+.question-add-section1-page .form-select:focus {
     outline: 0;
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-.form-control::placeholder {
+.question-add-section1-page .form-control::placeholder {
     color: #adb5bd;
     font-style: italic;
 }
 
-/*   Error states */
-.form-control.is-invalid, .form-select.is-invalid {
+/* Error states */
+.question-add-section1-page .form-control.is-invalid, 
+.question-add-section1-page .form-select.is-invalid {
     border-color: #dc3545 !important;
     padding-right: calc(1.5em + 0.75rem);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
@@ -310,88 +310,63 @@ audio:focus {
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 
-.ckeditor-container.is-invalid {
+.question-add-section1-page .ckeditor-container.is-invalid {
     border-color: #dc3545;
 }
 
-.ckeditor-container.is-invalid:focus-within {
+.question-add-section1-page .ckeditor-container.is-invalid:focus-within {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/*   Responsive design */
+/* Responsive design */
 @media (max-width: 768px) {
-    .row {
+    .question-add-section1-page .row {
         flex-direction: column;
     }
     
-    .modal-body {
+    .question-add-section1-page .modal-body {
         padding: 1rem;
     }
     
-    .form-group {
+    .question-add-section1-page .form-group {
         margin-bottom: 0.75rem;
         padding: 0.75rem;
     }
     
-    .ck-editor__editable {
+    .question-add-section1-page .ck-editor__editable {
         min-height: 200px !important;
     }
     
-    .d-flex {
+    .question-add-section1-page .d-flex {
         gap: 0.5rem;
     }
     
-    .form-check-input {
+    .question-add-section1-page .form-check-input {
         width: 1rem;
         height: 1rem;
     }
     
-    .form-control, .form-select {
+    .question-add-section1-page .form-control, 
+    .question-add-section1-page .form-select {
         font-size: 16px; /* Prevent zoom on iOS */
     }
 }
 
-/*   Animation effects */
-.form-group {
+/* Animation effects */
+.question-add-section1-page .form-group {
     animation: fadeInUp 0.3s ease forwards;
 }
 
-.col:first-child .form-group:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.col:first-child .form-group:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.col:first-child .form-group:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.col:first-child .form-group:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.col:first-child .form-group:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-.col:first-child .form-group:nth-child(6) {
-    animation-delay: 0.6s;
-}
-
-.col:last-child .form-group:nth-child(1) {
-    animation-delay: 0.7s;
-}
-
-.col:last-child .form-group:nth-child(2) {
-    animation-delay: 0.8s;
-}
-
-.col:last-child .form-group:nth-child(3) {
-    animation-delay: 0.9s;
-}
+.question-add-section1-page .col:first-child .form-group:nth-child(1) { animation-delay: 0.1s; }
+.question-add-section1-page .col:first-child .form-group:nth-child(2) { animation-delay: 0.2s; }
+.question-add-section1-page .col:first-child .form-group:nth-child(3) { animation-delay: 0.3s; }
+.question-add-section1-page .col:first-child .form-group:nth-child(4) { animation-delay: 0.4s; }
+.question-add-section1-page .col:first-child .form-group:nth-child(5) { animation-delay: 0.5s; }
+.question-add-section1-page .col:first-child .form-group:nth-child(6) { animation-delay: 0.6s; }
+.question-add-section1-page .col:last-child .form-group:nth-child(1) { animation-delay: 0.7s; }
+.question-add-section1-page .col:last-child .form-group:nth-child(2) { animation-delay: 0.8s; }
+.question-add-section1-page .col:last-child .form-group:nth-child(3) { animation-delay: 0.9s; }
 
 @keyframes fadeInUp {
     from {
@@ -404,34 +379,34 @@ audio:focus {
     }
 }
 
-/*   Loading states */
-.form-control:disabled,
-.form-control[readonly] {
+/* Loading states */
+.question-add-section1-page .form-control:disabled,
+.question-add-section1-page .form-control[readonly] {
     background-color: #e9ecef;
     opacity: 1;
 }
 
-.ck-editor__editable.ck-blurred {
+.question-add-section1-page .ck-editor__editable.ck-blurred {
     opacity: 0.8;
 }
 
-/*   Button styling */
-.btn-primary:focus,
-.btn-primary.focus {
+/* Button styling */
+.question-add-section1-page .btn-primary:focus,
+.question-add-section1-page .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
 }
 
-.btn-secondary:focus,
-.btn-secondary.focus {
+.question-add-section1-page .btn-secondary:focus,
+.question-add-section1-page .btn-secondary.focus {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/*   File validation states */
-input[type="file"].is-invalid {
+/* File validation states */
+.question-add-section1-page input[type="file"].is-invalid {
     border-color: #dc3545;
 }
 
-input[type="file"].is-invalid:focus {
+.question-add-section1-page input[type="file"].is-invalid:focus {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }

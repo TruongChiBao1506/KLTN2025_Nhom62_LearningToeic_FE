@@ -1,0 +1,25 @@
+.table-section-no11 th {
+   color: #052649; 
+   font-weight: bold;
+}
+.table-section-no11 td {
+   color: #052649; 
+   font-weight: normal;
+}
+.table-section-no11 .table-row.shadow-on-hover:hover {
+   box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9); 
+}
+.table-section-no11 .modal.zoom .modal-dialog {
+  transition: transform 0.2s ease-out;
+  transform: scale(0.4);
+}
+.table-section-no11 .modal.zoom.show .modal-dialog {
+  transform: scale(1);
+}
+.table-section-no11 .table {
+    font-size: 13px;
+}
+.table-section-no11 audio {
+    width: 100%;
+    max-width: 300px;
+}

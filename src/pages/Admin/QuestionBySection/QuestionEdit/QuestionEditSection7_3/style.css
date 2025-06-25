@@ -1,0 +1,33 @@
+.edit-question-section7-3-page label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+}
+.edit-question-section7-3-page .error-feedback {
+    color: red;
+    font-size: 13px;
+}
+.edit-question-section7-3-page .required-field {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}
+.edit-question-section7-3-page button {
+    display: inline-block;
+    padding: 10px;
+    background-color: #052649;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.edit-question-section7-3-page button:hover {
+    background-color: #fff;
+    color: #052649;
+}
+.edit-question-section7-3-page button i {
+    font-size: 20px;
+    color: #000;
+}

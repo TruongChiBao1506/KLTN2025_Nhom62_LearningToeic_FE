@@ -5,8 +5,8 @@ import * as yup from 'yup';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
-import QuestionService from '../services/question.service';
-import QuestionGroupService from '../services/question_group.service';
+import QuestionService from '../../../../../services/questionService';
+import QuestionGroupService from '../../../../../services/questionGroupService';
 import './style.css';
 
 const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
@@ -227,7 +227,7 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
   ];
 
   return (
-    <div>
+    <div className="question-add-section7-1-page page">
       {/* Number of Questions Selection */}
       <div className="d-flex justify-content-center mt-4">
         <button 

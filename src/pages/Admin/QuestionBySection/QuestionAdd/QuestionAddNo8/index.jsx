@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import QuestionService from '../../../../services/questionService';
+import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
 const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
@@ -153,7 +153,7 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
     };
 
     return (
-        <div className="page">
+        <div className="question-add-no8-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
                 <div className="modal-body text-start">
                     <div className="row">

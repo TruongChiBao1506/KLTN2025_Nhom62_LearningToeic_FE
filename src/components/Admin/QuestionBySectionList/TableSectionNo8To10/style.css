@@ -1,0 +1,26 @@
+.table-section8-to-10 th {
+   color: #052649; 
+   font-weight: bold; 
+}
+.table-section8-to-10 td {
+   color: #052649;
+   font-weight: normal; 
+}
+.table-section8-to-10 .modal.zoom .modal-dialog {
+  transition: transform 0.2s ease-out;
+  transform: scale(0.4);
+}
+.table-section8-to-10 .modal.zoom.show .modal-dialog {
+  transform: scale(1);
+}
+.table-section8-to-10 .question-image {
+    width: 50px;
+}
+.table-section8-to-10 .table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+}
+.table-section8-to-10 audio {
+    width: 100%;
+    max-width: 300px;
+}

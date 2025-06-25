@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import QuestionService from '../../../../services/questionService';
+import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
 const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
@@ -184,7 +184,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
     };
 
     return (
-        <div className="page">
+        <div className="question-add-section5-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
                 <div className="modal-body text-start">
                     <div className="row">
@@ -304,7 +304,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 <label htmlFor="correctOption" className="form-label">
                                     Correct Option<span className="required-field">*</span>
                                 </label>
-                                <div className="d-flex">
+                                <div className="form-d-flex">
                                     {['A', 'B', 'C', 'D'].map((option) => (
                                         <div key={option} className="form-check">
                                             <input

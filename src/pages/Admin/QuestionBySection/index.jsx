@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
-import QuestionList from '../../components/questionbysection/QuestionList';
-import QuestionService from '../../services/question.service';
+import QuestionList from '../../../components/Admin/QuestionBySectionList';
+import QuestionService from '../../../services/questionService';
 import './style.css';
 
-const QuestionBySection = ({ sectionId }) => {
+const QuestionBySection = () => {
+    const sectionId = useParams().sectionId;
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const retrieveQuestions = async () => {
         try {
             setIsLoading(true);
-            console.log(sectionId);
             const data = await QuestionService.getQuestionsBySection(sectionId);
-            setQuestions(data);
-            console.log(data);
+            setQuestions(data.questions || []);
         } catch (error) {
             console.log(error);
-            setQuestions([]); // Set empty array on error
+            setQuestions([]);
         } finally {
             setIsLoading(false);
         }

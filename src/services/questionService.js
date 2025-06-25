@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 
 class QuestionService {
-    constructor(baseUrl = "/api/question") {
+    constructor(baseUrl = "/questions") {
         this.baseUrl = baseUrl;
     }
 

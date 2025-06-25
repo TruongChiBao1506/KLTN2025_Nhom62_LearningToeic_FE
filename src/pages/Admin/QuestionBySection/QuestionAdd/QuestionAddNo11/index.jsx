@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-import QuestionService from '../../../../services/questionService';
+import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
 const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
@@ -81,7 +81,7 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
     };
 
     return (
-        <div className="page">
+        <div className="question-add-no11-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
                 <div className="modal-body text-start">
                     <div className="row">

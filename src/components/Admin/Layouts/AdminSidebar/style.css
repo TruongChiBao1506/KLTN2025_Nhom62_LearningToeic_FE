@@ -144,14 +144,16 @@
     opacity: 1;
     background: radial-gradient(circle at center,
             rgba(28, 117, 188, 0.4) 0%,
-            rgba(28, 117, 188, 0.2) 30%,
+            rgba(20, 90, 145, 0.3) 30%,
             transparent 70%);
 }
 
 .custom-list-item:hover .menu-icon-container {
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.5) 0%,
-            rgba(28, 117, 188, 0.3) 100%);
+    background:
+        linear-gradient(45deg, rgba(28, 117, 188, 0.5), rgba(20, 90, 145, 0.4)),
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 100%);
     backdrop-filter: blur(15px);
     transform: scale(1.1) rotate(5deg);
     border-color: rgba(28, 117, 188, 0.4);
@@ -230,9 +232,11 @@
 }
 
 .custom-list-item.active .menu-icon-container {
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.7) 0%,
-            rgba(28, 117, 188, 0.5) 100%);
+    background:
+        linear-gradient(45deg, rgba(28, 117, 188, 0.7), rgba(20, 90, 145, 0.6)),
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.2) 100%);
     backdrop-filter: blur(20px);
     transform: scale(1.15);
     border: 1px solid rgba(28, 117, 188, 0.6);
@@ -282,10 +286,8 @@
 }
 
 .custom-list-item:hover .menu-badge {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(240, 249, 255, 0.9) 100%);
-    color: rgba(28, 117, 188, 1);
+    background: linear-gradient(45deg, #1c75bc, #145a91);
+    color: white;
     transform: scale(1.1);
     box-shadow:
         0 6px 20px rgba(28, 117, 188, 0.35),
@@ -298,7 +300,7 @@
     border-color: rgba(28, 117, 188, 0.7);
     box-shadow:
         0 0 0 4px rgba(28, 117, 188, 0.25),
-        0 15px 35px rgba(28, 117, 188, 0.35),
+        0 15px 35px rgba(20, 90, 145, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -313,28 +315,28 @@
     opacity: 0.8;
     transition: all 0.1s ease;
     background: radial-gradient(circle at center,
-            rgba(28, 117, 188, 0.5) 0%,
-            rgba(28, 117, 188, 0.3) 30%,
-            transparent 70%);
+        rgba(28, 117, 188, 0.5) 0%,
+        rgba(20, 90, 145, 0.4) 30%,
+        transparent 70%
+    );
 }
 
 .custom-list-item.active.variant-intense {
     background: linear-gradient(135deg,
-        rgba(28, 117, 188, 0.5) 0%,
-        rgba(28, 117, 188, 0.4) 25%,
-        rgba(28, 117, 188, 0.55) 50%,
-        rgba(28, 117, 188, 0.4) 75%,
-        rgba(28, 117, 188, 0.5) 100%
-    );
+            rgba(28, 117, 188, 0.5) 0%,
+            rgba(28, 117, 188, 0.4) 25%,
+            rgba(28, 117, 188, 0.55) 50%,
+            rgba(28, 117, 188, 0.4) 75%,
+            rgba(28, 117, 188, 0.5) 100%);
 }
+
 .custom-list-item:hover.variant-intense {
     background: linear-gradient(135deg,
-        rgba(28, 117, 188, 0.3) 0%,
-        rgba(28, 117, 188, 0.22) 25%,
-        rgba(28, 117, 188, 0.28) 50%,
-        rgba(28, 117, 188, 0.22) 75%,
-        rgba(28, 117, 188, 0.3) 100%
-    );
+            rgba(28, 117, 188, 0.3) 0%,
+            rgba(28, 117, 188, 0.22) 25%,
+            rgba(28, 117, 188, 0.28) 50%,
+            rgba(28, 117, 188, 0.22) 75%,
+            rgba(28, 117, 188, 0.3) 100%);
 }
 
 /*   Responsive Liquid Glass */
@@ -363,12 +365,12 @@
 
     /*  Responsive hover effects */
     .custom-list-item:hover {
-        background: linear-gradient(135deg,
-                rgba(28, 117, 188, 0.22) 0%,
-                rgba(28, 117, 188, 0.16) 25%,
-                rgba(28, 117, 188, 0.20) 50%,
-                rgba(28, 117, 188, 0.16) 75%,
-                rgba(28, 117, 188, 0.22) 100%);
+        background:
+            linear-gradient(45deg, rgba(28, 117, 188, 0.22), rgba(20, 90, 145, 0.2)),
+            linear-gradient(135deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.04) 50%,
+                rgba(255, 255, 255, 0.08) 100%);
         box-shadow:
             0 15px 30px rgba(28, 117, 188, 0.3),
             0 6px 12px rgba(0, 0, 0, 0.1),
@@ -376,16 +378,48 @@
     }
 
     .custom-list-item.active {
-        background: linear-gradient(135deg,
-                rgba(28, 117, 188, 0.37) 0%,
-                rgba(28, 117, 188, 0.30) 25%,
-                rgba(28, 117, 188, 0.42) 50%,
-                rgba(28, 117, 188, 0.30) 75%,
-                rgba(28, 117, 188, 0.37) 100%);
+        background:
+            linear-gradient(45deg, rgba(28, 117, 188, 0.37), rgba(20, 90, 145, 0.32)),
+            linear-gradient(135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 50%,
+                rgba(255, 255, 255, 0.12) 100%);
         box-shadow:
             0 20px 40px rgba(28, 117, 188, 0.4),
-            0 8px 16px rgba(28, 117, 188, 0.3),
+            0 8px 16px rgba(20, 90, 145, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes liquidPulseGradient {
+
+    0%,
+    100% {
+        background:
+            linear-gradient(45deg, rgba(28, 117, 188, 0.4), rgba(20, 90, 145, 0.35)),
+            linear-gradient(135deg,
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.15) 100%);
+        box-shadow:
+            0 25px 50px rgba(28, 117, 188, 0.5),
+            0 10px 20px rgba(20, 90, 145, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 80px rgba(28, 117, 188, 0.5);
+    }
+
+    50% {
+        background:
+            linear-gradient(45deg, rgba(28, 117, 188, 0.45), rgba(20, 90, 145, 0.4)),
+            linear-gradient(135deg,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+        box-shadow:
+            0 30px 60px rgba(28, 117, 188, 0.6),
+            0 15px 30px rgba(20, 90, 145, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 0 100px rgba(28, 117, 188, 0.6);
     }
 }
 

@@ -66,7 +66,7 @@
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
-    background-color: #1c75bc;
+    background: linear-gradient(45deg, #1c75bc, #145a91);
     color: #fff;
     border-radius: 50px;
     transform: translateX(2px);

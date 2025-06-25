@@ -1,0 +1,14 @@
+.edit-question-section7-2-page label {
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(44, 44, 44);
+}
+.edit-question-section7-2-page .error-feedback {
+    color: red;
+    font-size: 13px;
+}
+.edit-question-section7-2-page .required-field {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}

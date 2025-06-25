@@ -1,0 +1,25 @@
+.table-section5-to-7 th {
+   color: #052649; 
+   font-weight: bold; 
+}
+.table-section5-to-7 td {
+   color: #052649; 
+   font-weight: normal; 
+}
+.table-section5-to-7 .modal.zoom .modal-dialog {
+  transition: transform 0.2s ease-out;
+  transform: scale(0.4);
+}
+.table-section5-to-7 .modal.zoom.show .modal-dialog {
+  transform: scale(1);
+}
+.table-section5-to-7 .question-image {
+    width: 50px;
+}
+.table-section5-to-7 .table {
+    font-size: 13px;
+}
+.table-section5-to-7 audio {
+    width: 100%;
+    max-width: 300px;
+}

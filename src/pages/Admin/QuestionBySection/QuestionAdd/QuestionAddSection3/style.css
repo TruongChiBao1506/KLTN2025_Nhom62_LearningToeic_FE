@@ -1,55 +1,55 @@
-label {
+.question-add-section3-page label {
     font-weight: 600;
     font-size: 14px;
     color: rgb(44, 44, 44);
 }
 
-.error-feedback {
+.question-add-section3-page .error-feedback {
     color: red;
     font-size: 13px;
     margin-top: 5px;
     display: block;
 }
 
-.required-field {
+.question-add-section3-page .required-field {
     color: red;
     font-size: 14px;
     margin-left: 4px;
 }
 
-.custom-font {
+.question-add-section3-page .custom-font {
     font-size: 14px;
 }
 
-.form-control.is-invalid {
+.question-add-section3-page .form-control.is-invalid {
     border-color: #dc3545;
 }
 
-.form-control:focus {
+.question-add-section3-page .form-control:focus {
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-.btn-primary {
+.question-add-section3-page .btn-primary {
     background-color: #1c75bc;
     border-color: #1c75bc;
 }
 
-.btn-primary:hover {
+.question-add-section3-page .btn-primary:hover {
     background-color: #145a91;
     border-color: #145a91;
 }
 
-.btn-primary:disabled {
+.question-add-section3-page .btn-primary:disabled {
     background-color: #6c757d;
     border-color: #6c757d;
 }
 
-.modal-body {
+.question-add-section3-page .modal-body {
     padding: 1.5rem;
 }
 
-.modal-footer {
+.question-add-section3-page .modal-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;
     display: flex;
@@ -57,30 +57,36 @@ label {
     gap: 0.5rem;
 }
 
-.form-group {
+.question-add-section3-page .form-group {
     margin-bottom: 1rem;
 }
 
-.form-label {
+.question-add-section3-page .form-label {
     margin-bottom: 0.5rem;
     display: inline-block;
 }
 
-/*   Part 3 specific styling */
-.row {
+.question-add-section3-page.page {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Part 3 specific styling */
+.question-add-section3-page .row {
     margin-left: -0.5rem;
     margin-right: -0.5rem;
 }
 
-.col-md-4 {
+.question-add-section3-page .col-md-4 {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
 
-/*   Group fields styling với Part 3 theme */
-.modal-body > .form-group:nth-child(1),
-.modal-body > .form-group:nth-child(2),
-.modal-body > .form-group:nth-child(3) {
+/* Group fields styling với Part 3 theme */
+.question-add-section3-page .modal-body > .form-group:nth-child(1),
+.question-add-section3-page .modal-body > .form-group:nth-child(2),
+.question-add-section3-page .modal-body > .form-group:nth-child(3) {
     background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);
     padding: 1.25rem;
     border-radius: 10px;
@@ -89,32 +95,32 @@ label {
     transition: all 0.15s ease-in-out;
 }
 
-.modal-body > .form-group:nth-child(1):hover,
-.modal-body > .form-group:nth-child(2):hover,
-.modal-body > .form-group:nth-child(3):hover {
+.question-add-section3-page .modal-body > .form-group:nth-child(1):hover,
+.question-add-section3-page .modal-body > .form-group:nth-child(2):hover,
+.question-add-section3-page .modal-body > .form-group:nth-child(3):hover {
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
     transform: translateY(-1px);
 }
 
-.modal-body > .form-group:nth-child(1) {
+.question-add-section3-page .modal-body > .form-group:nth-child(1) {
     border-left: 4px solid #17a2b8; /* Teal for image */
 }
 
-.modal-body > .form-group:nth-child(2) {
+.question-add-section3-page .modal-body > .form-group:nth-child(2) {
     border-left: 4px solid #6f42c1; /* Purple for audio */
 }
 
-.modal-body > .form-group:nth-child(3) {
+.question-add-section3-page .modal-body > .form-group:nth-child(3) {
     border-left: 4px solid #28a745; /* Green for script */
 }
 
-/*   File upload styling */
-input[type="file"] {
+/* File upload styling */
+.question-add-section3-page input[type="file"] {
     cursor: pointer;
     padding: 0.5rem;
 }
 
-input[type="file"]::-webkit-file-upload-button {
+.question-add-section3-page input[type="file"]::-webkit-file-upload-button {
     background-color: #f8f9fa;
     border: 1px solid #ced4da;
     border-radius: 4px;
@@ -124,13 +130,13 @@ input[type="file"]::-webkit-file-upload-button {
     transition: all 0.15s ease-in-out;
 }
 
-input[type="file"]::-webkit-file-upload-button:hover {
+.question-add-section3-page input[type="file"]::-webkit-file-upload-button:hover {
     background-color: #e9ecef;
     border-color: #adb5bd;
 }
 
-/*   File preview styling */
-.file-preview {
+/* File preview styling */
+.question-add-section3-page .file-preview {
     padding: 0.75rem;
     background-color: #f8f9fa;
     border: 1px solid #e9ecef;
@@ -138,23 +144,24 @@ input[type="file"]::-webkit-file-upload-button:hover {
     font-size: 0.875rem;
 }
 
-.image-preview, .audio-preview {
+.question-add-section3-page .image-preview, 
+.question-add-section3-page .audio-preview {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.image-preview img {
+.question-add-section3-page .image-preview img {
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
 }
 
-.image-preview img:hover {
+.question-add-section3-page .image-preview img:hover {
     transform: scale(1.05);
 }
 
-.img-thumbnail {
+.question-add-section3-page .img-thumbnail {
     padding: 0.25rem;
     background-color: #fff;
     border: 1px solid #dee2e6;
@@ -163,59 +170,59 @@ input[type="file"]::-webkit-file-upload-button:hover {
     height: auto;
 }
 
-/*   Audio player styling */
-audio {
+/* Audio player styling */
+.question-add-section3-page audio {
     border-radius: 6px;
     outline: none;
 }
 
-audio:focus {
+.question-add-section3-page audio:focus {
     box-shadow: 0 0 0 2px rgba(28, 117, 188, 0.25);
 }
 
-/*   CKEditor styling cho Part 3 */
-.ckeditor-container {
+/* CKEditor styling cho Part 3 */
+.question-add-section3-page .ckeditor-container {
     border: 1px solid #ced4da;
     border-radius: 8px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     overflow: hidden;
 }
 
-.ckeditor-container:focus-within {
+.question-add-section3-page .ckeditor-container:focus-within {
     border-color: #28a745;
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
 
-.ck-editor__editable {
+.question-add-section3-page .ck-editor__editable {
     min-height: 170px !important;
     max-height: 300px !important;
     overflow-y: auto;
 }
 
-.ck-toolbar {
+.question-add-section3-page .ck-toolbar {
     border-radius: 8px 8px 0 0 !important;
     border-bottom: 1px solid #ced4da !important;
 }
 
-.ck-editor__editable {
+.question-add-section3-page .ck-editor__editable {
     border-radius: 0 0 8px 8px !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-.ck-editor__editable:focus {
+.question-add-section3-page .ck-editor__editable:focus {
     border: none !important;
     box-shadow: none !important;
 }
 
-.ck-content {
+.question-add-section3-page .ck-content {
     font-family: inherit;
     font-size: 14px;
     line-height: 1.5;
 }
 
-/*   HR styling */
-hr {
+/* HR styling */
+.question-add-section3-page hr {
     border: none;
     height: 3px;
     background: linear-gradient(to right, #17a2b8, #6f42c1, #28a745, #ffc107, #dc3545);
@@ -223,8 +230,8 @@ hr {
     border-radius: 2px;
 }
 
-/*   Question cards styling */
-.col-md-4 .form-group {
+/* Question cards styling */
+.question-add-section3-page .col-md-4 .form-group {
     background-color: #f8f9fa;
     padding: 0.75rem;
     border-radius: 6px;
@@ -233,11 +240,11 @@ hr {
     transition: box-shadow 0.15s ease-in-out;
 }
 
-.col-md-4 .form-group:hover {
+.question-add-section3-page .col-md-4 .form-group:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.col-md-4 .form-group label {
+.question-add-section3-page .col-md-4 .form-group label {
     font-weight: 700;
     color: #495057;
     border-bottom: 2px solid #dee2e6;
@@ -247,21 +254,19 @@ hr {
     width: 100%;
 }
 
-/*   Question numbering với different colors */
-.col-md-4:nth-child(1) .form-group {
+/* Question numbering với different colors */
+.question-add-section3-page .col-md-4:nth-child(1) .form-group {
     border-left: 4px solid #dc3545; /* Red for Question 1 */
 }
-
-.col-md-4:nth-child(2) .form-group {
+.question-add-section3-page .col-md-4:nth-child(2) .form-group {
     border-left: 4px solid #ffc107; /* Yellow for Question 2 */
 }
-
-.col-md-4:nth-child(3) .form-group {
+.question-add-section3-page .col-md-4:nth-child(3) .form-group {
     border-left: 4px solid #28a745; /* Green for Question 3 */
 }
 
-/*   Radio buttons styling cho Part 3 */
-.form-check-inline {
+/* Radio buttons styling cho Part 3 */
+.question-add-section3-page .form-check-inline {
     display: inline-flex;
     align-items: center;
     margin-right: 1rem;
@@ -273,43 +278,44 @@ hr {
     transition: all 0.15s ease-in-out;
 }
 
-.form-check-inline:hover {
+.question-add-section3-page .form-check-inline:hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
 }
 
-.form-check-input {
+.question-add-section3-page .form-check-input {
     margin: 0 0.5rem 0 0;
     width: 1rem;
     height: 1rem;
     cursor: pointer;
 }
 
-.form-check-input:checked {
+.question-add-section3-page .form-check-input:checked {
     background-color: #007bff;
     border-color: #007bff;
 }
 
-.form-check-label {
+.question-add-section3-page .form-check-label {
     cursor: pointer;
     font-weight: 600;
     color: #495057;
     margin: 0;
 }
 
-/*   Select dropdown styling cho Part 3 */
-.form-select {
+/* Select dropdown styling cho Part 3 */
+.question-add-section3-page .form-select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
 }
 
-.form-select:focus {
+.question-add-section3-page .form-select:focus {
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-/*   Form inputs styling */
-.form-control, .form-select {
+/* Form inputs styling */
+.question-add-section3-page .form-control, 
+.question-add-section3-page .form-select {
     border-radius: 6px;
     padding: 0.5rem 0.75rem;
     font-size: 14px;
@@ -317,19 +323,21 @@ hr {
     transition: all 0.15s ease-in-out;
 }
 
-.form-control:focus, .form-select:focus {
+.question-add-section3-page .form-control:focus, 
+.question-add-section3-page .form-select:focus {
     outline: 0;
     border-color: #1c75bc;
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 
-.form-control::placeholder {
+.question-add-section3-page .form-control::placeholder {
     color: #adb5bd;
     font-style: italic;
 }
 
-/*   Error states */
-.form-control.is-invalid, .form-select.is-invalid {
+/* Error states */
+.question-add-section3-page .form-control.is-invalid, 
+.question-add-section3-page .form-select.is-invalid {
     border-color: #dc3545 !important;
     padding-right: calc(1.5em + 0.75rem);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
@@ -338,18 +346,18 @@ hr {
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 
-.ckeditor-container.is-invalid {
+.question-add-section3-page .ckeditor-container.is-invalid {
     border-color: #dc3545;
 }
 
-.ckeditor-container.is-invalid:focus-within {
+.question-add-section3-page .ckeditor-container.is-invalid:focus-within {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/*   Responsive design */
+/* Responsive design */
 @media (max-width: 992px) {
-    .col-md-4 {
+    .question-add-section3-page .col-md-4 {
         flex: 0 0 100%;
         max-width: 100%;
         margin-bottom: 1rem;
@@ -357,59 +365,54 @@ hr {
 }
 
 @media (max-width: 768px) {
-    .modal-body {
+    .question-add-section3-page .modal-body {
         padding: 1rem;
     }
     
-    .form-group {
+    .question-add-section3-page .form-group {
         margin-bottom: 0.75rem;
         padding: 0.5rem;
     }
     
-    .ck-editor__editable {
+    .question-add-section3-page .ck-editor__editable {
         min-height: 120px !important;
     }
     
-    .col-md-4 .form-group {
+    .question-add-section3-page .col-md-4 .form-group {
         padding: 0.5rem;
     }
     
-    input[type="file"]::-webkit-file-upload-button {
+    .question-add-section3-page input[type="file"]::-webkit-file-upload-button {
         padding: 4px 8px;
         font-size: 0.875rem;
     }
     
-    .form-check-inline {
+    .question-add-section3-page .form-check-inline {
         margin-right: 0.5rem;
     }
 }
 
-/*   Animation effects */
-.form-group {
+/* Animation effects */
+.question-add-section3-page .form-group {
     animation: fadeInUp 0.3s ease forwards;
 }
 
-.modal-body > .form-group:nth-child(1) {
+.question-add-section3-page .modal-body > .form-group:nth-child(1) {
     animation-delay: 0.1s;
 }
-
-.modal-body > .form-group:nth-child(2) {
+.question-add-section3-page .modal-body > .form-group:nth-child(2) {
     animation-delay: 0.2s;
 }
-
-.modal-body > .form-group:nth-child(3) {
+.question-add-section3-page .modal-body > .form-group:nth-child(3) {
     animation-delay: 0.3s;
 }
-
-.col-md-4:nth-child(1) .form-group {
+.question-add-section3-page .col-md-4:nth-child(1) .form-group {
     animation-delay: 0.4s;
 }
-
-.col-md-4:nth-child(2) .form-group {
+.question-add-section3-page .col-md-4:nth-child(2) .form-group {
     animation-delay: 0.5s;
 }
-
-.col-md-4:nth-child(3) .form-group {
+.question-add-section3-page .col-md-4:nth-child(3) .form-group {
     animation-delay: 0.6s;
 }
 
@@ -424,42 +427,42 @@ hr {
     }
 }
 
-/*   Loading states */
-.form-control:disabled,
-.form-control[readonly] {
+/* Loading states */
+.question-add-section3-page .form-control:disabled,
+.question-add-section3-page .form-control[readonly] {
     background-color: #e9ecef;
     opacity: 1;
 }
 
-.ck-editor__editable.ck-blurred {
+.question-add-section3-page .ck-editor__editable.ck-blurred {
     opacity: 0.7;
 }
 
-/*   Button styling */
-.btn-primary:focus,
-.btn-primary.focus {
+/* Button styling */
+.question-add-section3-page .btn-primary:focus,
+.question-add-section3-page .btn-primary.focus {
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.5);
 }
 
-.btn-secondary:focus,
-.btn-secondary.focus {
+.question-add-section3-page .btn-secondary:focus,
+.question-add-section3-page .btn-secondary.focus {
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/*   File validation states */
-input[type="file"].is-invalid {
+/* File validation states */
+.question-add-section3-page input[type="file"].is-invalid {
     border-color: #dc3545;
 }
 
-input[type="file"].is-invalid:focus {
+.question-add-section3-page input[type="file"].is-invalid:focus {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/*   Enhanced group headers */
-.modal-body > .form-group:nth-child(1) label,
-.modal-body > .form-group:nth-child(2) label,
-.modal-body > .form-group:nth-child(3) label {
+/* Enhanced group headers */
+.question-add-section3-page .modal-body > .form-group:nth-child(1) label,
+.question-add-section3-page .modal-body > .form-group:nth-child(2) label,
+.question-add-section3-page .modal-body > .form-group:nth-child(3) label {
     font-size: 16px;
     font-weight: 700;
     color: #2c3e50;
@@ -469,7 +472,7 @@ input[type="file"].is-invalid:focus {
     position: relative;
 }
 
-.modal-body > .form-group:nth-child(1) label::after {
+.question-add-section3-page .modal-body > .form-group:nth-child(1) label::after {
     content: '';
     position: absolute;
     bottom: -3px;
@@ -480,7 +483,7 @@ input[type="file"].is-invalid:focus {
     border-radius: 2px;
 }
 
-.modal-body > .form-group:nth-child(2) label::after {
+.question-add-section3-page .modal-body > .form-group:nth-child(2) label::after {
     content: '';
     position: absolute;
     bottom: -3px;
@@ -491,7 +494,7 @@ input[type="file"].is-invalid:focus {
     border-radius: 2px;
 }
 
-.modal-body > .form-group:nth-child(3) label::after {
+.question-add-section3-page .modal-body > .form-group:nth-child(3) label::after {
     content: '';
     position: absolute;
     bottom: -3px;

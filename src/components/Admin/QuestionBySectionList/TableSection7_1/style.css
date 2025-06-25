@@ -1,0 +1,25 @@
+.table-section7-single th {
+   color: #052649; 
+   font-weight: bold;
+}
+.table-section7-single td {
+   color: #052649; 
+   font-weight: normal;
+}
+.table-section7-single .modal.zoom .modal-dialog {
+  transition: transform 0.2s ease-out;
+  transform: scale(0.4);
+}
+.table-section7-single .modal.zoom.show .modal-dialog {
+  transform: scale(1);
+}
+.table-section7-single .question-image {
+    width: 50px;
+}
+.table-section7-single .table {
+    font-size: 13px;
+}
+.table-section7-single audio {
+    width: 100%;
+    max-width: 300px;
+}

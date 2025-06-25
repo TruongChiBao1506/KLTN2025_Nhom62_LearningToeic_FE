@@ -1,0 +1,32 @@
+.modal.zoom .modal-dialog {
+    transition: transform 0.2s ease-out;
+    transform: scale(0.4);
+}
+.modal.zoom.show .modal-dialog {
+    transform: scale(1);
+}
+.input-group {
+    border: 1px solid #6694c2;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+}
+.input-group .form-control {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+.input-group .btn {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+.form-select,
+.form-control {
+    font-size: 14px;
+}
+
+.page-item .page-link {
+    font-size: 13px;
+}
