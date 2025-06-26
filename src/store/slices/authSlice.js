@@ -1,27 +1,31 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authService from '../../services/authService';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import authService from "../../services/authService";
 
 // Thunk actions for authentication
 export const login = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.signIn(credentials);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Đăng nhập thất bại' });
+      return rejectWithValue(
+        error.response?.data || { message: "Đăng nhập thất bại" }
+      );
     }
   }
 );
 
 export const logout = createAsyncThunk(
-  'auth/logout',
+  "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
       const response = await authService.signOut();
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Đăng xuất thất bại' });
+      return rejectWithValue(
+        error.response?.data || { message: "Đăng xuất thất bại" }
+      );
     }
   }
 );
@@ -34,7 +38,7 @@ const initialState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     resetAuthError: (state) => {
@@ -42,7 +46,7 @@ const authSlice = createSlice({
     },
     updateUserProfile: (state, action) => {
       state.user = { ...state.user, ...action.payload };
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -59,9 +63,9 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Đăng nhập thất bại';
+        state.error = action.payload?.message || "Đăng nhập thất bại";
       })
-      
+
       // Logout actions
       .addCase(logout.pending, (state) => {
         state.loading = true;
@@ -75,9 +79,9 @@ const authSlice = createSlice({
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Đăng xuất thất bại';
+        state.error = action.payload?.message || "Đăng xuất thất bại";
       });
-  }
+  },
 });
 
 export const { resetAuthError, updateUserProfile } = authSlice.actions;

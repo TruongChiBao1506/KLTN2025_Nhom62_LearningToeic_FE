@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import CommentComponent from './CommentComponent';
-import commentService from '../../../services/commentService';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect, useCallback } from "react";
+import { jwtDecode } from "jwt-decode";
+import CommentComponent from "./CommentComponent";
+import commentService from "../../../services/commentService";
+import { toast } from "react-toastify";
 
 const CommentsList = () => {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
   const [comments, setComments] = useState([]);
   const [visibleComments, setVisibleComments] = useState([]);
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(true);
-  const [newCommentText, setNewCommentText] = useState('');
+  const [newCommentText, setNewCommentText] = useState("");
   const [userId, setUserId] = useState(null);
   const loadMoreComments = 10;
 
   const retrieveComments = useCallback(async () => {
     try {
       let fetchedComments;
-      if (filter === 'user') {
-        const learnerToken = localStorage.getItem('learnerToken');
+      if (filter === "user") {
+        const learnerToken = localStorage.getItem("learnerToken");
         if (learnerToken) {
           const decoded = jwtDecode(learnerToken);
           setUserId(decoded.id);
           fetchedComments = await commentService.getUserComments(decoded.id);
         } else {
-          toast.error('Vui lòng đăng nhập để xem bình luận của bạn');
+          toast.error("Vui lòng đăng nhập để xem bình luận của bạn");
           return;
         }
       } else {
@@ -40,8 +40,8 @@ const CommentsList = () => {
         setShowLoadMoreButton(false);
       }
     } catch (error) {
-      console.error('Lỗi khi lấy bình luận:', error);
-      toast.error('Không thể tải bình luận, vui lòng thử lại sau');
+      console.error("Lỗi khi lấy bình luận:", error);
+      toast.error("Không thể tải bình luận, vui lòng thử lại sau");
     }
   }, [filter]);
 
@@ -53,9 +53,9 @@ const CommentsList = () => {
     if (!newCommentText.trim()) return;
 
     try {
-      const learnerToken = localStorage.getItem('learnerToken');
+      const learnerToken = localStorage.getItem("learnerToken");
       if (!learnerToken) {
-        toast.error('Vui lòng đăng nhập để bình luận');
+        toast.error("Vui lòng đăng nhập để bình luận");
         return;
       }
 
@@ -64,16 +64,16 @@ const CommentsList = () => {
 
       const data = {
         text: newCommentText,
-        userId: decoded.id
+        userId: decoded.id,
       };
 
       await commentService.createComment(data);
-      setNewCommentText('');
+      setNewCommentText("");
       retrieveComments();
-      toast.success('Đã thêm bình luận');
+      toast.success("Đã thêm bình luận");
     } catch (error) {
-      console.error('Lỗi khi bình luận:', error);
-      toast.error('Lỗi khi bình luận, vui lòng thử lại sau');
+      console.error("Lỗi khi bình luận:", error);
+      toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
     }
   };
 
@@ -81,7 +81,9 @@ const CommentsList = () => {
     if (visibleComments.length + loadMoreComments >= comments.length) {
       setShowLoadMoreButton(false);
     }
-    setVisibleComments(comments.slice(0, visibleComments.length + loadMoreComments));
+    setVisibleComments(
+      comments.slice(0, visibleComments.length + loadMoreComments)
+    );
   };
 
   const handleFilterChange = (e) => {
@@ -91,9 +93,9 @@ const CommentsList = () => {
   return (
     <div>
       <div className="d-flex justify-content-end my-3 me-3">
-        <select 
-          value={filter} 
-          onChange={handleFilterChange} 
+        <select
+          value={filter}
+          onChange={handleFilterChange}
           className="form-select border-secondary w-25 mb-3"
         >
           <option disabled>LỌC BÌNH LUẬN</option>
@@ -104,10 +106,10 @@ const CommentsList = () => {
 
       <div className="d-flex justify-content-center">
         <div className="comment-form mt-2 input-group w-75">
-          <input 
-            value={newCommentText} 
+          <input
+            value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}
-            type="text" 
+            type="text"
             className="form-control border-secondary"
             placeholder="Thêm bình luận"
           />
@@ -117,9 +119,9 @@ const CommentsList = () => {
         </div>
       </div>
 
-      {visibleComments.map(comment => (
-        <CommentComponent 
-          key={comment.commentId} 
+      {visibleComments.map((comment) => (
+        <CommentComponent
+          key={comment.commentId}
           comment={comment}
           parentId={comment.commentId}
           retrieveComments={retrieveComments}
@@ -129,7 +131,10 @@ const CommentsList = () => {
 
       {showLoadMoreButton && visibleComments.length < comments.length && (
         <div>
-          <button onClick={loadMore} className="btn btn-link link-offset-3 ms-3 mb-3">
+          <button
+            onClick={loadMore}
+            className="btn btn-link link-offset-3 ms-3 mb-3"
+          >
             Xem thêm
           </button>
         </div>

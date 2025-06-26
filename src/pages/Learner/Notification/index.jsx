@@ -22,9 +22,15 @@ const Notification = () => {
                         <i className={`fas ${notification.icon}`}></i>
                       </div>
                       <div className="notification-content">
-                        <div className="notification-title">{notification.title}</div>
-                        <div className="notification-text">{notification.text}</div>
-                        <div className="notification-time">{notification.time}</div>
+                        <div className="notification-title">
+                          {notification.title}
+                        </div>
+                        <div className="notification-text">
+                          {notification.text}
+                        </div>
+                        <div className="notification-time">
+                          {notification.time}
+                        </div>
                       </div>
                       <div className="notification-actions">
                         <button className="btn btn-sm btn-outline-secondary">
@@ -41,7 +47,8 @@ const Notification = () => {
                   </div>
                   <h5 className="mt-3">Không có thông báo mới</h5>
                   <p className="text-muted">
-                    Bạn không có thông báo nào. Thông báo mới sẽ xuất hiện ở đây.
+                    Bạn không có thông báo nào. Thông báo mới sẽ xuất hiện ở
+                    đây.
                   </p>
                 </div>
               )}

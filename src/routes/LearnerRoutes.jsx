@@ -26,18 +26,11 @@ import StudySW from "../pages/Learner/StudySW";
 import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
 import Notification from "../pages/Learner/Notification";
-import SignIn from "../pages/Learner/SignIn";
-import SignUp from "../pages/Learner/SignUp";
-import Verification from "../pages/Learner/Verification";
 import ProtectedRoute from "../components/Learner/ProtectedRoute";
 
 const LearnerRoutes = () => {
   return (
     <Routes>
-      {" "}
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/verification" element={<Verification />} />
       <Route path="/" element={<LearnerLayout />}>
         <Route
           index

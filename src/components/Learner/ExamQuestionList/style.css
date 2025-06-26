@@ -1,202 +1,206 @@
 .question {
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    position: relative;
-    transition: all 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .viewed-question {
-    border-left: 3px solid #28a745;
-    padding-left: 5px;
+  border-left: 3px solid #28a745;
+  padding-left: 5px;
 }
 
 .bg-highlight {
-    background-color: rgba(255, 230, 150, 0.5) !important;
-    animation: highlightFade 2s;
+  background-color: rgba(255, 230, 150, 0.5) !important;
+  animation: highlightFade 2s;
 }
 
 @keyframes highlightFade {
-    from { background-color: rgba(255, 230, 150, 0.8); }
-    to { background-color: transparent; }
+  from {
+    background-color: rgba(255, 230, 150, 0.8);
+  }
+  to {
+    background-color: transparent;
+  }
 }
 
 .question-navigation {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
 }
 
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
 }
 
 .modal-content-custom {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    min-width: 50%;
-    max-width: 80%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalFadeIn 0.3s;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 50%;
+  max-width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s;
 }
 
 @keyframes modalFadeIn {
-    from { 
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to { 
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-header-custom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-body-custom {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .modal-close-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .dark-mode .bg-highlight {
-    background-color: rgba(255, 193, 7, 0.2) !important;
+  background-color: rgba(255, 193, 7, 0.2) !important;
 }
 
 .dark-mode .modal-content-custom {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
 }
 
 .dark-mode .modal-header-custom {
-    border-color: #333;
+  border-color: #333;
 }
 
 .dark-mode .modal-close-button {
-    color: #e0e0e0;
+  color: #e0e0e0;
 }
 
 .dark-mode .btn-outline-secondary {
-    color: #adb5bd;
-    border-color: #495057;
+  color: #adb5bd;
+  border-color: #495057;
 }
 
 .dark-mode .btn-outline-secondary:hover {
-    background-color: #495057;
-    color: #fff;
+  background-color: #495057;
+  color: #fff;
 }
 
 .dark-mode .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
 }
 
 .dark-mode .form-check-input:not(:checked) {
-    background-color: #333;
-    border-color: #666;
+  background-color: #333;
+  border-color: #666;
 }
 
 .dark-mode .card.specific-card {
-    background-color: #1e1e1e;
-    border-color: #333;
+  background-color: #1e1e1e;
+  border-color: #333;
 }
 
 .dark-mode .question-list-section .question-buttons button {
-    background-color: #333;
-    color: #ccc;
+  background-color: #333;
+  color: #ccc;
 }
 
 .dark-mode li:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .dark-mode .viewed-question {
-    border-left-color: #67c23a;
+  border-left-color: #67c23a;
 }
 
 /* Thiết bị nhỏ hơn */
 @media (max-width: 768px) {
-    .question-navigation {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .question-navigation button {
-        width: 100%;
-    }
+  .question-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .question-navigation button {
+    width: 100%;
+  }
 }
 
 .flag-icon {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    z-index: 100;
-    font-size: 20px;
-    color: red;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 100;
+  font-size: 20px;
+  color: red;
 }
 
 .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
 }
 
 .form-check-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
 }
 
 .form-check-input {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .equal-size-button {
-    min-width: 35px;
-    height: 35px;
-    margin: 3px;
-    border-radius: 5px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    font-weight: bold;
-    cursor: pointer;
+  min-width: 35px;
+  height: 35px;
+  margin: 3px;
+  border-radius: 5px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .active-part {
-    background-color: #34447c !important;
-    color: white !important;
-    font-weight: bold;
+  background-color: #34447c !important;
+  color: white !important;
+  font-weight: bold;
 }
 
 .result-icon {
-    margin-left: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

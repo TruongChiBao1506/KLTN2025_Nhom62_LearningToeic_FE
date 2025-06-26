@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import LearnerRoutes from "./routes/LearnerRoutes";
+import AuthRoutes from "./routes/AuthRoutes";
 import Login from "./pages/Auth/Login";
 import NotFound from "./pages/NotFound";
 
@@ -14,7 +15,8 @@ function App() {
     <Router>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/auth/*" element={<AuthRoutes />} />
 
         {/* Admin Routes */}
         {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
@@ -23,7 +25,7 @@ function App() {
         <Route path="/learner/*" element={<LearnerRoutes />} />
 
         {/* Default Redirects */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/auth/signin" replace />} />
 
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />

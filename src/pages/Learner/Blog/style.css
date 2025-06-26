@@ -35,7 +35,7 @@ h2 {
 }
 
 h2:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;

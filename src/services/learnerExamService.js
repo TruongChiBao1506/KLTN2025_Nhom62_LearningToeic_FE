@@ -81,9 +81,7 @@ const learnerExamService = {
   // Get count of completed exams
   getCompletedExamsCount: async () => {
     try {
-      const response = await axiosClient.get(
-        `/learner/exams/completed/count`
-      );
+      const response = await axiosClient.get(`/learner/exams/completed/count`);
       return response;
     } catch (error) {
       console.error("Lỗi khi tải số lượng bài thi đã hoàn thành:", error);
@@ -94,9 +92,7 @@ const learnerExamService = {
   // Get average score of all completed exams
   getAverageScore: async () => {
     try {
-      const response = await axiosClient.get(
-        `/learner/exams/average-score`
-      );
+      const response = await axiosClient.get(`/learner/exams/average-score`);
       return response;
     } catch (error) {
       console.error("Lỗi khi tải điểm trung bình:", error);
@@ -125,7 +121,8 @@ const learnerExamService = {
     } catch (error) {
       console.error("Lỗi khi tải bài thi gần đây:", error);
       throw error;
-    }  },
+    }
+  },
 };
 
 export default learnerExamService;

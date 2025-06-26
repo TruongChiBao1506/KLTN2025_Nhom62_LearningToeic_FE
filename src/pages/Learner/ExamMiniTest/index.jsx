@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import examService from '../../../services/examService';
-import Comment from '../../../components/Learner/Comment';
-import './style.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import examService from "../../../services/examService";
+import Comment from "../../../components/Learner/Comment";
+import "./style.css";
 
 const ExamMiniTest = () => {
   const [exams, setExams] = useState([]);
@@ -16,8 +16,8 @@ const ExamMiniTest = () => {
         const response = await examService.getMiniTest();
         setExams(response.data || []);
       } catch (error) {
-        console.error('Lỗi khi lấy danh sách bài thi mini:', error);
-        setError('Không thể tải danh sách bài thi mini. Vui lòng thử lại sau!');
+        console.error("Lỗi khi lấy danh sách bài thi mini:", error);
+        setError("Không thể tải danh sách bài thi mini. Vui lòng thử lại sau!");
       } finally {
         setLoading(false);
       }
@@ -28,7 +28,10 @@ const ExamMiniTest = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '300px' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "300px" }}
+      >
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Đang tải...</span>
         </div>
@@ -52,8 +55,9 @@ const ExamMiniTest = () => {
             <span>Bắt đầu bài thi TOEIC® mini ngay!</span>
           </h1>
           <p>
-            Bài thi mini sẽ giúp bạn làm quen với cấu trúc và nội dung của bài thi TOEIC chính thức 
-            trong thời gian ngắn hơn. Đây là cách tốt để luyện tập kỹ năng và chuẩn bị cho kỳ thi thật.
+            Bài thi mini sẽ giúp bạn làm quen với cấu trúc và nội dung của bài
+            thi TOEIC chính thức trong thời gian ngắn hơn. Đây là cách tốt để
+            luyện tập kỹ năng và chuẩn bị cho kỳ thi thật.
           </p>
         </div>
 
@@ -61,14 +65,17 @@ const ExamMiniTest = () => {
           <div className="row d-flex justify-content-start">
             {exams.length > 0 ? (
               exams.map((exam) => (
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-4" key={exam.examId}>
+                <div
+                  className="col-lg-3 col-md-6 col-sm-12 mb-4"
+                  key={exam.examId}
+                >
                   <div className="card exam-card">
                     <div className="card-image">
-                      <img 
+                      <img
                         src="https://webhouse.vn/tin-tuc/wp-content/uploads/2022/11/toeic-la-gi-nhung-dieu-can-biet-ve-bai-thi-toeic.jpg"
-                        className="card-img-top" 
-                        alt="Hình ảnh bài thi TOEIC mini" 
-                        loading="lazy" 
+                        className="card-img-top"
+                        alt="Hình ảnh bài thi TOEIC mini"
+                        loading="lazy"
                       />
                     </div>
                     <div className="card-body">
@@ -80,12 +87,19 @@ const ExamMiniTest = () => {
                           <div className="row">
                             <div className="col-7">
                               <p className="card-text">
-                                <i className="fa-solid fa-user-pen" style={{ color: 'chocolate' }}></i> 5 người tham gia
+                                <i
+                                  className="fa-solid fa-user-pen"
+                                  style={{ color: "chocolate" }}
+                                ></i>{" "}
+                                5 người tham gia
                               </p>
                             </div>
                             <div className="col-5">
                               <p className="card-text">
-                                <i className="fas fa-clock me-2" style={{ color: 'cornflowerblue' }}></i>
+                                <i
+                                  className="fas fa-clock me-2"
+                                  style={{ color: "cornflowerblue" }}
+                                ></i>
                                 {exam.examDuration / 60} phút
                               </p>
                             </div>
@@ -97,7 +111,11 @@ const ExamMiniTest = () => {
                           className="text-decoration-none"
                         >
                           <div className="d-flex justify-content-center">
-                            <button type="button" className="button my-2 w-75" style={{ width: '100%' }}>
+                            <button
+                              type="button"
+                              className="button my-2 w-75"
+                              style={{ width: "100%" }}
+                            >
                               Thi ngay
                             </button>
                           </div>
@@ -109,7 +127,9 @@ const ExamMiniTest = () => {
               ))
             ) : (
               <div className="col-12 text-center">
-                <p className="lead">Không có bài thi mini nào hiện tại. Vui lòng quay lại sau.</p>
+                <p className="lead">
+                  Không có bài thi mini nào hiện tại. Vui lòng quay lại sau.
+                </p>
               </div>
             )}
           </div>

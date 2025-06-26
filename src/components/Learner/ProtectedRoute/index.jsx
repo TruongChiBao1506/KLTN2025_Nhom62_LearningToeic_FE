@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import authService from '../../../services/authService';
+import React, { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import authService from "../../../services/authService";
 
 const ProtectedRoute = ({ children }) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const location = useLocation();
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                // Kiểm tra token của learner
-                const isValid = await authService.checkTokensValidity(false);
-                setIsAuthenticated(isValid);
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Lỗi khi kiểm tra xác thực:", error);
-                setIsAuthenticated(false);
-                setIsLoading(false);
-            }
-        };
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Kiểm tra token của learner
+        const isValid = await authService.checkTokensValidity(false);
+        setIsAuthenticated(isValid);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra xác thực:", error);
+        setIsAuthenticated(false);
+        setIsLoading(false);
+      }
+    };
 
-        checkAuth();
-    }, []);
+    checkAuth();
+  }, []);
 
-    if (isLoading) {
-        // Trạng thái đang tải
-        return (
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Đang tải...</span>
-                </div>
-            </div>
-        );
-    }
+  if (isLoading) {
+    // Trạng thái đang tải
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Đang tải...</span>
+        </div>
+      </div>
+    );
+  }
 
-    if (!isAuthenticated) {
-        // Redirect về trang đăng nhập nếu không có xác thực
-        return <Navigate to="/signin" state={{ from: location }} replace />;
-    }
+  if (!isAuthenticated) {
+    // Redirect về trang đăng nhập nếu không có xác thực
+    return <Navigate to="/auth/signin" state={{ from: location }} replace />;
+  }
 
-    // Nếu đã xác thực, hiển thị children
-    return children;
+  // Nếu đã xác thực, hiển thị children
+  return children;
 };
 
 export default ProtectedRoute;

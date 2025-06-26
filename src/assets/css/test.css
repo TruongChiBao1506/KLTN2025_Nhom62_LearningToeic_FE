@@ -1,333 +1,338 @@
 .scrollable-container {
-    height: 700px;
-    overflow-y: scroll;
-    padding: 12px;
+  height: 700px;
+  overflow-y: scroll;
+  padding: 12px;
 }
 html,
 body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 .row {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 li {
-    cursor: pointer;
-    padding: 5px;
-    transition: background-color 0.3s;
+  cursor: pointer;
+  padding: 5px;
+  transition: background-color 0.3s;
 }
 li:hover {
-    background-color: rgba(0, 123, 255, 0.1);
+  background-color: rgba(0, 123, 255, 0.1);
 }
 .transcript {
-    color: #777;
-    font-size: 14px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    margin-top: 10px;
+  color: #777;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 .explanation {
-    color: #777;
-    font-size: 14px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    margin-top: 10px;
+  color: #777;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin-top: 10px;
 }
-h1,h2,h3,h4,h5,h6 {
-    font-weight: 700;
-    color: #34447c;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  color: #34447c;
 }
 .card {
-    position: relative;
-    transition: transform 0.3s;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(11, 21, 114, 0.1);
-    border-radius: 10px;
+  position: relative;
+  transition: transform 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(11, 21, 114, 0.1);
+  border-radius: 10px;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(26, 25, 128, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(26, 25, 128, 0.2);
 }
 .card.specific-card {
-    border: 2px solid #eeeff1;
+  border: 2px solid #eeeff1;
 }
 .card.specific-card:hover {
-    transform: none;
-    box-shadow: 0 4px 8px rgba(72, 87, 219, 0.1);
-    border-color: #f6f9fc;
+  transform: none;
+  box-shadow: 0 4px 8px rgba(72, 87, 219, 0.1);
+  border-color: #f6f9fc;
 }
 .card.specific-card:hover .text-body-secondary {
-    color: #666;
+  color: #666;
 }
 .card:hover .card-title {
-    color: rgb(22, 4, 100);
+  color: rgb(22, 4, 100);
 }
 .lesson-content {
-    max-height: 200px;
-    overflow: auto;
+  max-height: 200px;
+  overflow: auto;
 }
 .lesson-content p {
-    font-family: "Lato", sans-serif;
-    font-size: 14px;
-    color: #333;
+  font-family: "Lato", sans-serif;
+  font-size: 14px;
+  color: #333;
 }
 .button {
-    display: inline-block;
-    padding: 10px;
-    background-color: #052649;
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 20px;
-    transition: background-color 0.3s, color 0.3s;
-    border: none;
-    cursor: pointer;
-    min-width: 100px;
+  display: inline-block;
+  padding: 10px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
 }
 .button:hover {
-    background-color: #fff;
-    color: #052649;
-    border: 1px solid #052649;
+  background-color: #fff;
+  color: #052649;
+  border: 1px solid #052649;
 }
 button i {
-    font-size: 20px;
-    color: #000;
+  font-size: 20px;
+  color: #000;
 }
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .bg-test {
-    height: 100%;
-    background-color: #f8f8fa;
+  height: 100%;
+  background-color: #f8f8fa;
 }
 .image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 }
 .audio-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .feedback-section {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 .highlight-row {
-    background-color: rgba(0, 123, 255, 0.1);
+  background-color: rgba(0, 123, 255, 0.1);
 }
 .result-icon {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
 }
 .button5 {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 .question-list-section h4 {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .question-list-section ul {
-    padding: 0;
-    list-style-type: none;
+  padding: 0;
+  list-style-type: none;
 }
 
 .question-list-section .question-buttons {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .question-list-section .question-buttons button {
-    margin: 5px;
-    border-radius: 20%;
-    background-color: lightgray;
-    color: #000;
-    position: relative;
-    transition: background-color 0.3s, color 0.3s;
-    border: 1px solid transparent;
+  margin: 5px;
+  border-radius: 20%;
+  background-color: lightgray;
+  color: #000;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid transparent;
 }
 
 .question-list-section .question-buttons button:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .question-list-section .question-buttons button.active {
-    border-color: #fff;
-    background-color: #f1f1f1;
-    border: 2px solid rgb(34, 8, 146);
+  border-color: #fff;
+  background-color: #f1f1f1;
+  border: 2px solid rgb(34, 8, 146);
 }
 
 .question-list-section .question-buttons button.active::after {
-    content: "";
-    position: absolute;
-    width: 0%;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    transition: width 0.3s;
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s;
 }
 
 .question-list-section .question-buttons button.active:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
 .question-list-section .question-buttons button.correct {
-    background-color: rgb(27, 170, 27);
-    color: #fff;
-    border: none;
+  background-color: rgb(27, 170, 27);
+  color: #fff;
+  border: none;
 }
 
 .question-list-section .question-buttons button.incorrect {
-    background-color: rgb(228, 48, 48);
-    color: #fff;
-    border: none;
+  background-color: rgb(228, 48, 48);
+  color: #fff;
+  border: none;
 }
 .equal-size-button {
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 .order-number {
-    font-weight: bold;
-    font-size: 12px;
+  font-weight: bold;
+  font-size: 12px;
 }
 
 .countdown-section {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    color: green;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: green;
 }
 
 .countdown-section i {
-    font-size: 23px;
-    margin-right: 5px;
+  font-size: 23px;
+  margin-right: 5px;
 }
 
 .countdown-section p {
-    margin: 0;
+  margin: 0;
 }
 
 .question-section,
 .question-list-section {
-    border-radius: 20px;
-    background-color: #fff;
+  border-radius: 20px;
+  background-color: #fff;
 }
 
 .score {
-    margin-top: 20px;
-    text-align: center;
-    font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .score p {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 .score p:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .active-part {
-    background-color: #34447c; 
-    color: white;
+  background-color: #34447c;
+  color: white;
 }
 
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
 }
 
 .modal-content-custom {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    min-width: 50%;
-    max-width: 80%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalFadeIn 0.3s;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 50%;
+  max-width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s;
 }
 
 @keyframes modalFadeIn {
-    from { 
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to { 
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-header-custom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-body-custom {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .modal-close-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .flag-icon {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    z-index: 100;
-    font-size: 20px;
-    color: #000;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 100;
+  font-size: 20px;
+  color: #000;
 }
 
 .question {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
 .question:target {
-    background-color: rgba(255, 243, 205, 0.5);
+  background-color: rgba(255, 243, 205, 0.5);
 }

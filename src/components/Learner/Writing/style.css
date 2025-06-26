@@ -112,8 +112,8 @@ button.button5 {
   transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
 }
 
-.form-floating textarea.form-control:focus~label,
-.form-floating textarea.form-control:not(:placeholder-shown)~label {
+.form-floating textarea.form-control:focus ~ label,
+.form-floating textarea.form-control:not(:placeholder-shown) ~ label {
   opacity: 0.65;
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import examService from '../../../services/examService';
-import Comment from '../../../components/Learner/Comment';
-import './style.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import examService from "../../../services/examService";
+import Comment from "../../../components/Learner/Comment";
+import "./style.css";
 
 const ExamFullTest = () => {
   const [exams, setExams] = useState([]);
@@ -16,8 +16,8 @@ const ExamFullTest = () => {
         const response = await examService.getEnableFullTest();
         setExams(response.data || []);
       } catch (error) {
-        console.error('Lỗi khi lấy danh sách bài thi:', error);
-        setError('Không thể tải danh sách bài thi. Vui lòng thử lại sau!');
+        console.error("Lỗi khi lấy danh sách bài thi:", error);
+        setError("Không thể tải danh sách bài thi. Vui lòng thử lại sau!");
       } finally {
         setLoading(false);
       }
@@ -28,7 +28,10 @@ const ExamFullTest = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '300px' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "300px" }}
+      >
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Đang tải...</span>
         </div>
@@ -57,14 +60,17 @@ const ExamFullTest = () => {
           <div className="row d-flex justify-content-start">
             {exams.length > 0 ? (
               exams.map((exam) => (
-                <div className="col-lg-3 col-md-6 col-sm-12 mb-4" key={exam.examId}>
+                <div
+                  className="col-lg-3 col-md-6 col-sm-12 mb-4"
+                  key={exam.examId}
+                >
                   <div className="card exam-card">
                     <div className="card-image">
-                      <img 
+                      <img
                         src="https://th.bing.com/th/id/R.50feae0671a4ce982b6db0bc095d95ae?rik=eVczvOwjlhkXdw&pid=ImgRaw&r=0"
-                        className="card-img-top" 
-                        alt="Hình ảnh bài thi TOEIC" 
-                        loading="lazy" 
+                        className="card-img-top"
+                        alt="Hình ảnh bài thi TOEIC"
+                        loading="lazy"
                       />
                     </div>
                     <div className="card-body">
@@ -76,12 +82,19 @@ const ExamFullTest = () => {
                           <div className="row">
                             <div className="col-7">
                               <p className="card-text">
-                                <i className="fa-solid fa-user-pen" style={{ color: 'chocolate' }}></i> 3 người tham gia
+                                <i
+                                  className="fa-solid fa-user-pen"
+                                  style={{ color: "chocolate" }}
+                                ></i>{" "}
+                                3 người tham gia
                               </p>
                             </div>
                             <div className="col-5">
                               <p className="card-text">
-                                <i className="fas fa-clock me-2" style={{ color: 'cornflowerblue' }}></i>
+                                <i
+                                  className="fas fa-clock me-2"
+                                  style={{ color: "cornflowerblue" }}
+                                ></i>
                                 {exam.examDuration / 3600} giờ
                               </p>
                             </div>
@@ -93,7 +106,11 @@ const ExamFullTest = () => {
                           className="text-decoration-none"
                         >
                           <div className="d-flex justify-content-center">
-                            <button type="button" className="button my-2 w-75" style={{ width: '100%' }}>
+                            <button
+                              type="button"
+                              className="button my-2 w-75"
+                              style={{ width: "100%" }}
+                            >
                               Thi ngay
                             </button>
                           </div>
@@ -105,7 +122,9 @@ const ExamFullTest = () => {
               ))
             ) : (
               <div className="col-12 text-center">
-                <p className="lead">Không có bài thi nào hiện tại. Vui lòng quay lại sau.</p>
+                <p className="lead">
+                  Không có bài thi nào hiện tại. Vui lòng quay lại sau.
+                </p>
               </div>
             )}
           </div>

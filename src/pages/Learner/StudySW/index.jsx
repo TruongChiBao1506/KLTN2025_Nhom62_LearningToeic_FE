@@ -37,7 +37,8 @@ const StudySW = () => {
               <div className="card-body">
                 <h2>Đang phát triển</h2>
                 <p className="lead">
-                  Component cho phần này đang trong quá trình phát triển. Vui lòng quay lại sau.
+                  Component cho phần này đang trong quá trình phát triển. Vui
+                  lòng quay lại sau.
                 </p>
                 <div className="coming-soon">
                   <i className="fas fa-tools fa-3x mt-3"></i>
@@ -53,7 +54,11 @@ const StudySW = () => {
           </div>
         );
       default:
-        return <div className="container mt-5 text-center">Không tìm thấy phần thi phù hợp</div>;
+        return (
+          <div className="container mt-5 text-center">
+            Không tìm thấy phần thi phù hợp
+          </div>
+        );
     }
   };
 

@@ -27,9 +27,12 @@ const TestPart5 = ({
       const question = questions[index];
       const explanation = question.questionExplanation;
       const targetLanguage = "vi"; // Tiếng Việt
-      
+
       try {
-        const translatedExplanation = await translateText(explanation, targetLanguage);
+        const translatedExplanation = await translateText(
+          explanation,
+          targetLanguage
+        );
         question.translatedExplanation = translatedExplanation;
       } catch (error) {
         console.error("Lỗi khi dịch:", error);
@@ -92,14 +95,18 @@ const TestPart5 = ({
                           >
                             {index + 1}
                           </button>
-                          <span className="ms-1">{question.questionContent}</span>
-                          
+                          <span className="ms-1">
+                            {question.questionContent}
+                          </span>
+
                           {getOptions(question).map((option, optionIndex) => (
                             <li
                               key={optionIndex}
-                              className={Array.isArray(getOptionClass(question, option)) 
-                                ? getOptionClass(question, option).join(" ") 
-                                : getOptionClass(question, option)}
+                              className={
+                                Array.isArray(getOptionClass(question, option))
+                                  ? getOptionClass(question, option).join(" ")
+                                  : getOptionClass(question, option)
+                              }
                             >
                               <label className="form-check-label">
                                 <input
@@ -235,16 +242,22 @@ const TestPart5 = ({
                   </button>
                 ))}
               </div>
-              
+
               <div className="score mb-3">
-                <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} /> {getCorrectCount}/{questions.length}
-                <FontAwesomeIcon icon={faTimes} style={{ color: "red", marginLeft: "8px" }} /> {getIncorrectCount}/{questions.length}
+                <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />{" "}
+                {getCorrectCount}/{questions.length}
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  style={{ color: "red", marginLeft: "8px" }}
+                />{" "}
+                {getIncorrectCount}/{questions.length}
               </div>
-              
+
               <div className="d-grid gap-2">
                 {isSubmited ? (
                   <button onClick={refreshPage} className="btn btn-light">
-                    <FontAwesomeIcon icon={faSync} className="text-success" /> Làm lại
+                    <FontAwesomeIcon icon={faSync} className="text-success" />{" "}
+                    Làm lại
                   </button>
                 ) : (
                   <button onClick={submitAnswers} className="btn btn-primary">

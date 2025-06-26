@@ -1,43 +1,64 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import authService from '../../services/authService';
-import './Login.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import authService from "../../services/authService";
+import "./Login.css";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
-      toast.error('Vui lòng nhập đầy đủ thông tin!');
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
     try {
       setLoading(true);
       const response = await authService.signIn({ username, password });
-      
+
       if (response && response.data) {
-        const { token, refreshToken, roles, jwtExpirationTime, refreshTokenExpirationTime } = response.data;
+        const {
+          token,
+          refreshToken,
+          roles,
+          jwtExpirationTime,
+          refreshTokenExpirationTime,
+        } = response.data;
 
         // Lưu token và thông tin xác thực
-        if (roles.includes('ROLE_ADMIN')) {
-          await authService.saveToken(token, refreshToken, jwtExpirationTime, refreshTokenExpirationTime, true);
-          navigate('/admin/dashboard');
-        } else if (roles.includes('ROLE_LEARNER')) {
-          await authService.saveToken(token, refreshToken, jwtExpirationTime, refreshTokenExpirationTime, false);
-          navigate('/learner/dashboard');
+        if (roles.includes("ROLE_ADMIN")) {
+          await authService.saveToken(
+            token,
+            refreshToken,
+            jwtExpirationTime,
+            refreshTokenExpirationTime,
+            true
+          );
+          navigate("/admin/dashboard");
+        } else if (roles.includes("ROLE_LEARNER")) {
+          await authService.saveToken(
+            token,
+            refreshToken,
+            jwtExpirationTime,
+            refreshTokenExpirationTime,
+            false
+          );
+          navigate("/learner/dashboard");
         } else {
-          toast.error('Bạn không có quyền truy cập hệ thống!');
+          toast.error("Bạn không có quyền truy cập hệ thống!");
         }
       }
     } catch (error) {
-      console.error('Đăng nhập thất bại:', error);
-      toast.error(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
+      console.error("Đăng nhập thất bại:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập."
+      );
     } finally {
       setLoading(false);
     }
@@ -70,15 +91,19 @@ const Login = () => {
             />
           </div>
           <button type="submit" className="login-button" disabled={loading}>
-            {loading ? 'Đang xử lý...' : 'Đăng nhập'}
+            {loading ? "Đang xử lý..." : "Đăng nhập"}
           </button>
         </form>
         <div className="login-options">
           <div className="option-item">
-            <a href="/learner/signup" className="option-link">Đăng ký tài khoản mới</a>
+            <a href="/learner/signup" className="option-link">
+              Đăng ký tài khoản mới
+            </a>
           </div>
           <div className="option-item">
-            <a href="/forgot-password" className="option-link">Quên mật khẩu?</a>
+            <a href="/forgot-password" className="option-link">
+              Quên mật khẩu?
+            </a>
           </div>
         </div>
       </div>

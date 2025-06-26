@@ -20,15 +20,18 @@ const Verification = () => {
         setVerificationStatus({
           loading: false,
           verified: false,
-          error: "Không tìm thấy token xác thực. Vui lòng kiểm tra lại email của bạn.",
+          error:
+            "Không tìm thấy token xác thực. Vui lòng kiểm tra lại email của bạn.",
         });
         return;
       }
 
       try {
         // Gọi API xác thực
-        const response = await axios.get(`http://localhost:9004/api/auth/verify?token=${token}`);
-        
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/auth/verify?token=${token}`
+        );
+
         if (response.status === 200) {
           setVerificationStatus({
             loading: false,
@@ -42,7 +45,9 @@ const Verification = () => {
         setVerificationStatus({
           loading: false,
           verified: false,
-          error: error.response?.data?.message || "Đã xảy ra lỗi khi xác thực tài khoản. Vui lòng thử lại sau.",
+          error:
+            error.response?.data?.message ||
+            "Đã xảy ra lỗi khi xác thực tài khoản. Vui lòng thử lại sau.",
         });
       }
     };
@@ -73,7 +78,7 @@ const Verification = () => {
           <h3>Xác thực không thành công</h3>
           <p>{verificationStatus.error}</p>
           <div className="mt-4">
-            <Link to="/signin" className="btn btn-primary me-3">
+            <Link to="/auth/signin" className="btn btn-primary me-3">
               Đăng nhập
             </Link>
             <Link to="/" className="btn btn-outline-secondary">
@@ -92,9 +97,12 @@ const Verification = () => {
           <i className="fas fa-check-circle"></i>
         </div>
         <h3>Xác thực thành công!</h3>
-        <p>Tài khoản của bạn đã được xác thực thành công. Bạn có thể đăng nhập ngay bây giờ.</p>
+        <p>
+          Tài khoản của bạn đã được xác thực thành công. Bạn có thể đăng nhập
+          ngay bây giờ.
+        </p>
         <div className="mt-4">
-          <Link to="/signin" className="btn btn-success me-3">
+          <Link to="/auth/signin" className="btn btn-success me-3">
             Đăng nhập ngay
           </Link>
           <Link to="/" className="btn btn-outline-secondary">

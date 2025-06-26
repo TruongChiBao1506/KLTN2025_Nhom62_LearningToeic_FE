@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './style.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./style.css";
 
 const No3To4 = ({ testId }) => {
   const [isReadyToTest, setIsReadyToTest] = useState(false);
@@ -11,38 +11,46 @@ const No3To4 = ({ testId }) => {
   const [audioURLs, setAudioURLs] = useState([]);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [showInstruction, setShowInstruction] = useState(false);
-  
+
   const preparingTime = 45; // seconds
   const recordingTime = 30; // seconds
-  
+
   const preparingTimerRef = useRef(null);
   const recordingTimerRef = useRef(null);
-  
+
   // Giả lập dữ liệu câu hỏi (thay thế bằng API call trong thực tế)
   useEffect(() => {
     // Simulated data - in real scenario, fetch from API based on testId
     const fetchedQuestions = [
       {
         id: 1,
-        content: "Describe what you see in the picture below. Be as detailed as possible.",
-        imageUrl: "https://img.freepik.com/free-photo/people-meeting-office-teamwork_53876-138129.jpg",
+        content:
+          "Describe what you see in the picture below. Be as detailed as possible.",
+        imageUrl:
+          "https://img.freepik.com/free-photo/people-meeting-office-teamwork_53876-138129.jpg",
       },
       {
         id: 2,
-        content: "Look at the picture and describe what you think is happening. What are the people doing?",
-        imageUrl: "https://img.freepik.com/free-photo/business-people-meeting_53876-15178.jpg",
-      }
+        content:
+          "Look at the picture and describe what you think is happening. What are the people doing?",
+        imageUrl:
+          "https://img.freepik.com/free-photo/business-people-meeting_53876-15178.jpg",
+      },
     ];
-    
+
     setQuestions(fetchedQuestions);
-    
+
     // Initialize countdowns
-    const prepCountdowns = new Array(fetchedQuestions.length).fill(preparingTime);
-    const recCountdowns = new Array(fetchedQuestions.length).fill(recordingTime);
+    const prepCountdowns = new Array(fetchedQuestions.length).fill(
+      preparingTime
+    );
+    const recCountdowns = new Array(fetchedQuestions.length).fill(
+      recordingTime
+    );
     setPreparingCountdown(prepCountdowns);
     setRecordingCountdown(recCountdowns);
     setAudioURLs(new Array(fetchedQuestions.length).fill(null));
-    
+
     return () => {
       // Cleanup timers when component unmounts
       if (preparingTimerRef.current) clearInterval(preparingTimerRef.current);
@@ -57,9 +65,9 @@ const No3To4 = ({ testId }) => {
 
   const startPreparingCountdown = () => {
     if (preparingTimerRef.current) clearInterval(preparingTimerRef.current);
-    
+
     preparingTimerRef.current = setInterval(() => {
-      setPreparingCountdown(prevCountdowns => {
+      setPreparingCountdown((prevCountdowns) => {
         const newCountdowns = [...prevCountdowns];
         if (newCountdowns[currentIndex] > 0) {
           newCountdowns[currentIndex] -= 1;
@@ -75,9 +83,9 @@ const No3To4 = ({ testId }) => {
 
   const startRecordingCountdown = () => {
     if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-    
+
     recordingTimerRef.current = setInterval(() => {
-      setRecordingCountdown(prevCountdowns => {
+      setRecordingCountdown((prevCountdowns) => {
         const newCountdowns = [...prevCountdowns];
         if (newCountdowns[currentIndex] > 0) {
           newCountdowns[currentIndex] -= 1;
@@ -96,22 +104,22 @@ const No3To4 = ({ testId }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
       const audioChunks = [];
-      
+
       recorder.ondataavailable = (e) => {
         audioChunks.push(e.data);
       };
-      
+
       recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
         const audioUrl = URL.createObjectURL(audioBlob);
-        
-        setAudioURLs(prev => {
+
+        setAudioURLs((prev) => {
           const newUrls = [...prev];
           newUrls[currentIndex] = audioUrl;
           return newUrls;
         });
       };
-      
+
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
@@ -125,9 +133,9 @@ const No3To4 = ({ testId }) => {
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
       mediaRecorder.stop();
       setIsRecording(false);
-      
+
       // Cleanup stream tracks
-      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     }
   };
 
@@ -137,27 +145,27 @@ const No3To4 = ({ testId }) => {
       if (isRecording) {
         stopRecording();
       }
-      
+
       // Clear timers
       if (preparingTimerRef.current) clearInterval(preparingTimerRef.current);
       if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-      
+
       // Move to next question
-      setCurrentIndex(prevIndex => prevIndex + 1);
-      
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+
       // Reset countdowns for the new question
-      setPreparingCountdown(prevCountdowns => {
+      setPreparingCountdown((prevCountdowns) => {
         const newCountdowns = [...prevCountdowns];
         newCountdowns[currentIndex + 1] = preparingTime;
         return newCountdowns;
       });
-      
-      setRecordingCountdown(prevCountdowns => {
+
+      setRecordingCountdown((prevCountdowns) => {
         const newCountdowns = [...prevCountdowns];
         newCountdowns[currentIndex + 1] = recordingTime;
         return newCountdowns;
       });
-      
+
       // Start preparing countdown for the new question
       setTimeout(() => {
         startPreparingCountdown();
@@ -171,11 +179,11 @@ const No3To4 = ({ testId }) => {
       if (isRecording) {
         stopRecording();
       }
-      
+
       if (preparingTimerRef.current) clearInterval(preparingTimerRef.current);
       if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-      
-      setCurrentIndex(prevIndex => prevIndex - 1);
+
+      setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
 
@@ -184,15 +192,15 @@ const No3To4 = ({ testId }) => {
     if (isRecording) {
       stopRecording();
     }
-    
+
     if (preparingTimerRef.current) clearInterval(preparingTimerRef.current);
     if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-    
+
     setCurrentIndex(0);
     setPreparingCountdown(new Array(questions.length).fill(preparingTime));
     setRecordingCountdown(new Array(questions.length).fill(recordingTime));
     setAudioURLs(new Array(questions.length).fill(null));
-    
+
     // Start the first question again
     setTimeout(() => {
       startPreparingCountdown();
@@ -210,18 +218,22 @@ const No3To4 = ({ testId }) => {
           <div className="card specific-card mt-3">
             <div className="card-body">
               <div className="d-flex justify-content-center">
-                <img 
+                <img
                   src="https://www.vividsites.com/mm/images/Voice-UI.png"
-                  alt="Speaking practice icon" 
-                  width="100px" 
-                  height="100px" 
+                  alt="Speaking practice icon"
+                  width="100px"
+                  height="100px"
                 />
               </div>
-              <h2 className="text-center my-3">Speaking: Miêu tả một bức tranh</h2>
+              <h2 className="text-center my-3">
+                Speaking: Miêu tả một bức tranh
+              </h2>
               <h5 className="card-title text-primary">Hướng dẫn:</h5>
               <p className="card-text">
-                Trong phần kiểm tra này, bạn sẽ mô tả hình ảnh trên màn hình càng chi tiết càng tốt.
-                Bạn sẽ có <strong>45</strong> giây để chuẩn bị phản hồi. Sau đó, bạn sẽ có <strong>30</strong> giây để nói về bức tranh.
+                Trong phần kiểm tra này, bạn sẽ mô tả hình ảnh trên màn hình
+                càng chi tiết càng tốt. Bạn sẽ có <strong>45</strong> giây để
+                chuẩn bị phản hồi. Sau đó, bạn sẽ có <strong>30</strong> giây để
+                nói về bức tranh.
               </p>
               <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
               <span className="badge bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
@@ -235,7 +247,7 @@ const No3To4 = ({ testId }) => {
               </span>
             </div>
           </div>
-          
+
           <div className="card specific-card mt-3">
             <div className="card-body">
               {!isReadyToTest ? (
@@ -244,56 +256,66 @@ const No3To4 = ({ testId }) => {
                 </button>
               ) : (
                 <div>
-                  <button className="button bg-primary" onClick={refreshAllQuestions}>
+                  <button
+                    className="button bg-primary"
+                    onClick={refreshAllQuestions}
+                  >
                     Làm lại
                   </button>
 
                   <div className="word-item">
                     <div className="mb-5">
-                      <div className="text-end" style={{ fontSize: '20px' }}>
-                        <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style={{ backgroundColor: 'orange' }}>
-                          <span style={{ fontSize: '22px' }}>&#9200;</span>
+                      <div className="text-end" style={{ fontSize: "20px" }}>
+                        <span
+                          className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill"
+                          style={{ backgroundColor: "orange" }}
+                        >
+                          <span style={{ fontSize: "22px" }}>&#9200;</span>
                           Chuẩn bị: {preparingCountdown[currentIndex]} s
                         </span>
                         <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                          <span style={{ fontSize: '22px' }}>&#9200;</span>
+                          <span style={{ fontSize: "22px" }}>&#9200;</span>
                           Ghi âm: {recordingCountdown[currentIndex]} s
                         </span>
                       </div>
                     </div>
-                    
+
                     {questions.length > 0 && (
                       <div className="my-4">
                         <div className="border border-3 p-3 mb-3">
                           <h4>Câu hỏi {currentIndex + 1}</h4>
                           <p>{questions[currentIndex].content}</p>
                         </div>
-                        
+
                         <div className="image-container mb-4">
-                          <img 
-                            src={questions[currentIndex].imageUrl} 
-                            alt="Question image" 
-                            className="img-fluid" 
-                            style={{ maxHeight: '300px' }}
+                          <img
+                            src={questions[currentIndex].imageUrl}
+                            alt="Question image"
+                            className="img-fluid"
+                            style={{ maxHeight: "300px" }}
                           />
                         </div>
-                        
+
                         {audioURLs[currentIndex] && (
                           <div className="mt-3">
                             <h5>Bản ghi của bạn:</h5>
-                            <audio controls src={audioURLs[currentIndex]} className="w-100" />
+                            <audio
+                              controls
+                              src={audioURLs[currentIndex]}
+                              className="w-100"
+                            />
                           </div>
                         )}
-                        
+
                         <div className="d-flex justify-content-between mt-4">
-                          <button 
+                          <button
                             className="btn btn-outline-secondary"
                             onClick={prevQuestion}
                             disabled={currentIndex === 0}
                           >
                             Câu trước
                           </button>
-                          
+
                           <button
                             className="btn btn-outline-primary"
                             onClick={nextQuestion}
@@ -304,12 +326,15 @@ const No3To4 = ({ testId }) => {
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="mt-4">
-                      <button className="btn btn-info" onClick={toggleInstruction}>
+                      <button
+                        className="btn btn-info"
+                        onClick={toggleInstruction}
+                      >
                         {showInstruction ? "Ẩn hướng dẫn" : "Xem hướng dẫn"}
                       </button>
-                      
+
                       {showInstruction && (
                         <div className="card mt-3">
                           <div className="card-body">
@@ -318,8 +343,14 @@ const No3To4 = ({ testId }) => {
                               <li>Mô tả địa điểm và thời gian trong ảnh</li>
                               <li>Mô tả người/vật chính trong ảnh</li>
                               <li>Mô tả hoạt động đang diễn ra</li>
-                              <li>Sử dụng thì hiện tại tiếp diễn để mô tả hành động</li>
-                              <li>Chú ý đến chi tiết như màu sắc, cảm xúc, và bối cảnh</li>
+                              <li>
+                                Sử dụng thì hiện tại tiếp diễn để mô tả hành
+                                động
+                              </li>
+                              <li>
+                                Chú ý đến chi tiết như màu sắc, cảm xúc, và bối
+                                cảnh
+                              </li>
                             </ul>
                           </div>
                         </div>

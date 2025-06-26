@@ -1,151 +1,155 @@
 .bg-test {
-    min-height: 100vh;
-    background-color: #f8f8fa;
-    transition: background-color 0.3s, color 0.3s;
+  min-height: 100vh;
+  background-color: #f8f8fa;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .bg-test.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 .dark-mode .card {
-    background-color: #1e1e1e;
-    border-color: #333;
-    color: #e0e0e0;
+  background-color: #1e1e1e;
+  border-color: #333;
+  color: #e0e0e0;
 }
 
 .dark-mode .card.specific-card {
-    border: 2px solid #333;
+  border: 2px solid #333;
 }
 
 .dark-mode .question {
-    border-color: #333;
+  border-color: #333;
 }
 
 .dark-mode .alert-primary {
-    background-color: #172a46;
-    border-color: #1c3759;
-    color: #e0e0e0;
+  background-color: #172a46;
+  border-color: #1c3759;
+  color: #e0e0e0;
 }
 
 .dark-mode .alert .text-warning {
-    color: #ffc107 !important;
+  color: #ffc107 !important;
 }
 
 .dark-mode .highlight-row {
-    background-color: rgba(0, 123, 255, 0.2);
+  background-color: rgba(0, 123, 255, 0.2);
 }
 
 .dark-mode .explanation,
 .dark-mode .transcript {
-    color: #b0b0b0;
-    background-color: #252525;
+  color: #b0b0b0;
+  background-color: #252525;
 }
 
 .dark-mode .modal-content-custom {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
 }
 
 .dark-mode .modal-header-custom {
-    border-color: #333;
+  border-color: #333;
 }
 
 .dark-mode .text-muted {
-    color: #a0a0a0 !important;
+  color: #a0a0a0 !important;
 }
 
 .bg-highlight {
-    background-color: rgba(255, 230, 150, 0.5) !important;
-    animation: highlightFade 2s;
+  background-color: rgba(255, 230, 150, 0.5) !important;
+  animation: highlightFade 2s;
 }
 
 @keyframes highlightFade {
-    from { background-color: rgba(255, 230, 150, 0.8); }
-    to { background-color: transparent; }
+  from {
+    background-color: rgba(255, 230, 150, 0.8);
+  }
+  to {
+    background-color: transparent;
+  }
 }
 
 .viewed-question {
-    border-left: 3px solid #28a745;
-    padding-left: 10px;
+  border-left: 3px solid #28a745;
+  padding-left: 10px;
 }
 
 .question-navigation {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
 }
 
 .progress {
-    height: 6px;
-    border-radius: 3px;
-    overflow: hidden;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .progress-bar {
-    background-color: #34447c;
+  background-color: #34447c;
 }
 
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
 }
 
 .modal-content-custom {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    min-width: 50%;
-    max-width: 80%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalFadeIn 0.3s;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 50%;
+  max-width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s;
 }
 
 @keyframes modalFadeIn {
-    from { 
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to { 
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-header-custom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-body-custom {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .modal-close-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
-    .modal-content-custom {
-        max-width: 95%;
-        margin: 0 10px;
-    }
+  .modal-content-custom {
+    max-width: 95%;
+    margin: 0 10px;
+  }
 }

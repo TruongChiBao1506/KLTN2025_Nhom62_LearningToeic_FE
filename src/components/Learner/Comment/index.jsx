@@ -1,6 +1,6 @@
-import React from 'react';
-import CommentsList from './CommentsList';
-import './style.css';
+import React from "react";
+import CommentsList from "./CommentsList";
+import "./style.css";
 
 const Comment = () => {
   return (

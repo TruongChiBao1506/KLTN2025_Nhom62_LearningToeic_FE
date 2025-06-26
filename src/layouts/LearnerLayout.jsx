@@ -31,7 +31,7 @@ const LearnerLayout = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state?.auth?.user);
 
   // Check if the path starts with the given route
   const isActive = (path) => {
@@ -43,19 +43,19 @@ const LearnerLayout = () => {
     try {
       // Sử dụng authService để đăng xuất
       await authService.signOut();
-      
+
       // Xóa thông tin người học trong localStorage
       localStorage.removeItem("learnerToken");
       localStorage.removeItem("learnerRefreshToken");
       localStorage.removeItem("learnerAccessTokenExpirationTime");
       localStorage.removeItem("learnerRefreshTokenExpirationTime");
       localStorage.removeItem("LearnerAuthenticated");
-      
+
       // Cập nhật Redux store nếu cần
       dispatch(logout());
-      
+
       toast.success("Đăng xuất thành công!");
-      
+
       // Chuyển hướng về trang đăng nhập
       window.location.href = "/signin";
     } catch (error) {

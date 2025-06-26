@@ -61,6 +61,7 @@
    - learnerProgressService - Service quản lý tiến độ của learner (đã chuẩn hóa)
 
 4. **Tối ưu hóa Services:**
+
    - Đã tối ưu lại phân chia trách nhiệm giữa `authService` và `userService`
    - Chuyển toàn bộ các phương thức xác thực (signIn, signUp, signOut, refreshToken) sang `authService`
    - `userService` chỉ giữ các phương thức liên quan đến quản lý thông tin người dùng
@@ -75,12 +76,14 @@
 ### Đang triển khai:
 
 1. **Tính năng đang triển khai:**
+
    - Tích hợp bảo mật và xác thực hoàn chỉnh
    - Đồng bộ hóa tiến độ học tập
    - Nhận diện giọng nói trong phần Speaking
    - Tự động lưu và khôi phục bài thi
 
 2. **Pages đang hoàn thiện:**
+
    - LearningRoute - Lộ trình học tập cá nhân hóa
    - FreeMaterials - Tài liệu học tập miễn phí
      - ✓ Cảnh báo khi rời trang trong lúc làm bài
@@ -90,13 +93,14 @@
      - ✓ Thanh hiển thị tiến độ làm bài
      - ✓ Báo cáo kết quả chi tiết với phân tích điểm mạnh/yếu### Kế hoạch tiếp theo:
 
-1. **Giai đoạn 3 (Tiếp theo):**
+3. **Giai đoạn 3 (Tiếp theo):**
+
    - Kiểm thử toàn diện các tính năng đã chuyển đổi
    - Tối ưu hiệu suất và trải nghiệm người dùng
    - Tích hợp báo cáo phân tích học tập
    - Hoàn thiện tính năng tương tác xã hội và cộng đồng học tập
 
-2. **Ưu tiên trong tuần tới:**
+4. **Ưu tiên trong tuần tới:**
    - Kiểm tra tất cả các trang có sử dụng xác thực để đảm bảo chuyển đổi từ userService sang authService thành công
    - Thêm kiểm tra quyền truy cập cho các route bảo vệ
    - Chuẩn hóa giao diện đồng nhất cho tất cả các trang
@@ -112,6 +116,7 @@
 ### Các cải tiến đã thực hiện:
 
 1. **Tối ưu giao diện người dùng:**
+
    - Thêm chế độ Dark Mode để bảo vệ mắt người dùng
    - Responsive hoàn toàn trên các thiết bị di động
    - Thêm hiệu ứng UI để tăng trải nghiệm người dùng
@@ -137,12 +142,13 @@
 - **Tổng số trang đã chuyển đổi**: 17/19 (89%)
 - **Tổng số component đã chuyển đổi**: 14/14 (100%)
 - **Tổng số service đã cập nhật**: 14/14 (100%)
-- **Lỗi đã giải quyết**: 
+- **Lỗi đã giải quyết**:
   - ✅ Sửa lỗi import date-fns trong CommentComponent
   - ✅ Tạo và cập nhật các file CSS thiếu (test.css, navtab.css)
   - ✅ Chuẩn hóa import asset thông qua process.env trực tiếp
 
 1. **Đã hoàn thiện toàn bộ các trang đã lên kế hoạch:**
+
    - ✅ Blog - Hoàn thành ngày 25/06/2025
    - ✅ Notification - Hoàn thành ngày 25/06/2025
    - ✅ ImproveStudy - Hoàn thành ngày 25/06/2025
@@ -157,4 +163,4 @@
 
 ---
 
-*Báo cáo được cập nhật vào ngày 25/06/2025*
+_Báo cáo được cập nhật vào ngày 25/06/2025_

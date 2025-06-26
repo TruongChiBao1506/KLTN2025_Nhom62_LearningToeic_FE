@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './style.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./style.css";
 
 const Dictionary = () => {
   // State cho phần dịch thuật
-  const [translationMode, setTranslationMode] = useState('en-vi');
-  const [textToTranslate, setTextToTranslate] = useState('');
-  const [translatedTextTemp, setTranslatedTextTemp] = useState('');
+  const [translationMode, setTranslationMode] = useState("en-vi");
+  const [textToTranslate, setTextToTranslate] = useState("");
+  const [translatedTextTemp, setTranslatedTextTemp] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
 
   // State cho phần từ điển
-  const [inputWord, setInputWord] = useState('');
-  const [lastSearchedWord, setLastSearchedWord] = useState('');
-  const [partOfSpeech, setPartOfSpeech] = useState('');
-  const [phonetic, setPhonetic] = useState('');
-  const [definition, setDefinition] = useState('');
-  const [example, setExample] = useState('');
-  const [audioSrc, setAudioSrc] = useState('');
+  const [inputWord, setInputWord] = useState("");
+  const [lastSearchedWord, setLastSearchedWord] = useState("");
+  const [partOfSpeech, setPartOfSpeech] = useState("");
+  const [phonetic, setPhonetic] = useState("");
+  const [definition, setDefinition] = useState("");
+  const [example, setExample] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
   const audioRef = useRef(null);
 
   const characterCount = textToTranslate.length;
@@ -30,7 +30,7 @@ const Dictionary = () => {
   // Hàm dịch văn bản
   const translateText = async (text, mode = translationMode) => {
     if (!text.trim()) {
-      setTranslatedTextTemp('');
+      setTranslatedTextTemp("");
       return;
     }
 
@@ -39,7 +39,7 @@ const Dictionary = () => {
 
     const sourceLang = mode.split("-")[0];
     const targetLang = mode.split("-")[1];
-    
+
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -52,9 +52,13 @@ const Dictionary = () => {
           target: targetLang,
         }),
       });
-      
+
       const result = await response.json();
-      if (result.data && result.data.translations && result.data.translations[0]) {
+      if (
+        result.data &&
+        result.data.translations &&
+        result.data.translations[0]
+      ) {
         setTranslatedTextTemp(result.data.translations[0].translatedText);
       }
     } catch (error) {
@@ -73,17 +77,17 @@ const Dictionary = () => {
       alert("Không có văn bản để đọc phiên dịch.");
       return;
     }
-    
+
     const utterance = new SpeechSynthesisUtterance(translatedTextTemp);
     const lang = translationMode.split("-")[1];
     utterance.lang = lang === "vi" ? "vi-VN" : "en-US";
-    
+
     // Dừng tất cả giọng nói đang phát
     window.speechSynthesis.cancel();
-    
+
     window.speechSynthesis.speak(utterance);
     setIsPlaying(true);
-    
+
     utterance.onend = () => {
       setIsPlaying(false);
     };
@@ -97,7 +101,8 @@ const Dictionary = () => {
 
   // Xử lý nhận dạng giọng nói
   const startTranslationSpeechRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.");
       return;
@@ -106,22 +111,22 @@ const Dictionary = () => {
     const recognition = new SpeechRecognition();
     recognition.lang = translationMode.startsWith("en") ? "en-US" : "vi-VN";
     recognition.interimResults = true;
-    
+
     setIsTranslating(true);
-    
+
     recognition.onresult = (event) => {
       const transcript = Array.from(event.results)
-        .map(result => result[0].transcript)
-        .join('');
+        .map((result) => result[0].transcript)
+        .join("");
       setTextToTranslate(transcript);
     };
-    
+
     recognition.onend = () => {
       setIsTranslating(false);
     };
-    
+
     recognition.start();
-    
+
     // Lưu recognition vào biến để có thể dừng khi cần
     window.currentRecognition = recognition;
   };
@@ -146,17 +151,24 @@ const Dictionary = () => {
         const selectedWordData = data[0];
 
         // Hiển thị phân loại từ và IPA
-        setPartOfSpeech(selectedWordData.meanings.map(meaning => meaning.partOfSpeech).join(', '));
-        
+        setPartOfSpeech(
+          selectedWordData.meanings
+            .map((meaning) => meaning.partOfSpeech)
+            .join(", ")
+        );
+
         // Lấy phiên âm
-        if (selectedWordData.phonetics && selectedWordData.phonetics.length > 0) {
+        if (
+          selectedWordData.phonetics &&
+          selectedWordData.phonetics.length > 0
+        ) {
           const phoneticTexts = selectedWordData.phonetics
-            .map(p => p.text)
-            .filter(text => text)
-            .join(', ');
+            .map((p) => p.text)
+            .filter((text) => text)
+            .join(", ");
           setPhonetic(phoneticTexts);
         } else {
-          setPhonetic('');
+          setPhonetic("");
         }
 
         // Hiển thị định nghĩa và ví dụ
@@ -166,7 +178,7 @@ const Dictionary = () => {
         for (const meaning of selectedWordData.meanings) {
           definitionHtml += `<i class="fa-solid fa-circle-chevron-right me-2 text-success"></i><strong class="text-primary">${meaning.partOfSpeech}:</strong><br>`;
           const data = [];
-          
+
           // Duyệt qua tất cả các định nghĩa
           for (const def of meaning.definitions) {
             data.push(`<span class="ms-3">${def.definition}</span>`);
@@ -180,10 +192,14 @@ const Dictionary = () => {
 
           definitionHtml += data.join("<br>");
           if (meaning.synonyms && meaning.synonyms.length > 0) {
-            definitionHtml += `<br><strong class="ms-3">Từ đồng nghĩa: </strong>${meaning.synonyms.join(', ')}`;
+            definitionHtml += `<br><strong class="ms-3">Từ đồng nghĩa: </strong>${meaning.synonyms.join(
+              ", "
+            )}`;
           }
           if (meaning.antonyms && meaning.antonyms.length > 0) {
-            definitionHtml += `<br><strong class="ms-3">Từ trái nghĩa: </strong>${meaning.antonyms.join(', ')}`;
+            definitionHtml += `<br><strong class="ms-3">Từ trái nghĩa: </strong>${meaning.antonyms.join(
+              ", "
+            )}`;
           }
           definitionHtml += "<br>";
         }
@@ -201,7 +217,6 @@ const Dictionary = () => {
           }
         }
         setAudioSrc(audio);
-
       } else {
         // Xử lý khi không tìm thấy từ
         setPartOfSpeech("");
@@ -247,23 +262,46 @@ const Dictionary = () => {
         <div className="col-lg col-md col-sm">
           <div className="pcss3t pcss3t-effect-scale pcss3t-theme-1">
             {/* Tab 1 - Translation */}
-            <input type="radio" name="pcss3t" defaultChecked id="tab1" className="tab-content-first" />
+            <input
+              type="radio"
+              name="pcss3t"
+              defaultChecked
+              id="tab1"
+              className="tab-content-first"
+            />
             <label htmlFor="tab1">
-              <img className="icon-bolt"
+              <img
+                className="icon-bolt"
                 src="https://3.imimg.com/data3/MV/XK/GLADMIN-154017/dictionaries-books-500x500.jpg"
-                style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "contain",
+                }}
                 alt="Translation"
-                loading="lazy" />
+                loading="lazy"
+              />
             </label>
 
             {/* Tab 2 - Dictionary */}
-            <input type="radio" name="pcss3t" id="tab2" className="tab-content-2" />
+            <input
+              type="radio"
+              name="pcss3t"
+              id="tab2"
+              className="tab-content-2"
+            />
             <label htmlFor="tab2">
-              <img className="icon-bolt"
+              <img
+                className="icon-bolt"
                 src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Woerterbuchstapel_Langenscheidt.jpg"
-                style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "contain",
+                }}
                 alt="Dictionary"
-                loading="lazy" />
+                loading="lazy"
+              />
             </label>
 
             <ul>
@@ -273,22 +311,39 @@ const Dictionary = () => {
                 <div id="accordionExample">
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="headingOne">
-                      <button className="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <button
+                        className="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-expanded="true"
+                        aria-controls="collapseOne"
+                      >
                         <span className="accordion-button-text"></span>
                         <i className="fa-solid fa-book-open"></i>
                       </button>
                     </h2>
-                    <div id="collapseOne" className="accordion-collapse collapse show"
-                      data-bs-parent="#accordionExample">
+                    <div
+                      id="collapseOne"
+                      className="accordion-collapse collapse show"
+                      data-bs-parent="#accordionExample"
+                    >
                       <div className="accordion-body mb-2">
                         <div className="card specific-card">
                           <div className="card-body lesson-content">
                             <div className="row">
                               <div>
-                                <select className="form-select" value={translationMode} onChange={handleTranslationModeChange}>
-                                  <option value="en-vi">Dịch tiếng Anh sang tiếng Việt</option>
-                                  <option value="vi-en">Dịch tiếng Việt sang tiếng Anh</option>
+                                <select
+                                  className="form-select"
+                                  value={translationMode}
+                                  onChange={handleTranslationModeChange}
+                                >
+                                  <option value="en-vi">
+                                    Dịch tiếng Anh sang tiếng Việt
+                                  </option>
+                                  <option value="vi-en">
+                                    Dịch tiếng Việt sang tiếng Anh
+                                  </option>
                                 </select>
                               </div>
 
@@ -296,19 +351,32 @@ const Dictionary = () => {
                                 <h3 className="text-center">Dịch thuật</h3>
                                 <div className="form-group">
                                   <div className="position-relative">
-                                    <textarea rows="7" cols="33" className="form-control"
+                                    <textarea
+                                      rows="7"
+                                      cols="33"
+                                      className="form-control"
                                       value={textToTranslate}
-                                      onChange={(e) => setTextToTranslate(e.target.value)}
+                                      onChange={(e) =>
+                                        setTextToTranslate(e.target.value)
+                                      }
                                       placeholder="Nhập văn bản cần dịch"
-                                      maxLength={5000}></textarea>
+                                      maxLength={5000}
+                                    ></textarea>
                                     <small className="position-absolute bottom-0 end-0 text-danger me-2 mb-2">
                                       {characterCount} / 5000
                                     </small>
                                   </div>
                                 </div>
                                 <div>
-                                  <button className="btn btn-primary mt-2" id="translate-button"
-                                    onClick={isTranslating ? stopTranslationSpeechRecognition : startTranslationSpeechRecognition}>
+                                  <button
+                                    className="btn btn-primary mt-2"
+                                    id="translate-button"
+                                    onClick={
+                                      isTranslating
+                                        ? stopTranslationSpeechRecognition
+                                        : startTranslationSpeechRecognition
+                                    }
+                                  >
                                     {!isTranslating ? (
                                       <i className="fas fa-microphone"></i>
                                     ) : (
@@ -321,14 +389,25 @@ const Dictionary = () => {
                               <div className="col-md-6">
                                 <h3 className="text-center">Bản dịch</h3>
                                 <div className="form-group">
-                                  <textarea rows="7" cols="33" className="form-control"
+                                  <textarea
+                                    rows="7"
+                                    cols="33"
+                                    className="form-control"
                                     value={translatedTextTemp}
                                     placeholder="Bản dịch"
-                                    readOnly></textarea>
+                                    readOnly
+                                  ></textarea>
                                 </div>
                                 <div>
-                                  <button className="btn btn-primary mt-2" id="translate-button"
-                                    onClick={isPlaying ? stopConvertedTextSpeech : convertTranslatedTextToSpeech}>
+                                  <button
+                                    className="btn btn-primary mt-2"
+                                    id="translate-button"
+                                    onClick={
+                                      isPlaying
+                                        ? stopConvertedTextSpeech
+                                        : convertTranslatedTextToSpeech
+                                    }
+                                  >
                                     {!isPlaying ? (
                                       <i className="fas fa-headphones"></i>
                                     ) : (
@@ -356,14 +435,18 @@ const Dictionary = () => {
                       placeholder="Nhập từ cần tra cứu..."
                       value={inputWord}
                       onChange={(e) => setInputWord(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && searchWord()}
+                      onKeyPress={(e) => e.key === "Enter" && searchWord()}
                     />
                     <button onClick={searchWord}>Tìm kiếm</button>
                   </div>
                   <div className="result">
                     <div className="word">
                       <h3>{lastSearchedWord}</h3>
-                      <audio ref={audioRef} src={audioSrc} type="audio/mpeg"></audio>
+                      <audio
+                        ref={audioRef}
+                        src={audioSrc}
+                        type="audio/mpeg"
+                      ></audio>
                       {audioSrc && (
                         <button onClick={playSound}>
                           <i className="fas fa-volume-up"></i>
@@ -372,18 +455,32 @@ const Dictionary = () => {
                     </div>
 
                     <div className="details">
-                      {partOfSpeech && <p><strong className="text-dark">Phần của từ:</strong> {partOfSpeech}</p>}
+                      {partOfSpeech && (
+                        <p>
+                          <strong className="text-dark">Phần của từ:</strong>{" "}
+                          {partOfSpeech}
+                        </p>
+                      )}
                       <br />
-                      {phonetic && <p><strong className="text-dark">Phiên âm:</strong> {phonetic}</p>}
+                      {phonetic && (
+                        <p>
+                          <strong className="text-dark">Phiên âm:</strong>{" "}
+                          {phonetic}
+                        </p>
+                      )}
                     </div>
                     <div className="word-meaning">
                       <br />
-                      <div dangerouslySetInnerHTML={{ __html: definition }}></div>
+                      <div
+                        dangerouslySetInnerHTML={{ __html: definition }}
+                      ></div>
                     </div>
                     {example && (
                       <div className="word-example">
                         Ví dụ
-                        <div dangerouslySetInnerHTML={{ __html: example }}></div>
+                        <div
+                          dangerouslySetInnerHTML={{ __html: example }}
+                        ></div>
                       </div>
                     )}
                   </div>

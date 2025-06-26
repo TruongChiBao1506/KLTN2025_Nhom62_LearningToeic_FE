@@ -14,7 +14,7 @@ const No1To5 = ({ testId }) => {
   const [isPreparingCountDown, setIsPreparingCountDown] = useState([]);
   const [isWritingCountDown, setIsWritingCountDown] = useState([]);
   const [isFinished, setIsFinished] = useState([]);
-  
+
   // Interval refs để clear
   const preparationIntervalRef = React.useRef(null);
   const writingIntervalRef = React.useRef(null);
@@ -27,8 +27,8 @@ const No1To5 = ({ testId }) => {
 
       // Khởi tạo các giá trị mặc định
       setAnswers(response.map(() => ""));
-      setPreparingCountdown(response.map(() => 45));  // 45 seconds for preparation
-      setWritingCountdown(response.map(() => 300));   // 5 minutes (300 sec) for writing
+      setPreparingCountdown(response.map(() => 45)); // 45 seconds for preparation
+      setWritingCountdown(response.map(() => 300)); // 5 minutes (300 sec) for writing
       setIsPreparingCountDown(response.map(() => false));
       setIsWritingCountDown(response.map(() => false));
       setIsFinished(response.map(() => false));
@@ -40,19 +40,19 @@ const No1To5 = ({ testId }) => {
   // Bắt đầu kiểm tra
   const startTest = () => {
     setIsReadyToTest(true);
-    
+
     // Bắt đầu đếm ngược thời gian chuẩn bị cho câu đầu tiên
     const newIsPreparingCountDown = [...isPreparingCountDown];
     newIsPreparingCountDown[0] = true;
     setIsPreparingCountDown(newIsPreparingCountDown);
-    
+
     // Cập nhật đếm ngược cho thời gian chuẩn bị
     preparationIntervalRef.current = setInterval(() => {
-      setPreparingCountdown(prev => {
+      setPreparingCountdown((prev) => {
         const updated = [...prev];
         if (isPreparingCountDown[currentIndex] && updated[currentIndex] > 0) {
           updated[currentIndex] = updated[currentIndex] - 1;
-          
+
           // Khi hết thời gian chuẩn bị, bắt đầu thời gian viết
           if (updated[currentIndex] === 0) {
             startWriting(currentIndex);
@@ -61,14 +61,14 @@ const No1To5 = ({ testId }) => {
         return updated;
       });
     }, 1000);
-    
+
     // Cập nhật đếm ngược cho thời gian viết
     writingIntervalRef.current = setInterval(() => {
-      setWritingCountdown(prev => {
+      setWritingCountdown((prev) => {
         const updated = [...prev];
         if (isWritingCountDown[currentIndex] && updated[currentIndex] > 0) {
           updated[currentIndex] = updated[currentIndex] - 1;
-          
+
           // Khi hết thời gian viết, tự động kết thúc
           if (updated[currentIndex] === 0) {
             finishWriting(currentIndex);
@@ -85,7 +85,7 @@ const No1To5 = ({ testId }) => {
     const newIsPreparingCountDown = [...isPreparingCountDown];
     newIsPreparingCountDown[index] = false;
     setIsPreparingCountDown(newIsPreparingCountDown);
-    
+
     // Bắt đầu đếm ngược thời gian viết
     const newIsWritingCountDown = [...isWritingCountDown];
     newIsWritingCountDown[index] = true;
@@ -98,7 +98,7 @@ const No1To5 = ({ testId }) => {
     const newIsWritingCountDown = [...isWritingCountDown];
     newIsWritingCountDown[index] = false;
     setIsWritingCountDown(newIsWritingCountDown);
-    
+
     // Đánh dấu là đã hoàn thành
     const newIsFinished = [...isFinished];
     newIsFinished[index] = true;
@@ -123,9 +123,13 @@ const No1To5 = ({ testId }) => {
   const showNextQuestion = () => {
     if (currentIndex < questions.length - 1 && isFinished[currentIndex]) {
       setCurrentIndex(currentIndex + 1);
-      
+
       // Nếu câu tiếp theo chưa bắt đầu, bắt đầu đếm ngược thời gian chuẩn bị
-      if (!isPreparingCountDown[currentIndex + 1] && !isWritingCountDown[currentIndex + 1] && !isFinished[currentIndex + 1]) {
+      if (
+        !isPreparingCountDown[currentIndex + 1] &&
+        !isWritingCountDown[currentIndex + 1] &&
+        !isFinished[currentIndex + 1]
+      ) {
         const newIsPreparingCountDown = [...isPreparingCountDown];
         newIsPreparingCountDown[currentIndex + 1] = true;
         setIsPreparingCountDown(newIsPreparingCountDown);
@@ -138,7 +142,7 @@ const No1To5 = ({ testId }) => {
     // Dừng tất cả đếm ngược
     clearInterval(preparationIntervalRef.current);
     clearInterval(writingIntervalRef.current);
-    
+
     // Reset lại tất cả trạng thái
     setCurrentIndex(0);
     retrieveQuestions();
@@ -148,7 +152,7 @@ const No1To5 = ({ testId }) => {
   // Khởi tạo khi component mount
   useEffect(() => {
     retrieveQuestions();
-    
+
     // Cleanup khi component unmount
     return () => {
       clearInterval(preparationIntervalRef.current);
@@ -160,7 +164,7 @@ const No1To5 = ({ testId }) => {
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -177,11 +181,13 @@ const No1To5 = ({ testId }) => {
                   height="100px"
                 />
               </div>
-              <h2 className="text-center my-3">Writing: Viết câu trả lời ngắn</h2>
+              <h2 className="text-center my-3">
+                Writing: Viết câu trả lời ngắn
+              </h2>
               <h5 className="card-title text-primary">Hướng dẫn:</h5>
               <p className="card-text">
-                Trong phần kiểm tra này, bạn sẽ viết câu trả lời cho câu hỏi được đưa ra. Bạn sẽ có{" "}
-                <strong>45</strong> giây để chuẩn bị và{" "}
+                Trong phần kiểm tra này, bạn sẽ viết câu trả lời cho câu hỏi
+                được đưa ra. Bạn sẽ có <strong>45</strong> giây để chuẩn bị và{" "}
                 <strong>5</strong> phút để viết câu trả lời.
               </p>
               <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
@@ -199,7 +205,10 @@ const No1To5 = ({ testId }) => {
                 </button>
               ) : (
                 <div>
-                  <button className="button bg-primary" onClick={refreshAllQuestions}>
+                  <button
+                    className="button bg-primary"
+                    onClick={refreshAllQuestions}
+                  >
                     Làm lại
                   </button>
 
@@ -208,12 +217,14 @@ const No1To5 = ({ testId }) => {
                       <div className="text-end" style={{ fontSize: "20px" }}>
                         {isPreparingCountDown[currentIndex] && (
                           <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill">
-                            Thời gian chuẩn bị: {preparingCountdown[currentIndex]}s
+                            Thời gian chuẩn bị:{" "}
+                            {preparingCountdown[currentIndex]}s
                           </span>
                         )}
                         {isWritingCountDown[currentIndex] && (
                           <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                            Thời gian viết: {formatTime(writingCountdown[currentIndex])}
+                            Thời gian viết:{" "}
+                            {formatTime(writingCountdown[currentIndex])}
                           </span>
                         )}
                       </div>
@@ -246,7 +257,9 @@ const No1To5 = ({ testId }) => {
                             placeholder="Nhập câu trả lời của bạn tại đây"
                             style={{ height: "200px" }}
                             value={answers[currentIndex] || ""}
-                            onChange={(e) => handleAnswerChange(currentIndex, e.target.value)}
+                            onChange={(e) =>
+                              handleAnswerChange(currentIndex, e.target.value)
+                            }
                             disabled={isFinished[currentIndex]}
                           ></textarea>
                           <label>Nhập câu trả lời của bạn tại đây</label>
@@ -264,20 +277,30 @@ const No1To5 = ({ testId }) => {
                         )}
                         {isFinished[currentIndex] && (
                           <button className="p-2 badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill ms-3">
-                            Đã hoàn thành <FontAwesomeIcon icon={faCheck} className="text-success" />
+                            Đã hoàn thành{" "}
+                            <FontAwesomeIcon
+                              icon={faCheck}
+                              className="text-success"
+                            />
                           </button>
                         )}
                       </div>
 
                       <div className="mt-5 d-flex justify-content-center">
                         {currentIndex !== 0 && (
-                          <button className="button d-flex" onClick={showPreviousQuestion}>
+                          <button
+                            className="button d-flex"
+                            onClick={showPreviousQuestion}
+                          >
                             Câu trước
                           </button>
                         )}
                         {isFinished[currentIndex] &&
                           currentIndex < questions.length - 1 && (
-                            <button className="button ms-3" onClick={showNextQuestion}>
+                            <button
+                              className="button ms-3"
+                              onClick={showNextQuestion}
+                            >
                               Câu tiếp theo
                             </button>
                           )}

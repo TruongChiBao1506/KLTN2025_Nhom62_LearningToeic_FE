@@ -53,7 +53,10 @@ const ImproveStudy = () => {
     switch (parseInt(sectionId)) {
       case 1:
         options = [
-          { value: "[Part 1] Tranh tả cả người và vật", text: "[Part 1] Tranh tả cả người và vật" },
+          {
+            value: "[Part 1] Tranh tả cả người và vật",
+            text: "[Part 1] Tranh tả cả người và vật",
+          },
           { value: "[Part 1] Tranh tả người", text: "[Part 1] Tranh tả người" },
           { value: "[Part 1] Tranh tả vật", text: "[Part 1] Tranh tả vật" },
         ];
@@ -62,65 +65,158 @@ const ImproveStudy = () => {
         options = [
           { value: "[Part 2] Câu hỏi đuôi", text: "[Part 2] Câu hỏi đuôi" },
           { value: "[Part 2] Câu hỏi HOW", text: "[Part 2] Câu hỏi HOW" },
-          { value: "[Part 2] Câu hỏi lựa chọn", text: "[Part 2] Câu hỏi lựa chọn" },
+          {
+            value: "[Part 2] Câu hỏi lựa chọn",
+            text: "[Part 2] Câu hỏi lựa chọn",
+          },
           { value: "[Part 2] Câu hỏi WHAT", text: "[Part 2] Câu hỏi WHAT" },
           { value: "[Part 2] Câu hỏi WHEN", text: "[Part 2] Câu hỏi WHEN" },
           { value: "[Part 2] Câu hỏi WHERE", text: "[Part 2] Câu hỏi WHERE" },
           { value: "[Part 2] Câu hỏi WHO", text: "[Part 2] Câu hỏi WHO" },
           { value: "[Part 2] Câu hỏi WHY", text: "[Part 2] Câu hỏi WHY" },
           { value: "[Part 2] Câu hỏi YES/NO", text: "[Part 2] Câu hỏi YES/NO" },
-          { value: "[Part 2] Câu yêu cầu, đề nghị", text: "[Part 2] Câu yêu cầu, đề nghị" },
+          {
+            value: "[Part 2] Câu yêu cầu, đề nghị",
+            text: "[Part 2] Câu yêu cầu, đề nghị",
+          },
         ];
         break;
       case 3:
         options = [
-          { value: "[Part 3] Câu hỏi kết hợp bảng biểu", text: "[Part 3] Câu hỏi kết hợp bảng biểu" },
-          { value: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại", text: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại" },
-          { value: "[Part 3] Câu hỏi về chủ đề, mục đích", text: "[Part 3] Câu hỏi về chủ đề, mục đích" },
-          { value: "[Part 3] Câu hỏi về danh tính người nói", text: "[Part 3] Câu hỏi về danh tính người nói" },
-          { value: "[Part 3] Câu hỏi về địa điểm hội thoại", text: "[Part 3] Câu hỏi về địa điểm hội thoại" },
-          { value: "[Part 3] Câu hỏi về hàm ý câu nói", text: "[Part 3] Câu hỏi về hàm ý câu nói" },
-          { value: "[Part 3] Câu hỏi về hành động tương lai", text: "[Part 3] Câu hỏi về hành động tương lai" },
-          { value: "[Part 3] Câu hỏi về yêu cầu, gợi ý", text: "[Part 3] Câu hỏi về yêu cầu, gợi ý" },
+          {
+            value: "[Part 3] Câu hỏi kết hợp bảng biểu",
+            text: "[Part 3] Câu hỏi kết hợp bảng biểu",
+          },
+          {
+            value: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại",
+            text: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại",
+          },
+          {
+            value: "[Part 3] Câu hỏi về chủ đề, mục đích",
+            text: "[Part 3] Câu hỏi về chủ đề, mục đích",
+          },
+          {
+            value: "[Part 3] Câu hỏi về danh tính người nói",
+            text: "[Part 3] Câu hỏi về danh tính người nói",
+          },
+          {
+            value: "[Part 3] Câu hỏi về địa điểm hội thoại",
+            text: "[Part 3] Câu hỏi về địa điểm hội thoại",
+          },
+          {
+            value: "[Part 3] Câu hỏi về hàm ý câu nói",
+            text: "[Part 3] Câu hỏi về hàm ý câu nói",
+          },
+          {
+            value: "[Part 3] Câu hỏi về hành động tương lai",
+            text: "[Part 3] Câu hỏi về hành động tương lai",
+          },
+          {
+            value: "[Part 3] Câu hỏi về yêu cầu, gợi ý",
+            text: "[Part 3] Câu hỏi về yêu cầu, gợi ý",
+          },
         ];
         break;
       case 4:
         options = [
-          { value: "[Part 4] Câu hỏi kết hợp bảng biểu", text: "[Part 4] Câu hỏi kết hợp bảng biểu" },
-          { value: "[Part 4] Câu hỏi về chi tiết", text: "[Part 4] Câu hỏi về chi tiết" },
-          { value: "[Part 4] Câu hỏi về chủ đề, mục đích", text: "[Part 4] Câu hỏi về chủ đề, mục đích" },
-          { value: "[Part 4] Câu hỏi về danh tính, địa điểm", text: "[Part 4] Câu hỏi về danh tính, địa điểm" },
-          { value: "[Part 4] Câu hỏi về hàm ý câu nói", text: "[Part 4] Câu hỏi về hàm ý câu nói" },
-          { value: "[Part 4] Câu hỏi về hành động tương lai", text: "[Part 4] Câu hỏi về hành động tương lai" },
-          { value: "[Part 4] Câu hỏi yêu cầu, gợi ý", text: "[Part 4] Câu hỏi yêu cầu, gợi ý" },
+          {
+            value: "[Part 4] Câu hỏi kết hợp bảng biểu",
+            text: "[Part 4] Câu hỏi kết hợp bảng biểu",
+          },
+          {
+            value: "[Part 4] Câu hỏi về chi tiết",
+            text: "[Part 4] Câu hỏi về chi tiết",
+          },
+          {
+            value: "[Part 4] Câu hỏi về chủ đề, mục đích",
+            text: "[Part 4] Câu hỏi về chủ đề, mục đích",
+          },
+          {
+            value: "[Part 4] Câu hỏi về danh tính, địa điểm",
+            text: "[Part 4] Câu hỏi về danh tính, địa điểm",
+          },
+          {
+            value: "[Part 4] Câu hỏi về hàm ý câu nói",
+            text: "[Part 4] Câu hỏi về hàm ý câu nói",
+          },
+          {
+            value: "[Part 4] Câu hỏi về hành động tương lai",
+            text: "[Part 4] Câu hỏi về hành động tương lai",
+          },
+          {
+            value: "[Part 4] Câu hỏi yêu cầu, gợi ý",
+            text: "[Part 4] Câu hỏi yêu cầu, gợi ý",
+          },
         ];
         break;
       case 5:
         options = [
-          { value: "[Part 5] Câu hỏi ngữ pháp", text: "[Part 5] Câu hỏi ngữ pháp" },
-          { value: "[Part 5] Câu hỏi từ vựng", text: "[Part 5] Câu hỏi từ vựng" },
-          { value: "[Part 5] Câu hỏi từ loại", text: "[Part 5] Câu hỏi từ loại" },
+          {
+            value: "[Part 5] Câu hỏi ngữ pháp",
+            text: "[Part 5] Câu hỏi ngữ pháp",
+          },
+          {
+            value: "[Part 5] Câu hỏi từ vựng",
+            text: "[Part 5] Câu hỏi từ vựng",
+          },
+          {
+            value: "[Part 5] Câu hỏi từ loại",
+            text: "[Part 5] Câu hỏi từ loại",
+          },
         ];
         break;
       case 6:
         options = [
-          { value: "[Part 6] Câu hỏi ngữ pháp", text: "[Part 6] Câu hỏi ngữ pháp" },
-          { value: "[Part 6] Câu hỏi từ vựng", text: "[Part 6] Câu hỏi từ vựng" },
-          { value: "[Part 6] Câu hỏi từ loại", text: "[Part 6] Câu hỏi từ loại" },
-          { value: "[Part 6] Câu hỏi điền câu", text: "[Part 6] Câu hỏi điền câu" },
+          {
+            value: "[Part 6] Câu hỏi ngữ pháp",
+            text: "[Part 6] Câu hỏi ngữ pháp",
+          },
+          {
+            value: "[Part 6] Câu hỏi từ vựng",
+            text: "[Part 6] Câu hỏi từ vựng",
+          },
+          {
+            value: "[Part 6] Câu hỏi từ loại",
+            text: "[Part 6] Câu hỏi từ loại",
+          },
+          {
+            value: "[Part 6] Câu hỏi điền câu",
+            text: "[Part 6] Câu hỏi điền câu",
+          },
         ];
         break;
       case 7:
       case 12:
       case 13:
         options = [
-          { value: "[Part 7] Câu hỏi điền câu", text: "[Part 7] Câu hỏi điền câu" },
-          { value: "[Part 7] Câu hỏi suy luận", text: "[Part 7] Câu hỏi suy luận" },
-          { value: "[Part 7] Câu hỏi tìm thông tin", text: "[Part 7] Câu hỏi tìm thông tin" },
-          { value: "[Part 7] Câu hỏi tìm chi tiết sai", text: "[Part 7] Câu hỏi tìm chi tiết sai" },
-          { value: "[Part 7] Câu hỏi tìm từ đồng nghĩa", text: "[Part 7] Câu hỏi tìm từ đồng nghĩa" },
-          { value: "[Part 7] Câu hỏi về chủ đề, mục đích", text: "[Part 7] Câu hỏi về chủ đề, mục đích" },
-          { value: "[Part 7] Câu hỏi về hàm ý câu nói", text: "[Part 7] Câu hỏi về hàm ý câu nói" },
+          {
+            value: "[Part 7] Câu hỏi điền câu",
+            text: "[Part 7] Câu hỏi điền câu",
+          },
+          {
+            value: "[Part 7] Câu hỏi suy luận",
+            text: "[Part 7] Câu hỏi suy luận",
+          },
+          {
+            value: "[Part 7] Câu hỏi tìm thông tin",
+            text: "[Part 7] Câu hỏi tìm thông tin",
+          },
+          {
+            value: "[Part 7] Câu hỏi tìm chi tiết sai",
+            text: "[Part 7] Câu hỏi tìm chi tiết sai",
+          },
+          {
+            value: "[Part 7] Câu hỏi tìm từ đồng nghĩa",
+            text: "[Part 7] Câu hỏi tìm từ đồng nghĩa",
+          },
+          {
+            value: "[Part 7] Câu hỏi về chủ đề, mục đích",
+            text: "[Part 7] Câu hỏi về chủ đề, mục đích",
+          },
+          {
+            value: "[Part 7] Câu hỏi về hàm ý câu nói",
+            text: "[Part 7] Câu hỏi về hàm ý câu nói",
+          },
         ];
         break;
       default:
@@ -136,7 +232,8 @@ const ImproveStudy = () => {
         questionType: selectedQuestionType,
       };
       try {
-        const fetchedQuestions = await questionService.getQuestionsBySectionIdAndType(requestData);
+        const fetchedQuestions =
+          await questionService.getQuestionsBySectionIdAndType(requestData);
         if (fetchedQuestions && fetchedQuestions.length > 0) {
           setQuestions(fetchedQuestions);
           setShowImproveTest(true);
@@ -170,7 +267,9 @@ const ImproveStudy = () => {
 
   const submitAnswers = async () => {
     // Kiểm tra xem người dùng đã trả lời ít nhất một câu hỏi chưa
-    const answeredQuestions = questions.filter(question => question.selectedOption);
+    const answeredQuestions = questions.filter(
+      (question) => question.selectedOption
+    );
     if (answeredQuestions.length === 0) {
       Swal.fire({
         icon: "warning",
@@ -186,7 +285,7 @@ const ImproveStudy = () => {
         confirmButtonText: "Nộp",
         cancelButtonText: "Quay lại",
       });
-      
+
       if (result.isConfirmed) {
         continueSubmit();
       }
@@ -198,7 +297,7 @@ const ImproveStudy = () => {
         confirmButtonText: "Nộp",
         cancelButtonText: "Quay lại",
       });
-      
+
       if (result.isConfirmed) {
         continueSubmit();
       }
@@ -206,22 +305,24 @@ const ImproveStudy = () => {
   };
 
   const continueSubmit = () => {
-    const updatedQuestions = [...questions].map(question => {
+    const updatedQuestions = [...questions].map((question) => {
       if (question.selectedOption) {
         return { ...question, answered: true, isGraded: true };
       }
       return { ...question, isGraded: true };
     });
-    
+
     setQuestions(updatedQuestions);
-    
+
     // Tính điểm
     const correctCount = updatedQuestions.filter(
-      (question) => question.answered && question.selectedOption === question.correctOption
+      (question) =>
+        question.answered && question.selectedOption === question.correctOption
     ).length;
-    
+
     const incorrectCount = updatedQuestions.filter(
-      (question) => question.answered && question.selectedOption !== question.correctOption
+      (question) =>
+        question.answered && question.selectedOption !== question.correctOption
     ).length;
 
     // Hiển thị kết quả
@@ -234,11 +335,11 @@ const ImproveStudy = () => {
 
   const refreshPage = () => {
     // Đặt lại tất cả câu hỏi về trạng thái ban đầu
-    const resetQuestions = [...questions].map(question => ({
+    const resetQuestions = [...questions].map((question) => ({
       ...question,
       selectedOption: null,
       answered: false,
-      isGraded: false
+      isGraded: false,
     }));
     setQuestions(resetQuestions);
   };
@@ -261,7 +362,12 @@ const ImproveStudy = () => {
     if (parseInt(selectedSection) === 2) {
       return [question.optionA, question.optionB, question.optionC];
     } else {
-      return [question.optionA, question.optionB, question.optionC, question.optionD];
+      return [
+        question.optionA,
+        question.optionB,
+        question.optionC,
+        question.optionD,
+      ];
     }
   };
 
@@ -270,14 +376,14 @@ const ImproveStudy = () => {
   };
 
   const clearSelection = (question) => {
-    const updatedQuestions = [...questions].map(q => 
+    const updatedQuestions = [...questions].map((q) =>
       q._id === question._id ? { ...q, selectedOption: null } : q
     );
     setQuestions(updatedQuestions);
   };
 
   const checkAnswer = (question, selectedOption) => {
-    const updatedQuestions = [...questions].map(q => 
+    const updatedQuestions = [...questions].map((q) =>
       q._id === question._id ? { ...q, selectedOption, answered: true } : q
     );
     setQuestions(updatedQuestions);
@@ -288,7 +394,7 @@ const ImproveStudy = () => {
       const apiKey = "AIzaSyD-7uWTjTodZba7ky7mgfSgnVxAX_opoh8";
       const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
       const sourceLang = "en"; // Ngôn ngữ là tiếng Anh (Anh -> Việt)
-      
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -300,7 +406,7 @@ const ImproveStudy = () => {
           target: targetLanguage,
         }),
       });
-      
+
       const result = await response.json();
       return result.data.translations[0].translatedText;
     } catch (error) {
@@ -312,32 +418,46 @@ const ImproveStudy = () => {
   return (
     <div className="container-fluid">
       {!showImproveTest ? (
-        <div className="card border-0 rounded-5 mt-4 mb-5" style={{ minHeight: "600px" }}>
+        <div
+          className="card border-0 rounded-5 mt-4 mb-5"
+          style={{ minHeight: "600px" }}
+        >
           <div className="row g-0 mt-5">
             <div className="col-sm-5 my-4 d-flex align-items-center justify-content-center">
-              <img 
-                src="https://i0.wp.com/www.shoutmeloud.com/wp-content/uploads/2019/09/how-to-improve-english-writing-skills.jpg?resize=1024%2C968&ssl=1" 
-                alt="Improve English Writing Skills" 
-                style={{ width: "600px", height: "400px" }} 
+              <img
+                src="https://i0.wp.com/www.shoutmeloud.com/wp-content/uploads/2019/09/how-to-improve-english-writing-skills.jpg?resize=1024%2C968&ssl=1"
+                alt="Improve English Writing Skills"
+                style={{ width: "600px", height: "400px" }}
                 className="rounded-5"
               />
             </div>
             <div className="col-sm-7">
               <div className="card-body">
-                <div className="row d-flex justify-content-center align-items-center" style={{ height: "500px" }}>
+                <div
+                  className="row d-flex justify-content-center align-items-center"
+                  style={{ height: "500px" }}
+                >
                   <div className="col-sm-12 mb-3 mt-5">
                     <h2>BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN</h2>
                     <p>Dưới đây là một số quy định bạn cần lưu ý: </p>
-                    <p>Bài kiểm tra bao gồm những câu hỏi chia làm <strong>7 Part (1, 2, 3, 4, 5, 6, 7)</strong></p>
-                    <p>Hướng dẫn: Chọn phần, sau đó chọn phân loại câu hỏi của phần đó và bắt đầu luyện tập ngay</p>
+                    <p>
+                      Bài kiểm tra bao gồm những câu hỏi chia làm{" "}
+                      <strong>7 Part (1, 2, 3, 4, 5, 6, 7)</strong>
+                    </p>
+                    <p>
+                      Hướng dẫn: Chọn phần, sau đó chọn phân loại câu hỏi của
+                      phần đó và bắt đầu luyện tập ngay
+                    </p>
                     <div className="row mt-3">
                       <div className="col">
-                        <select 
-                          className="form-select border-secondary mt-2" 
-                          value={selectedSection} 
+                        <select
+                          className="form-select border-secondary mt-2"
+                          value={selectedSection}
                           onChange={(e) => setSelectedSection(e.target.value)}
                         >
-                          <option value="" disabled>Vui lòng chọn phần</option>
+                          <option value="" disabled>
+                            Vui lòng chọn phần
+                          </option>
                           {docngheSections.map((section) => (
                             <option key={section.id} value={section.id}>
                               {section.name}
@@ -346,12 +466,16 @@ const ImproveStudy = () => {
                         </select>
                       </div>
                       <div className="col">
-                        <select 
-                          className="form-select border-secondary mt-2" 
-                          value={selectedQuestionType} 
-                          onChange={(e) => setSelectedQuestionType(e.target.value)}
+                        <select
+                          className="form-select border-secondary mt-2"
+                          value={selectedQuestionType}
+                          onChange={(e) =>
+                            setSelectedQuestionType(e.target.value)
+                          }
                         >
-                          <option value="" disabled>Vui lòng chọn loại câu hỏi</option>
+                          <option value="" disabled>
+                            Vui lòng chọn loại câu hỏi
+                          </option>
                           {questionTypeOptions.map((option, index) => (
                             <option key={index} value={option.value}>
                               {option.text}
@@ -361,10 +485,10 @@ const ImproveStudy = () => {
                       </div>
                       <div className="col">
                         <div className="d-flex justify-content-center">
-                          <button 
-                            type="button" 
-                            className="button my-2 w-75" 
-                            style={{ width: "100%" }} 
+                          <button
+                            type="button"
+                            className="button my-2 w-75"
+                            style={{ width: "100%" }}
                             onClick={startPractice}
                           >
                             BẮT ĐẦU NGAY
@@ -381,137 +505,160 @@ const ImproveStudy = () => {
       ) : (
         <div className="row mt-3">
           <div className="d-flex justify-content-start align-items-center my-2">
-            <button type="button" className="button" style={{ width: "200px" }} onClick={goBack}>
+            <button
+              type="button"
+              className="button"
+              style={{ width: "200px" }}
+              onClick={goBack}
+            >
               Quay lại
             </button>
           </div>
 
-          {parseInt(selectedSection) === 1 && selectedQuestionType && showImproveTest && (
-            <TestPart1 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              getAudioUrl={getAudioUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 1 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart1
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                getAudioUrl={getAudioUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 2 && selectedQuestionType && showImproveTest && (
-            <TestPart2 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getAudioUrl={getAudioUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 2 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart2
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getAudioUrl={getAudioUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 3 && selectedQuestionType && showImproveTest && (
-            <TestPart3 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              getAudioUrl={getAudioUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 3 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart3
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                getAudioUrl={getAudioUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 4 && selectedQuestionType && showImproveTest && (
-            <TestPart4 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              getAudioUrl={getAudioUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 4 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart4
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                getAudioUrl={getAudioUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 5 && selectedQuestionType && showImproveTest && (
-            <TestPart5 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 5 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart5
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 6 && selectedQuestionType && showImproveTest && (
-            <TestPart6 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 6 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart6
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 7 && selectedQuestionType && showImproveTest && (
-            <TestPart7Single 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 7 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart7Single
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 12 && selectedQuestionType && showImproveTest && (
-            <TestPart7Double 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 12 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart7Double
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
 
-          {parseInt(selectedSection) === 13 && selectedQuestionType && showImproveTest && (
-            <TestPart7Triple 
-              questions={questions} 
-              submitAnswers={submitAnswers} 
-              refreshPage={refreshPage}
-              getImageUrl={getImageUrl}
-              translateText={translateText}
-              getOptions={getOptions}
-              getOptionClass={getOptionClass}
-              clearSelection={clearSelection}
-              checkAnswer={checkAnswer}
-            />
-          )}
+          {parseInt(selectedSection) === 13 &&
+            selectedQuestionType &&
+            showImproveTest && (
+              <TestPart7Triple
+                questions={questions}
+                submitAnswers={submitAnswers}
+                refreshPage={refreshPage}
+                getImageUrl={getImageUrl}
+                translateText={translateText}
+                getOptions={getOptions}
+                getOptionClass={getOptionClass}
+                clearSelection={clearSelection}
+                checkAnswer={checkAnswer}
+              />
+            )}
         </div>
       )}
     </div>

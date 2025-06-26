@@ -50,7 +50,8 @@ const No1To2 = ({ testId }) => {
 
   // Khởi tạo Speech Recognition API
   const initSpeechRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
@@ -113,21 +114,25 @@ const No1To2 = ({ testId }) => {
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(questions[index].questionText);
-    
+    const utterance = new SpeechSynthesisUtterance(
+      questions[index].questionText
+    );
+
     // Tìm giọng tiếng Anh
     const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(voice => 
-      voice.name === 'Google US English' || 
-      voice.name === 'Microsoft Aria Online (Natural) - English (United States)'
+    const englishVoice = voices.find(
+      (voice) =>
+        voice.name === "Google US English" ||
+        voice.name ===
+          "Microsoft Aria Online (Natural) - English (United States)"
     );
-    
+
     if (englishVoice) {
       utterance.voice = englishVoice;
     }
 
     window.speechSynthesis.speak(utterance);
-    
+
     // Cập nhật trạng thái đang đọc
     const newIsReading = [...isReading];
     newIsReading[index] = true;
@@ -149,7 +154,7 @@ const No1To2 = ({ testId }) => {
     if (isReading[index]) {
       window.speechSynthesis.cancel();
       clearInterval(continuousReadingIntervalRef.current);
-      
+
       const newIsReading = [...isReading];
       newIsReading[index] = false;
       setIsReading(newIsReading);
@@ -217,11 +222,11 @@ const No1To2 = ({ testId }) => {
     // Dừng ghi âm
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      
+
       // Giải phóng stream
       if (mediaRecorderRef.current.stream) {
         const tracks = mediaRecorderRef.current.stream.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
     }
   };
@@ -234,7 +239,7 @@ const No1To2 = ({ testId }) => {
       if (isRecording[currentIndex] === true) {
         stopRecording(currentIndex);
       }
-      
+
       setCurrentIndex(currentIndex - 1);
     }
   };
@@ -247,7 +252,7 @@ const No1To2 = ({ testId }) => {
       if (isRecording[currentIndex] === true) {
         stopRecording(currentIndex);
       }
-      
+
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -255,19 +260,19 @@ const No1To2 = ({ testId }) => {
   // Bắt đầu kiểm tra
   const startTest = () => {
     setIsReadyToTest(true);
-    
+
     // Bắt đầu đếm ngược thời gian chuẩn bị cho câu đầu tiên
     const newIsPreparingCountDown = [...isPreparingCountDown];
     newIsPreparingCountDown[0] = true;
     setIsPreparingCountDown(newIsPreparingCountDown);
-    
+
     // Cập nhật đếm ngược cho thời gian chuẩn bị
     preparationIntervalRef.current = setInterval(() => {
-      setPreparingCountdown(prev => {
+      setPreparingCountdown((prev) => {
         const updated = [...prev];
         if (isPreparingCountDown[currentIndex] && updated[currentIndex] > 0) {
           updated[currentIndex] = updated[currentIndex] - 1;
-          
+
           // Khi hết thời gian chuẩn bị, tự động bắt đầu ghi âm
           if (updated[currentIndex] === 0) {
             startRecording(currentIndex);
@@ -276,14 +281,14 @@ const No1To2 = ({ testId }) => {
         return updated;
       });
     }, 1000);
-    
+
     // Cập nhật đếm ngược cho thời gian ghi âm
     recordingIntervalRef.current = setInterval(() => {
-      setRecordingCountdown(prev => {
+      setRecordingCountdown((prev) => {
         const updated = [...prev];
         if (isRecordingCountDown[currentIndex] && updated[currentIndex] > 0) {
           updated[currentIndex] = updated[currentIndex] - 1;
-          
+
           // Khi hết thời gian ghi âm, tự động dừng
           if (updated[currentIndex] === 0) {
             stopRecording(currentIndex);
@@ -300,19 +305,22 @@ const No1To2 = ({ testId }) => {
     clearInterval(preparationIntervalRef.current);
     clearInterval(recordingIntervalRef.current);
     clearInterval(continuousReadingIntervalRef.current);
-    
+
     if (speechRecognitionRef.current) {
       speechRecognitionRef.current.stop();
     }
-    
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
       mediaRecorderRef.current.stop();
       if (mediaRecorderRef.current.stream) {
         const tracks = mediaRecorderRef.current.stream.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
     }
-    
+
     // Reset lại tất cả trạng thái
     setCurrentIndex(0);
     retrieveQuestions();
@@ -323,24 +331,24 @@ const No1To2 = ({ testId }) => {
   useEffect(() => {
     retrieveQuestions();
     initSpeechRecognition();
-    
+
     // Cleanup khi component unmount
     return () => {
       clearInterval(preparationIntervalRef.current);
       clearInterval(recordingIntervalRef.current);
       clearInterval(continuousReadingIntervalRef.current);
-      
+
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
-      
+
       if (speechRecognitionRef.current) {
         speechRecognitionRef.current.stop();
       }
-      
+
       if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
         const tracks = mediaRecorderRef.current.stream.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
     };
   }, [testId]);
@@ -359,12 +367,14 @@ const No1To2 = ({ testId }) => {
                   height="100px"
                 />
               </div>
-              <h2 className="text-center my-3">Speaking: Đọc to một đoạn văn</h2>
+              <h2 className="text-center my-3">
+                Speaking: Đọc to một đoạn văn
+              </h2>
               <h5 className="card-title text-primary">Hướng dẫn:</h5>
               <p className="card-text">
-                Trong phần kiểm tra này, bạn sẽ đọc to văn bản trên màn hình. Bạn sẽ có{" "}
-                <strong>45</strong> giây để chuẩn bị. Sau đó, bạn sẽ có{" "}
-                <strong>45</strong> giây để đọc to văn bản.
+                Trong phần kiểm tra này, bạn sẽ đọc to văn bản trên màn hình.
+                Bạn sẽ có <strong>45</strong> giây để chuẩn bị. Sau đó, bạn sẽ
+                có <strong>45</strong> giây để đọc to văn bản.
               </p>
               <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
               <span className="badge bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
@@ -381,7 +391,10 @@ const No1To2 = ({ testId }) => {
                 </button>
               ) : (
                 <div>
-                  <button className="button bg-primary" onClick={refreshAllQuestions}>
+                  <button
+                    className="button bg-primary"
+                    onClick={refreshAllQuestions}
+                  >
                     Làm lại
                   </button>
 
@@ -405,8 +418,14 @@ const No1To2 = ({ testId }) => {
                           onClick={() => toggleReading(currentIndex)}
                         >
                           <FontAwesomeIcon
-                            icon={isReading[currentIndex] ? faStop : faHeadphones}
-                            className={isReading[currentIndex] ? "text-danger" : "text-white"}
+                            icon={
+                              isReading[currentIndex] ? faStop : faHeadphones
+                            }
+                            className={
+                              isReading[currentIndex]
+                                ? "text-danger"
+                                : "text-white"
+                            }
                           />
                         </button>
                       )}
@@ -449,7 +468,10 @@ const No1To2 = ({ testId }) => {
                             style={{ backgroundColor: "#052649" }}
                             onClick={() => startRecording(currentIndex)}
                           >
-                            <FontAwesomeIcon icon={faMicrophone} className="text-white" />
+                            <FontAwesomeIcon
+                              icon={faMicrophone}
+                              className="text-white"
+                            />
                           </button>
                         )}
                         {isRecording[currentIndex] === true && (
@@ -458,19 +480,28 @@ const No1To2 = ({ testId }) => {
                             style={{ backgroundColor: "#052649" }}
                             onClick={() => stopRecording(currentIndex)}
                           >
-                            <FontAwesomeIcon icon={faStop} className="text-danger" />
+                            <FontAwesomeIcon
+                              icon={faStop}
+                              className="text-danger"
+                            />
                           </button>
                         )}
                         {isRecording[currentIndex] === null && (
                           <button className="p-2 badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill ms-3">
                             Đã hoàn thành{" "}
-                            <FontAwesomeIcon icon={faCircleCheck} className="text-success" />
+                            <FontAwesomeIcon
+                              icon={faCircleCheck}
+                              className="text-success"
+                            />
                           </button>
                         )}
                       </div>
 
                       <div className="mt-3">
-                        <div className="alert alert-light text-primary" role="alert">
+                        <div
+                          className="alert alert-light text-primary"
+                          role="alert"
+                        >
                           <strong className="ms-3" style={{ color: "#052649" }}>
                             Kết quả:
                           </strong>{" "}
@@ -480,13 +511,19 @@ const No1To2 = ({ testId }) => {
 
                       <div className="mt-5 d-flex justify-content-center">
                         {currentIndex !== 0 && (
-                          <button className="button d-flex" onClick={showPreviousQuestion}>
+                          <button
+                            className="button d-flex"
+                            onClick={showPreviousQuestion}
+                          >
                             Câu trước
                           </button>
                         )}
                         {isRecording[currentIndex] === null &&
                           currentIndex < questions.length - 1 && (
-                            <button className="button ms-3" onClick={showNextQuestion}>
+                            <button
+                              className="button ms-3"
+                              onClick={showNextQuestion}
+                            >
                               Câu tiếp theo
                             </button>
                           )}

@@ -26,6 +26,7 @@ const SignUp = () => {
       .oneOf([Yup.ref("password"), null], "Mật khẩu xác nhận không khớp")
       .required("Vui lòng xác nhận mật khẩu"),
     fullName: Yup.string().required("Họ tên không được để trống"),
+    phoneNumber: Yup.string().required("Số điện thoại không được để trống"),
   });
 
   // Formik setup
@@ -36,6 +37,7 @@ const SignUp = () => {
       password: "",
       confirmPassword: "",
       fullName: "",
+      phoneNumber: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -62,25 +64,29 @@ const SignUp = () => {
           username: values.username,
           email: values.email,
           password: values.password,
-          fullName: values.fullName,
+          name: values.fullName, // Chuyển fullName thành name cho BE
+          phoneNumber: values.phoneNumber, // Thêm phoneNumber
           role: ["learner"], // Gán vai trò là học viên
-        };        // Gọi API đăng ký
+        }; // Gọi API đăng ký
         await authService.signUp(signUpData);
-        
-        toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
-        
+
+        toast.success(
+          "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+          {
+            position: "top-center",
+            autoClose: 3000,
+          }
+        );
+
         // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
         setTimeout(() => {
-          navigate("/signin");
+          navigate("/auth/signin");
         }, 3000);
-        
       } catch (error) {
         console.error("Đăng ký thất bại:", error);
         toast.error(
-          error.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại sau.",
+          error.response?.data?.message ||
+            "Đăng ký thất bại. Vui lòng thử lại sau.",
           {
             position: "top-center",
             autoClose: 3000,
@@ -103,12 +109,16 @@ const SignUp = () => {
                     <span className="logo-text">TOEIC</span>
                   </div>
                   <h3 className="header-title mb-4">ĐĂNG KÝ</h3>
-                  
+
                   <form onSubmit={formik.handleSubmit}>
                     <div className="mb-3">
                       <input
                         type="text"
-                        className={`form-control ${formik.touched.username && formik.errors.username ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.username && formik.errors.username
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Tên đăng nhập"
                         id="username"
                         name="username"
@@ -117,14 +127,20 @@ const SignUp = () => {
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.username && formik.errors.username && (
-                        <div className="invalid-feedback">{formik.errors.username}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.username}
+                        </div>
                       )}
                     </div>
-                    
+
                     <div className="mb-3">
                       <input
                         type="text"
-                        className={`form-control ${formik.touched.fullName && formik.errors.fullName ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.fullName && formik.errors.fullName
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Họ và tên"
                         id="fullName"
                         name="fullName"
@@ -133,14 +149,20 @@ const SignUp = () => {
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.fullName && formik.errors.fullName && (
-                        <div className="invalid-feedback">{formik.errors.fullName}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.fullName}
+                        </div>
                       )}
                     </div>
-                    
+
                     <div className="mb-3">
                       <input
                         type="email"
-                        className={`form-control ${formik.touched.email && formik.errors.email ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.email && formik.errors.email
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Email"
                         id="email"
                         name="email"
@@ -149,14 +171,42 @@ const SignUp = () => {
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.email && formik.errors.email && (
-                        <div className="invalid-feedback">{formik.errors.email}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.email}
+                        </div>
                       )}
                     </div>
-                    
+
+                    <div className="mb-3">
+                      <input
+                        type="tel"
+                        className={`form-control ${
+                          formik.touched.phoneNumber && formik.errors.phoneNumber
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Số điện thoại"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={formik.values.phoneNumber}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                        <div className="invalid-feedback">
+                          {formik.errors.phoneNumber}
+                        </div>
+                      )}
+                    </div>
+
                     <div className="mb-3">
                       <input
                         type="password"
-                        className={`form-control ${formik.touched.password && formik.errors.password ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.password && formik.errors.password
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Mật khẩu"
                         id="password"
                         name="password"
@@ -165,14 +215,21 @@ const SignUp = () => {
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.password && formik.errors.password && (
-                        <div className="invalid-feedback">{formik.errors.password}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.password}
+                        </div>
                       )}
                     </div>
-                    
+
                     <div className="mb-3">
                       <input
                         type="password"
-                        className={`form-control ${formik.touched.confirmPassword && formik.errors.confirmPassword ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Xác nhận mật khẩu"
                         id="confirmPassword"
                         name="confirmPassword"
@@ -180,20 +237,27 @@ const SignUp = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-                        <div className="invalid-feedback">{formik.errors.confirmPassword}</div>
-                      )}
+                      {formik.touched.confirmPassword &&
+                        formik.errors.confirmPassword && (
+                          <div className="invalid-feedback">
+                            {formik.errors.confirmPassword}
+                          </div>
+                        )}
                     </div>
-                    
+
                     <div className="text-center mb-3">
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary w-100" 
+                      <button
+                        type="submit"
+                        className="btn btn-primary w-100"
                         disabled={loading}
                       >
                         {loading ? (
                           <span>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
                             Đang xử lý...
                           </span>
                         ) : (
@@ -202,11 +266,11 @@ const SignUp = () => {
                       </button>
                     </div>
                   </form>
-                  
+
                   <div className="links-container text-center">
                     <div className="mb-2">
                       Đã có tài khoản?{" "}
-                      <Link to="/signin" className="text-decoration-none">
+                      <Link to="/auth/signin" className="text-decoration-none">
                         Đăng nhập
                       </Link>
                     </div>
@@ -219,19 +283,33 @@ const SignUp = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="col-md-6 d-none d-md-block">
                 <div className="sign-up-image-container">
                   <div className="sign-up-content">
                     <h2 className="mb-4">Học TOEIC cùng chúng tôi</h2>
                     <p className="mb-4">
-                      Đăng ký tài khoản để mở khóa tất cả các tính năng và tài nguyên học tập. Bắt đầu hành trình đạt điểm TOEIC cao ngay hôm nay!
+                      Đăng ký tài khoản để mở khóa tất cả các tính năng và tài
+                      nguyên học tập. Bắt đầu hành trình đạt điểm TOEIC cao ngay
+                      hôm nay!
                     </p>
                     <ul className="benefits-list">
-                      <li><i className="fas fa-check-circle me-2"></i> 100+ bài tập TOEIC chất lượng cao</li>
-                      <li><i className="fas fa-check-circle me-2"></i> Các đề thi thử mới mỗi tuần</li>
-                      <li><i className="fas fa-check-circle me-2"></i> Theo dõi tiến độ và phân tích điểm yếu</li>
-                      <li><i className="fas fa-check-circle me-2"></i> Cộng đồng học tập năng động</li>
+                      <li>
+                        <i className="fas fa-check-circle me-2"></i> 100+ bài
+                        tập TOEIC chất lượng cao
+                      </li>
+                      <li>
+                        <i className="fas fa-check-circle me-2"></i> Các đề thi
+                        thử mới mỗi tuần
+                      </li>
+                      <li>
+                        <i className="fas fa-check-circle me-2"></i> Theo dõi
+                        tiến độ và phân tích điểm yếu
+                      </li>
+                      <li>
+                        <i className="fas fa-check-circle me-2"></i> Cộng đồng
+                        học tập năng động
+                      </li>
                     </ul>
                   </div>
                 </div>

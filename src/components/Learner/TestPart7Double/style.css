@@ -63,7 +63,7 @@
   .double-passages {
     flex-direction: column;
   }
-  
+
   .passage {
     flex: none;
     width: 100%;

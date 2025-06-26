@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { setLearnerCredentials } from "../../../store/learnerStore";
 import authService from "../../../services/authService";
 import "./style.css";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Validation Schema
   const validationSchema = Yup.object({
@@ -27,22 +32,53 @@ const SignIn = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
-      try {        // Kiểm tra tính hợp lệ của Refresh Token
+      try {
+        // Kiểm tra tính hợp lệ của Refresh Token
         const response = await authService.signIn(values);
-        
+        console.log("🚀 ~ onSubmit: ~ response:", response);
+        console.log("SignIn response data:", response?.data);
+        console.log("Roles:", response?.data?.roles);
+
         if (response && response.data && response.data.token) {
           const token = response.data.token;
           const roles = response.data.roles;
           const refreshToken = response.data.refreshToken;
           const jwtExpirationTime = response.data.jwtExpirationTime;
-          const refreshTokenExpirationTime = response.data.refreshTokenExpirationTime;
+          const refreshTokenExpirationTime =
+            response.data.refreshTokenExpirationTime;
+
+          // Tạo user object từ response
+          const user = {
+            id: response.data.id,
+            username: response.data.username,
+            email: response.data.email,
+            name: response.data.name,
+            roles: response.data.roles,
+          };
 
           // Lưu token và trạng thái đăng nhập
           localStorage.setItem("learnerToken", token);
           localStorage.setItem("learnerRefreshToken", refreshToken);
-          localStorage.setItem("learnerAccessTokenExpirationTime", (Date.now() + jwtExpirationTime).toString());
-          localStorage.setItem("learnerRefreshTokenExpirationTime", (Date.now() + refreshTokenExpirationTime).toString());
-          localStorage.setItem("LearnerAuthenticated", JSON.stringify({ isAuthenticatedLearner: true }));
+          localStorage.setItem(
+            "learnerAccessTokenExpirationTime",
+            (Date.now() + jwtExpirationTime).toString()
+          );
+          localStorage.setItem(
+            "learnerRefreshTokenExpirationTime",
+            (Date.now() + refreshTokenExpirationTime).toString()
+          );
+
+          // Cập nhật trạng thái đăng nhập trong Redux store
+          dispatch(setLearnerCredentials({ user, token, refreshToken }));
+
+          // Lưu thông tin remember me
+          if (rememberMe) {
+            localStorage.setItem("rememberMe", "true");
+            localStorage.setItem("rememberedUsername", formik.values.username);
+          } else {
+            localStorage.removeItem("rememberMe");
+            localStorage.removeItem("rememberedUsername");
+          }
 
           // Kiểm tra role
           if (roles.includes("ROLE_LEARNER")) {
@@ -50,7 +86,16 @@ const SignIn = () => {
               position: "top-center",
               autoClose: 2000,
             });
-            navigate("/"); // Chuyển hướng đến trang chủ
+
+            // Thêm timeout để đảm bảo toast hiển thị trước khi chuyển trang
+            setTimeout(() => {
+              console.log("Đang chuyển hướng đến trang chủ...");
+              // Chuyển hướng đến trang chủ người học
+              navigate("/learner", { replace: true });
+            }, 1000);
+
+            // Đồng thời cũng ghi log thông tin chuyển hướng
+            console.log("Đã gọi navigate đến /learner");
           } else {
             toast.error("Bạn không có quyền truy cập vào trang học viên!", {
               position: "top-center",
@@ -66,7 +111,8 @@ const SignIn = () => {
       } catch (error) {
         console.error("Đăng nhập thất bại:", error);
         toast.error(
-          error.response?.data?.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.",
+          error.response?.data?.message ||
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.",
           {
             position: "top-center",
             autoClose: 2000,
@@ -76,6 +122,18 @@ const SignIn = () => {
       setLoading(false);
     },
   });
+
+  // Load remembered username after formik is initialized
+  useEffect(() => {
+    const rememberedUsername = localStorage.getItem("rememberedUsername");
+    const isRemembered = localStorage.getItem("rememberMe");
+
+    if (isRemembered === "true" && rememberedUsername) {
+      setRememberMe(true);
+      formik.setFieldValue("username", rememberedUsername);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signInWithGoogle = () => {
     toast.info("Tính năng đăng nhập với Google đang được phát triển", {
@@ -95,28 +153,39 @@ const SignIn = () => {
                     <span className="logo-text">TOEIC</span>
                   </div>
                   <h3 className="header-title mb-4">ĐĂNG NHẬP</h3>
-                  
+
                   <form onSubmit={formik.handleSubmit}>
                     <div className="mb-3">
                       <input
                         type="text"
-                        className={`form-control ${formik.touched.username && formik.errors.username ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          formik.touched.username && formik.errors.username
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Tên đăng nhập"
                         id="username"
                         name="username"
                         value={formik.values.username}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        autoFocus
                       />
                       {formik.touched.username && formik.errors.username && (
-                        <div className="invalid-feedback">{formik.errors.username}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.username}
+                        </div>
                       )}
                     </div>
-                    
-                    <div className="mb-3">
+
+                    <div className="mb-3 position-relative">
                       <input
-                        type="password"
-                        className={`form-control ${formik.touched.password && formik.errors.password ? "is-invalid" : ""}`}
+                        type={showPassword ? "text" : "password"}
+                        className={`form-control ${
+                          formik.touched.password && formik.errors.password
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         placeholder="Mật khẩu"
                         id="password"
                         name="password"
@@ -124,20 +193,55 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
+                      <button
+                        type="button"
+                        className="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3"
+                        style={{
+                          border: "none",
+                          background: "none",
+                          zIndex: 10,
+                        }}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <i
+                          className={`fas ${
+                            showPassword ? "fa-eye-slash" : "fa-eye"
+                          }`}
+                        ></i>
+                      </button>
                       {formik.touched.password && formik.errors.password && (
-                        <div className="invalid-feedback">{formik.errors.password}</div>
+                        <div className="invalid-feedback">
+                          {formik.errors.password}
+                        </div>
                       )}
                     </div>
-                    
+
+                    <div className="mb-3 form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="rememberMe"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="rememberMe">
+                        Ghi nhớ đăng nhập
+                      </label>
+                    </div>
+
                     <div className="text-center mb-3">
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary w-100" 
+                      <button
+                        type="submit"
+                        className="btn btn-primary w-100"
                         disabled={loading}
                       >
                         {loading ? (
                           <span>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
                             Đang xử lý...
                           </span>
                         ) : (
@@ -148,8 +252,8 @@ const SignIn = () => {
                   </form>
 
                   <div className="text-center mb-4">
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn btn-danger w-100"
                       onClick={signInWithGoogle}
                     >
@@ -157,16 +261,19 @@ const SignIn = () => {
                       Đăng nhập bằng Google
                     </button>
                   </div>
-                  
+
                   <div className="links-container text-center">
                     <div className="mb-2">
                       Thành viên mới?{" "}
-                      <Link to="/signup" className="text-decoration-none">
+                      <Link to="/auth/signup" className="text-decoration-none">
                         Đăng ký ngay
                       </Link>
                     </div>
                     <div className="mb-2">
-                      <Link to="/forgot-password" className="text-decoration-none">
+                      <Link
+                        to="/forgot-password"
+                        className="text-decoration-none"
+                      >
                         Quên mật khẩu?
                       </Link>
                     </div>
@@ -179,20 +286,36 @@ const SignIn = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="col-md-6 d-none d-md-block">
                 <div className="sign-in-carousel">
-                  <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
+                  <div
+                    id="carouselExampleIndicators"
+                    className="carousel slide"
+                    data-bs-ride="carousel"
+                  >
                     <div className="carousel-indicators">
-                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to="0"
+                        className="active"
+                        aria-current="true"
+                        aria-label="Slide 1"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to="1"
+                        aria-label="Slide 2"
+                      ></button>
                     </div>
                     <div className="carousel-inner h-100">
                       <div className="carousel-item active h-100">
                         <div className="slider-feature-card">
-                          <img 
-                            src="https://efc.edu.vn/wp-content/uploads/2016/11/toeic-la-gi-1.jpg" 
-                            alt="Toeic Banner" 
+                          <img
+                            src="https://efc.edu.vn/wp-content/uploads/2016/11/toeic-la-gi-1.jpg"
+                            alt="Toeic Banner"
                           />
                           <h3 className="slider-title mt-3">Toeic</h3>
                           <p className="slider-description">
@@ -202,9 +325,9 @@ const SignIn = () => {
                       </div>
                       <div className="carousel-item h-100">
                         <div className="slider-feature-card">
-                          <img 
-                            src="https://iigacademy.edu.vn/wp-content/uploads/2021/10/Banner-002-1024x576.jpg" 
-                            alt="Toeic Benefits" 
+                          <img
+                            src="https://iigacademy.edu.vn/wp-content/uploads/2021/10/Banner-002-1024x576.jpg"
+                            alt="Toeic Benefits"
                           />
                           <h3 className="slider-title mt-3">Toeic</h3>
                           <p className="slider-description">

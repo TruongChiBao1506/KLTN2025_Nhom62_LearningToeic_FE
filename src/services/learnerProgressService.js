@@ -26,7 +26,9 @@ const learnerProgressService = {
   // Lấy hiệu suất học tập theo kỹ năng
   getSkillPerformance: async () => {
     try {
-      const response = await axiosClient.get(`/learner/progress/skill-performance`);
+      const response = await axiosClient.get(
+        `/learner/progress/skill-performance`
+      );
       return response;
     } catch (error) {
       console.error("Lỗi khi tải hiệu suất học tập:", error);

@@ -1,7 +1,7 @@
-import axiosClient from './axiosClient';
+import axiosClient from "./axiosClient";
 
 class ScoreTableService {
-  constructor(baseUrl = '/score-tables') {
+  constructor(baseUrl = "/score-tables") {
     this.baseUrl = baseUrl;
   }
 

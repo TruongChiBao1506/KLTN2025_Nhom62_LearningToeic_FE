@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import ExamQuestionList from '../../../components/Learner/ExamQuestionList';
-import examQuestionService from '../../../services/examQuestionService';
-import userExamQuestionService from '../../../services/userExamQuestionService'; 
-import userExamService from '../../../services/userExamService';
-import userGoalService from '../../../services/userGoalService';
-import examService from '../../../services/examService';
-import userService from '../../../services/userService';
-import scoreTableService from '../../../services/scoreTableService';
-import { jwtDecode } from 'jwt-decode';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
-import './style.css';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import ExamQuestionList from "../../../components/Learner/ExamQuestionList";
+import examQuestionService from "../../../services/examQuestionService";
+import userExamQuestionService from "../../../services/userExamQuestionService";
+import userExamService from "../../../services/userExamService";
+import userGoalService from "../../../services/userGoalService";
+import examService from "../../../services/examService";
+import userService from "../../../services/userService";
+import scoreTableService from "../../../services/scoreTableService";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import "./style.css";
 
 const ExamQuestion = () => {
   const { examId } = useParams();
@@ -36,43 +36,44 @@ const ExamQuestion = () => {
   const [progress, setProgress] = useState({
     totalQuestions: 0,
     answeredQuestions: 0,
-    percentage: 0
+    percentage: 0,
   });
   useEffect(() => {
     // Xử lý sự kiện khi người dùng rời trang
     const handleBeforeUnload = (event) => {
       if (!hasSubmitted && userExamId) {
-        const message = "Bạn có chắc chắn muốn rời khỏi trang? Dữ liệu làm bài của bạn sẽ không được lưu!";
+        const message =
+          "Bạn có chắc chắn muốn rời khỏi trang? Dữ liệu làm bài của bạn sẽ không được lưu!";
         event.returnValue = message;
         return message;
       }
     };
-    
+
     // Đăng ký sự kiện
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     // Xóa sự kiện khi component unmount
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [hasSubmitted, userExamId]);
 
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const learnerToken = localStorage.getItem('learnerToken');
+        const learnerToken = localStorage.getItem("learnerToken");
         if (!learnerToken) {
-          throw new Error('Không tìm thấy token người dùng');
+          throw new Error("Không tìm thấy token người dùng");
         }
         const decoded = jwtDecode(learnerToken);
         setUserId(decoded.id);
         return decoded.id;
       } catch (error) {
-        console.error('Lỗi khi lấy userId:', error);
-        toast.error('Vui lòng đăng nhập để làm bài thi');
+        console.error("Lỗi khi lấy userId:", error);
+        toast.error("Vui lòng đăng nhập để làm bài thi");
         // Chuyển hướng đến trang đăng nhập sau 2 giây
         setTimeout(() => {
-          window.location.href = '/signin';
+          window.location.href = "/signin";
         }, 2000);
         throw error;
       }
@@ -81,14 +82,20 @@ const ExamQuestion = () => {
     const retrieveExamQuestions = async (userId) => {
       try {
         setLoading(true);
-        
+
         // Lấy thông tin bài thi
-        const [questionsResponse, examData, userGoalData, listeningScores, readingScores] = await Promise.all([
+        const [
+          questionsResponse,
+          examData,
+          userGoalData,
+          listeningScores,
+          readingScores,
+        ] = await Promise.all([
           examQuestionService.getQuestionsByExamId(examId),
           examService.getExamById(examId),
           userGoalService.getByUserId(userId).catch(() => ({ data: null })),
           scoreTableService.getListeningScores(),
-          scoreTableService.getReadingScores()
+          scoreTableService.getReadingScores(),
         ]);
 
         // Tạo user exam record
@@ -96,44 +103,46 @@ const ExamQuestion = () => {
           userId: userId,
           examId: examId,
           startTime: new Date().toISOString(),
-          status: 'IN_PROGRESS'
+          status: "IN_PROGRESS",
         });
 
         // Thiết lập dữ liệu trạng thái
         setUserExamId(userExamResponse.data.userExamId);
         setCountdown(examData.data.examDuration);
-        
+
         // Lấy và thiết lập mục tiêu
         if (userGoalData && userGoalData.data && userGoalData.data.goalScore) {
           setGoalScore(userGoalData.data.goalScore);
         }
-        
+
         // Thiết lập bảng điểm
         setTableListeningScores(listeningScores.data);
         setTableReadingScores(readingScores.data);
 
         // Xử lý dữ liệu câu hỏi
         const questions = questionsResponse.data;
-        
+
         // Kiểm tra xem có bản lưu trong localStorage không
         const savedAnswers = localStorage.getItem(`exam_${examId}_answers`);
         if (savedAnswers && !hasSubmitted) {
           try {
             const parsedAnswers = JSON.parse(savedAnswers);
             // Áp dụng câu trả lời đã lưu vào câu hỏi
-            const updatedQuestions = questions.map(q => {
-              const savedQuestion = parsedAnswers.find(sq => sq.examQuestionId === q.examQuestionId);
+            const updatedQuestions = questions.map((q) => {
+              const savedQuestion = parsedAnswers.find(
+                (sq) => sq.examQuestionId === q.examQuestionId
+              );
               if (savedQuestion && savedQuestion.selectedOption) {
                 return { ...q, selectedOption: savedQuestion.selectedOption };
               }
               return q;
             });
             setExamQuestions(updatedQuestions);
-            
+
             // Hiển thị thông báo đã khôi phục
-            toast.info('Đã khôi phục phiên làm bài trước đó của bạn');
+            toast.info("Đã khôi phục phiên làm bài trước đó của bạn");
           } catch (e) {
-            console.error('Lỗi khi khôi phục dữ liệu:', e);
+            console.error("Lỗi khi khôi phục dữ liệu:", e);
             setExamQuestions(questions);
           }
         } else {
@@ -155,10 +164,9 @@ const ExamQuestion = () => {
 
         setGroupedQuestionsByPart(groupedByPart);
         setParts(partsArray);
-        
       } catch (error) {
-        console.error('Lỗi khi lấy câu hỏi bài thi:', error);
-        setError('Không thể tải câu hỏi bài thi, vui lòng thử lại sau');
+        console.error("Lỗi khi lấy câu hỏi bài thi:", error);
+        setError("Không thể tải câu hỏi bài thi, vui lòng thử lại sau");
       } finally {
         setLoading(false);
       }
@@ -169,7 +177,7 @@ const ExamQuestion = () => {
         const uid = await getUserId();
         await retrieveExamQuestions(uid);
       } catch (error) {
-        console.error('Không thể khởi tạo bài thi:', error);
+        console.error("Không thể khởi tạo bài thi:", error);
       }
     };
 
@@ -180,21 +188,21 @@ const ExamQuestion = () => {
         clearInterval(timerRef.current);
       }
     };
-  }, [examId]);  // Cập nhật tiến độ làm bài
+  }, [examId]); // Cập nhật tiến độ làm bài
   useEffect(() => {
     if (examQuestions.length > 0) {
-      const answered = examQuestions.filter(q => q.selectedOption).length;
+      const answered = examQuestions.filter((q) => q.selectedOption).length;
       setProgress({
         totalQuestions: examQuestions.length,
         answeredQuestions: answered,
-        percentage: Math.round((answered / examQuestions.length) * 100)
+        percentage: Math.round((answered / examQuestions.length) * 100),
       });
     }
   }, [examQuestions]);
 
   // Kiểm tra và hiển thị hướng dẫn cho người dùng mới
   useEffect(() => {
-    const hasSeenGuide = localStorage.getItem('exam_guide_seen');
+    const hasSeenGuide = localStorage.getItem("exam_guide_seen");
     if (!hasSeenGuide && examQuestions.length > 0 && !loading) {
       setShowGuide(true);
     }
@@ -208,7 +216,7 @@ const ExamQuestion = () => {
         try {
           setViewedQuestions(JSON.parse(savedViewed));
         } catch (e) {
-          console.error('Lỗi khi đọc câu hỏi đã xem:', e);
+          console.error("Lỗi khi đọc câu hỏi đã xem:", e);
         }
       }
     }
@@ -219,77 +227,84 @@ const ExamQuestion = () => {
     if (!viewedQuestions.includes(questionId)) {
       const updatedViewed = [...viewedQuestions, questionId];
       setViewedQuestions(updatedViewed);
-      localStorage.setItem(`exam_${examId}_viewed`, JSON.stringify(updatedViewed));
+      localStorage.setItem(
+        `exam_${examId}_viewed`,
+        JSON.stringify(updatedViewed)
+      );
     }
   };
 
   // Chuyển đổi chế độ tối/sáng
   const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
-    localStorage.setItem('exam_dark_mode', !darkMode ? 'true' : 'false');
+    setDarkMode((prev) => !prev);
+    localStorage.setItem("exam_dark_mode", !darkMode ? "true" : "false");
   };
 
   // Đóng hướng dẫn và đánh dấu đã xem
   const closeGuide = () => {
     setShowGuide(false);
-    localStorage.setItem('exam_guide_seen', 'true');
+    localStorage.setItem("exam_guide_seen", "true");
   };
 
   // Phân tích điểm yếu dựa trên kết quả
   const analyzeWeaknesses = (partStatistics) => {
     const weakParts = [];
-    
+
     for (const part in partStatistics) {
       const stats = partStatistics[part];
-      const correctRate = stats.total > 0 ? (stats.correct / stats.total) : 0;
-      
-      if (correctRate < 0.6) { // Dưới 60% chính xác
+      const correctRate = stats.total > 0 ? stats.correct / stats.total : 0;
+
+      if (correctRate < 0.6) {
+        // Dưới 60% chính xác
         weakParts.push({
           part,
           correctRate,
-          suggestion: getSuggestionForPart(part)
+          suggestion: getSuggestionForPart(part),
         });
       }
     }
-    
+
     return weakParts.sort((a, b) => a.correctRate - b.correctRate);
   };
-  
+
   // Gợi ý ôn tập theo phần
   const getSuggestionForPart = (part) => {
-    switch(part) {
-      case 'PART1':
-        return 'Ôn tập từ vựng miêu tả hình ảnh và tình huống thường ngày';
-      case 'PART2':
-        return 'Luyện nghe và phản ứng nhanh với câu hỏi';
-      case 'PART3':
-        return 'Tập trung vào nghe hội thoại và nắm bắt thông tin chính';
-      case 'PART4':
-        return 'Luyện nghe bài nói dài và tóm tắt ý chính';
-      case 'PART5':
-        return 'Ôn tập ngữ pháp và từ vựng cơ bản';
-      case 'PART6':
-        return 'Luyện đọc hiểu đoạn văn ngắn và hoàn thành câu';
-      case 'PART7':
-        return 'Tập đọc hiểu nhanh và tìm thông tin trong đoạn văn dài';
+    switch (part) {
+      case "PART1":
+        return "Ôn tập từ vựng miêu tả hình ảnh và tình huống thường ngày";
+      case "PART2":
+        return "Luyện nghe và phản ứng nhanh với câu hỏi";
+      case "PART3":
+        return "Tập trung vào nghe hội thoại và nắm bắt thông tin chính";
+      case "PART4":
+        return "Luyện nghe bài nói dài và tóm tắt ý chính";
+      case "PART5":
+        return "Ôn tập ngữ pháp và từ vựng cơ bản";
+      case "PART6":
+        return "Luyện đọc hiểu đoạn văn ngắn và hoàn thành câu";
+      case "PART7":
+        return "Tập đọc hiểu nhanh và tìm thông tin trong đoạn văn dài";
       default:
-        return 'Ôn tập toàn diện các kỹ năng';
+        return "Ôn tập toàn diện các kỹ năng";
     }
   };
 
   // Hàm tự động lưu câu trả lời
   const autoSaveAnswers = () => {
     if (hasSubmitted || !userExamId) return;
-    
+
     const answeredQuestions = examQuestions
-      .filter(q => q.selectedOption)
-      .map(q => ({ 
-        examQuestionId: q.examQuestionId, 
-        selectedOption: q.selectedOption 
+      .filter((q) => q.selectedOption)
+      .map((q) => ({
+        examQuestionId: q.examQuestionId,
+        selectedOption: q.selectedOption,
       }));
-      
+
     if (answeredQuestions.length > 0) {
-      localStorage.setItem(`exam_${examId}_answers`, JSON.stringify(answeredQuestions));
+      localStorage.setItem(
+        `exam_${examId}_answers`,
+        JSON.stringify(answeredQuestions)
+      );
       setLastSaved(new Date());
     }
   };
@@ -299,7 +314,7 @@ const ExamQuestion = () => {
     if (!hasSubmitted && examQuestions.length > 0) {
       autoSaveRef.current = setInterval(autoSaveAnswers, 30000);
     }
-    
+
     return () => {
       if (autoSaveRef.current) {
         clearInterval(autoSaveRef.current);
@@ -312,19 +327,19 @@ const ExamQuestion = () => {
     // Bắt đầu đếm ngược khi có thời gian bài thi
     if (countdown > 0 && !hasSubmitted) {
       timerRef.current = setInterval(() => {
-        setCountdown(prevCountdown => {
+        setCountdown((prevCountdown) => {
           // Khi chỉ còn 5 phút, hiện cảnh báo
           if (prevCountdown === 300) {
-            toast.warning('Còn 5 phút nữa hết giờ làm bài!', {
+            toast.warning("Còn 5 phút nữa hết giờ làm bài!", {
               position: "top-center",
               autoClose: 5000,
             });
           }
-          
+
           // Khi hết giờ, tự động nộp bài
           if (prevCountdown <= 1) {
             clearInterval(timerRef.current);
-            toast.info('Hết thời gian làm bài!', {
+            toast.info("Hết thời gian làm bài!", {
               position: "top-center",
               autoClose: 3000,
             });
@@ -348,23 +363,29 @@ const ExamQuestion = () => {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const calculateToeicScore = (numCorrectAnswers, tableScores) => {
     // Tìm kiếm trong mảng số câu đúng => điểm số
-    const score = tableScores.find(item => item.numCorrectAnswers === numCorrectAnswers);
+    const score = tableScores.find(
+      (item) => item.numCorrectAnswers === numCorrectAnswers
+    );
     return score ? score.score : 0;
   };
 
   const submitAnswers = async () => {
-    const answeredQuestions = examQuestions.filter(examQuestion => examQuestion.selectedOption);
+    const answeredQuestions = examQuestions.filter(
+      (examQuestion) => examQuestion.selectedOption
+    );
 
     if (answeredQuestions.length === 0) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Oops...',
-        text: 'Bạn chưa trả lời bất kỳ câu nào. Vui lòng chọn đáp án!',
+        icon: "warning",
+        title: "Oops...",
+        text: "Bạn chưa trả lời bất kỳ câu nào. Vui lòng chọn đáp án!",
       });
       return;
     }
@@ -372,12 +393,12 @@ const ExamQuestion = () => {
     // Nếu chưa hoàn thành tất cả câu hỏi, hiển thị xác nhận
     if (answeredQuestions.length < examQuestions.length) {
       const result = await Swal.fire({
-        icon: 'question',
-        title: 'Bạn chưa hoàn thành tất cả câu hỏi',
-        text: 'Bạn thực sự muốn nộp?',
+        icon: "question",
+        title: "Bạn chưa hoàn thành tất cả câu hỏi",
+        text: "Bạn thực sự muốn nộp?",
         showCancelButton: true,
-        confirmButtonText: 'Nộp',
-        cancelButtonText: 'Quay lại',
+        confirmButtonText: "Nộp",
+        cancelButtonText: "Quay lại",
       });
 
       if (!result.isConfirmed) {
@@ -385,11 +406,11 @@ const ExamQuestion = () => {
       }
     } else {
       const result = await Swal.fire({
-        icon: 'question',
-        title: 'Bạn có chắc chắn muốn nộp?',
+        icon: "question",
+        title: "Bạn có chắc chắn muốn nộp?",
         showCancelButton: true,
-        confirmButtonText: 'Nộp',
-        cancelButtonText: 'Quay lại',
+        confirmButtonText: "Nộp",
+        cancelButtonText: "Quay lại",
       });
 
       if (!result.isConfirmed) {
@@ -406,8 +427,8 @@ const ExamQuestion = () => {
 
       // Đánh dấu câu trả lời đã được chọn và nộp cho từng câu hỏi
       const userExamQuestionsData = examQuestions
-        .filter(question => question.selectedOption)
-        .map(question => ({
+        .filter((question) => question.selectedOption)
+        .map((question) => ({
           userExamId: userExamId,
           examQuestionId: question.examQuestionId,
           selectedOption: question.selectedOption || null,
@@ -416,64 +437,78 @@ const ExamQuestion = () => {
       // Lưu lại các câu trả lời của người dùng
       await userExamQuestionService.createBatch(userExamQuestionsData);
 
-    // Đánh dấu bài thi đã hoàn thành
+      // Đánh dấu bài thi đã hoàn thành
       const endTime = new Date().toISOString();
-      
+
       // Xóa dữ liệu lưu tạm
       localStorage.removeItem(`exam_${userExamId}_state`);
-      
+
       // Tính điểm cho từng phần và tổng điểm
-      const listeningQuestions = examQuestions.filter(q => 
-        q.questionPart === 'PART1' || 
-        q.questionPart === 'PART2' || 
-        q.questionPart === 'PART3' || 
-        q.questionPart === 'PART4'
+      const listeningQuestions = examQuestions.filter(
+        (q) =>
+          q.questionPart === "PART1" ||
+          q.questionPart === "PART2" ||
+          q.questionPart === "PART3" ||
+          q.questionPart === "PART4"
       );
-      
-      const readingQuestions = examQuestions.filter(q => 
-        q.questionPart === 'PART5' || 
-        q.questionPart === 'PART6' || 
-        q.questionPart === 'PART7'
+
+      const readingQuestions = examQuestions.filter(
+        (q) =>
+          q.questionPart === "PART5" ||
+          q.questionPart === "PART6" ||
+          q.questionPart === "PART7"
       );
-      
+
       const correctListeningCount = listeningQuestions.filter(
-        q => q.selectedOption === q.correctOption
+        (q) => q.selectedOption === q.correctOption
       ).length;
-      
+
       const correctReadingCount = readingQuestions.filter(
-        q => q.selectedOption === q.correctOption
+        (q) => q.selectedOption === q.correctOption
       ).length;
-      
+
       // Thống kê theo từng phần
       const partStatistics = {};
-      parts.forEach(part => {
-        const questionsOfPart = examQuestions.filter(q => q.questionPart === part);
-        const answeredQuestionsOfPart = questionsOfPart.filter(q => q.selectedOption);
-        const correctQuestionsOfPart = questionsOfPart.filter(q => q.selectedOption === q.correctOption);
-        
+      parts.forEach((part) => {
+        const questionsOfPart = examQuestions.filter(
+          (q) => q.questionPart === part
+        );
+        const answeredQuestionsOfPart = questionsOfPart.filter(
+          (q) => q.selectedOption
+        );
+        const correctQuestionsOfPart = questionsOfPart.filter(
+          (q) => q.selectedOption === q.correctOption
+        );
+
         partStatistics[part] = {
           total: questionsOfPart.length,
           answered: answeredQuestionsOfPart.length,
           correct: correctQuestionsOfPart.length,
         };
       });
-      
+
       // Tính điểm TOEIC dựa trên số câu đúng và bảng quy đổi
-      const listeningScore = calculateToeicScore(correctListeningCount, tableListeningScores);
-      const readingScore = calculateToeicScore(correctReadingCount, tableReadingScores);
+      const listeningScore = calculateToeicScore(
+        correctListeningCount,
+        tableListeningScores
+      );
+      const readingScore = calculateToeicScore(
+        correctReadingCount,
+        tableReadingScores
+      );
       const totalScore = listeningScore + readingScore;
 
       // Cập nhật dữ liệu bài thi người dùng với điểm số
       await userExamService.update(userExamId, {
         endTime: endTime,
-        status: 'COMPLETED',
+        status: "COMPLETED",
         listeningScore: listeningScore,
         readingScore: readingScore,
-        totalScore: totalScore
+        totalScore: totalScore,
       });
 
       // Đánh dấu các câu đã chấm điểm
-      const gradedQuestions = examQuestions.map(question => {
+      const gradedQuestions = examQuestions.map((question) => {
         return {
           ...question,
           isGraded: true,
@@ -482,62 +517,80 @@ const ExamQuestion = () => {
       });
 
       setExamQuestions(gradedQuestions);
-      setHasSubmitted(true);      // Xóa tất cả dữ liệu lưu tạm và trạng thái
+      setHasSubmitted(true); // Xóa tất cả dữ liệu lưu tạm và trạng thái
       localStorage.removeItem(`exam_${examId}_answers`);
       localStorage.removeItem(`exam_${examId}_viewed`);
       localStorage.removeItem(`exam_${userExamId}_state`);
-      
+
       // Phân tích điểm yếu
       const weaknesses = analyzeWeaknesses(partStatistics);
-      
+
       // Thông báo hoàn thành bài thi
-      let goalMessage = '';
+      let goalMessage = "";
       if (goalScore && totalScore >= goalScore) {
         goalMessage = `<p class="text-success"><i class="fas fa-trophy me-1"></i> Chúc mừng! Bạn đã đạt mục tiêu điểm số ${goalScore} của mình.</p>`;
       } else if (goalScore) {
         const diffToGoal = goalScore - totalScore;
         goalMessage = `<p>Mục tiêu của bạn là: <strong>${goalScore}</strong> điểm. Còn thiếu <strong>${diffToGoal}</strong> điểm nữa. Hãy tiếp tục cố gắng!</p>`;
       }
-      
+
       // Chi tiết thống kê
-      let statisticsHtml = '<div class="mt-3"><h6>Thống kê chi tiết:</h6><ul style="text-align: left;">';
-      
+      let statisticsHtml =
+        '<div class="mt-3"><h6>Thống kê chi tiết:</h6><ul style="text-align: left;">';
+
       // Điểm nghe và đọc
-      statisticsHtml += `<li>Nghe: ${correctListeningCount}/${listeningQuestions.length} câu đúng (${Math.round((correctListeningCount/listeningQuestions.length)*100)}%) - <strong>${listeningScore}</strong> điểm</li>`;
-      statisticsHtml += `<li>Đọc: ${correctReadingCount}/${readingQuestions.length} câu đúng (${Math.round((correctReadingCount/readingQuestions.length)*100)}%) - <strong>${readingScore}</strong> điểm</li>`;
-      
+      statisticsHtml += `<li>Nghe: ${correctListeningCount}/${
+        listeningQuestions.length
+      } câu đúng (${Math.round(
+        (correctListeningCount / listeningQuestions.length) * 100
+      )}%) - <strong>${listeningScore}</strong> điểm</li>`;
+      statisticsHtml += `<li>Đọc: ${correctReadingCount}/${
+        readingQuestions.length
+      } câu đúng (${Math.round(
+        (correctReadingCount / readingQuestions.length) * 100
+      )}%) - <strong>${readingScore}</strong> điểm</li>`;
+
       // Chi tiết từng phần
       for (const part in partStatistics) {
         const stats = partStatistics[part];
-        const percent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-        let colorClass = 'text-success';
-        if (percent < 60) colorClass = 'text-danger';
-        else if (percent < 80) colorClass = 'text-warning';
-        
-        statisticsHtml += `<li>Phần ${part.replace('PART', '')}: <span class="${colorClass}">${stats.correct}/${stats.total} câu đúng (${percent}%)</span></li>`;
+        const percent =
+          stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+        let colorClass = "text-success";
+        if (percent < 60) colorClass = "text-danger";
+        else if (percent < 80) colorClass = "text-warning";
+
+        statisticsHtml += `<li>Phần ${part.replace(
+          "PART",
+          ""
+        )}: <span class="${colorClass}">${stats.correct}/${
+          stats.total
+        } câu đúng (${percent}%)</span></li>`;
       }
-      statisticsHtml += '</ul></div>';
-      
+      statisticsHtml += "</ul></div>";
+
       // Đề xuất cải thiện
-      let suggestionsHtml = '';
+      let suggestionsHtml = "";
       if (weaknesses.length > 0) {
-        suggestionsHtml = '<div class="mt-3"><h6>Đề xuất ôn tập:</h6><ul style="text-align: left;">';
-        weaknesses.forEach(weak => {
-          const partName = weak.part.replace('PART', '');
+        suggestionsHtml =
+          '<div class="mt-3"><h6>Đề xuất ôn tập:</h6><ul style="text-align: left;">';
+        weaknesses.forEach((weak) => {
+          const partName = weak.part.replace("PART", "");
           suggestionsHtml += `<li><strong>Phần ${partName}:</strong> ${weak.suggestion}</li>`;
         });
-        suggestionsHtml += '</ul></div>';
+        suggestionsHtml += "</ul></div>";
       }
-      
+
       Swal.fire({
-        icon: 'success',
-        title: 'Nộp bài thành công!',
+        icon: "success",
+        title: "Nộp bài thành công!",
         html: `
           <div style="text-align: center; margin-bottom: 15px;">
             <h5>Tổng điểm: <strong>${totalScore}</strong>/990</h5>
             <div class="progress my-2">
               <div class="progress-bar" role="progressbar" 
-                style="width: ${Math.round((totalScore/990)*100)}%; background-color: #34447c;" 
+                style="width: ${Math.round(
+                  (totalScore / 990) * 100
+                )}%; background-color: #34447c;" 
                 aria-valuenow="${totalScore}" aria-valuemin="0" aria-valuemax="990">
               </div>
             </div>
@@ -556,24 +609,23 @@ const ExamQuestion = () => {
           ${statisticsHtml}
           ${suggestionsHtml}
         `,
-        confirmButtonText: 'Xem kết quả chi tiết',
-        confirmButtonColor: '#34447c',
+        confirmButtonText: "Xem kết quả chi tiết",
+        confirmButtonColor: "#34447c",
         showCancelButton: true,
-        cancelButtonText: 'Đóng',
-        width: '600px',
+        cancelButtonText: "Đóng",
+        width: "600px",
         focusConfirm: true,
       }).then((result) => {
         if (result.isConfirmed) {
           window.location.href = `/exam-result/${userExamId}`;
         }
       });
-
     } catch (error) {
-      console.error('Lỗi khi nộp bài thi:', error);
+      console.error("Lỗi khi nộp bài thi:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Lỗi khi nộp bài',
-        text: 'Có lỗi xảy ra khi nộp bài, vui lòng thử lại.',
+        icon: "error",
+        title: "Lỗi khi nộp bài",
+        text: "Có lỗi xảy ra khi nộp bài, vui lòng thử lại.",
       });
     } finally {
       setLoading(false);
@@ -582,7 +634,10 @@ const ExamQuestion = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '300px' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "300px" }}
+      >
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Đang tải...</span>
         </div>
@@ -599,67 +654,67 @@ const ExamQuestion = () => {
   }
   // Xử lý khi thay đổi câu trả lời
   const handleAnswerChange = (examQuestionId, selectedOption) => {
-    const updatedQuestions = examQuestions.map(q => {
+    const updatedQuestions = examQuestions.map((q) => {
       if (q.examQuestionId === examQuestionId) {
         return { ...q, selectedOption };
       }
       return q;
     });
     setExamQuestions(updatedQuestions);
-    
+
     // Tự động lưu khi thay đổi câu trả lời
     autoSaveAnswers();
   };
   return (
-    <div className={`bg-test ${darkMode ? 'dark-mode' : ''}`}>
+    <div className={`bg-test ${darkMode ? "dark-mode" : ""}`}>
       <div className="container-fluid">
         <div className="d-flex justify-content-between align-items-center px-3 pt-2">
           {lastSaved && (
-            <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+            <div className="text-muted" style={{ fontSize: "0.8rem" }}>
               <i className="fas fa-save me-1"></i>
               Tự động lưu lần cuối: {lastSaved.toLocaleTimeString()}
             </div>
           )}
-          
+
           <div className="d-flex align-items-center">
-            <button 
+            <button
               className="btn btn-sm btn-link text-decoration-none"
               onClick={() => setShowGuide(true)}
               title="Hướng dẫn"
             >
               <i className="fas fa-question-circle"></i>
             </button>
-            
-            <button 
+
+            <button
               className="btn btn-sm btn-link text-decoration-none ms-2"
               onClick={toggleDarkMode}
               title={darkMode ? "Chế độ sáng" : "Chế độ tối"}
             >
-              <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+              <i className={`fas ${darkMode ? "fa-sun" : "fa-moon"}`}></i>
             </button>
           </div>
         </div>
-        
+
         {/* Hiển thị tiến độ làm bài */}
         {!hasSubmitted && progress.totalQuestions > 0 && (
           <div className="px-3 pt-1">
-            <div className="progress" style={{ height: '10px' }}>
-              <div 
-                className="progress-bar" 
-                role="progressbar" 
-                style={{ width: `${progress.percentage}%` }} 
-                aria-valuenow={progress.percentage} 
-                aria-valuemin="0" 
+            <div className="progress" style={{ height: "10px" }}>
+              <div
+                className="progress-bar"
+                role="progressbar"
+                style={{ width: `${progress.percentage}%` }}
+                aria-valuenow={progress.percentage}
+                aria-valuemin="0"
                 aria-valuemax="100"
-              >
-              </div>
+              ></div>
             </div>
-            <div className="text-end text-muted" style={{ fontSize: '0.8rem' }}>
-              Đã làm {progress.answeredQuestions}/{progress.totalQuestions} câu ({progress.percentage}%)
+            <div className="text-end text-muted" style={{ fontSize: "0.8rem" }}>
+              Đã làm {progress.answeredQuestions}/{progress.totalQuestions} câu
+              ({progress.percentage}%)
             </div>
           </div>
         )}
-        
+
         <div className="row mt-2">
           {examQuestions.length > 0 && (
             <ExamQuestionList
@@ -680,27 +735,39 @@ const ExamQuestion = () => {
           )}
         </div>
       </div>
-      
+
       {/* Hướng dẫn sử dụng */}
       {showGuide && (
         <div className="modal-backdrop">
-          <div className="modal-content-custom" style={{ maxWidth: '600px' }}>
+          <div className="modal-content-custom" style={{ maxWidth: "600px" }}>
             <div className="modal-header-custom">
               <h5 className="modal-title">
-                <i className="fas fa-info-circle me-2"></i> 
+                <i className="fas fa-info-circle me-2"></i>
                 Hướng dẫn làm bài thi TOEIC
               </h5>
-              <button type="button" className="modal-close-button" onClick={closeGuide}>
+              <button
+                type="button"
+                className="modal-close-button"
+                onClick={closeGuide}
+              >
                 &times;
               </button>
             </div>
             <div className="modal-body-custom">
               <h6 className="fw-bold">Cách làm bài:</h6>
               <ol className="ps-3">
-                <li>Các câu hỏi được phân loại theo 7 phần của bài thi TOEIC chính thức</li>
+                <li>
+                  Các câu hỏi được phân loại theo 7 phần của bài thi TOEIC chính
+                  thức
+                </li>
                 <li>Bạn nên làm bài theo thứ tự các phần từ 1-7</li>
-                <li>Đối với phần nghe (phần 1-4), bạn chỉ được nghe <strong>một lần duy nhất</strong></li>
-                <li>Bạn có thể đánh dấu câu hỏi để xem lại sau bằng nút "Cắm cờ"</li>
+                <li>
+                  Đối với phần nghe (phần 1-4), bạn chỉ được nghe{" "}
+                  <strong>một lần duy nhất</strong>
+                </li>
+                <li>
+                  Bạn có thể đánh dấu câu hỏi để xem lại sau bằng nút "Cắm cờ"
+                </li>
                 <li>Thời gian làm bài được hiển thị ở góc phải màn hình</li>
                 <li>Bài làm của bạn được tự động lưu định kỳ</li>
               </ol>
@@ -708,8 +775,13 @@ const ExamQuestion = () => {
               <ul className="ps-3">
                 <li>Chuyển đổi chế độ tối/sáng để bảo vệ mắt</li>
                 <li>Hiển thị tiến độ làm bài theo phần trăm</li>
-                <li>Bạn có thể bấm vào số thứ tự câu hỏi ở bảng bên phải để di chuyển đến câu đó</li>
-                <li>Sau khi nộp bài, bạn sẽ nhận được phân tích chi tiết kết quả</li>
+                <li>
+                  Bạn có thể bấm vào số thứ tự câu hỏi ở bảng bên phải để di
+                  chuyển đến câu đó
+                </li>
+                <li>
+                  Sau khi nộp bài, bạn sẽ nhận được phân tích chi tiết kết quả
+                </li>
               </ul>
               <div className="text-center mt-3">
                 <button className="btn btn-primary" onClick={closeGuide}>
