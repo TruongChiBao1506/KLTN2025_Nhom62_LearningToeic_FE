@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 
 import QuestionService from '../../../../../services/questionService';
 import QuestionGroupService from '../../../../../services/questionGroupService';
@@ -59,155 +58,43 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
 
     // Validation schema
     const questionFormSchema = Yup.object().shape({
-        // Question Content validation for 4 questions
-        questionContent0: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent1: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent2: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent3: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-
-        // Option A validation
-        optionA0: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-        optionA1: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-        optionA2: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-        optionA3: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-
-        // Option B validation
-        optionB0: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-        optionB1: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-        optionB2: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-        optionB3: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-
-        // Option C validation
-        optionC0: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-        optionC1: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-        optionC2: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-        optionC3: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-
-        // Option D validation
-        optionD0: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-        optionD1: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-        optionD2: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-        optionD3: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-
-        // Correct Option validation
+        questionContent0: Yup.string().required("questionContent phải có giá trị.").min(2).max(500),
+        questionContent1: Yup.string().required("questionContent phải có giá trị.").min(2).max(500),
+        questionContent2: Yup.string().required("questionContent phải có giá trị.").min(2).max(500),
+        questionContent3: Yup.string().required("questionContent phải có giá trị.").min(2).max(500),
+        optionA0: Yup.string().required("OptionA phải có giá trị.").min(2).max(500),
+        optionA1: Yup.string().required("OptionA phải có giá trị.").min(2).max(500),
+        optionA2: Yup.string().required("OptionA phải có giá trị.").min(2).max(500),
+        optionA3: Yup.string().required("OptionA phải có giá trị.").min(2).max(500),
+        optionB0: Yup.string().required("OptionB phải có giá trị.").min(2).max(500),
+        optionB1: Yup.string().required("OptionB phải có giá trị.").min(2).max(500),
+        optionB2: Yup.string().required("OptionB phải có giá trị.").min(2).max(500),
+        optionB3: Yup.string().required("OptionB phải có giá trị.").min(2).max(500),
+        optionC0: Yup.string().required("OptionC phải có giá trị.").min(2).max(500),
+        optionC1: Yup.string().required("OptionC phải có giá trị.").min(2).max(500),
+        optionC2: Yup.string().required("OptionC phải có giá trị.").min(2).max(500),
+        optionC3: Yup.string().required("OptionC phải có giá trị.").min(2).max(500),
+        optionD0: Yup.string().required("OptionD phải có giá trị.").min(2).max(500),
+        optionD1: Yup.string().required("OptionD phải có giá trị.").min(2).max(500),
+        optionD2: Yup.string().required("OptionD phải có giá trị.").min(2).max(500),
+        optionD3: Yup.string().required("OptionD phải có giá trị.").min(2).max(500),
         correctOption0: Yup.string().required("correctOption phải có giá trị."),
         correctOption1: Yup.string().required("correctOption phải có giá trị."),
         correctOption2: Yup.string().required("correctOption phải có giá trị."),
         correctOption3: Yup.string().required("correctOption phải có giá trị."),
-
-        // Question Type validation
         questionType0: Yup.string().required("Loại phải được chọn."),
         questionType1: Yup.string().required("Loại phải được chọn."),
         questionType2: Yup.string().required("Loại phải được chọn."),
         questionType3: Yup.string().required("Loại phải được chọn."),
-
-        // Question Explanation validation
-        questionExplanation0: Yup
-            .string()
-            .required("questionExplanation phải có giá trị.")
-            .min(2, "questionExplanation phải ít nhất 2 ký tự.")
-            .max(1000, "questionExplanation có nhiều nhất 1000 ký tự."),
-        questionExplanation1: Yup
-            .string()
-            .required("questionExplanation phải có giá trị.")
-            .min(2, "questionExplanation phải ít nhất 2 ký tự.")
-            .max(1000, "questionExplanation có nhiều nhất 1000 ký tự."),
-        questionExplanation2: Yup
-            .string()
-            .required("questionExplanation phải có giá trị.")
-            .min(2, "questionExplanation phải ít nhất 2 ký tự.")
-            .max(1000, "questionExplanation có nhiều nhất 1000 ký tự."),
-        questionExplanation3: Yup
-            .string()
-            .required("questionExplanation phải có giá trị.")
-            .min(2, "questionExplanation phải ít nhất 2 ký tự.")
-            .max(1000, "questionExplanation có nhiều nhất 1000 ký tự.")
+        questionExplanation0: Yup.string().required("questionExplanation phải có giá trị.").min(2).max(1000),
+        questionExplanation1: Yup.string().required("questionExplanation phải có giá trị.").min(2).max(1000),
+        questionExplanation2: Yup.string().required("questionExplanation phải có giá trị.").min(2).max(1000),
+        questionExplanation3: Yup.string().required("questionExplanation phải có giá trị.").min(2).max(1000)
     });
 
     // Formik setup
     const formik = useFormik({
         initialValues: {
-            // Dynamic initial values cho 4 questions
             questionContent0: '', questionContent1: '', questionContent2: '', questionContent3: '',
             optionA0: '', optionA1: '', optionA2: '', optionA3: '',
             optionB0: '', optionB1: '', optionB2: '', optionB3: '',
@@ -230,42 +117,30 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
         setQuestions(newQuestions);
     };
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor (170px)
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
     };
 
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
+    const onEditorBlur = () => {};
 
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
+    // Reset form và state
+    const resetFormAndState = (resetForm) => {
+        resetForm();
+        setEditorData('');
+        setQuestions([
+            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
+            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
+            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
+            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' }
+        ]);
+        if (editorRef.current) editorRef.current.setData('');
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-
-            // Validate group passage
             if (!editorData || editorData.trim() === '') {
-                toast.error('Question Group Passage phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Question Group Passage phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
@@ -274,162 +149,85 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
             groupFormData.append("sectionId", sectionId);
             groupFormData.append("groupPassage", editorData);
 
-            console.log('Creating question group...');
-
             // Gửi dữ liệu nhóm câu hỏi lên server và lấy groupId
             const response = await QuestionGroupService.create(groupFormData);
-            console.log('Group response:', response);
-            
             const groupId = response.groupId;
-            console.log('Group ID:', groupId);
 
             // Gửi dữ liệu từng câu hỏi con lên server
             for (let i = 0; i < 4; i++) {
-                const questionContent = values[`questionContent${i}`];
-                const optionA = values[`optionA${i}`];
-                const optionB = values[`optionB${i}`];
-                const optionC = values[`optionC${i}`];
-                const optionD = values[`optionD${i}`];
-                const correctOption = values[`correctOption${i}`];
-                const questionType = values[`questionType${i}`];
-                const questionExplanation = values[`questionExplanation${i}`];
-                
                 const formData = new FormData();
                 formData.append("sectionId", sectionId);
                 formData.append("groupId", groupId);
-                formData.append("questionContent", questionContent);
-                formData.append("optionA", optionA);
-                formData.append("optionB", optionB);
-                formData.append("optionC", optionC);
-                formData.append("optionD", optionD);
-
+                formData.append("questionContent", values[`questionContent${i}`]);
+                formData.append("optionA", values[`optionA${i}`]);
+                formData.append("optionB", values[`optionB${i}`]);
+                formData.append("optionC", values[`optionC${i}`]);
+                formData.append("optionD", values[`optionD${i}`]);
                 // Xác định đáp án được chọn và đặt giá trị cho correctOption
-                switch (correctOption) {
+                switch (values[`correctOption${i}`]) {
                     case "A":
-                        formData.append("correctOption", optionA);
+                        formData.append("correctOption", values[`optionA${i}`]);
                         break;
                     case "B":
-                        formData.append("correctOption", optionB);
+                        formData.append("correctOption", values[`optionB${i}`]);
                         break;
                     case "C":
-                        formData.append("correctOption", optionC);
+                        formData.append("correctOption", values[`optionC${i}`]);
                         break;
                     case "D":
-                        formData.append("correctOption", optionD);
+                        formData.append("correctOption", values[`optionD${i}`]);
                         break;
                     default:
                         formData.append("correctOption", "");
                 }
-                
-                formData.append("questionType", questionType);
-                formData.append("questionExplanation", questionExplanation);
-                
-                console.log(`Creating question ${i + 1}...`);
+                formData.append("questionType", values[`questionType${i}`]);
+                formData.append("questionExplanation", values[`questionExplanation${i}`]);
                 await QuestionService.create(formData);
             }
 
             retrieveQuestions();
+            resetFormAndState(resetForm);
 
-            // Reset form và các state
-            resetForm();
-            setEditorData('');
-            setQuestions([
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' }
-            ]);
-            
-            if (editorRef.current) {
-                editorRef.current.setData('');
-            }
+            if (onClose) onClose();
 
-            // Close modal
-            if (onClose) {
-                onClose();
-            }
-
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
     const handleClose = () => {
         formik.resetForm();
-        setEditorData('');
-        setQuestions([
-            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' },
-            { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '', questionExplanation: '' }
-        ]);
-        
-        if (editorRef.current) {
-            editorRef.current.setData('');
-        }
+        resetFormAndState(() => {});
         if (onClose) onClose();
     };
 
     return (
         <div className="question-add-section6-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
-                    {/* Group Passage với CKEditor */}
+                <div className="modal-body text-start p-4">
+                    {/* Group Passage với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupPassage" className="form-label">
                             Question Group Passage<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
-                            <CKEditor
-                                editor={ClassicEditor}
+                            <CKEditorOptimized
                                 data={editorData}
+                                onChange={setEditorData}
                                 onReady={onEditorReady}
-                                onChange={onEditorChange}
                                 onBlur={onEditorBlur}
-                                onFocus={onEditorFocus}
-                                config={{
-                                    placeholder: 'Nhập passage cho Part 6...',
-                                    toolbar: [
-                                        'heading',
-                                        '|',
-                                        'bold',
-                                        'italic',
-                                        'link',
-                                        'bulletedList',
-                                        'numberedList',
-                                        '|',
-                                        'outdent',
-                                        'indent',
-                                        '|',
-                                        'imageUpload',
-                                        'blockQuote',
-                                        'insertTable',
-                                        'mediaEmbed',
-                                        'undo',
-                                        'redo'
-                                    ],
-                                    language: 'vi'
-                                }}
+                                placeholder="Nhập passage cho Part 6..."
+                                height="250px"
                             />
                         </div>
                         {/* Custom validation error display */}

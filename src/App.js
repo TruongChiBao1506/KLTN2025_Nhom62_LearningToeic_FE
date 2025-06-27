@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 
@@ -33,52 +35,55 @@ import QuestionBySection from './pages/Admin/QuestionBySection';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
+    <>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
 
 
-        {/* Admin Auth Route - nằm ngoài AdminLayout */}
-        <Route path="/admin/signin" element={<AdminSignIn />} />
+          {/* Admin Auth Route - nằm ngoài AdminLayout */}
+          <Route path="/admin/signin" element={<AdminSignIn />} />
 
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="profile" element={<AdminProfile />} />
-          <Route path="section" element={<Section />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="section" element={<Section />} />
 
             <Route path="section/:sectionId/lesson" element={<LessonBySection />} />
             <Route path="section/:sectionId/lesson/:lessonId/lesson-content" element={<LessonContent />} />
             <Route path="section/:sectionId/test" element={<TestBySection />} />
             <Route path="section/:sectionId/question" element={<QuestionBySection />} />
 
-          <Route path="topic" element={<Topic />} />
+            <Route path="topic" element={<Topic />} />
             <Route path="topic/:topicId/vocabulary" element={<VocabularyByTopic />} />
             <Route path="topic/:topicId/vocabulary-question" element={<VocabularyQuestion />} />
 
-          
-          {/* Protected Route */}
-          <Route path="grammar" element={<Grammar />} />
+
+            {/* Protected Route */}
+            <Route path="grammar" element={<Grammar />} />
             <Route path="grammar/:grammarId/grammar-content" element={<GrammarContent />} />
             <Route path="grammar/:grammarId/grammar-question" element={<GrammarQuestion />} />
-          <Route path="setting" element={<Settings />} />
-          <Route path="learner" element={<Learner />} />
-          <Route path="exam" element={<Exam />} />
+            <Route path="setting" element={<Settings />} />
+            <Route path="learner" element={<Learner />} />
+            <Route path="exam" element={<Exam />} />
             <Route path="exam/:examId/exam-question" element={<ExamQuestion />} />
 
-          {/* Protected Routes */}
-          <Route path="feedback" element={<Feedback />} />
-          <Route path="free-material" element={<FreeMaterial />} />
-          <Route path="score-table/all" element={<ScoreTable />} />
+            {/* Protected Routes */}
+            <Route path="feedback" element={<Feedback />} />
+            <Route path="free-material" element={<FreeMaterial />} />
+            <Route path="score-table/all" element={<ScoreTable />} />
 
 
-          {/* Thêm các route con khác ở đây */}
-        </Route>
+            {/* Thêm các route con khác ở đây */}
+          </Route>
 
-        {/* Fallback Route */}
-        <Route path="*" element={<Navigate to="/admin/signin" replace />} />
-      </Routes>
-    </Router>
+          {/* Fallback Route */}
+          <Route path="*" element={<Navigate to="/admin/signin" replace />} />
+        </Routes>
+      </Router>
+      <ToastContainer />
+    </>
   );
 }
 

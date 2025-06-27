@@ -1,14 +1,138 @@
+.edit-question-section7-2-page .button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.edit-question-section7-2-page .button:hover {
+  background-color: #fff;
+  color: #052649;
+  border: 1px solid #052649;
+}
+
+.edit-question-section7-2-page .button i {
+  font-size: 20px;
+  color: #000;
+}
+
 .edit-question-section7-2-page label {
-    font-weight: 600;
-    font-size: 14px;
-    color: rgb(44, 44, 44);
+  font-weight: 600;
+  font-size: 14px;
+  color: rgb(44, 44, 44);
 }
+
 .edit-question-section7-2-page .error-feedback {
-    color: red;
-    font-size: 13px;
+  color: red;
+  font-size: 13px;
 }
+
 .edit-question-section7-2-page .required-field {
-    color: red;
-    font-size: 14px;
-    margin-left: 4px;
+  color: red;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* Additional styles for better form presentation */
+.edit-question-section7-2-page .form-group {
+  margin-bottom: 1rem;
+}
+
+.edit-question-section7-2-page .form-control {
+  margin-bottom: 0.5rem;
+}
+
+.edit-question-section7-2-page .form-check-inline {
+  margin-right: 1rem;
+}
+
+.edit-question-section7-2-page .modal-body {
+  padding: 1.5rem;
+}
+
+.edit-question-section7-2-page .modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.edit-question-section7-2-page .custom-font {
+  font-family: inherit;
+}
+
+.edit-question-section7-2-page .border-secondary {
+  border-color: #6c757d !important;
+}
+
+/* CKEditor custom styling */
+.edit-question-section7-2-page .ck-editor__editable {
+  min-height: 170px;
+}
+
+/* Bootstrap overrides if needed */
+.edit-question-section7-2-page .btn {
+  margin-right: 0.5rem;
+}
+
+.edit-question-section7-2-page .btn:last-child {
+  margin-right: 0;
+}
+
+/* Modal layout fix */
+.modal.zoom .modal-dialog {
+    max-width: 1200px;
+    height: 90vh;
+    margin: 1.75rem auto;
+}
+
+.modal.zoom .modal-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal.zoom .modal-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal.zoom .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Cải thiện spacing cho nội dung form */
+.edit-question-section7-2-page .modal-body {
+    padding: 20px 24px;
+    max-height: none;
+    overflow-y: visible;
+}
+
+/* Footer luôn dính dưới cùng modal */
+.edit-question-section7-2-page .modal-footer {
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 10;
+    border-top: 1px solid #dee2e6;
+    margin-top: 0;
+    padding: 12px 24px;
+}
+
+/* Sticky selector for number of questions (nếu có) */
+.question-count-selector-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  padding: 16px 0 8px 0;
+  border-bottom: 1px solid #eee;
 }

@@ -1,4 +1,9 @@
 import React, { useState, useMemo } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCirclePlus,
+  faSearch
+} from '@fortawesome/free-solid-svg-icons';
 import QuestionService from "../../../services/questionService";
 
 // Table components
@@ -20,24 +25,9 @@ import TableSectionNo1To5 from "./TableSectionNo1To5";
 import TableSectionNo6To7 from "./TableSectionNo6To7";
 import TableSectionNo8 from "./TableSectionNo8";
 
-// Add-question modals
-import QuestionAddSection1 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection1";
-import QuestionAddSection2 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection2";
-import QuestionAddSection3 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection3";
-import QuestionAddSection4 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection4";
-import QuestionAddSection5 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection5";
-import QuestionAddSection6 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection6";
-import QuestionAddSection7Single from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection7_1";
-import QuestionAddSection7Double from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection7_2";
-import QuestionAddSection7Triple from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection7_3";
-import QuestionAddNo1To2 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo1To2";
-import QuestionAddNo3To4 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo3To4";
-import QuestionAddNo5To7 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo5To7";
-import QuestionAddNo8To10 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo8To10";
-import QuestionAddNo11 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo11";
-import QuestionAddNo1To5 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo1To5";
-import QuestionAddNo6To7 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo6To7";
-import QuestionAddNo8 from "../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo8";
+// Modal wrappers
+import AddQuestionModal from "./AddQuestionModal";
+import EditQuestionModal from "./EditQuestionModal";
 
 import "./style.css";
 
@@ -49,11 +39,19 @@ const QuestionSectionPage = ({
   retrieveQuestions,
 }) => {
   const [searchText, setSearchText] = useState("");
-  const [ITEMS_PER_PAGE, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
 
   const filteredQuestions = useMemo(() => {
-    if (!searchText) return questions;
+    if (!questions || !Array.isArray(questions)) {
+      return [];
+    }
+
+    if (!searchText) return questions.slice();
+
     return questions.filter((question) =>
       Object.values(question).some((value) =>
         String(value).toLowerCase().includes(searchText.toLowerCase())
@@ -61,18 +59,46 @@ const QuestionSectionPage = ({
     );
   }, [questions, searchText]);
 
-  const totalPageCount = Math.ceil(filteredQuestions.length / ITEMS_PER_PAGE);
+  const totalPageCount = Math.ceil(filteredQuestions.length / itemsPerPage);
 
   const paginatedQuestions = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
+    if (!filteredQuestions || filteredQuestions.length === 0) {
+      return [];
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     return filteredQuestions.slice(startIndex, endIndex);
-  }, [filteredQuestions, currentPage, ITEMS_PER_PAGE]);
+  }, [filteredQuestions, currentPage, itemsPerPage]);
 
   const changePage = (page) => {
     if (page >= 1 && page <= totalPageCount) {
       setCurrentPage(page);
     }
+  };
+
+  // Add Modal handlers
+  const handleShowAddModal = () => {
+    console.log('Opening Add Question Modal');
+    setShowAddModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    console.log('Closing Add Question Modal');
+    setShowAddModal(false);
+  };
+
+  // Edit Modal handlers
+  const handleShowEditModal = (questionId) => {
+    console.log('Opening Edit Question Modal for ID:', questionId);
+    setSelectedQuestionId(questionId);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    console.log('Closing Edit Question Modal');
+    setShowEditModal(false);
+    setSelectedQuestionId(null);
   };
 
   const getImageUrl = (imageName) =>
@@ -84,204 +110,221 @@ const QuestionSectionPage = ({
   // Table selection logic
   const renderTable = () => {
     switch (sectionId) {
-      case "1":
+      case "685d00f73264907d89c121dc":
         return (
           <TableSection1
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             getImageUrl={getImageUrl}
             getAudioUrl={getAudioUrl}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "2":
+      case "685d0b33abd7f3cf92add5f1":
         return (
           <TableSection2
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             getAudioUrl={getAudioUrl}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "3":
+      case "685d0be9abd7f3cf92add5fd":
         return (
           <TableSection3
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             getImageUrl={getImageUrl}
             getAudioUrl={getAudioUrl}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "4":
+      case "685d0eababd7f3cf92add604":
         return (
           <TableSection4
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             getImageUrl={getImageUrl}
             getAudioUrl={getAudioUrl}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "5":
+      case "685d0fa7abd7f3cf92add60b":
         return (
           <TableSection5
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "6":
+      case "685d0ff9abd7f3cf92add612":
         return (
           <TableSection6
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "7":
+      case "685d10aaabd7f3cf92add619":
         return (
           <TableSection7Single
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "12":
+      case "685d10f3abd7f3cf92add620":
         return (
           <TableSection7Double
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "13":
+      case "685d12f0abd7f3cf92add643":
         return (
           <TableSection7Triple
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "104":
+      case "685d16f6abd7f3cf92add64a":
         return (
           <TableSectionNo1To2
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "105":
+      case "685d170eabd7f3cf92add651":
         return (
           <TableSectionNo3To4
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "106":
+      case "685d1721abd7f3cf92add658":
         return (
           <TableSectionNo5To7
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "107":
+      case "685d1732abd7f3cf92add65f":
         return (
           <TableSectionNo8To10
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "108":
+      case "685d1744abd7f3cf92add666":
         return (
           <TableSectionNo11
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "109":
+      case "685d1761abd7f3cf92add66d":
         return (
           <TableSectionNo1To5
             paginatedQuestions={paginatedQuestions}
             getImageUrl={getImageUrl}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "110":
+      case "685d1773abd7f3cf92add674":
         return (
           <TableSectionNo6To7
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
-      case "111":
+      case "685d178babd7f3cf92add67b":
         return (
           <TableSectionNo8
             paginatedQuestions={paginatedQuestions}
             currentPage={currentPage}
-            ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+            ITEMS_PER_PAGE={itemsPerPage}
             sectionId={sectionId}
             retrieveQuestions={retrieveQuestions}
             QuestionService={QuestionService}
+            handleShowEditModal={handleShowEditModal}
           />
         );
       default:
@@ -289,142 +332,20 @@ const QuestionSectionPage = ({
     }
   };
 
-  // Modal selection logic (for add-question modals)
-  const renderAddModal = () => {
-    switch (sectionId) {
-      case "1":
-        return (
-          <QuestionAddSection1
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "2":
-        return (
-          <QuestionAddSection2
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "3":
-        return (
-          <QuestionAddSection3
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "4":
-        return (
-          <QuestionAddSection4
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "5":
-        return (
-          <QuestionAddSection5
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "6":
-        return (
-          <QuestionAddSection6
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "7":
-        return (
-          <QuestionAddSection7Single
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "12":
-        return (
-          <QuestionAddSection7Double
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "13":
-        return (
-          <QuestionAddSection7Triple
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "104":
-        return (
-          <QuestionAddNo1To2
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "105":
-        return (
-          <QuestionAddNo3To4
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "106":
-        return (
-          <QuestionAddNo5To7
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "107":
-        return (
-          <QuestionAddNo8To10
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "108":
-        return (
-          <QuestionAddNo11
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "109":
-        return (
-          <QuestionAddNo1To5
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "110":
-        return (
-          <QuestionAddNo6To7
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      case "111":
-        return (
-          <QuestionAddNo8
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // Pagination info
+  const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
+  const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredQuestions.length);
 
   return (
     <div className="page-heading">
-      <section className="section">
+      <div className="section">
         <div className="card border-0">
           <div className="row">
+            {/* Items per page selector */}
             <div className="col-2 mt-4">
               <select
                 className="form-select ms-3 w-50"
-                value={ITEMS_PER_PAGE}
+                value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
                   setCurrentPage(1);
@@ -437,7 +358,9 @@ const QuestionSectionPage = ({
                 ))}
               </select>
             </div>
-            <div className="col-6 mt-4">
+
+            {/* Search input */}
+            <div className="col-7 mt-4">
               <div className="input-group">
                 <input
                   type="text"
@@ -448,108 +371,95 @@ const QuestionSectionPage = ({
                 />
                 <div className="input-group-append">
                   <button className="btn btn-light-emphasis">
-                    <i className="fas fa-search"></i>
+                    <FontAwesomeIcon icon={faSearch} />
                   </button>
                 </div>
               </div>
             </div>
-            <div className="col-4 mt-4 d-flex justify-content-end">
+
+            {/* Add button */}
+            <div className="col-3 mt-4 d-flex justify-content-end">
               <button
                 type="button"
                 className="btn btn-success mb-3 me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#addQuestionModal"
+                onClick={handleShowAddModal}
               >
-                <i className="fa-solid fa-circle-plus"></i>
+                <FontAwesomeIcon icon={faCirclePlus} />
               </button>
-              <div
-                className="modal zoom"
-                id="addQuestionModal"
-                tabIndex="-1"
-                aria-labelledby="addQuestionModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-xl">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h1 className="modal-title fs-5" id="addQuestionModalLabel">
-                        <i className="fa-solid fa-circle-plus text-success"></i> Add Question
-                      </h1>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    {renderAddModal()}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
+
+          {/* Table */}
           <div className="card-body">
             {renderTable()}
-            {/* Pagination controls */}
+
+            {/* Pagination */}
             {filteredQuestions.length > 0 && (
               <>
                 <nav aria-label="Page navigation">
                   <ul className="pagination justify-content-center">
                     <li className={`page-item${currentPage === 1 ? " disabled" : ""}`}>
-                      <a
+                      <button
                         className="page-link"
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          changePage(currentPage - 1);
-                        }}
+                        onClick={() => changePage(currentPage - 1)}
+                        disabled={currentPage === 1}
                       >
                         &laquo;
-                      </a>
+                      </button>
                     </li>
                     {Array.from({ length: totalPageCount }, (_, i) => i + 1).map((pageNumber) => (
                       <li
                         key={pageNumber}
                         className={`page-item${currentPage === pageNumber ? " active" : ""}`}
                       >
-                        <a
+                        <button
                           className="page-link"
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            changePage(pageNumber);
-                          }}
+                          onClick={() => changePage(pageNumber)}
                         >
                           {pageNumber}
-                        </a>
+                        </button>
                       </li>
                     ))}
                     <li className={`page-item${currentPage === totalPageCount ? " disabled" : ""}`}>
-                      <a
+                      <button
                         className="page-link"
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          changePage(currentPage + 1);
-                        }}
+                        onClick={() => changePage(currentPage + 1)}
+                        disabled={currentPage === totalPageCount}
                       >
                         &raquo;
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </nav>
+
+                {/* Pagination info */}
                 <div className="d-flex justify-content-center mt-3 fw-lighter fst-italic">
                   <p>
-                    {(currentPage - 1) * ITEMS_PER_PAGE + 1} -{" "}
-                    {Math.min((currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE, filteredQuestions.length)}{" "}
-                    trên {filteredQuestions.length} kết quả
+                    {firstRowNumber} - {lastRowNumber} trên {filteredQuestions.length} kết quả
                   </p>
                 </div>
               </>
             )}
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Add Modal */}
+      <AddQuestionModal
+        show={showAddModal}
+        onHide={handleCloseAddModal}
+        sectionId={sectionId}
+        retrieveQuestions={retrieveQuestions}
+      />
+
+      {/* Edit Modal */}
+      <EditQuestionModal
+        show={showEditModal}
+        onHide={handleCloseEditModal}
+        sectionId={sectionId}
+        questionId={selectedQuestionId}
+        retrieveQuestions={retrieveQuestions}
+      />
     </div>
   );
 };

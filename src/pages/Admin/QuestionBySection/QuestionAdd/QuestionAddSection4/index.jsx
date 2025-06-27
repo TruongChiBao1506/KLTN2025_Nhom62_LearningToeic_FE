@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import QuestionGroupService from '../../../../../services/questionGroupService';
 import './style.css';
@@ -19,33 +17,9 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
 
     // State cho 3 questions với full options
     const [questions, setQuestions] = useState([
-        {
-            questionContent: '',
-            optionA: '',
-            optionB: '',
-            optionC: '',
-            optionD: '',
-            correctOption: '',
-            questionType: ''
-        },
-        {
-            questionContent: '',
-            optionA: '',
-            optionB: '',
-            optionC: '',
-            optionD: '',
-            correctOption: '',
-            questionType: ''
-        },
-        {
-            questionContent: '',
-            optionA: '',
-            optionB: '',
-            optionC: '',
-            optionD: '',
-            correctOption: '',
-            questionType: ''
-        }
+        { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' },
+        { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' },
+        { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' }
     ]);
 
     // Validation schema
@@ -62,7 +36,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                 if (!value) return true;
                 return value.size <= 1024 * 1024; // 1MB
             }),
-
         groupAudio: Yup
             .mixed()
             .required("Vui lòng chọn một tệp âm thanh.")
@@ -75,101 +48,16 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                 if (!value) return true;
                 return value.size <= 1024 * 1024 * 10; // 10MB
             }),
-
-        // Question Content validation
-        questionContent0: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent1: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent2: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-
-        // Option A validation
-        optionA0: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-        optionA1: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-        optionA2: Yup
-            .string()
-            .required("OptionA phải có giá trị.")
-            .min(2, "OptionA phải ít nhất 2 ký tự.")
-            .max(500, "OptionA có nhiều nhất 500 ký tự."),
-
-        // Option B validation
-        optionB0: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-        optionB1: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-        optionB2: Yup
-            .string()
-            .required("OptionB phải có giá trị.")
-            .min(2, "OptionB phải ít nhất 2 ký tự.")
-            .max(500, "OptionB có nhiều nhất 500 ký tự."),
-
-        // Option C validation
-        optionC0: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-        optionC1: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-        optionC2: Yup
-            .string()
-            .required("OptionC phải có giá trị.")
-            .min(2, "OptionC phải ít nhất 2 ký tự.")
-            .max(500, "OptionC có nhiều nhất 500 ký tự."),
-
-        // Option D validation
-        optionD0: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-        optionD1: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-        optionD2: Yup
-            .string()
-            .required("OptionD phải có giá trị.")
-            .min(2, "OptionD phải ít nhất 2 ký tự.")
-            .max(500, "OptionD có nhiều nhất 500 ký tự."),
-
-        // Correct Option validation
-        correctOption0: Yup.string().required("correctOption phải có giá trị."),
-        correctOption1: Yup.string().required("correctOption phải có giá trị."),
-        correctOption2: Yup.string().required("correctOption phải có giá trị."),
-
-        // Question Type validation
-        questionType0: Yup.string().required("Loại phải được chọn."),
-        questionType1: Yup.string().required("Loại phải được chọn."),
-        questionType2: Yup.string().required("Loại phải được chọn."),
+        ...[0, 1, 2].reduce((acc, i) => ({
+            ...acc,
+            [`questionContent${i}`]: Yup.string().required("questionContent phải có giá trị.").min(2).max(500),
+            [`optionA${i}`]: Yup.string().required("OptionA phải có giá trị.").min(2).max(500),
+            [`optionB${i}`]: Yup.string().required("OptionB phải có giá trị.").min(2).max(500),
+            [`optionC${i}`]: Yup.string().required("OptionC phải có giá trị.").min(2).max(500),
+            [`optionD${i}`]: Yup.string().required("OptionD phải có giá trị.").min(2).max(500),
+            [`correctOption${i}`]: Yup.string().required("correctOption phải có giá trị."),
+            [`questionType${i}`]: Yup.string().required("Loại phải được chọn."),
+        }), {})
     });
 
     // Formik setup
@@ -177,7 +65,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
         initialValues: {
             groupImage: null,
             groupAudio: null,
-            // Dynamic initial values cho 3 questions
             questionContent0: '', questionContent1: '', questionContent2: '',
             optionA0: '', optionA1: '', optionA2: '',
             optionB0: '', optionB1: '', optionB2: '',
@@ -198,7 +85,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
         setSelectedImage(file);
         formik.setFieldValue('groupImage', file);
         formik.setFieldTouched('groupImage', true);
-        console.log('Selected image:', file);
     };
 
     const onAudioChange = (event) => {
@@ -206,7 +92,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
         setSelectedAudio(file);
         formik.setFieldValue('groupAudio', file);
         formik.setFieldTouched('groupAudio', true);
-        console.log('Selected audio:', file);
     };
 
     // Update questions state khi formik values thay đổi
@@ -216,166 +101,84 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
         setQuestions(newQuestions);
     };
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor (170px)
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
     };
 
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
-    };
+    const onEditorBlur = () => {};
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-
-            // Validate group script
             if (!editorData || editorData.trim() === '') {
-                toast.error('Question Group Script phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Question Group Script phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
             // Tạo thông tin nhóm câu hỏi trước
             const groupFormData = new FormData();
             groupFormData.append("sectionId", sectionId);
-            
-            if (selectedImage) {
-                groupFormData.append("groupImage", selectedImage, selectedImage.name);
-            }
-            
-            if (selectedAudio) {
-                groupFormData.append("groupAudio", selectedAudio, selectedAudio.name);
-            }
-            
+            if (selectedImage) groupFormData.append("groupImage", selectedImage, selectedImage.name);
+            if (selectedAudio) groupFormData.append("groupAudio", selectedAudio, selectedAudio.name);
             groupFormData.append("groupScript", editorData);
-
-            console.log('Creating question group...');
 
             // Gửi dữ liệu nhóm câu hỏi lên server và lấy groupId
             const response = await QuestionGroupService.create(groupFormData);
-            console.log('Group response:', response);
-            
             const groupId = response.groupId;
-            console.log('Group ID:', groupId);
 
             // Gửi dữ liệu từng câu hỏi con lên server
             for (let i = 0; i < 3; i++) {
-                const questionContent = values[`questionContent${i}`];
-                const optionA = values[`optionA${i}`];
-                const optionB = values[`optionB${i}`];
-                const optionC = values[`optionC${i}`];
-                const optionD = values[`optionD${i}`];
-                const correctOption = values[`correctOption${i}`];
-                const questionType = values[`questionType${i}`];
-                
                 const formData = new FormData();
                 formData.append("sectionId", sectionId);
                 formData.append("groupId", groupId);
-                formData.append("questionContent", questionContent);
-                formData.append("optionA", optionA);
-                formData.append("optionB", optionB);
-                formData.append("optionC", optionC);
-                formData.append("optionD", optionD);
-
+                formData.append("questionContent", values[`questionContent${i}`]);
+                formData.append("optionA", values[`optionA${i}`]);
+                formData.append("optionB", values[`optionB${i}`]);
+                formData.append("optionC", values[`optionC${i}`]);
+                formData.append("optionD", values[`optionD${i}`]);
                 // Xác định đáp án được chọn và đặt giá trị cho correctOption
-                switch (correctOption) {
+                switch (values[`correctOption${i}`]) {
                     case "A":
-                        formData.append("correctOption", optionA);
+                        formData.append("correctOption", values[`optionA${i}`]);
                         break;
                     case "B":
-                        formData.append("correctOption", optionB);
+                        formData.append("correctOption", values[`optionB${i}`]);
                         break;
                     case "C":
-                        formData.append("correctOption", optionC);
+                        formData.append("correctOption", values[`optionC${i}`]);
                         break;
                     case "D":
-                        formData.append("correctOption", optionD);
+                        formData.append("correctOption", values[`optionD${i}`]);
                         break;
                     default:
                         formData.append("correctOption", "");
                 }
-                
-                formData.append("questionType", questionType);
-                
-                console.log(`Creating question ${i + 1}...`);
+                formData.append("questionType", values[`questionType${i}`]);
                 await QuestionService.create(formData);
             }
 
             retrieveQuestions();
+            resetFormAndState(resetForm);
 
-            // Reset form và các state
-            resetForm();
-            setSelectedImage(null);
-            setSelectedAudio(null);
-            setEditorData('');
-            setQuestions([
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' },
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' },
-                { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' }
-            ]);
-            
-            if (editorRef.current) {
-                editorRef.current.setData('');
-            }
-            if (imageInputRef.current) {
-                imageInputRef.current.value = '';
-            }
-            if (audioInputRef.current) {
-                audioInputRef.current.value = '';
-            }
+            if (onClose) onClose();
 
-            // Close modal
-            if (onClose) {
-                onClose();
-            }
-
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
-    const handleClose = () => {
-        formik.resetForm();
+    const resetFormAndState = (resetForm) => {
+        resetForm();
         setSelectedImage(null);
         setSelectedAudio(null);
         setEditorData('');
@@ -384,23 +187,15 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
             { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' },
             { questionContent: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: '', questionType: '' }
         ]);
-        
-        if (editorRef.current) {
-            editorRef.current.setData('');
-        }
-        if (imageInputRef.current) {
-            imageInputRef.current.value = '';
-        }
-        if (audioInputRef.current) {
-            audioInputRef.current.value = '';
-        }
-        if (onClose) onClose();
+        if (editorRef.current) editorRef.current.setData('');
+        if (imageInputRef.current) imageInputRef.current.value = '';
+        if (audioInputRef.current) audioInputRef.current.value = '';
     };
 
     return (
         <div className='question-add-section4-page page'>
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     {/* Group Image */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupImage">
@@ -421,8 +216,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                         {formik.touched.groupImage && formik.errors.groupImage && (
                             <div className="error-feedback">{formik.errors.groupImage}</div>
                         )}
-                        
-                        {/* Image preview */}
                         {selectedImage && (
                             <div className="file-preview mt-2">
                                 <small className="text-muted">
@@ -439,7 +232,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                             </div>
                         )}
                     </div>
-
                     {/* Group Audio */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupAudio">
@@ -460,8 +252,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                         {formik.touched.groupAudio && formik.errors.groupAudio && (
                             <div className="error-feedback">{formik.errors.groupAudio}</div>
                         )}
-                        
-                        {/* Audio preview */}
                         {selectedAudio && (
                             <div className="file-preview mt-2">
                                 <small className="text-muted">
@@ -476,53 +266,26 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                             </div>
                         )}
                     </div>
-
-                    {/* Group Script với CKEditor */}
+                    {/* Group Script với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label className="form-label">
                             Question Group Script<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
-                            <CKEditor
-                                editor={ClassicEditor}
+                            <CKEditorOptimized
                                 data={editorData}
+                                onChange={setEditorData}
                                 onReady={onEditorReady}
-                                onChange={onEditorChange}
                                 onBlur={onEditorBlur}
-                                onFocus={onEditorFocus}
-                                config={{
-                                    placeholder: 'Nhập nội dung script cho part 4...',
-                                    toolbar: [
-                                        'heading',
-                                        '|',
-                                        'bold',
-                                        'italic',
-                                        'link',
-                                        'bulletedList',
-                                        'numberedList',
-                                        '|',
-                                        'outdent',
-                                        'indent',
-                                        '|',
-                                        'imageUpload',
-                                        'blockQuote',
-                                        'insertTable',
-                                        'mediaEmbed',
-                                        'undo',
-                                        'redo'
-                                    ],
-                                    language: 'vi'
-                                }}
+                                placeholder="Nhập nội dung script cho part 4..."
+                                height="250px"
                             />
                         </div>
-                        {/* Custom validation error display */}
                         {!editorData && formik.submitCount > 0 && (
                             <div className="error-feedback">Question Group Script phải có giá trị.</div>
                         )}
                     </div>
-
                     <hr />
-
                     {/* 3 Questions */}
                     <div className="row">
                         {[0, 1, 2].map((index) => (
@@ -551,7 +314,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`questionContent${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Option A */}
                                 <div className="form-group">
                                     <label htmlFor={`optionA${index}`}>
@@ -576,7 +338,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`optionA${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Option B */}
                                 <div className="form-group">
                                     <label htmlFor={`optionB${index}`}>
@@ -601,7 +362,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`optionB${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Option C */}
                                 <div className="form-group">
                                     <label htmlFor={`optionC${index}`}>
@@ -626,7 +386,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`optionC${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Option D */}
                                 <div className="form-group">
                                     <label htmlFor={`optionD${index}`}>
@@ -651,7 +410,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`optionD${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Correct Answer Radio Buttons */}
                                 <div className="form-group">
                                     <label>Correct Answer<span className="required-field">*</span></label>
@@ -681,7 +439,6 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         <div className="error-feedback">{formik.errors[`correctOption${index}`]}</div>
                                     )}
                                 </div>
-
                                 {/* Question Type với Part 4 options */}
                                 <div className="form-group mb-3">
                                     <label htmlFor={`questionType${index}`} className="form-label">
@@ -717,17 +474,20 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                         ))}
                     </div>
                 </div>
-
                 <div className="modal-footer">
-                    <button 
-                        type="button" 
-                        className="btn btn-secondary" 
-                        onClick={handleClose}
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                            formik.resetForm();
+                            resetFormAndState(() => {});
+                            if (onClose) onClose();
+                        }}
                     >
                         Đóng
                     </button>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary"
                         disabled={formik.isSubmitting}
                     >

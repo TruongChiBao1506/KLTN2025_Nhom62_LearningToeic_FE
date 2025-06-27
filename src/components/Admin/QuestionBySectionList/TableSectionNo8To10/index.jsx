@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import QuestionEditNo8To10 from "../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditNo8To10";
@@ -12,6 +14,7 @@ const TableSection8To10 = ({
   sectionId,
   retrieveQuestions,
   QuestionService,
+  handleShowEditModal,
 }) => {
   // Group questions by groupId
   const groupedQuestionMap = useMemo(() => {
@@ -133,7 +136,7 @@ const TableSection8To10 = ({
                             0
                           )
                         }
-                        className="btn badge text-bg-success"
+                        className="btn badge text-bg-success rounded-5"
                         style={{ cursor: "pointer" }}
                       >
                         Enable
@@ -146,7 +149,7 @@ const TableSection8To10 = ({
                             1
                           )
                         }
-                        className="btn badge text-bg-danger"
+                        className="btn badge text-bg-danger rounded-5"
                         style={{ cursor: "pointer" }}
                       >
                         Disable
@@ -156,56 +159,64 @@ const TableSection8To10 = ({
                 )}
                 {index === 0 && (
                   <td rowSpan={groupedQuestions.length}>
-                    <div className="d-flex justify-content-center">
-                      {/* Edit Modal Trigger */}
-                      <button
-                        type="button"
-                        className="btn btn-white border-0"
-                        data-bs-toggle="modal"
-                        data-bs-target={`#editQuestionModal-${question.questionGroup._id}`}
-                      >
-                        <i
-                          className="fas fa-edit"
-                          style={{ color: "rgb(192, 129, 13)" }}
-                        ></i>
-                      </button>
-                      {/* Modal */}
-                      <div
-                        id={`editQuestionModal-${question.questionGroup._id}`}
-                        className="modal zoom"
-                        tabIndex="-1"
-                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup._id}`}
-                        aria-hidden="true"
-                      >
-                        <div className="modal-dialog modal-xl">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <h1
-                                className="modal-title fs-5"
-                                id={`editQuestionModalLabel-${question.questionGroup._id}`}
-                              >
-                                <i
-                                  className="fas fa-edit"
-                                  style={{ color: "rgb(192, 129, 13)" }}
-                                ></i>{" "}
-                                Edit Speaking Question (No 8 To 10)
-                              </h1>
-                              <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
+                    <div className="d-flex justify-content-center gap-2">
+                      {/* Edit Button */}
+                      {handleShowEditModal ? (
+                        <button
+                          type="button"
+                          className="btn btn-white border-0"
+                          onClick={() => handleShowEditModal(question.questionGroup._id)}
+                          title="Chỉnh sửa nhóm câu hỏi"
+                        >
+                          <FontAwesomeIcon icon={faEdit} style={{ color: "rgb(192, 129, 13)" }} />
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-white border-0"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#editQuestionModal-${question.questionGroup._id}`}
+                            title="Chỉnh sửa nhóm câu hỏi"
+                          >
+                            <FontAwesomeIcon icon={faEdit} style={{ color: "rgb(192, 129, 13)" }} />
+                          </button>
+                          {/* Modal */}
+                          <div
+                            id={`editQuestionModal-${question.questionGroup._id}`}
+                            className="modal zoom"
+                            tabIndex="-1"
+                            aria-labelledby={`editQuestionModalLabel-${question.questionGroup._id}`}
+                            aria-hidden="true"
+                          >
+                            <div className="modal-dialog modal-xl">
+                              <div className="modal-content">
+                                <div className="modal-header">
+                                  <h1
+                                    className="modal-title fs-5"
+                                    id={`editQuestionModalLabel-${question.questionGroup._id}`}
+                                  >
+                                    <FontAwesomeIcon icon={faEdit} style={{ color: "rgb(192, 129, 13)" }} />{" "}
+                                    Edit Speaking Question (No 8 To 10)
+                                  </h1>
+                                  <button
+                                    type="button"
+                                    className="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                  ></button>
+                                </div>
+                                <QuestionEditNo8To10
+                                  groupId={question.questionGroup._id}
+                                  sectionId={sectionId}
+                                  retrieveQuestions={retrieveQuestions}
+                                />
+                              </div>
                             </div>
-                            <QuestionEditNo8To10
-                              groupId={question.questionGroup._id}
-                              sectionId={sectionId}
-                              retrieveQuestions={retrieveQuestions}
-                            />
                           </div>
-                        </div>
-                      </div>
-                      {/* Delete */}
+                        </>
+                      )}
+                      {/* Delete Button */}
                       <button
                         type="button"
                         onClick={() =>
@@ -214,8 +225,9 @@ const TableSection8To10 = ({
                           )
                         }
                         className="btn btn-white border-0"
+                        title="Xóa nhóm câu hỏi"
                       >
-                        <i className="fas fa-trash text-danger"></i>
+                        <FontAwesomeIcon icon={faTrash} className="text-danger" />
                       </button>
                     </div>
                   </td>

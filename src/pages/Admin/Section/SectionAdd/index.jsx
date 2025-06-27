@@ -26,12 +26,20 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
             .nullable()
             .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
                 if (!value) return true;
-                const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
-                return allowedFormats.includes(value.type);
+                // Kiểm tra nếu value là File object
+                if (value instanceof File) {
+                    const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
+                    return allowedFormats.includes(value.type);
+                }
+                return true;
             })
             .test("fileSize", "Tệp ảnh quá lớn", (value) => {
                 if (!value) return true;
-                return value.size <= 1024 * 1024;
+                // Kiểm tra nếu value là File object
+                if (value instanceof File) {
+                    return value.size <= 1024 * 1024;
+                }
+                return true;
             }),
     });
 
@@ -54,6 +62,8 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
         if (file) {
             setSelectedFile(file);
             formik.setFieldValue('image', file);
+            // Trigger validation for the image field
+            formik.setFieldTouched('image', true);
         } else {
             setSelectedFile(null);
             formik.setFieldValue('image', null);
@@ -166,10 +176,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                             className={`form-control border-secondary custom-font ${
                                 formik.touched.image && formik.errors.image ? 'is-invalid' : ''
                             }`}
-                            onChange={(event) => {
-                                onFileChange(event);
-                                formik.handleChange(event);
-                            }}
+                            onChange={onFileChange}
                             onBlur={formik.handleBlur}
                         />
                         {formik.touched.image && formik.errors.image && (

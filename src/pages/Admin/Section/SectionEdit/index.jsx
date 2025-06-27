@@ -1,213 +1,153 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import TopicService from '../../../../services/topicService';
-import './style.css';
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import SectionService from "../../../../services/sectionsService";
 
-const AddTopic = ({ retrieveTopics, onClose }) => {
+const SectionEdit = ({ sectionId, retrieveSections, onClose }) => {
+    const [initialValues, setInitialValues] = useState({
+        name: "",
+        description: "",
+        type: "",
+        image: null,
+    });
     const [selectedFile, setSelectedFile] = useState(null);
 
-    // Validation schema - Copy từ SectionEdit
-    const topicFormSchema = Yup.object().shape({
-        topicName: Yup
-            .string()
+    useEffect(() => {
+        const fetchSection = async () => {
+            try {
+                const data = await SectionService.get(sectionId);
+                setInitialValues({
+                    name: data.name || "",
+                    description: data.description || "",
+                    type: data.type || "",
+                    image: null, // Không set ảnh cũ vào đây
+                });
+            } catch (error) {
+                toast.error("Không lấy được thông tin section");
+            }
+        };
+        if (sectionId) fetchSection();
+    }, [sectionId]);
+
+    const sectionFormSchema = Yup.object().shape({
+        name: Yup.string()
             .required("Tên phải có giá trị.")
             .min(2, "Tên phải ít nhất 2 ký tự.")
             .max(50, "Tên có nhiều nhất 50 ký tự."),
-        image: Yup
-            .mixed()
+        description: Yup.string()
+            .required("Mô tả phải có giá trị.")
+            .min(2, "Mô tả phải ít nhất 2 ký tự.")
+            .max(255, "Mô tả không được vượt quá 255 ký tự."),
+        type: Yup.string().required("Loại phải được chọn."),
+        image: Yup.mixed()
             .nullable()
-            .required("Vui lòng chọn một tệp ảnh.")
             .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
-                // Nếu không có file thì pass validation
                 if (!value) return true;
-
-                // Nếu không phải File object thì pass (có thể là string path)
-                if (!(value instanceof File)) {
-                    console.log('Not a File object, skipping validation');
-                    return true;
+                if (value instanceof File) {
+                    const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
+                    return allowedFormats.includes(value.type);
                 }
-                const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
-                const isValid = allowedFormats.includes(value.type);
-                console.log('File type:', value.type, 'Is valid:', isValid);
-                return isValid;
+                return true;
             })
             .test("fileSize", "Tệp ảnh quá lớn", (value) => {
-                console.log('📏 Validating file size:', value?.size); //   Debug
-
-                // Nếu không có file thì pass
                 if (!value) return true;
-
-                // Nếu không phải File object thì pass
-                if (!(value instanceof File)) return true;
-
-                // Check size chỉ khi là File object
-                const isValid = value.size <= 1024 * 1024; // 1MB
-                console.log('File size:', value.size, 'Is valid:', isValid);
-                return isValid;
+                if (value instanceof File) {
+                    return value.size <= 1024 * 1024;
+                }
+                return true;
             }),
     });
 
-    // Formik setup
     const formik = useFormik({
-        initialValues: {
-            topicName: '',
-            image: null
-        },
-        validationSchema: topicFormSchema,
+        enableReinitialize: true,
+        initialValues,
+        validationSchema: sectionFormSchema,
         onSubmit: async (values, { resetForm }) => {
-            await addTopic(values, resetForm);
-        }
+            try {
+                const formData = new FormData();
+                formData.append("name", values.name);
+                formData.append("description", values.description);
+                formData.append("type", values.type);
+                if (selectedFile) {
+                    formData.append("image", selectedFile, selectedFile.name);
+                }
+                await SectionService.update(sectionId, formData);
+                retrieveSections();
+                toast.success("Chỉnh sửa dạng phần thành công", { autoClose: 2000 });
+                resetForm();
+                setSelectedFile(null);
+                if (onClose) onClose();
+            } catch (error) {
+                let errorMessage = "Có lỗi xảy ra khi chỉnh sửa section";
+                if (error.response?.data?.message) {
+                    errorMessage = error.response.data.message;
+                } else if (error.request?.response) {
+                    try {
+                        const jsonResponse = JSON.parse(error.request.response);
+                        errorMessage = jsonResponse.message;
+                    } catch (parseError) {}
+                }
+                toast.error(errorMessage, { autoClose: 2000, position: "top-right" });
+            }
+        },
     });
 
-    // Handle file change - Copy từ SectionEdit
     const onFileChange = (event) => {
         const file = event.target.files[0];
-        console.log('📁 File selected:', file);
-
         if (file) {
-            console.log('File details:', {
-                name: file.name,
-                type: file.type,
-                size: file.size
-            });
-
             setSelectedFile(file);
-            formik.setFieldValue('image', file);
-
-            // Clear previous validation errors
-            formik.setFieldError('image', undefined);
+            formik.setFieldValue("image", file);
+            formik.setFieldTouched("image", true);
         } else {
             setSelectedFile(null);
-            formik.setFieldValue('image', null);
+            formik.setFieldValue("image", null);
         }
-    };
-
-    // Add topic function
-    const addTopic = async (values, resetForm) => {
-        try {
-            const formData = new FormData();
-            formData.append("topicName", values.topicName);
-            
-            // Only append image if a file was selected
-            if (selectedFile) {
-                formData.append("image", selectedFile, selectedFile.name);
-            }
-            
-            await TopicService.create(formData);
-            retrieveTopics();
-            
-            // Reset form
-            resetForm();
-            setSelectedFile(null);
-            
-            // Reset file input
-            const fileInput = document.getElementById('image');
-            if (fileInput) {
-                fileInput.value = '';
-            }
-            
-            // Close modal
-            if (onClose) {
-                onClose();
-            }
-            
-            toast.success('Thêm chủ đề thành công', {
-                autoClose: 1000,
-            });
-            
-        } catch (error) {
-            console.log(error);
-            let errorMessage = 'Có lỗi xảy ra khi thêm topic';
-            
-            if (error.response?.data?.message) {
-                errorMessage = error.response.data.message;
-            } else if (error.request?.response) {
-                try {
-                    const jsonResponse = JSON.parse(error.request.response);
-                    errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
-            }
-
-            toast.error(errorMessage, {
-                autoClose: 2000,
-                position: 'top-right',
-            });
-        }
-    };
-
-    // Handle close
-    const handleClose = () => {
-        formik.resetForm();
-        setSelectedFile(null);
-        const fileInput = document.getElementById('image');
-        if (fileInput) {
-            fileInput.value = '';
-        }
-        if (onClose) {
-            onClose();
-        }
-    };
-
-    // Handle submit function - Copy từ SectionEdit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log('📝 Handle submit called');
-        console.log('Form values:', formik.values);
-        console.log('Form errors:', formik.errors);
-        console.log('Form isValid:', formik.isValid);
-
-        console.log('Field values:');
-        console.log('  topicName:', `"${formik.values.topicName}"`, typeof formik.values.topicName);
-        console.log('  image:', formik.values.image);
-
-        // Validate form
-        const errors = await formik.validateForm();
-        if (Object.keys(errors).length > 0) {
-            console.log('❌ Form has validation errors:', errors);
-            formik.setTouched({
-                topicName: true,
-                image: true
-            });
-            return;
-        }
-
-        // Submit form
-        await addTopic(formik.values, formik.resetForm);
     };
 
     return (
-        <>
-            {/* Modal Body */}
+        <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
             <div className="modal-body text-start">
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Topic Name<span className="required-field">*</span>
+                        Name<span className="required-field">*</span>
                     </label>
                     <input
-                        name="topicName"
+                        name="name"
                         type="text"
                         className={`form-control border-secondary custom-font ${
-                            formik.touched.topicName && formik.errors.topicName ? 'is-invalid' : ''
+                            formik.touched.name && formik.errors.name ? "is-invalid" : ""
                         }`}
-                        value={formik.values.topicName}
+                        value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.topicName && formik.errors.topicName && (
-                        <div className="error-feedback">{formik.errors.topicName}</div>
+                    {formik.touched.name && formik.errors.name && (
+                        <div className="error-feedback">{formik.errors.name}</div>
                     )}
                 </div>
-
+                <div className="form-group mb-3">
+                    <label htmlFor="description" className="form-label">
+                        Description<span className="required-field">*</span>
+                    </label>
+                    <textarea
+                        name="description"
+                        id="description"
+                        className={`form-control border-secondary custom-font ${
+                            formik.touched.description && formik.errors.description ? "is-invalid" : ""
+                        }`}
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{ resize: "none", height: "100px", width: "100%" }}
+                    />
+                    {formik.touched.description && formik.errors.description && (
+                        <div className="error-feedback">{formik.errors.description}</div>
+                    )}
+                </div>
                 <div className="form-group mb-3">
                     <label htmlFor="image" className="form-label">
-                        Image<span className="required-field">*</span>
+                        Image
                     </label>
                     <input
                         name="image"
@@ -215,12 +155,9 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
                         type="file"
                         accept="image/jpeg,image/png,image/gif"
                         className={`form-control border-secondary custom-font ${
-                            formik.touched.image && formik.errors.image ? 'is-invalid' : ''
+                            formik.touched.image && formik.errors.image ? "is-invalid" : ""
                         }`}
-                        onChange={(event) => {
-                            onFileChange(event);
-                            formik.handleChange(event);
-                        }}
+                        onChange={onFileChange}
                         onBlur={formik.handleBlur}
                     />
                     {formik.touched.image && formik.errors.image && (
@@ -232,36 +169,55 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
                         </small>
                     )}
                 </div>
+                <div className="form-group mb-3">
+                    <label htmlFor="type" className="form-label">
+                        Type<span className="required-field">*</span>
+                    </label>
+                    <select
+                        name="type"
+                        id="type"
+                        className={`form-select border-secondary custom-font ${
+                            formik.touched.type && formik.errors.type ? "is-invalid" : ""
+                        }`}
+                        value={formik.values.type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value="" disabled>
+                            Select an option
+                        </option>
+                        <option value="1">Nghe</option>
+                        <option value="2">Đọc</option>
+                        <option value="3">Nói</option>
+                        <option value="4">Viết</option>
+                    </select>
+                    {formik.touched.type && formik.errors.type && (
+                        <div className="error-feedback">{formik.errors.type}</div>
+                    )}
+                </div>
             </div>
-
-            {/* Modal Footer - Tách riêng khỏi form */}
             <div className="modal-footer">
                 <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleClose();
+                    onClick={() => {
+                        formik.resetForm();
+                        setSelectedFile(null);
+                        if (onClose) onClose();
                     }}
                 >
                     Đóng
                 </button>
                 <button
-                    type="button"
+                    type="submit"
                     className="btn btn-primary"
                     disabled={formik.isSubmitting}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleSubmit(e);
-                    }}
                 >
-                    {formik.isSubmitting ? 'Đang lưu...' : 'Lưu'}
+                    {formik.isSubmitting ? "Đang lưu..." : "Lưu"}
                 </button>
             </div>
-        </>
+        </form>
     );
 };
 
-export default AddTopic;
+export default SectionEdit;

@@ -1,72 +1,124 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuestionService from "../../../../../services/questionService";
 import QuestionGroupService from "../../../../../services/questionGroupService";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CKEditorOptimized from "../../../../../components/Admin/EditorOptimized";
 import "./style.css";
 
-const EditQuestionSection6 = ({ sectionId, groupId, retrieveQuestions }) => {
-  const [question, setQuestion] = useState(null);
-  const [initialValues, setInitialValues] = useState({
-    groupPassage: "",
-    questions: [],
-  });
-  const editorRef = useRef();
+const NUM_QUESTIONS = 4;
 
-  // Tạo schema động cho từng câu hỏi
-  const getValidationSchema = (questions) => {
-    const shape = {
-      groupPassage: Yup.string().required("groupPassage phải có giá trị."),
-    };
-    questions.forEach((q, idx) => {
-      shape[`questionContent${idx}`] = Yup.string()
+const QuestionEditSection6 = ({ sectionId, groupId, retrieveQuestions, onClose }) => {
+  const [group, setGroup] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedAudio, setSelectedAudio] = useState(null);
+  const [editorData, setEditorData] = useState('');
+  const imageInputRef = useRef(null);
+  const audioInputRef = useRef(null);
+  const [questions, setQuestions] = useState([]);
+
+  // Dynamic validation schema for group and questions
+  const questionFormSchema = Yup.object().shape({
+    groupImage: Yup.mixed()
+      .nullable()
+      .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
+        if (!value) return true;
+        const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
+        return allowedFormats.includes(value.type);
+      })
+      .test("fileSize", "Tệp ảnh quá lớn", (value) => {
+        if (!value) return true;
+        return value.size <= 1024 * 1024;
+      }),
+    groupAudio: Yup.mixed()
+      .nullable()
+      .test("fileType", "Chỉ chấp nhận tệp âm thanh MP3", (value) => {
+        if (!value) return true;
+        const allowedFormats = ["audio/mpeg"];
+        return allowedFormats.includes(value.type);
+      })
+      .test("fileSize", "Tệp âm thanh quá lớn", (value) => {
+        if (!value) return true;
+        return value.size <= 1024 * 1024 * 10;
+      }),
+    // groupScript sẽ kiểm tra thủ công
+    ...[...Array(NUM_QUESTIONS).keys()].reduce((acc, idx) => {
+      acc[`questionContent${idx}`] = Yup.string()
         .required("questionContent phải có giá trị.")
         .min(2, "questionContent phải ít nhất 2 ký tự.")
         .max(500, "questionContent có nhiều nhất 500 ký tự.");
       ["A", "B", "C", "D"].forEach((opt) => {
-        shape[`option${opt}${idx}`] = Yup.string()
+        acc[`option${opt}${idx}`] = Yup.string()
           .required(`Option${opt} phải có giá trị.`)
           .min(2, `Option${opt} phải ít nhất 2 ký tự.`)
           .max(500, `Option${opt} có nhiều nhất 500 ký tự.`);
       });
-      shape[`questionType${idx}`] = Yup.string().required("Loại phải được chọn.");
-      shape[`questionExplanation${idx}`] = Yup.string()
+      acc[`correctOption${idx}`] = Yup.string().required("CorrectOption phải có giá trị.");
+      acc[`questionType${idx}`] = Yup.string().required("Loại phải được chọn.");
+      acc[`questionExplanation${idx}`] = Yup.string()
         .required("questionExplanation phải có giá trị.")
         .min(2, "questionExplanation phải ít nhất 2 ký tự.")
         .max(1000, "questionExplanation có nhiều nhất 1000 ký tự.");
-    });
-    return Yup.object().shape(shape);
-  };
+      return acc;
+    }, {}),
+  });
+
+  // Formik setup
+  const formik = useFormik({
+    initialValues: {
+      groupImage: null,
+      groupAudio: null,
+      ...[...Array(NUM_QUESTIONS).keys()].reduce((acc, idx) => {
+        acc[`questionContent${idx}`] = "";
+        acc[`optionA${idx}`] = "";
+        acc[`optionB${idx}`] = "";
+        acc[`optionC${idx}`] = "";
+        acc[`optionD${idx}`] = "";
+        acc[`correctOption${idx}`] = "";
+        acc[`questionType${idx}`] = "";
+        acc[`questionExplanation${idx}`] = "";
+        return acc;
+      }, {}),
+    },
+    validationSchema: questionFormSchema,
+    enableReinitialize: true,
+    onSubmit: async (values, { setSubmitting }) => {
+      await updateGroupAndQuestions(values, { setSubmitting });
+    }
+  });
 
   useEffect(() => {
-    const getQuestion = async () => {
+    const getGroupAndQuestions = async () => {
       try {
         const data = await QuestionService.getQuestionsByQuestionGroup(groupId);
-        const questions = data.map((item) => ({
-          questionId: item.questionId,
-          questionContent: item.questionContent,
-          optionA: item.optionA,
-          optionB: item.optionB,
-          optionC: item.optionC,
-          optionD: item.optionD,
-          correctOption: getCorrectOptionLetter(item),
-          questionType: item.questionType,
-          questionExplanation: item.questionExplanation,
-        }));
-        setInitialValues({
-          groupPassage: data[0]?.questionGroup?.groupPassage || "",
-          questions,
+        setQuestions(data);
+        setGroup(data[0]?.questionGroup || null);
+
+        // Set formik values
+        formik.setValues({
+          groupImage: null,
+          groupAudio: null,
+          ...data.reduce((acc, q, idx) => {
+            acc[`questionContent${idx}`] = q.questionContent || "";
+            acc[`optionA${idx}`] = q.optionA || "";
+            acc[`optionB${idx}`] = q.optionB || "";
+            acc[`optionC${idx}`] = q.optionC || "";
+            acc[`optionD${idx}`] = q.optionD || "";
+            acc[`correctOption${idx}`] = getCorrectOptionLetter(q);
+            acc[`questionType${idx}`] = q.questionType || "";
+            acc[`questionExplanation${idx}`] = q.questionExplanation || "";
+            return acc;
+          }, {}),
         });
-        setQuestion(data[0]);
+        setEditorData(data[0]?.questionGroup?.groupPassage || "");
       } catch (error) {
-        console.log(error);
+        toast.error("Lỗi khi tải thông tin nhóm câu hỏi", { autoClose: 1000 });
       }
     };
-    getQuestion();
+    if (groupId) getGroupAndQuestions();
+    // eslint-disable-next-line
   }, [groupId]);
 
   function getCorrectOptionLetter(item) {
@@ -77,238 +129,355 @@ const EditQuestionSection6 = ({ sectionId, groupId, retrieveQuestions }) => {
     return "";
   }
 
-  const handleEditorReady = (editor) => {
-    editor.editing.view.change((writer) => {
-      writer.setStyle("height", "170px", editor.editing.view.document.getRoot());
-    });
-    editorRef.current = editor;
+  // File change handlers
+  const onImageChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+    formik.setFieldValue('groupImage', file);
+    formik.setFieldTouched('groupImage', true);
   };
 
-  // Cập nhật từng câu hỏi
-  const updateQuestion = async (questionId, values, idx) => {
+  const onAudioChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedAudio(file);
+    formik.setFieldValue('groupAudio', file);
+    formik.setFieldTouched('groupAudio', true);
+  };
+
+  // CKEditorOptimized event handler
+  const handleScriptChange = (data) => {
+    setEditorData(data);
+  };
+
+  const updateGroupAndQuestions = async (values, { setSubmitting }) => {
     try {
-      const formData = new FormData();
-      formData.append("sectionId", sectionId);
-      formData.append("questionId", questionId);
-      formData.append("questionContent", values[`questionContent${idx}`]);
-      formData.append("optionA", values[`optionA${idx}`]);
-      formData.append("optionB", values[`optionB${idx}`]);
-      formData.append("optionC", values[`optionC${idx}`]);
-      formData.append("optionD", values[`optionD${idx}`]);
-      // Xác định đáp án đúng dựa trên radio
-      switch (values[`correctOption${idx}`]) {
-        case "A":
-          formData.append("correctOption", values[`optionA${idx}`]);
-          break;
-        case "B":
-          formData.append("correctOption", values[`optionB${idx}`]);
-          break;
-        case "C":
-          formData.append("correctOption", values[`optionC${idx}`]);
-          break;
-        case "D":
-          formData.append("correctOption", values[`optionD${idx}`]);
-          break;
-        default:
-          formData.append("correctOption", values[`correctOption${idx}`]);
+      // Validate groupScript
+      if (!editorData || editorData.trim() === '') {
+        toast.error('Question Group Passage phải có giá trị', { autoClose: 1000 });
+        setSubmitting(false);
+        return;
       }
-      formData.append("questionType", values[`questionType${idx}`]);
-      formData.append("questionExplanation", values[`questionExplanation${idx}`]);
-      await QuestionService.update(questionId, formData);
-      toast.success("Chỉnh sửa câu hỏi thành công", { autoClose: 1000 });
-      retrieveQuestions();
-    } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa câu hỏi", { autoClose: 1000 });
-    }
-  };
 
-  // Cập nhật group
-  const updateQuestionGroup = async (values) => {
-    try {
+      // Update group
       const groupFormData = new FormData();
-      groupFormData.append("groupPassage", values.groupPassage);
+      if (selectedImage) {
+        groupFormData.append("groupImage", selectedImage, selectedImage.name);
+      }
+      if (selectedAudio) {
+        groupFormData.append("groupAudio", selectedAudio, selectedAudio.name);
+      }
+      groupFormData.append("groupPassage", editorData);
       await QuestionGroupService.update(groupId, groupFormData);
-      toast.success("Chỉnh sửa nhóm thành công", { autoClose: 1000 });
+
+      // Update each question
+      for (let idx = 0; idx < questions.length; idx++) {
+        const q = questions[idx];
+        const formData = new FormData();
+        formData.append("sectionId", sectionId);
+        formData.append("questionId", q._id);
+        formData.append("questionContent", values[`questionContent${idx}`]);
+        formData.append("optionA", values[`optionA${idx}`]);
+        formData.append("optionB", values[`optionB${idx}`]);
+        formData.append("optionC", values[`optionC${idx}`]);
+        formData.append("optionD", values[`optionD${idx}`]);
+        // Xác định đáp án đúng dựa trên radio
+        switch (values[`correctOption${idx}`]) {
+          case "A":
+            formData.append("correctOption", values[`optionA${idx}`]);
+            break;
+          case "B":
+            formData.append("correctOption", values[`optionB${idx}`]);
+            break;
+          case "C":
+            formData.append("correctOption", values[`optionC${idx}`]);
+            break;
+          case "D":
+            formData.append("correctOption", values[`optionD${idx}`]);
+            break;
+          default:
+            formData.append("correctOption", values[`correctOption${idx}`]);
+        }
+        formData.append("questionType", values[`questionType${idx}`]);
+        formData.append("questionExplanation", values[`questionExplanation${idx}`]);
+        await QuestionService.update(q._id, formData);
+      }
+
       retrieveQuestions();
+      if (onClose) onClose();
+      toast.success("Chỉnh sửa nhóm và câu hỏi thành công", { autoClose: 1000 });
     } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa nhóm", { autoClose: 1000 });
+      let errorMessage = 'Lỗi khi chỉnh sửa nhóm/câu hỏi';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request?.response) {
+        try {
+          const jsonResponse = JSON.parse(error.request.response);
+          errorMessage = jsonResponse.message;
+        } catch { }
+      }
+      toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (!initialValues.questions.length) return null;
+  const getImageUrl = (imageName) =>
+    imageName ? `http://localhost:9004/images/${imageName}` : "https://demofree.sirv.com/nope-not-here.jpg";
+
+  const getAudioUrl = (audioName) =>
+    audioName ? `http://localhost:9004/audios/${audioName}` : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+
+  if (!questions.length) return <div>Đang tải...</div>;
 
   return (
     <div className="question-edit-section6-page">
-      <Formik
-        enableReinitialize
-        initialValues={{
-          groupPassage: initialValues.groupPassage,
-          ...initialValues.questions.reduce((acc, q, idx) => {
-            acc[`questionContent${idx}`] = q.questionContent;
-            acc[`optionA${idx}`] = q.optionA;
-            acc[`optionB${idx}`] = q.optionB;
-            acc[`optionC${idx}`] = q.optionC;
-            acc[`optionD${idx}`] = q.optionD;
-            acc[`correctOption${idx}`] = q.correctOption;
-            acc[`questionType${idx}`] = q.questionType;
-            acc[`questionExplanation${idx}`] = q.questionExplanation;
-            return acc;
-          }, {}),
-        }}
-        validationSchema={getValidationSchema(initialValues.questions)}
-        onSubmit={() => { }}
-      >
-        {({ values, setFieldValue, isSubmitting }) => (
-          <Form encType="multipart/form-data">
-            <div className="modal-body text-start">
-              <div className="form-group mb-3">
-                <label htmlFor="groupPassage" className="form-label">
-                  Question Group Passage<span className="required-field">*</span>
-                </label>
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={values.groupPassage}
-                  onReady={handleEditorReady}
-                  onChange={(_, editor) => setFieldValue("groupPassage", editor.getData())}
-                  className="form-control border-secondary custom-font"
+      <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
+        <div className="modal-body text-start p-4">
+          <div className="form-group mb-3">
+            <label htmlFor="groupImage">
+              Question Group Image<span className="required-field">*</span>
+            </label>
+            <input
+              ref={imageInputRef}
+              name="groupImage"
+              id="groupImage"
+              type="file"
+              accept="image/jpeg,image/png,image/gif"
+              className={`form-control border-secondary custom-font ${formik.touched.groupImage && formik.errors.groupImage ? 'is-invalid' : ''
+                }`}
+              onChange={onImageChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.groupImage && formik.errors.groupImage && (
+              <div className="error-feedback">{formik.errors.groupImage}</div>
+            )}
+            {/* Current Image */}
+            {group?.groupImage && (
+              <div className="mt-2">
+                <img
+                  src={getImageUrl(group.groupImage)}
+                  alt="Current Group"
+                  className="img-thumbnail"
+                  style={{ maxWidth: '200px', maxHeight: '150px' }}
                 />
-                <ErrorMessage name="groupPassage" component="div" className="error-feedback" />
               </div>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => updateQuestionGroup(values)}
-              >
-                Update Question Group
-              </button>
-              <hr />
-              <div className="row">
-                {initialValues.questions.map((q, idx) => (
-                  <div className="col-md-6 mb-5" key={q.questionId}>
-                    <div className="form-group">
-                      <label htmlFor={`questionContent${idx}`}>
-                        Question Content {idx + 1}
-                        <span className="required-field">*</span>
-                      </label>
-                      <Field
-                        name={`questionContent${idx}`}
-                        type="text"
-                        className="form-control border-secondary custom-font"
-                      />
-                      <ErrorMessage
-                        name={`questionContent${idx}`}
-                        component="div"
-                        className="error-feedback"
-                      />
-                    </div>
-                    {["A", "B", "C", "D"].map((opt) => (
-                      <div className="form-group" key={opt}>
-                        <label htmlFor={`option${opt}${idx}`}>
-                          Option {opt}
-                          <span className="required-field">*</span>
-                        </label>
-                        <Field
-                          name={`option${opt}${idx}`}
-                          type="text"
-                          className="form-control border-secondary custom-font"
-                        />
-                        <ErrorMessage
-                          name={`option${opt}${idx}`}
-                          component="div"
-                          className="error-feedback"
-                        />
-                      </div>
-                    ))}
-                    <div className="form-group">
-                      <label>
-                        Correct Answer<span className="required-field">*</span>
-                      </label>
-                      <div>
-                        {["A", "B", "C", "D"].map((opt) => (
-                          <div className="form-check form-check-inline" key={opt}>
-                            <Field
-                              type="radio"
-                              name={`correctOption${idx}`}
-                              id={`correctOption${opt}${idx}`}
-                              value={opt}
-                              checked={values[`correctOption${idx}`] === opt}
-                              className="form-check-input"
-                            />
-                            <label className="form-check-label" htmlFor={`correctOption${opt}${idx}`}>
-                              {opt}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="form-group mb-3">
-                      <label htmlFor={`questionType${idx}`} className="form-label">
-                        Type<span className="required-field">*</span>
-                      </label>
-                      <Field
-                        as="select"
-                        name={`questionType${idx}`}
-                        id={`questionType${idx}`}
-                        className="form-select border-secondary custom-font"
-                      >
-                        <option value="" disabled>
-                          Select an option
-                        </option>
-                        <option value="[Part 6] Hình thức: Bài báo (Article/ Review)">
-                          [Part 6] Hình thức: Bài báo (Article/ Review)
-                        </option>
-                        <option value="[Part 6] Hình thức: Quảng cáo (Advertisement)">
-                          [Part 6] Hình thức: Quảng cáo (Advertisement)
-                        </option>
-                        <option value="[Part 6] Hình thức: Thư điện tử/ thư tay (Email/ Letter)">
-                          [Part 6] Hình thức: Thư điện tử/ thư tay (Email/ Letter)
-                        </option>
-                      </Field>
-                      <ErrorMessage
-                        name={`questionType${idx}`}
-                        component="div"
-                        className="error-feedback"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor={`questionExplanation${idx}`}>
-                        Question Explanation {idx + 1}
-                        <span className="required-field">*</span>
-                      </label>
-                      <Field
-                        name={`questionExplanation${idx}`}
-                        type="text"
-                        className="form-control border-secondary custom-font"
-                      />
-                      <ErrorMessage
-                        name={`questionExplanation${idx}`}
-                        component="div"
-                        className="error-feedback"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="btn btn-secondary mt-2"
-                      onClick={() => updateQuestion(q.questionId, values, idx)}
-                    >
-                      Save
-                    </button>
+            )}
+            {/* New Image preview */}
+            {selectedImage && (
+              <div className="file-preview mt-2">
+                <small className="text-success">
+                  File mới: {selectedImage.name} ({(selectedImage.size / 1024).toFixed(2)} KB)
+                </small>
+                <div className="image-preview mt-2">
+                  <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="New Preview"
+                    className="img-thumbnail"
+                    style={{ maxWidth: '200px', maxHeight: '150px' }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="form-group mb-3">
+            <label htmlFor="groupAudio">
+              Question Group Audio<span className="required-field">*</span>
+            </label>
+            <input
+              ref={audioInputRef}
+              name="groupAudio"
+              id="groupAudio"
+              type="file"
+              accept="audio/mpeg"
+              className={`form-control border-secondary custom-font ${formik.touched.groupAudio && formik.errors.groupAudio ? 'is-invalid' : ''
+                }`}
+              onChange={onAudioChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.groupAudio && formik.errors.groupAudio && (
+              <div className="error-feedback">{formik.errors.groupAudio}</div>
+            )}
+            {/* Current Audio */}
+            {group?.groupAudio && (
+              <div className="mt-2">
+                <audio controls className="w-100">
+                  <source src={getAudioUrl(group.groupAudio)} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+            )}
+            {/* New Audio preview */}
+            {selectedAudio && (
+              <div className="file-preview mt-2">
+                <small className="text-success">
+                  File mới: {selectedAudio.name} ({(selectedAudio.size / (1024 * 1024)).toFixed(2)} MB)
+                </small>
+                <div className="audio-preview mt-2">
+                  <audio controls className="w-100">
+                    <source src={URL.createObjectURL(selectedAudio)} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="form-group mb-3">
+            <label className="form-label">
+              Question Group Passage<span className="required-field">*</span>
+            </label>
+            <div className="ckeditor-container">
+              <CKEditorOptimized
+                data={editorData}
+                onChange={handleScriptChange}
+                placeholder="Nhập passage cho part 6..."
+                height="250px"
+              />
+            </div>
+            {!editorData && formik.submitCount > 0 && (
+              <div className="error-feedback">Question Group Passage phải có giá trị.</div>
+            )}
+          </div>
+          <hr />
+          <div className="row">
+            {[...Array(NUM_QUESTIONS).keys()].map((idx) => (
+              <div key={idx} className="col-md-6 mb-5">
+                <div className="form-group">
+                  <label htmlFor={`questionContent${idx}`}>
+                    Question Content {idx + 1}
+                    <span className="required-field">*</span>
+                  </label>
+                  <input
+                    name={`questionContent${idx}`}
+                    type="text"
+                    className={`form-control border-secondary custom-font ${formik.touched[`questionContent${idx}`] && formik.errors[`questionContent${idx}`] ? 'is-invalid' : ''
+                      }`}
+                    value={formik.values[`questionContent${idx}`]}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched[`questionContent${idx}`] && formik.errors[`questionContent${idx}`] && (
+                    <div className="error-feedback">{formik.errors[`questionContent${idx}`]}</div>
+                  )}
+                </div>
+                {["A", "B", "C", "D"].map((opt) => (
+                  <div className="form-group" key={opt}>
+                    <label htmlFor={`option${opt}${idx}`}>
+                      Option {opt}
+                      <span className="required-field">*</span>
+                    </label>
+                    <input
+                      name={`option${opt}${idx}`}
+                      type="text"
+                      className={`form-control border-secondary custom-font ${formik.touched[`option${opt}${idx}`] && formik.errors[`option${opt}${idx}`] ? 'is-invalid' : ''
+                        }`}
+                      value={formik.values[`option${opt}${idx}`]}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched[`option${opt}${idx}`] && formik.errors[`option${opt}${idx}`] && (
+                      <div className="error-feedback">{formik.errors[`option${opt}${idx}`]}</div>
+                    )}
                   </div>
                 ))}
+                <div className="form-group">
+                  <label>
+                    Correct Option<span className="required-field">*</span>
+                  </label>
+                  <div>
+                    {["A", "B", "C", "D"].map((opt) => (
+                      <div className="form-check form-check-inline" key={opt}>
+                        <input
+                          type="radio"
+                          name={`correctOption${idx}`}
+                          id={`correctOption${opt}${idx}`}
+                          value={opt}
+                          checked={formik.values[`correctOption${idx}`] === opt}
+                          onChange={formik.handleChange}
+                          className="form-check-input"
+                        />
+                        <label className="form-check-label" htmlFor={`correctOption${opt}${idx}`}>
+                          {opt}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  {formik.touched[`correctOption${idx}`] && formik.errors[`correctOption${idx}`] && (
+                    <div className="error-feedback">{formik.errors[`correctOption${idx}`]}</div>
+                  )}
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor={`questionType${idx}`} className="form-label">
+                    Type<span className="required-field">*</span>
+                  </label>
+                  <select
+                    name={`questionType${idx}`}
+                    id={`questionType${idx}`}
+                    className={`form-select border-secondary custom-font ${formik.touched[`questionType${idx}`] && formik.errors[`questionType${idx}`] ? 'is-invalid' : ''
+                      }`}
+                    value={formik.values[`questionType${idx}`]}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option value="" disabled>
+                      Select an option
+                    </option>
+                    <option value="[Part 6] Hình thức: Bài báo (Article/ Review)">
+                      [Part 6] Hình thức: Bài báo (Article/ Review)
+                    </option>
+                    <option value="[Part 6] Hình thức: Quảng cáo (Advertisement)">
+                      [Part 6] Hình thức: Quảng cáo (Advertisement)
+                    </option>
+                    <option value="[Part 6] Hình thức: Thư điện tử/ thư tay (Email/ Letter)">
+                      [Part 6] Hình thức: Thư điện tử/ thư tay (Email/ Letter)
+                    </option>
+                  </select>
+                  {formik.touched[`questionType${idx}`] && formik.errors[`questionType${idx}`] && (
+                    <div className="error-feedback">{formik.errors[`questionType${idx}`]}</div>
+                  )}
+                </div>
+                <div className="form-group">
+                  <label htmlFor={`questionExplanation${idx}`}>
+                    Question Explanation {idx + 1}
+                    <span className="required-field">*</span>
+                  </label>
+                  <input
+                    name={`questionExplanation${idx}`}
+                    type="text"
+                    className={`form-control border-secondary custom-font ${formik.touched[`questionExplanation${idx}`] && formik.errors[`questionExplanation${idx}`] ? 'is-invalid' : ''
+                      }`}
+                    value={formik.values[`questionExplanation${idx}`]}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched[`questionExplanation${idx}`] && formik.errors[`questionExplanation${idx}`] && (
+                    <div className="error-feedback">{formik.errors[`questionExplanation${idx}`]}</div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                CLOSE
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+            ))}
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              if (onClose) onClose();
+            }}
+          >
+            Đóng
+          </button>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? 'Đang lưu...' : 'Cập nhật'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default EditQuestionSection6;
+export default QuestionEditSection6;

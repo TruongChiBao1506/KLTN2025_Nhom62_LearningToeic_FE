@@ -1,7 +1,8 @@
 import React from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import QuestionEditSection5 from "../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditSection5";
 import "./style.css";
 
 const QuestionListSection5 = ({
@@ -11,6 +12,7 @@ const QuestionListSection5 = ({
   sectionId,
   retrieveQuestions,
   QuestionService,
+  handleShowEditModal,
 }) => {
   const deleteQuestion = async (questionId) => {
     const result = await Swal.fire({
@@ -100,7 +102,7 @@ const QuestionListSection5 = ({
                 {question.questionStatus === 1 ? (
                   <span
                     onClick={() => toggleStatus(question._id, 0)}
-                    className="btn badge text-bg-success"
+                    className="btn badge text-bg-success rounded-5"
                     style={{ cursor: "pointer" }}
                   >
                     Enable
@@ -108,7 +110,7 @@ const QuestionListSection5 = ({
                 ) : (
                   <span
                     onClick={() => toggleStatus(question._id, 1)}
-                    className="btn badge text-bg-danger"
+                    className="btn badge text-bg-danger rounded-5"
                     style={{ cursor: "pointer" }}
                   >
                     Disable
@@ -116,62 +118,24 @@ const QuestionListSection5 = ({
                 )}
               </td>
               <td>
-                <div className="d-flex justify-content-center">
-                  {/* Edit Modal Trigger */}
+                <div className="d-flex justify-content-center gap-2">
+                  {/* Edit Button */}
                   <button
                     type="button"
                     className="btn btn-white border-0"
-                    data-bs-toggle="modal"
-                    data-bs-target={`#editQuestionModal-${question._id}`}
+                    onClick={() => handleShowEditModal(question._id)}
+                    title="Chỉnh sửa câu hỏi"
                   >
-                    <i
-                      className="fas fa-edit"
-                      style={{ color: "rgb(192, 129, 13)" }}
-                    ></i>
+                    <FontAwesomeIcon icon={faEdit} style={{ color: "rgb(192, 129, 13)" }} />
                   </button>
-                  {/* Modal */}
-                  <div
-                    id={`editQuestionModal-${question._id}`}
-                    className="modal zoom"
-                    tabIndex="-1"
-                    aria-labelledby={`editQuestionModalLabel-${question._id}`}
-                    aria-hidden="true"
-                  >
-                    <div className="modal-dialog modal-lg">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h1
-                            className="modal-title fs-5"
-                            id={`editQuestionModalLabel-${question._id}`}
-                          >
-                            <i
-                              className="fas fa-edit"
-                              style={{ color: "rgb(192, 129, 13)" }}
-                            ></i>{" "}
-                            Edit Question Section 5
-                          </h1>
-                          <button
-                            type="button"
-                            className="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                          ></button>
-                        </div>
-                        <QuestionEditSection5
-                          questionId={question._id}
-                          sectionId={sectionId}
-                          retrieveQuestions={retrieveQuestions}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Delete */}
+                  {/* Delete Button */}
                   <button
                     type="button"
                     onClick={() => deleteQuestion(question._id)}
                     className="btn btn-white border-0"
+                    title="Xóa câu hỏi"
                   >
-                    <i className="fas fa-trash text-danger"></i>
+                    <FontAwesomeIcon icon={faTrash} className="text-danger" />
                   </button>
                 </div>
               </td>

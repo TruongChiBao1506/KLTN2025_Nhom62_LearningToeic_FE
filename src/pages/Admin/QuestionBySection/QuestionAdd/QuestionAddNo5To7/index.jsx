@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import QuestionGroupService from '../../../../../services/questionGroupService';
 import './style.css';
@@ -15,56 +13,19 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
 
     // State cho 3 questions
     const [questions, setQuestions] = useState([
-        {
-            questionContent: '',
-            suggestedAnswer: '',
-            questionExplanation: ''
-        },
-        {
-            questionContent: '',
-            suggestedAnswer: '',
-            questionExplanation: ''
-        },
-        {
-            questionContent: '',
-            suggestedAnswer: '',
-            questionExplanation: ''
-        }
+        { questionContent: '', suggestedAnswer: '', questionExplanation: '' },
+        { questionContent: '', suggestedAnswer: '', questionExplanation: '' },
+        { questionContent: '', suggestedAnswer: '', questionExplanation: '' }
     ]);
 
     // Validation schema cho tất cả fields
     const questionFormSchema = Yup.object().shape({
-        questionContent0: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent1: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-        questionContent2: Yup
-            .string()
-            .required("questionContent phải có giá trị.")
-            .min(2, "questionContent phải ít nhất 2 ký tự.")
-            .max(500, "questionContent có nhiều nhất 500 ký tự."),
-
-        suggestedAnswer0: Yup
-            .string()
-            .required("suggestedAnswer phải có giá trị.")
-            .min(2, "suggestedAnswer phải ít nhất 2 ký tự.")
-            .max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
-        suggestedAnswer1: Yup
-            .string()
-            .required("suggestedAnswer phải có giá trị.")
-            .min(2, "suggestedAnswer phải ít nhất 2 ký tự.")
-            .max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
-        suggestedAnswer2: Yup
-            .string()
-            .required("suggestedAnswer phải có giá trị.")
-            .min(2, "suggestedAnswer phải ít nhất 2 ký tự.")
-            .max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
+        questionContent0: Yup.string().required("questionContent phải có giá trị.").min(2, "questionContent phải ít nhất 2 ký tự.").max(500, "questionContent có nhiều nhất 500 ký tự."),
+        questionContent1: Yup.string().required("questionContent phải có giá trị.").min(2, "questionContent phải ít nhất 2 ký tự.").max(500, "questionContent có nhiều nhất 500 ký tự."),
+        questionContent2: Yup.string().required("questionContent phải có giá trị.").min(2, "questionContent phải ít nhất 2 ký tự.").max(500, "questionContent có nhiều nhất 500 ký tự."),
+        suggestedAnswer0: Yup.string().required("suggestedAnswer phải có giá trị.").min(2, "suggestedAnswer phải ít nhất 2 ký tự.").max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
+        suggestedAnswer1: Yup.string().required("suggestedAnswer phải có giá trị.").min(2, "suggestedAnswer phải ít nhất 2 ký tự.").max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
+        suggestedAnswer2: Yup.string().required("suggestedAnswer phải có giá trị.").min(2, "suggestedAnswer phải ít nhất 2 ký tự.").max(500, "suggestedAnswer có nhiều nhất 500 ký tự."),
     });
 
     // Formik setup với initial values cho 3 questions
@@ -90,43 +51,22 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
         setQuestions(newQuestions);
     };
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-            console.log('Questions:', questions);
-
-            // Validate group text
             if (!editorData || editorData.trim() === '') {
-                toast.error('Question Group Text phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Question Group Text phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
@@ -134,29 +74,24 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
             const groupFormData = new FormData();
             groupFormData.append("sectionId", sectionId);
             groupFormData.append("groupText", editorData);
-            
-            console.log('Creating question group...');
-            
+
             // Gửi dữ liệu nhóm câu hỏi lên server và lấy groupId
             const response = await QuestionGroupService.create(groupFormData);
-            console.log('Group response:', response);
-            
             const groupId = response.groupId;
-            console.log('Group ID:', groupId);
+            console.log('Group created with ID:', groupId);
 
             // Gửi dữ liệu từng câu hỏi con lên server
             for (let i = 0; i < 3; i++) {
                 const questionContent = values[`questionContent${i}`];
                 const suggestedAnswer = values[`suggestedAnswer${i}`];
-                
+
                 const formData = new FormData();
                 formData.append("sectionId", sectionId);
                 formData.append("groupId", groupId);
                 formData.append("questionContent", questionContent);
                 formData.append("suggestedAnswer", suggestedAnswer);
-                formData.append("questionExplanation", questions[i].questionExplanation || '');
-                
-                console.log(`Creating question ${i + 1}...`);
+                // formData.append("questionExplanation", questions[i].questionExplanation || '');
+
                 await QuestionService.create(formData);
             }
 
@@ -175,32 +110,20 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
             }
 
             // Close modal
-            if (onClose) {
-                onClose();
-            }
+            if (onClose) onClose();
 
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
@@ -221,60 +144,21 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className='question-add-no5to7-page page'>
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
-                    {/* Question Group Text với CKEditor */}
+                <div className="modal-body text-start p-4">
+                    {/* Question Group Text với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupText" className="form-label">
                             Question Group Text<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
-                            <CKEditor
-                                editor={ClassicEditor}
+                            <CKEditorOptimized
                                 data={editorData}
+                                onChange={setEditorData}
                                 onReady={onEditorReady}
-                                onChange={onEditorChange}
-                                onBlur={onEditorBlur}
-                                onFocus={onEditorFocus}
-                                config={{
-                                    placeholder: 'Nhập nội dung nhóm câu hỏi cho part 5-7...',
-                                    toolbar: [
-                                        'heading',
-                                        '|',
-                                        'bold',
-                                        'italic',
-                                        'link',
-                                        'bulletedList',
-                                        'numberedList',
-                                        '|',
-                                        'outdent',
-                                        'indent',
-                                        '|',
-                                        'imageUpload',
-                                        'blockQuote',
-                                        'insertTable',
-                                        'mediaEmbed',
-                                        'undo',
-                                        'redo'
-                                    ],
-                                    language: 'vi',
-                                    image: {
-                                        toolbar: [
-                                            'imageTextAlternative',
-                                            'imageStyle:full',
-                                            'imageStyle:side'
-                                        ]
-                                    },
-                                    table: {
-                                        contentToolbar: [
-                                            'tableColumn',
-                                            'tableRow',
-                                            'mergeTableCells'
-                                        ]
-                                    }
-                                }}
+                                placeholder="Nhập nội dung nhóm câu hỏi cho part 5-7..."
+                                height="170px"
                             />
                         </div>
-                        {/* Custom validation error display */}
                         {!editorData && formik.submitCount > 0 && (
                             <div className="error-feedback">Question Group Text phải có giá trị.</div>
                         )}

@@ -5,24 +5,24 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuestionService from "../../../../../services/questionService";
 import QuestionGroupService from "../../../../../services/questionGroupService";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CKEditorOptimized from "../../../../../components/Admin/EditorOptimized";
 import "./style.css";
 
-const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
+const QuestionEditNo8To10 = ({ sectionId, groupId, retrieveQuestions, onClose }) => {
   const [question, setQuestion] = useState(null);
   const [initialValues, setInitialValues] = useState({
     groupImage: null,
     groupText: "",
     questions: [],
   });
+  const [groupTextEditor, setGroupTextEditor] = useState("");
   const editorRef = useRef();
 
   // Tạo schema động cho từng câu hỏi
   const getValidationSchema = (questions) => {
     const shape = {
       groupImage: Yup.mixed()
-        // .required("Vui lòng chọn một tệp ảnh.")
+        .nullable()
         .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
           if (!value) return true;
           const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
@@ -48,11 +48,12 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
   };
 
   useEffect(() => {
+    if (!groupId) return;
     const getQuestion = async () => {
       try {
         const data = await QuestionService.getQuestionsByQuestionGroup(groupId);
         const questions = data.map((item) => ({
-          questionId: item.questionId,
+          questionId: item._id || item.questionId,
           questionContent: item.questionContent,
           suggestedAnswer: item.suggestedAnswer,
         }));
@@ -61,56 +62,53 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
           groupText: data[0]?.questionGroup?.groupText || "",
           questions,
         });
+        setGroupTextEditor(data[0]?.questionGroup?.groupText || "");
         setQuestion(data[0]);
       } catch (error) {
-        console.log(error);
+        toast.error("Lỗi khi tải thông tin nhóm câu hỏi", { autoClose: 1000 });
       }
     };
     getQuestion();
   }, [groupId]);
 
-  const handleEditorReady = (editor) => {
-    editor.editing.view.change((writer) => {
-      writer.setStyle("height", "170px", editor.editing.view.document.getRoot());
-    });
-    editorRef.current = editor;
-  };
-
-  // Cập nhật từng câu hỏi
-  const updateQuestion = async (questionId, values, idx) => {
+  // Lưu toàn bộ group và các câu hỏi
+  const handleSaveAll = async (values, { setSubmitting }) => {
     try {
-      const formData = new FormData();
-      formData.append("sectionId", sectionId);
-      formData.append("questionId", questionId);
-      formData.append("questionContent", values[`questionContent${idx}`]);
-      formData.append("suggestedAnswer", values[`suggestedAnswer${idx}`]);
-      await QuestionService.update(questionId, formData);
-      toast.success("Chỉnh sửa câu hỏi thành công", { autoClose: 1000 });
-      retrieveQuestions();
-    } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa câu hỏi", { autoClose: 1000 });
-    }
-  };
-
-  // Cập nhật group text và group image
-  const updateQuestionGroup = async (values) => {
-    try {
+      if (!groupTextEditor || groupTextEditor.trim() === "") {
+        toast.error("groupText phải có giá trị.", { autoClose: 1000 });
+        setSubmitting(false);
+        return;
+      }
+      // Cập nhật groupText và groupImage
       const groupFormData = new FormData();
       if (values.groupImage) {
         groupFormData.append("groupImage", values.groupImage, values.groupImage.name);
       }
-      groupFormData.append("groupText", values.groupText);
+      groupFormData.append("groupText", groupTextEditor);
       await QuestionGroupService.update(groupId, groupFormData);
-      toast.success("Chỉnh sửa nhóm thành công", { autoClose: 1000 });
-      retrieveQuestions();
+
+      // Cập nhật từng câu hỏi
+      await Promise.all(
+        initialValues.questions.map(async (q, idx) => {
+          const formData = new FormData();
+          formData.append("sectionId", sectionId);
+          formData.append("questionContent", values[`questionContent${idx}`]);
+          formData.append("suggestedAnswer", values[`suggestedAnswer${idx}`]);
+          await QuestionService.update(q.questionId, formData);
+        })
+      );
+
+      toast.success("Cập nhật thành công!", { autoClose: 1000 });
+      retrieveQuestions && retrieveQuestions();
+      if (onClose) onClose();
     } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa nhóm", { autoClose: 1000 });
+      toast.error("Có lỗi xảy ra khi lưu!", { autoClose: 1000 });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (!initialValues.questions.length) return null;
+  if (!initialValues.questions.length) return <div>Đang tải...</div>;
 
   return (
     <div className="question-edit-no8to10-page">
@@ -126,11 +124,11 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
           }, {}),
         }}
         validationSchema={getValidationSchema(initialValues.questions)}
-        onSubmit={() => { }}
+        onSubmit={handleSaveAll}
       >
-        {({ values, setFieldValue, isSubmitting }) => (
+        {({ values, setFieldValue, isSubmitting, submitCount }) => (
           <Form encType="multipart/form-data">
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
               <div className="form-group mb-3">
                 <label htmlFor="groupImage">
                   Question Group Image<span className="required-field">*</span>
@@ -148,22 +146,19 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
                 <label htmlFor="groupText" className="form-label">
                   Question Group Text<span className="required-field">*</span>
                 </label>
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={values.groupText}
-                  onReady={handleEditorReady}
-                  onChange={(_, editor) => setFieldValue("groupText", editor.getData())}
-                  className="form-control border-secondary custom-font"
-                />
-                <ErrorMessage name="groupText" component="div" className="error-feedback" />
+                <div className="ckeditor-container">
+                  <CKEditorOptimized
+                    data={groupTextEditor}
+                    onChange={setGroupTextEditor}
+                    onReady={(editor) => { editorRef.current = editor; }}
+                    placeholder="Nhập nội dung nhóm câu hỏi..."
+                    height="170px"
+                  />
+                </div>
+                {!groupTextEditor && submitCount > 0 && (
+                  <div className="error-feedback">groupText phải có giá trị.</div>
+                )}
               </div>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => updateQuestionGroup(values)}
-              >
-                Update Question Group
-              </button>
               <hr />
               <div className="row">
                 {initialValues.questions.map((q, idx) => (
@@ -200,20 +195,26 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
                         className="error-feedback"
                       />
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn-secondary mt-2"
-                      onClick={() => updateQuestion(q.questionId, values, idx)}
-                    >
-                      Save
-                    </button>
                   </div>
                 ))}
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                CLOSE
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  if (onClose) onClose();
+                }}
+              >
+                Đóng
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Đang lưu..." : "Lưu"}
               </button>
             </div>
           </Form>
@@ -223,4 +224,4 @@ const EditQuestionGroup = ({ sectionId, groupId, retrieveQuestions }) => {
   );
 };
 
-export default EditQuestionGroup;
+export default QuestionEditNo8To10;

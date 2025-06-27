@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { useEffect, useState, useRef } from "react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuestionService from "../../../../../services/questionService";
+import CKEditorOptimized from "../../../../../components/Admin/EditorOptimized";
 import "./style.css";
 
-const EditQuestion = ({ sectionId, questionId, retrieveQuestions }) => {
+const EditQuestionNo11 = ({ sectionId, questionId, retrieveQuestions, onClose }) => {
   const [question, setQuestion] = useState(null);
-  const [initialValues, setInitialValues] = useState({
-    questionText: "",
-    suggestedAnswer: "",
-  });
+  const [editorData, setEditorData] = useState('');
+  const editorRef = useRef(null);
 
   const questionFormSchema = Yup.object().shape({
     questionText: Yup.string()
@@ -24,20 +23,34 @@ const EditQuestion = ({ sectionId, questionId, retrieveQuestions }) => {
       .max(2000, "suggestedAnswer có nhiều nhất 2000 ký tự."),
   });
 
+  const formik = useFormik({
+    initialValues: {
+      questionText: "",
+      suggestedAnswer: "",
+    },
+    validationSchema: questionFormSchema,
+    enableReinitialize: true,
+    onSubmit: async (values, { setSubmitting }) => {
+      await updateQuestion(values, { setSubmitting });
+    }
+  });
+
   useEffect(() => {
     const getQuestion = async () => {
       try {
         const data = await QuestionService.get(questionId);
-        setInitialValues({
-          questionText: data.questionText,
-          suggestedAnswer: data.suggestedAnswer,
+        formik.setValues({
+          questionText: data.questionText || "",
+          suggestedAnswer: data.suggestedAnswer || "",
         });
+        setEditorData(data.suggestedAnswer || "");
         setQuestion(data);
       } catch (error) {
-        console.log(error);
+        toast.error("Lỗi khi tải thông tin câu hỏi", { autoClose: 1000 });
       }
     };
-    getQuestion();
+    if (questionId) getQuestion();
+    // eslint-disable-next-line
   }, [questionId]);
 
   const updateQuestion = async (values, { setSubmitting }) => {
@@ -45,80 +58,98 @@ const EditQuestion = ({ sectionId, questionId, retrieveQuestions }) => {
       const formData = new FormData();
       formData.append("sectionId", sectionId);
       formData.append("questionText", values.questionText);
-      formData.append("suggestedAnswer", values.suggestedAnswer);
+      formData.append("suggestedAnswer", editorData);
       await QuestionService.update(questionId, formData);
-      retrieveQuestions();
+      retrieveQuestions && retrieveQuestions();
+      if (onClose) onClose();
       toast.success("Chỉnh sửa câu hỏi thành công", { autoClose: 1000 });
     } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa câu hỏi", { autoClose: 1000 });
+      let errorMessage = 'Lỗi khi chỉnh sửa câu hỏi';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request?.response) {
+        try {
+          const jsonResponse = JSON.parse(error.request.response);
+          errorMessage = jsonResponse.message;
+        } catch {}
+      }
+      toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (!question) return null;
+  if (!question) return <div>Đang tải...</div>;
 
   return (
     <div className="question-edit-no11-page">
-      <Formik
-        enableReinitialize
-        initialValues={initialValues}
-        validationSchema={questionFormSchema}
-        onSubmit={updateQuestion}
-      >
-        {({ isSubmitting }) => (
-          <Form encType="multipart/form-data">
-            <div className="modal-body text-start">
-              <div className="row">
-                <div className="col">
-                  <div className="form-group mb-3">
-                    <label htmlFor="questionText" className="form-label">
-                      Text<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="questionText"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage
-                      name="questionText"
-                      component="div"
-                      className="error-feedback"
-                    />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="suggestedAnswer" className="form-label">
-                      Suggested Answer<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="suggestedAnswer"
-                      as="textarea"
-                      style={{ height: "150px", resize: "none" }}
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage
-                      name="suggestedAnswer"
-                      component="div"
-                      className="error-feedback"
-                    />
-                  </div>
+      <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
+        <div className="modal-body text-start p-4">
+          <div className="row">
+            <div className="col">
+              <div className="form-group mb-3">
+                <label htmlFor="questionText" className="form-label">
+                  Text<span className="required-field">*</span>
+                </label>
+                <input
+                  name="questionText"
+                  id="questionText"
+                  type="text"
+                  className={`form-control border-secondary custom-font ${
+                    formik.touched.questionText && formik.errors.questionText ? 'is-invalid' : ''
+                  }`}
+                  value={formik.values.questionText}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.questionText && formik.errors.questionText && (
+                  <div className="error-feedback">{formik.errors.questionText}</div>
+                )}
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="suggestedAnswer" className="form-label">
+                  Suggested Answer<span className="required-field">*</span>
+                </label>
+                <div className="ckeditor-container">
+                  <CKEditorOptimized
+                    data={editorData}
+                    onChange={setEditorData}
+                    onReady={(editor) => { editorRef.current = editor; }}
+                    placeholder="Nhập đáp án gợi ý..."
+                    height="170px"
+                  />
                 </div>
+                {!editorData && formik.submitCount > 0 && (
+                  <div className="error-feedback">suggestedAnswer phải có giá trị.</div>
+                )}
+                {formik.touched.suggestedAnswer && formik.errors.suggestedAnswer && (
+                  <div className="error-feedback">{formik.errors.suggestedAnswer}</div>
+                )}
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Đóng
-              </button>
-              <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" disabled={isSubmitting}>
-                Lưu
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              if (onClose) onClose();
+            }}
+          >
+            Đóng
+          </button>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? 'Đang lưu...' : 'Cập nhật'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default EditQuestion;
+export default EditQuestionNo11;

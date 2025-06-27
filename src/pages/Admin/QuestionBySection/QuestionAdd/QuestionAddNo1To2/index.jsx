@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
@@ -12,15 +10,15 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
     const [editorData, setEditorData] = useState('');
     const editorRef = useRef(null);
 
-    // Validation schema - không validate questionText vì dùng CKEditor
     const questionFormSchema = Yup.object().shape({
-        // Có thể thêm validation khác nếu cần
+        questionText: Yup.string()
+            .required("questionText phải có giá trị.")
+            .min(2, "questionText phải ít nhất 2 ký tự."),
     });
 
-    // Formik setup
     const formik = useFormik({
         initialValues: {
-            questionText: ''
+            questionText: '',
         },
         validationSchema: questionFormSchema,
         onSubmit: async (values, { resetForm }) => {
@@ -28,151 +26,81 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     });
 
-    // CKEditor event handlers
-    const onEditorReady = (editor) => {
-        editorRef.current = editor;
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-    };
-
     const addQuestion = async (values, resetForm) => {
         try {
-            if (!editorData || editorData.trim() === '') {
-                toast.error('Question Group Text phải có giá trị', {
-                    autoClose: 1000,
-                });
-                return;
-            }
-
             const formData = new FormData();
             formData.append("sectionId", sectionId);
-            formData.append("questionText", editorData);
-
+            formData.append("questionText", values.questionText);
             await QuestionService.create(formData);
             retrieveQuestions();
-
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
             resetForm();
             setEditorData('');
             if (editorRef.current) {
                 editorRef.current.setData('');
             }
-
-            if (onClose) {
-                onClose();
-            }
-
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            if (onClose) onClose();
         } catch (error) {
-            let errorMessage = 'Lỗi khi thêm câu hỏi';
-            if (error.response?.data?.message) {
-                errorMessage = error.response.data.message;
-            } else if (error.request?.response) {
-                try {
-                    const jsonResponse = JSON.parse(error.request.response);
-                    errorMessage = jsonResponse.message;
-                } catch (parseError) {}
-            }
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error('Lỗi khi thêm câu hỏi', { autoClose: 1000 });
         }
     };
 
-    const handleClose = () => {
-        formik.resetForm();
-        setEditorData('');
-        if (editorRef.current) {
-            editorRef.current.setData('');
-        }
-        if (onClose) onClose();
+    const onEditorReady = (editor) => {
+        editorRef.current = editor;
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     return (
         <div className="question-add-no1to2-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
                             <div className="form-group mb-3">
                                 <label htmlFor="questionText" className="form-label">
                                     Question Group Text<span className="required-field">*</span>
                                 </label>
-                                <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
-                                        data={editorData}
-                                        onReady={onEditorReady}
-                                        onChange={onEditorChange}
-                                        config={{
-                                            placeholder: 'Nhập nội dung câu hỏi nhóm...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi',
-                                            image: {
-                                                toolbar: [
-                                                    'imageTextAlternative',
-                                                    'imageStyle:full',
-                                                    'imageStyle:side'
-                                                ]
-                                            },
-                                            table: {
-                                                contentToolbar: [
-                                                    'tableColumn',
-                                                    'tableRow',
-                                                    'mergeTableCells'
-                                                ]
-                                            }
+                                <div className='ckeditor-container'>
+                                    <CKEditorOptimized
+                                        data={formik.values.questionText}
+                                        onChange={data => {
+                                            setEditorData(data);
+                                            formik.setFieldValue('questionText', data);
                                         }}
+                                        onReady={onEditorReady}
+                                        placeholder="Nhập nội dung..."
+                                        height="170px"
                                     />
                                 </div>
-                                {!editorData && formik.submitCount > 0 && (
-                                    <div className="error-feedback">Question Group Text phải có giá trị.</div>
+
+                                {formik.touched.questionText && formik.errors.questionText && (
+                                    <div className="error-feedback">{formik.errors.questionText}</div>
                                 )}
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div className="modal-footer">
-                    <button 
-                        type="button" 
-                        className="btn btn-secondary" 
-                        onClick={handleClose}
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                            formik.resetForm();
+                            setEditorData('');
+                            if (editorRef.current) editorRef.current.setData('');
+                            if (onClose) onClose();
+                        }}
                     >
                         Đóng
                     </button>
-                    <button 
-                        type="submit" 
-                        className="btn btn-primary"
-                        disabled={formik.isSubmitting}
-                    >
-                        {formik.isSubmitting ? 'Đang lưu...' : 'Lưu'}
+                    <button className="btn btn-primary" type="submit">
+                        Lưu
                     </button>
                 </div>
             </form>

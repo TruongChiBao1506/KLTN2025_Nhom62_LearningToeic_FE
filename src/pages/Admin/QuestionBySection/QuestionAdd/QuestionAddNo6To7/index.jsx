@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
@@ -14,12 +12,8 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
     const questionTextEditorRef = useRef(null);
     const suggestedAnswerEditorRef = useRef(null);
 
-    // Validation schema - Empty như Vue component
-    const questionFormSchema = Yup.object().shape({
-        // No validation rules như trong Vue component
-    });
+    const questionFormSchema = Yup.object().shape({});
 
-    // Formik setup
     const formik = useFormik({
         initialValues: {
             questionText: '',
@@ -31,78 +25,39 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     });
 
-    // CKEditor event handlers cho questionText
     const onQuestionTextEditorReady = (editor) => {
-        console.log('Question Text Editor is ready to use!', editor);
         questionTextEditorRef.current = editor;
-        
-        // Set height của editor
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
-    const onQuestionTextEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setQuestionTextData(data);
-        console.log('Question Text Editor data:', data);
-    };
-
-    const onQuestionTextEditorBlur = (event, editor) => {
-        console.log('Question Text Blur.', editor);
-    };
-
-    const onQuestionTextEditorFocus = (event, editor) => {
-        console.log('Question Text Focus.', editor);
-    };
-
-    // CKEditor event handlers cho suggestedAnswer
     const onSuggestedAnswerEditorReady = (editor) => {
-        console.log('Suggested Answer Editor is ready to use!', editor);
         suggestedAnswerEditorRef.current = editor;
-        
-        // Set height của editor
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onSuggestedAnswerEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setSuggestedAnswerData(data);
-        console.log('Suggested Answer Editor data:', data);
-    };
-
-    const onSuggestedAnswerEditorBlur = (event, editor) => {
-        console.log('Suggested Answer Blur.', editor);
-    };
-
-    const onSuggestedAnswerEditorFocus = (event, editor) => {
-        console.log('Suggested Answer Focus.', editor);
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Question Text data:', questionTextData);
-            console.log('Suggested Answer data:', suggestedAnswerData);
-
-            // Validate required fields
             if (!questionTextData || questionTextData.trim() === '') {
-                toast.error('Text phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Text phải có giá trị', { autoClose: 1000 });
                 return;
             }
-
             if (!suggestedAnswerData || suggestedAnswerData.trim() === '') {
-                toast.error('Suggested Answer phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Suggested Answer phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
-            // Create FormData
             const formData = new FormData();
             formData.append("sectionId", sectionId);
             formData.append("questionText", questionTextData);
@@ -111,7 +66,6 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
             await QuestionService.create(formData);
             retrieveQuestions();
 
-            // Reset form và các state
             resetForm();
             setQuestionTextData('');
             setSuggestedAnswerData('');
@@ -122,33 +76,20 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                 suggestedAnswerEditorRef.current.setData('');
             }
 
-            // Close modal
-            if (onClose) {
-                onClose();
-            }
+            if (onClose) onClose();
 
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
@@ -168,120 +109,48 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className="question-add-no6to7-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
-                            {/* Question Text Field với CKEditor */}
+                            {/* Question Text Field với CKEditorOptimized */}
                             <div className="form-group-6-7 mb-3">
                                 <label htmlFor="questionText" className="form-label">
                                     Text<span className="required-field">*</span>
                                 </label>
-                                <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                <div className={`ckeditor-container${!questionTextData && formik.submitCount > 0 ? ' is-invalid' : ''}`}>
+                                    <CKEditorOptimized
                                         data={questionTextData}
-                                        onReady={onQuestionTextEditorReady}
-                                        onChange={onQuestionTextEditorChange}
-                                        onBlur={onQuestionTextEditorBlur}
-                                        onFocus={onQuestionTextEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập nội dung câu hỏi cho part 6-7...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi',
-                                            image: {
-                                                toolbar: [
-                                                    'imageTextAlternative',
-                                                    'imageStyle:full',
-                                                    'imageStyle:side'
-                                                ]
-                                            },
-                                            table: {
-                                                contentToolbar: [
-                                                    'tableColumn',
-                                                    'tableRow',
-                                                    'mergeTableCells'
-                                                ]
-                                            }
+                                        onChange={data => {
+                                            setQuestionTextData(data);
+                                            formik.setFieldValue('questionText', data);
                                         }}
+                                        onReady={onQuestionTextEditorReady}
+                                        placeholder="Nhập nội dung câu hỏi cho part 6-7..."
+                                        height="170px"
                                     />
                                 </div>
-                                {/* Custom validation error display */}
                                 {!questionTextData && formik.submitCount > 0 && (
                                     <div className="error-feedback">Text phải có giá trị.</div>
                                 )}
                             </div>
 
-                            {/* Suggested Answer Field với CKEditor */}
-                            <div className="form-group mb-3">
+                            {/* Suggested Answer Field với CKEditorOptimized */}
+                            <div className="form-group-6-7 mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
                                     Suggested Answer<span className="required-field">*</span>
                                 </label>
-                                <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                <div className={`ckeditor-container${!suggestedAnswerData && formik.submitCount > 0 ? ' is-invalid' : ''}`}>
+                                    <CKEditorOptimized
                                         data={suggestedAnswerData}
-                                        onReady={onSuggestedAnswerEditorReady}
-                                        onChange={onSuggestedAnswerEditorChange}
-                                        onBlur={onSuggestedAnswerEditorBlur}
-                                        onFocus={onSuggestedAnswerEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập gợi ý trả lời cho part 6-7...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi',
-                                            image: {
-                                                toolbar: [
-                                                    'imageTextAlternative',
-                                                    'imageStyle:full',
-                                                    'imageStyle:side'
-                                                ]
-                                            },
-                                            table: {
-                                                contentToolbar: [
-                                                    'tableColumn',
-                                                    'tableRow',
-                                                    'mergeTableCells'
-                                                ]
-                                            }
+                                        onChange={data => {
+                                            setSuggestedAnswerData(data);
+                                            formik.setFieldValue('suggestedAnswer', data);
                                         }}
+                                        onReady={onSuggestedAnswerEditorReady}
+                                        placeholder="Nhập gợi ý trả lời cho part 6-7..."
+                                        height="170px"
                                     />
                                 </div>
-                                {/* Custom validation error display */}
                                 {!suggestedAnswerData && formik.submitCount > 0 && (
                                     <div className="error-feedback">Suggested Answer phải có giá trị.</div>
                                 )}

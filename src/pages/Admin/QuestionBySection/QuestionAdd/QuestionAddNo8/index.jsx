@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
@@ -19,7 +17,6 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
             .required("questionText phải có giá trị.")
             .min(2, "questionText phải ít nhất 2 ký tự.")
             .max(1000, "questionText có nhiều nhất 1000 ký tự."),
-        // suggestedAnswer sẽ validate riêng với CKEditor data
     });
 
     // Formik setup
@@ -34,66 +31,40 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     });
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor lớn hơn (250px)
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '250px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setSuggestedAnswerData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '250px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Suggested Answer data:', suggestedAnswerData);
-
             // Validate questionText
             if (!values.questionText || values.questionText.trim() === '') {
-                toast.error('Text phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Text phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
             // Validate suggestedAnswer từ CKEditor
             if (!suggestedAnswerData || suggestedAnswerData.trim() === '') {
-                toast.error('Suggested Answer phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Suggested Answer phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
             // Additional validation cho CKEditor content
             const plainText = suggestedAnswerData.replace(/<[^>]*>/g, '').trim();
             if (plainText.length < 2) {
-                toast.error('Suggested Answer phải ít nhất 2 ký tự', {
-                    autoClose: 1000,
-                });
+                toast.error('Suggested Answer phải ít nhất 2 ký tự', { autoClose: 1000 });
                 return;
             }
-
             if (plainText.length > 2000) {
-                toast.error('Suggested Answer có nhiều nhất 2000 ký tự', {
-                    autoClose: 1000,
-                });
+                toast.error('Suggested Answer có nhiều nhất 2000 ký tự', { autoClose: 1000 });
                 return;
             }
 
@@ -114,32 +85,20 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
             }
 
             // Close modal
-            if (onClose) {
-                onClose();
-            }
+            if (onClose) onClose();
 
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
@@ -155,7 +114,7 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className="question-add-no8-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
                             {/* Question Text Field */}
@@ -180,98 +139,24 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 )}
                             </div>
 
-                            {/* Suggested Answer Field với CKEditor */}
+                            {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
                                     Suggested Answer<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                    <CKEditorOptimized
                                         data={suggestedAnswerData}
+                                        onChange={setSuggestedAnswerData}
                                         onReady={onEditorReady}
-                                        onChange={onEditorChange}
-                                        onBlur={onEditorBlur}
-                                        onFocus={onEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập gợi ý trả lời chi tiết cho part 8...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'underline',
-                                                'strikethrough',
-                                                '|',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                '|',
-                                                'fontFamily',
-                                                'fontSize',
-                                                'fontColor',
-                                                'fontBackgroundColor',
-                                                '|',
-                                                'alignment',
-                                                'horizontalLine',
-                                                '|',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi',
-                                            fontSize: {
-                                                options: [
-                                                    9, 11, 13, 'default', 17, 19, 21
-                                                ]
-                                            },
-                                            fontFamily: {
-                                                options: [
-                                                    'default',
-                                                    'Arial, Helvetica, sans-serif',
-                                                    'Courier New, Courier, monospace',
-                                                    'Georgia, serif',
-                                                    'Lucida Sans Unicode, Lucida Grande, sans-serif',
-                                                    'Tahoma, Geneva, sans-serif',
-                                                    'Times New Roman, Times, serif',
-                                                    'Trebuchet MS, Helvetica, sans-serif',
-                                                    'Verdana, Geneva, sans-serif'
-                                                ]
-                                            },
-                                            image: {
-                                                toolbar: [
-                                                    'imageTextAlternative',
-                                                    'imageStyle:full',
-                                                    'imageStyle:side',
-                                                    'imageStyle:alignLeft',
-                                                    'imageStyle:alignCenter',
-                                                    'imageStyle:alignRight'
-                                                ]
-                                            },
-                                            table: {
-                                                contentToolbar: [
-                                                    'tableColumn',
-                                                    'tableRow',
-                                                    'mergeTableCells',
-                                                    'tableCellProperties',
-                                                    'tableProperties'
-                                                ]
-                                            }
-                                        }}
+                                        placeholder="Nhập gợi ý trả lời chi tiết cho part 8..."
+                                        height="250px"
                                     />
                                 </div>
                                 {/* Custom validation error display */}
                                 {!suggestedAnswerData && formik.submitCount > 0 && (
                                     <div className="error-feedback">Suggested Answer phải có giá trị.</div>
                                 )}
-                                
                                 {/* Character counter */}
                                 {suggestedAnswerData && (
                                     <div className={`character-counter ${

@@ -1,32 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuestionService from "../../../../../services/questionService";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import "./style.css";
 
-const EditQuestionPart5 = ({ sectionId, questionId, retrieveQuestions }) => {
+const QuestionEditSection5 = ({ sectionId, questionId, retrieveQuestions, onClose }) => {
   const [question, setQuestion] = useState(null);
-  const [initialValues, setInitialValues] = useState({
-    questionContent: "",
-    optionA: "",
-    optionB: "",
-    optionC: "",
-    optionD: "",
-    correctOption: "",
-    questionType: "",
-    questionExplanation: "",
-  });
-  const editorRef = useRef();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedAudio, setSelectedAudio] = useState(null);
+  const [editorReady, setEditorReady] = useState(false);
+  const [editorData, setEditorData] = useState('');
+  const editorRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const audioInputRef = useRef(null);
 
   const questionFormSchema = Yup.object().shape({
     questionContent: Yup.string()
-      .required("questionContent phải có giá trị.")
-      .min(2, "questionContent phải ít nhất 2 ký tự.")
-      .max(500, "questionContent có nhiều nhất 500 ký tự."),
+      .required("Question Content phải có giá trị.")
+      .min(2, "Question Content phải ít nhất 2 ký tự.")
+      .max(500, "Question Content có nhiều nhất 500 ký tự."),
     optionA: Yup.string()
       .required("OptionA phải có giá trị.")
       .min(2, "OptionA phải ít nhất 2 ký tự.")
@@ -43,14 +38,65 @@ const EditQuestionPart5 = ({ sectionId, questionId, retrieveQuestions }) => {
       .required("OptionD phải có giá trị.")
       .min(2, "OptionD phải ít nhất 2 ký tự.")
       .max(500, "OptionD có nhiều nhất 500 ký tự."),
+    correctOption: Yup.string().required("CorrectOption phải có giá trị."),
     questionType: Yup.string().required("Loại phải được chọn."),
+    questionImage: Yup.mixed()
+      .nullable()
+      .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
+        if (!value) return true;
+        const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
+        return allowedFormats.includes(value.type);
+      })
+      .test("fileSize", "Tệp ảnh quá lớn", (value) => {
+        if (!value) return true;
+        return value.size <= 1024 * 1024;
+      }),
+    questionAudio: Yup.mixed()
+      .nullable()
+      .test("fileType", "Chỉ chấp nhận tệp âm thanh MP3", (value) => {
+        if (!value) return true;
+        const allowedFormats = ["audio/mpeg"];
+        return allowedFormats.includes(value.type);
+      })
+      .test("fileSize", "Tệp âm thanh quá lớn", (value) => {
+        if (!value) return true;
+        return value.size <= 1024 * 1024 * 10;
+      }),
+    questionExplanation: Yup.string()
+      .required("Question Explain phải có giá trị.")
+      .min(2, "Question Explain phải ít nhất 2 ký tự.")
+      .max(1000, "Question Explain có nhiều nhất 1000 ký tự."),
+  });
+
+
+  // Formik setup
+  const formik = useFormik({
+    initialValues: {
+      questionContent: "",
+      optionA: "",
+      optionB: "",
+      optionC: "",
+      optionD: "",
+      correctOption: "",
+      questionType: "",
+      questionImage: null,
+      questionAudio: null,
+      questionExplanation: "",
+    },
+    validationSchema: questionFormSchema,
+    enableReinitialize: true,
+    onSubmit: async (values, { setSubmitting }) => {
+      await updateQuestion(values, { setSubmitting });
+    }
   });
 
   useEffect(() => {
     const getQuestion = async () => {
       try {
         const data = await QuestionService.get(questionId);
-        setInitialValues({
+
+        // Set formik values
+        formik.setValues({
           questionContent: data.questionContent || "",
           optionA: data.optionA || "",
           optionB: data.optionB || "",
@@ -58,16 +104,30 @@ const EditQuestionPart5 = ({ sectionId, questionId, retrieveQuestions }) => {
           optionD: data.optionD || "",
           correctOption: getCorrectOptionLetter(data),
           questionType: data.questionType || "",
+          questionImage: null,
+          questionAudio: null,
           questionExplanation: data.questionExplanation || "",
         });
+
+        setEditorData(data.questionExplanation || "");
         setQuestion(data);
+
+        setTimeout(() => {
+          setEditorReady(true);
+        }, 300);
       } catch (error) {
         console.log(error);
+        toast.error("Lỗi khi tải thông tin câu hỏi", { autoClose: 1000 });
       }
     };
-    getQuestion();
+
+    if (questionId) {
+      setEditorReady(false);
+      getQuestion();
+    }
   }, [questionId]);
 
+  // Xác định đáp án đúng là A/B/C/D dựa trên giá trị
   function getCorrectOptionLetter(data) {
     if (data.correctOption === data.optionA) return "A";
     if (data.correctOption === data.optionB) return "B";
@@ -76,15 +136,51 @@ const EditQuestionPart5 = ({ sectionId, questionId, retrieveQuestions }) => {
     return "";
   }
 
-  const handleEditorReady = (editor) => {
-    editor.editing.view.change((writer) => {
-      writer.setStyle("height", "170px", editor.editing.view.document.getRoot());
-    });
-    editorRef.current = editor;
+  // File change handlers
+  const onImageChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+    formik.setFieldValue('questionImage', file);
+    formik.setFieldTouched('questionImage', true);
   };
+
+  const onAudioChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedAudio(file);
+    formik.setFieldValue('questionAudio', file);
+    formik.setFieldTouched('questionAudio', true);
+  };
+
+  // CKEditorOptimized event handlers
+  const onEditorReady = (editor) => {
+    try {
+      editorRef.current = editor;
+      setTimeout(() => {
+        if (editor && editor.editing && editor.editing.view) {
+          editor.editing.view.change(writer => {
+            writer.setStyle('height', '250px', editor.editing.view.document.getRoot());
+          });
+        }
+      }, 100);
+    } catch (error) {
+      // ignore
+    }
+  };
+
+  const onEditorBlur = (event, editor) => { };
+  const onEditorFocus = (event, editor) => { };
 
   const updateQuestion = async (values, { setSubmitting }) => {
     try {
+      // Validate question explain
+      if (!editorData || editorData.trim() === '') {
+        toast.error('Question Explain phải có giá trị', {
+          autoClose: 1000,
+        });
+        setSubmitting(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("sectionId", sectionId);
       formData.append("questionContent", values.questionContent);
@@ -112,196 +208,374 @@ const EditQuestionPart5 = ({ sectionId, questionId, retrieveQuestions }) => {
       }
 
       formData.append("questionType", values.questionType);
-      formData.append("questionExplanation", values.questionExplanation);
+
+      if (selectedImage) {
+        formData.append("questionImage", selectedImage, selectedImage.name);
+      }
+      if (selectedAudio) {
+        formData.append("questionAudio", selectedAudio, selectedAudio.name);
+      }
+      formData.append("questionExplanation", editorData);
 
       await QuestionService.update(questionId, formData);
       retrieveQuestions();
+
+      if (onClose) {
+        onClose();
+      }
+
       toast.success("Chỉnh sửa câu hỏi thành công", { autoClose: 1000 });
     } catch (error) {
-      console.log(error);
-      toast.error("Lỗi khi chỉnh sửa câu hỏi", { autoClose: 1000 });
+      let errorMessage = 'Lỗi khi chỉnh sửa câu hỏi';
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request?.response) {
+        try {
+          const jsonResponse = JSON.parse(error.request.response);
+          errorMessage = jsonResponse.message;
+        } catch { }
+      }
+
+      toast.error(errorMessage, {
+        autoClose: 1000,
+        position: 'top-right',
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (!question) return null;
+  const getImageUrl = (imageName) =>
+    imageName ? `http://localhost:9004/images/${imageName}` : "https://demofree.sirv.com/nope-not-here.jpg";
+
+  const getAudioUrl = (audioName) =>
+    audioName ? `http://localhost:9004/audios/${audioName}` : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+
+  if (!question) return <div>Đang tải...</div>;
 
   return (
     <div className="question-edit-section5-page">
-      <Formik
-        enableReinitialize
-        initialValues={initialValues}
-        validationSchema={questionFormSchema}
-        onSubmit={updateQuestion}
-      >
-        {({ values, setFieldValue, isSubmitting }) => (
-          <Form encType="multipart/form-data">
-            <div className="modal-body text-start">
-              <div className="row">
-                <div className="col">
-                  <div className="form-group mb-3">
-                    <label htmlFor="questionContent" className="form-label">
-                      Question Content<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="questionContent"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="questionContent" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="optionA" className="form-label">
-                      Option A<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="optionA"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="optionA" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="optionB" className="form-label">
-                      Option B<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="optionB"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="optionB" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="optionC" className="form-label">
-                      Option C<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="optionC"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="optionC" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="optionD" className="form-label">
-                      Option D<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      name="optionD"
-                      type="text"
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="optionD" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="correctOption" className="form-label">
-                      Correct Option<span className="required-field">*</span>
-                    </label>
-                    <div className="d-flex">
-                      <div className="form-check">
-                        <Field
-                          type="radio"
-                          name="correctOption"
-                          id="correctOptionA"
-                          value="A"
-                          checked={values.correctOption === "A"}
-                          className="form-check-input"
-                        />
-                        <label className="form-check-label me-3" htmlFor="correctOptionA">
-                          A
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <Field
-                          type="radio"
-                          name="correctOption"
-                          id="correctOptionB"
-                          value="B"
-                          checked={values.correctOption === "B"}
-                          className="form-check-input"
-                        />
-                        <label className="form-check-label me-3" htmlFor="correctOptionB">
-                          B
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <Field
-                          type="radio"
-                          name="correctOption"
-                          id="correctOptionC"
-                          value="C"
-                          checked={values.correctOption === "C"}
-                          className="form-check-input"
-                        />
-                        <label className="form-check-label me-3" htmlFor="correctOptionC">
-                          C
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <Field
-                          type="radio"
-                          name="correctOption"
-                          id="correctOptionD"
-                          value="D"
-                          checked={values.correctOption === "D"}
-                          className="form-check-input"
-                        />
-                        <label className="form-check-label me-3" htmlFor="correctOptionD">
-                          D
-                        </label>
-                      </div>
+      <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
+        <div className="modal-body text-start p-4">
+          <div className="row">
+            {/* Left Column - Options */}
+            <div className="col">
+              {/* Question Content */}
+              <div className="form-group mb-3">
+                <label htmlFor="questionContent" className="form-label">
+                  Question Content<span className="required-field">*</span>
+                </label>
+                <input
+                  name="questionContent"
+                  type="text"
+                  id="questionContent"
+                  className={`form-control border-secondary custom-font ${formik.touched.questionContent && formik.errors.questionContent ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.questionContent}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Nhập nội dung question content"
+                />
+                {formik.touched.questionContent && formik.errors.questionContent && (
+                  <div className="error-feedback">{formik.errors.questionContent}</div>
+                )}
+              </div>
+              {/* Option A */}
+              <div className="form-group mb-3">
+                <label htmlFor="optionA" className="form-label">
+                  Option A<span className="required-field">*</span>
+                </label>
+                <input
+                  name="optionA"
+                  type="text"
+                  id="optionA"
+                  className={`form-control border-secondary custom-font ${formik.touched.optionA && formik.errors.optionA ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.optionA}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Nhập nội dung option A"
+                />
+                {formik.touched.optionA && formik.errors.optionA && (
+                  <div className="error-feedback">{formik.errors.optionA}</div>
+                )}
+              </div>
+
+              {/* Option B */}
+              <div className="form-group mb-3">
+                <label htmlFor="optionB" className="form-label">
+                  Option B<span className="required-field">*</span>
+                </label>
+                <input
+                  name="optionB"
+                  type="text"
+                  id="optionB"
+                  className={`form-control border-secondary custom-font ${formik.touched.optionB && formik.errors.optionB ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.optionB}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Nhập nội dung option B"
+                />
+                {formik.touched.optionB && formik.errors.optionB && (
+                  <div className="error-feedback">{formik.errors.optionB}</div>
+                )}
+              </div>
+
+              {/* Option C */}
+              <div className="form-group mb-3">
+                <label htmlFor="optionC" className="form-label">
+                  Option C<span className="required-field">*</span>
+                </label>
+                <input
+                  name="optionC"
+                  type="text"
+                  id="optionC"
+                  className={`form-control border-secondary custom-font ${formik.touched.optionC && formik.errors.optionC ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.optionC}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Nhập nội dung option C"
+                />
+                {formik.touched.optionC && formik.errors.optionC && (
+                  <div className="error-feedback">{formik.errors.optionC}</div>
+                )}
+              </div>
+
+              {/* Option D */}
+              <div className="form-group mb-3">
+                <label htmlFor="optionD" className="form-label">
+                  Option D<span className="required-field">*</span>
+                </label>
+                <input
+                  name="optionD"
+                  type="text"
+                  id="optionD"
+                  className={`form-control border-secondary custom-font ${formik.touched.optionD && formik.errors.optionD ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.optionD}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Nhập nội dung option D"
+                />
+                {formik.touched.optionD && formik.errors.optionD && (
+                  <div className="error-feedback">{formik.errors.optionD}</div>
+                )}
+              </div>
+
+              {/* Correct Option Radio Buttons */}
+              <div className="form-group mb-3">
+                <label className="form-label">
+                  Correct Option<span className="required-field">*</span>
+                </label>
+                <div className="d-flex">
+                  {["A", "B", "C", "D"].map((opt) => (
+                    <div className="form-check" key={opt}>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id={`correctOption${opt}`}
+                        name="correctOption"
+                        value={opt}
+                        checked={formik.values.correctOption === opt}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      <label className="form-check-label me-3" htmlFor={`correctOption${opt}`}>{opt}</label>
                     </div>
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="questionType" className="form-label">
-                      Type<span className="required-field">*</span>
-                    </label>
-                    <Field
-                      as="select"
-                      name="questionType"
-                      id="questionType"
-                      className="form-select border-secondary custom-font"
-                    >
-                      <option value="" disabled>
-                        Select an option
-                      </option>
-                      <option value="[Part 5] Câu hỏi ngữ pháp">[Part 5] Câu hỏi ngữ pháp</option>
-                      <option value="[Part 5] Câu hỏi từ vựng">[Part 5] Câu hỏi từ vựng</option>
-                      <option value="[Part 5] Câu hỏi từ loại">[Part 5] Câu hỏi từ loại</option>
-                    </Field>
-                    <ErrorMessage name="questionType" component="div" className="error-feedback" />
-                  </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="questionExplanation" className="form-label">
-                      Question Explanation<span className="required-field">*</span>
-                    </label>
-                    <CKEditor
-                      editor={ClassicEditor}
-                      data={values.questionExplanation}
-                      onReady={handleEditorReady}
-                      onChange={(_, editor) => setFieldValue("questionExplanation", editor.getData())}
-                      className="form-control border-secondary custom-font"
-                    />
-                    <ErrorMessage name="questionExplanation" component="div" className="error-feedback" />
-                  </div>
+                  ))}
                 </div>
+                {formik.touched.correctOption && formik.errors.correctOption && (
+                  <div className="error-feedback">{formik.errors.correctOption}</div>
+                )}
+              </div>
+
+              {/* Question Type */}
+              <div className="form-group mb-3">
+                <label htmlFor="questionType" className="form-label">
+                  Type<span className="required-field">*</span>
+                </label>
+                <select
+                  name="questionType"
+                  id="questionType"
+                  className={`form-select border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
+                    }`}
+                  value={formik.values.questionType}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="" disabled>Select an option</option>
+                  <option value="[Part 5] Câu hỏi ngữ pháp">[Part 5] Câu hỏi ngữ pháp</option>
+                  <option value="[Part 5] Câu hỏi từ vựng">[Part 5] Câu hỏi từ vựng</option>
+                  <option value="[Part 5] Câu hỏi từ loại">[Part 5] Câu hỏi từ loại</option>
+                </select>
+                {formik.touched.questionType && formik.errors.questionType && (
+                  <div className="error-feedback">{formik.errors.questionType}</div>
+                )}
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Đóng
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={isSubmitting} data-bs-dismiss="modal">
-                Lưu
-              </button>
+
+            {/* Right Column - Media & Script */}
+            <div className="col">
+              {/* Current Question Image */}
+              {question?.questionImage && (
+                <div className="form-group mb-3">
+                  <label className="form-label">Current Image</label>
+                  <div>
+                    <img
+                      src={getImageUrl(question.questionImage)}
+                      alt="Current Question"
+                      className="img-thumbnail"
+                      style={{ maxWidth: '200px', maxHeight: '150px' }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Question Image */}
+              <div className="form-group mb-3">
+                <label htmlFor="questionImage" className="form-label">
+                  Question Image {!question?.questionImage && <span className="required-field">*</span>}
+                  {question?.questionImage && <small className="text-muted"> (Chọn file mới để thay đổi)</small>}
+                </label>
+                <input
+                  ref={imageInputRef}
+                  name="questionImage"
+                  id="questionImage"
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif"
+                  className={`form-control border-secondary custom-font ${formik.touched.questionImage && formik.errors.questionImage ? 'is-invalid' : ''
+                    }`}
+                  onChange={onImageChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.questionImage && formik.errors.questionImage && (
+                  <div className="error-feedback">{formik.errors.questionImage}</div>
+                )}
+
+                {/* New Image preview */}
+                {selectedImage && (
+                  <div className="file-preview mt-2">
+                    <small className="text-success">
+                      File mới: {selectedImage.name} ({(selectedImage.size / 1024).toFixed(2)} KB)
+                    </small>
+                    <div className="image-preview mt-2">
+                      <img
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="New Preview"
+                        className="img-thumbnail"
+                        style={{ maxWidth: '200px', maxHeight: '150px' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Current Question Audio */}
+              {question?.questionAudio && (
+                <div className="form-group mb-3">
+                  <label className="form-label">Current Audio</label>
+                  <div>
+                    <audio controls className="w-100">
+                      <source src={getAudioUrl(question.questionAudio)} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                </div>
+              )}
+
+              {/* Question Audio */}
+              <div className="form-group mb-3">
+                <label htmlFor="questionAudio" className="form-label">
+                  Question Audio {!question?.questionAudio && <span className="required-field">*</span>}
+                  {question?.questionAudio && <small className="text-muted"> (Chọn file mới để thay đổi)</small>}
+                </label>
+                <input
+                  ref={audioInputRef}
+                  name="questionAudio"
+                  id="questionAudio"
+                  type="file"
+                  accept="audio/mpeg"
+                  className={`form-control border-secondary custom-font ${formik.touched.questionAudio && formik.errors.questionAudio ? 'is-invalid' : ''
+                    }`}
+                  onChange={onAudioChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.questionAudio && formik.errors.questionAudio && (
+                  <div className="error-feedback">{formik.errors.questionAudio}</div>
+                )}
+
+                {/* New Audio preview */}
+                {selectedAudio && (
+                  <div className="file-preview mt-2">
+                    <small className="text-success">
+                      File mới: {selectedAudio.name} ({(selectedAudio.size / (1024 * 1024)).toFixed(2)} MB)
+                    </small>
+                    <div className="audio-preview mt-2">
+                      <audio controls className="w-100">
+                        <source src={URL.createObjectURL(selectedAudio)} type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Question Script với CKEditorOptimized */}
+              <div className="form-group mb-3">
+                <label className="form-label">
+                  Question Explain<span className="required-field">*</span>
+                </label>
+                <div className="ckeditor-container">
+                  {editorReady ? (
+                    <CKEditorOptimized
+                      data={editorData}
+                      onChange={setEditorData}
+                      onReady={onEditorReady}
+                      onBlur={onEditorBlur}
+                      placeholder="Nhập giải thích cho câu hỏi..."
+                      height="250px"
+                    />
+                  ) : (
+                    <div className="text-center p-3">
+                      <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {/* Custom validation error display */}
+                {!editorData && formik.submitCount > 0 && (
+                  <div className="error-feedback">Question Explain phải có giá trị.</div>
+                )}
+              </div>
             </div>
-          </Form>
-        )}
-      </Formik>
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              if (onClose) onClose();
+            }}
+          >
+            Đóng
+          </button>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? 'Đang lưu...' : 'Cập nhật'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default EditQuestionPart5;
+export default QuestionEditSection5;

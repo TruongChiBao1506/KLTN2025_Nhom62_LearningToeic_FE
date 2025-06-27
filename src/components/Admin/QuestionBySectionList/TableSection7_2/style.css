@@ -1,11 +1,24 @@
+.table-section7-double-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .table-section7-double th {
    color: #052649; 
    font-weight: bold;
+   white-space: pre-line;
+   max-width: 220px;
 }
+
 .table-section7-double td {
    color: #052649; 
    font-weight: normal;
+   white-space: pre-line;
+   vertical-align: middle;
+   max-width: 220px;
+   word-break: break-word;
 }
+
 .table-section7-double .modal.zoom .modal-dialog {
   transition: transform 0.2s ease-out;
   transform: scale(0.4);
@@ -14,12 +27,22 @@
   transform: scale(1);
 }
 .table-section7-double .question-image {
-    width: 50px;
+    min-width: 80px;
+    max-width: 130px;
 }
 .table-section7-double .table {
     font-size: 13px;
+    min-width: 1300px;
 }
 .table-section7-double audio {
     width: 100%;
     max-width: 300px;
+}
+
+/* Đặc biệt cho các cột dài */
+.table-section7-double td:nth-child(2),    /* CONTENT */
+.table-section7-double td:nth-child(9),   /* EXPLANATION */
+.table-section7-double td:nth-child(11)    /* PASSAGE */ {
+  max-width: 260px;
+  white-space: pre-line;
 }

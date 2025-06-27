@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import QuestionEditSection7Double from "../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditSection7_2";
 import "./style.css";
 
 const MAX_PASSAGE_LENGTH = 200;
@@ -21,6 +22,7 @@ const TableSection7Double = ({
   sectionId,
   retrieveQuestions,
   QuestionService,
+  handleShowEditModal,
 }) => {
   // Group questions by groupId
   const groupedQuestionMap = useMemo(() => {
@@ -84,7 +86,7 @@ const TableSection7Double = ({
   const groupKeys = Object.keys(groupedQuestionMap);
 
   return (
-    <div className="table-section7-double">
+    <div className="table-section7-double-wrapper">
       <table className="table text-center table-bordered shadow">
         <thead className="shadow">
           <tr className="align-middle">
@@ -129,7 +131,7 @@ const TableSection7Double = ({
                 {index === 0 && (
                   <td className="question-image" rowSpan={groupedQuestions.length}>
                     <img
-                      src={getImageUrl(question.questionGroup.groupImage) || " "}
+                      src={getImageUrl(question.questionGroup.groupImage) || ""}
                       style={{ width: "100px" }}
                       alt=""
                     />
@@ -155,7 +157,7 @@ const TableSection7Double = ({
                             0
                           )
                         }
-                        className="btn badge text-bg-success"
+                        className="btn badge text-bg-success rounded-5"
                         style={{ cursor: "pointer" }}
                       >
                         Enable
@@ -168,7 +170,7 @@ const TableSection7Double = ({
                             1
                           )
                         }
-                        className="btn badge text-bg-danger"
+                        className="btn badge text-bg-danger rounded-5"
                         style={{ cursor: "pointer" }}
                       >
                         Disable
@@ -178,56 +180,17 @@ const TableSection7Double = ({
                 )}
                 {index === 0 && (
                   <td rowSpan={groupedQuestions.length}>
-                    <div className="d-flex justify-content-center">
-                      {/* Edit Modal Trigger */}
+                    <div className="d-flex justify-content-center gap-2">
+                      {/* Edit Button */}
                       <button
                         type="button"
                         className="btn btn-white border-0"
-                        data-bs-toggle="modal"
-                        data-bs-target={`#editQuestionModal-${question.questionGroup._id}`}
+                        onClick={() => handleShowEditModal(question.questionGroup._id)}
+                        title="Chỉnh sửa nhóm câu hỏi"
                       >
-                        <i
-                          className="fas fa-edit"
-                          style={{ color: "rgb(192, 129, 13)" }}
-                        ></i>
+                        <FontAwesomeIcon icon={faEdit} style={{ color: "rgb(192, 129, 13)" }} />
                       </button>
-                      {/* Modal */}
-                      <div
-                        id={`editQuestionModal-${question.questionGroup._id}`}
-                        className="modal zoom"
-                        tabIndex="-1"
-                        aria-labelledby={`editQuestionModalLabel-${question.questionGroup._id}`}
-                        aria-hidden="true"
-                      >
-                        <div className="modal-dialog modal-xl">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <h1
-                                className="modal-title fs-5"
-                                id={`editQuestionModalLabel-${question.questionGroup._id}`}
-                              >
-                                <i
-                                  className="fas fa-edit"
-                                  style={{ color: "rgb(192, 129, 13)" }}
-                                ></i>{" "}
-                                Edit Question Section 7 Double
-                              </h1>
-                              <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <QuestionEditSection7Double
-                              groupId={question.questionGroup._id}
-                              sectionId={sectionId}
-                              retrieveQuestions={retrieveQuestions}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      {/* Delete */}
+                      {/* Delete Button */}
                       <button
                         type="button"
                         onClick={() =>
@@ -236,8 +199,9 @@ const TableSection7Double = ({
                           )
                         }
                         className="btn btn-white border-0"
+                        title="Xóa nhóm câu hỏi"
                       >
-                        <i className="fas fa-trash text-danger"></i>
+                        <FontAwesomeIcon icon={faTrash} className="text-danger" />
                       </button>
                     </div>
                   </td>

@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faTrashCan,
     faUserCheck,
     faUserTimes,
-    faSearch
+    faSearch,
+    faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -291,7 +291,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                         className="btn btn-white border-0"
                                                         title={`Xóa [${learner.username || learner.name}]`}
                                                     >
-                                                        <FontAwesomeIcon icon={faTrashCan} className="text-danger" />
+                                                        <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                     </button>
                                                 </div>
                                             </td>

@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
@@ -62,38 +61,15 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     });
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor (170px)
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
     };
 
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
-    };
+    const onEditorBlur = () => {};
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-
-            // Validate question explanation
             if (!editorData || editorData.trim() === '') {
                 toast.error('Question Explanation phải có giá trị', {
                     autoClose: 1000,
@@ -130,18 +106,11 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("questionType", values.questionType);
             formData.append("questionExplanation", editorData);
 
-            console.log('Creating question...');
             await QuestionService.create(formData);
-
             retrieveQuestions();
 
             // Reset form và các state
-            resetForm();
-            setEditorData('');
-            
-            if (editorRef.current) {
-                editorRef.current.setData('');
-            }
+            resetFormAndState(resetForm);
 
             // Close modal
             if (onClose) {
@@ -152,20 +121,15 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                 autoClose: 1000,
             });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch (parseError) {}
             }
-
             toast.error(errorMessage, {
                 autoClose: 1000,
                 position: 'top-right',
@@ -173,20 +137,18 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     };
 
-    const handleClose = () => {
-        formik.resetForm();
+    const resetFormAndState = (resetForm) => {
+        resetForm();
         setEditorData('');
-        
         if (editorRef.current) {
             editorRef.current.setData('');
         }
-        if (onClose) onClose();
     };
 
     return (
         <div className="question-add-section5-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
                             {/* Question Content */}
@@ -301,10 +263,10 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
 
                             {/* Correct Option Radio Buttons */}
                             <div className="form-group mb-3">
-                                <label htmlFor="correctOption" className="form-label">
+                                <label className="form-label">
                                     Correct Option<span className="required-field">*</span>
                                 </label>
-                                <div className="form-d-flex">
+                                <div className="d-flex">
                                     {['A', 'B', 'C', 'D'].map((option) => (
                                         <div key={option} className="form-check">
                                             <input
@@ -353,42 +315,19 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 )}
                             </div>
 
-                            {/* Question Explanation với CKEditor */}
+                            {/* Question Explanation với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label className="form-label">
                                     Question Explanation<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                    <CKEditorOptimized
                                         data={editorData}
+                                        onChange={setEditorData}
                                         onReady={onEditorReady}
-                                        onChange={onEditorChange}
                                         onBlur={onEditorBlur}
-                                        onFocus={onEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập giải thích chi tiết cho câu hỏi Part 5...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi'
-                                        }}
+                                        placeholder="Nhập giải thích chi tiết cho câu hỏi Part 5..."
+                                        height="250px"
                                     />
                                 </div>
                                 {/* Custom validation error display */}
@@ -404,7 +343,11 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                     <button 
                         type="button" 
                         className="btn btn-secondary" 
-                        onClick={handleClose}
+                        onClick={() => {
+                            formik.resetForm();
+                            resetFormAndState(() => {});
+                            if (onClose) onClose();
+                        }}
                     >
                         Đóng
                     </button>

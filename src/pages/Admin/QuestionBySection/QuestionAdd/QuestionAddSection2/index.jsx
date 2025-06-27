@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
@@ -76,10 +76,7 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
 
     // CKEditor event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor (250px)
         editor.editing.view.change(writer => {
             writer.setStyle('height', '250px', editor.editing.view.document.getRoot());
         });
@@ -88,24 +85,13 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
     const onEditorChange = (event, editor) => {
         const data = editor.getData();
         setEditorData(data);
-        console.log('Editor data:', data);
     };
 
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
-    };
+    const onEditorBlur = () => { };
+    const onEditorFocus = () => { };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-
-            // Validate question script
             if (!editorData || editorData.trim() === '') {
                 toast.error('Question Script phải có giá trị', {
                     autoClose: 1000,
@@ -113,7 +99,6 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                 return;
             }
 
-            // Create FormData
             const formData = new FormData();
             formData.append("sectionId", sectionId);
             formData.append("optionA", values.optionA);
@@ -136,8 +121,7 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
             }
 
             formData.append("questionType", values.questionType);
-            
-            // Add audio file
+
             if (selectedAudio) {
                 formData.append("questionAudio", selectedAudio, selectedAudio.name);
             }
@@ -148,15 +132,7 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
             retrieveQuestions();
 
             // Reset form và các state
-            resetForm();
-            setSelectedAudio(null);
-            setEditorData('');
-            if (editorRef.current) {
-                editorRef.current.setData('');
-            }
-            if (audioInputRef.current) {
-                audioInputRef.current.value = '';
-            }
+            resetFormAndState(resetForm);
 
             // Close modal
             if (onClose) {
@@ -167,20 +143,15 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                 autoClose: 1000,
             });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch (parseError) { }
             }
-
             toast.error(errorMessage, {
                 autoClose: 1000,
                 position: 'top-right',
@@ -188,8 +159,8 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
         }
     };
 
-    const handleClose = () => {
-        formik.resetForm();
+    const resetFormAndState = (resetForm) => {
+        resetForm();
         setSelectedAudio(null);
         setEditorData('');
         if (editorRef.current) {
@@ -198,11 +169,10 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
         if (audioInputRef.current) {
             audioInputRef.current.value = '';
         }
-        if (onClose) onClose();
     };
 
     return (
-        <div className="question-add-section2-page page">
+        <div className='question-add-section2-page'>
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
                 <div className="modal-body text-start">
                     <div className="row">
@@ -217,9 +187,8 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     name="optionA"
                                     type="text"
                                     id="optionA"
-                                    className={`form-control border-secondary custom-font ${
-                                        formik.touched.optionA && formik.errors.optionA ? 'is-invalid' : ''
-                                    }`}
+                                    className={`form-control border-secondary custom-font ${formik.touched.optionA && formik.errors.optionA ? 'is-invalid' : ''
+                                        }`}
                                     value={formik.values.optionA}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -239,9 +208,8 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     name="optionB"
                                     type="text"
                                     id="optionB"
-                                    className={`form-control border-secondary custom-font ${
-                                        formik.touched.optionB && formik.errors.optionB ? 'is-invalid' : ''
-                                    }`}
+                                    className={`form-control border-secondary custom-font ${formik.touched.optionB && formik.errors.optionB ? 'is-invalid' : ''
+                                        }`}
                                     value={formik.values.optionB}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -261,9 +229,8 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     name="optionC"
                                     type="text"
                                     id="optionC"
-                                    className={`form-control border-secondary custom-font ${
-                                        formik.touched.optionC && formik.errors.optionC ? 'is-invalid' : ''
-                                    }`}
+                                    className={`form-control border-secondary custom-font ${formik.touched.optionC && formik.errors.optionC ? 'is-invalid' : ''
+                                        }`}
                                     value={formik.values.optionC}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -333,9 +300,8 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 <select
                                     name="questionType"
                                     id="questionType"
-                                    className={`form-select border-secondary custom-font ${
-                                        formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
-                                    }`}
+                                    className={`form-select border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
+                                        }`}
                                     value={formik.values.questionType}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -372,16 +338,15 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     id="questionAudio"
                                     type="file"
                                     accept="audio/mpeg"
-                                    className={`form-control border-secondary custom-font ${
-                                        formik.touched.questionAudio && formik.errors.questionAudio ? 'is-invalid' : ''
-                                    }`}
+                                    className={`form-control border-secondary custom-font ${formik.touched.questionAudio && formik.errors.questionAudio ? 'is-invalid' : ''
+                                        }`}
                                     onChange={onAudioChange}
                                     onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.questionAudio && formik.errors.questionAudio && (
                                     <div className="error-feedback">{formik.errors.questionAudio}</div>
                                 )}
-                                
+
                                 {/* Audio preview */}
                                 {selectedAudio && (
                                     <div className="file-preview mt-2">
@@ -404,37 +369,13 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     Question Script<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                    <CKEditorOptimized
                                         data={editorData}
+                                        onChange={setEditorData}
                                         onReady={onEditorReady}
-                                        onChange={onEditorChange}
                                         onBlur={onEditorBlur}
-                                        onFocus={onEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập nội dung script cho part 2...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'underline',
-                                                '|',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'blockQuote',
-                                                'insertTable',
-                                                '|',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi'
-                                        }}
+                                        placeholder="Nhập nội dung script cho part 2..."
+                                        height="250px"
                                     />
                                 </div>
                                 {/* Custom validation error display */}
@@ -447,15 +388,19 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                 </div>
 
                 <div className="modal-footer">
-                    <button 
-                        type="button" 
-                        className="btn btn-secondary" 
-                        onClick={handleClose}
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                            formik.resetForm();
+                            resetFormAndState(() => { });
+                            if (onClose) onClose();
+                        }}
                     >
                         Đóng
                     </button>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary"
                         disabled={formik.isSubmitting}
                     >

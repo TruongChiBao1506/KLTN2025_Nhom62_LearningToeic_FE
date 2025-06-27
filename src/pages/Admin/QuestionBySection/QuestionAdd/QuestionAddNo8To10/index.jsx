@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import QuestionGroupService from '../../../../../services/questionGroupService';
 import './style.css';
@@ -17,36 +15,13 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
 
     // State cho 3 questions
     const [questions, setQuestions] = useState([
-        {
-            questionContent: '',
-            suggestedAnswer: ''
-        },
-        {
-            questionContent: '',
-            suggestedAnswer: ''
-        },
-        {
-            questionContent: '',
-            suggestedAnswer: ''
-        }
+        { questionContent: '', suggestedAnswer: '' },
+        { questionContent: '', suggestedAnswer: '' },
+        { questionContent: '', suggestedAnswer: '' }
     ]);
 
     // Validation schema
     const questionFormSchema = Yup.object().shape({
-        // groupImage validation (commented out like Vue component)
-        // groupImage: Yup
-        //     .mixed()
-        //     .required("Vui lòng chọn một tệp ảnh.")
-        //     .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
-        //         if (!value) return true;
-        //         const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
-        //         return allowedFormats.includes(value.type);
-        //     })
-        //     .test("fileSize", "Tệp ảnh quá lớn", (value) => {
-        //         if (!value) return true;
-        //         return value.size <= 1024 * 1024; // 1 MB
-        //     }),
-
         questionContent0: Yup
             .string()
             .required("questionContent phải có giá trị.")
@@ -100,7 +75,6 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
     const onImageChange = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
-        console.log('Selected file:', file);
     };
 
     // Update questions state khi formik values thay đổi
@@ -110,43 +84,22 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
         setQuestions(newQuestions);
     };
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-            console.log('Selected file:', selectedFile);
-
-            // Validate group text
             if (!editorData || editorData.trim() === '') {
-                toast.error('Question Group Text phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Question Group Text phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
@@ -154,33 +107,27 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
             const groupFormData = new FormData();
             groupFormData.append("sectionId", sectionId);
             groupFormData.append("groupText", editorData);
-            
+
             // Add image if selected (optional)
             if (selectedFile) {
                 groupFormData.append("groupImage", selectedFile, selectedFile.name);
             }
 
-            console.log('Creating question group...');
-            
             // Gửi dữ liệu nhóm câu hỏi lên server và lấy groupId
             const response = await QuestionGroupService.create(groupFormData);
-            console.log('Group response:', response);
-            
             const groupId = response.groupId;
-            console.log('Group ID:', groupId);
 
             // Gửi dữ liệu từng câu hỏi con lên server
             for (let i = 0; i < 3; i++) {
                 const questionContent = values[`questionContent${i}`];
                 const suggestedAnswer = values[`suggestedAnswer${i}`];
-                
+
                 const formData = new FormData();
                 formData.append("sectionId", sectionId);
                 formData.append("groupId", groupId);
                 formData.append("questionContent", questionContent);
                 formData.append("suggestedAnswer", suggestedAnswer);
-                
-                console.log(`Creating question ${i + 1}...`);
+
                 await QuestionService.create(formData);
             }
 
@@ -202,33 +149,20 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
                 fileInputRef.current.value = '';
             }
 
-            // Close modal
-            if (onClose) {
-                onClose();
-            }
+            if (onClose) onClose();
 
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
@@ -253,7 +187,7 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className='question-add-no8to10-page page'>
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     {/* Question Group Image Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupImage">
@@ -288,59 +222,20 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
                         )}
                     </div>
 
-                    {/* Question Group Text với CKEditor */}
+                    {/* Question Group Text với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupText" className="form-label">
                             Question Group Text<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
-                            <CKEditor
-                                editor={ClassicEditor}
+                            <CKEditorOptimized
                                 data={editorData}
+                                onChange={setEditorData}
                                 onReady={onEditorReady}
-                                onChange={onEditorChange}
-                                onBlur={onEditorBlur}
-                                onFocus={onEditorFocus}
-                                config={{
-                                    placeholder: 'Nhập nội dung nhóm câu hỏi cho part 8-10...',
-                                    toolbar: [
-                                        'heading',
-                                        '|',
-                                        'bold',
-                                        'italic',
-                                        'link',
-                                        'bulletedList',
-                                        'numberedList',
-                                        '|',
-                                        'outdent',
-                                        'indent',
-                                        '|',
-                                        'imageUpload',
-                                        'blockQuote',
-                                        'insertTable',
-                                        'mediaEmbed',
-                                        'undo',
-                                        'redo'
-                                    ],
-                                    language: 'vi',
-                                    image: {
-                                        toolbar: [
-                                            'imageTextAlternative',
-                                            'imageStyle:full',
-                                            'imageStyle:side'
-                                        ]
-                                    },
-                                    table: {
-                                        contentToolbar: [
-                                            'tableColumn',
-                                            'tableRow',
-                                            'mergeTableCells'
-                                        ]
-                                    }
-                                }}
+                                placeholder="Nhập nội dung nhóm câu hỏi cho part 8-10..."
+                                height="170px"
                             />
                         </div>
-                        {/* Custom validation error display */}
                         {!editorData && formik.submitCount > 0 && (
                             <div className="error-feedback">Question Group Text phải có giá trị.</div>
                         )}

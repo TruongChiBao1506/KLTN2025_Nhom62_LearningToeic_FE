@@ -2,9 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
@@ -53,61 +51,34 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
         setSelectedFile(file);
         formik.setFieldValue('questionImage', file);
         formik.setFieldTouched('questionImage', true);
-        
-        console.log('Selected file:', file);
     };
 
-    // CKEditor event handlers
+    // CKEditorOptimized event handlers
     const onEditorReady = (editor) => {
-        console.log('Editor is ready to use!', editor);
         editorRef.current = editor;
-        
-        // Set height của editor
-        editor.editing.view.change(writer => {
-            writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-        });
-    };
-
-    const onEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setEditorData(data);
-        console.log('Editor data:', data);
-    };
-
-    const onEditorBlur = (event, editor) => {
-        console.log('Blur.', editor);
-    };
-
-    const onEditorFocus = (event, editor) => {
-        console.log('Focus.', editor);
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Editor data:', editorData);
-            console.log('Selected file:', selectedFile);
-
-            // Validate required fields
             if (!values.questionContent || values.questionContent.trim() === '') {
-                toast.error('Question Content phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Question Content phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
             if (!editorData || editorData.trim() === '') {
-                toast.error('Suggested Answer phải có giá trị', {
-                    autoClose: 1000,
-                });
+                toast.error('Suggested Answer phải có giá trị', { autoClose: 1000 });
                 return;
             }
 
             if (!selectedFile) {
-                toast.error('Vui lòng chọn một tệp ảnh', {
-                    autoClose: 1000,
-                });
+                toast.error('Vui lòng chọn một tệp ảnh', { autoClose: 1000 });
                 return;
             }
 
@@ -116,7 +87,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("sectionId", sectionId);
             formData.append("questionContent", values.questionContent);
             formData.append("suggestedAnswer", editorData);
-            
+
             if (selectedFile) {
                 formData.append("questionImage", selectedFile, selectedFile.name);
             }
@@ -140,28 +111,18 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                 onClose();
             }
 
-            toast.success('Thêm câu hỏi thành công', {
-                autoClose: 1000,
-            });
+            toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
-            toast.error(errorMessage, {
-                autoClose: 1000,
-                position: 'top-right',
-            });
+            toast.error(errorMessage, { autoClose: 1000, position: 'top-right' });
         }
     };
 
@@ -181,7 +142,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className="question-add-no1to5-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
                             {/* Question Image Field */}
@@ -204,7 +165,6 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {formik.touched.questionImage && formik.errors.questionImage && (
                                     <div className="error-feedback">{formik.errors.questionImage}</div>
                                 )}
-                                
                                 {/* File preview */}
                                 {selectedFile && (
                                     <div className="file-preview mt-2">
@@ -247,56 +207,18 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 )}
                             </div>
 
-                            {/* Suggested Answer Field với CKEditor */}
+                            {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
                                     Suggested Answer<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
-                                    <CKEditor
-                                        editor={ClassicEditor}
+                                    <CKEditorOptimized
                                         data={editorData}
+                                        onChange={setEditorData}
                                         onReady={onEditorReady}
-                                        onChange={onEditorChange}
-                                        onBlur={onEditorBlur}
-                                        onFocus={onEditorFocus}
-                                        config={{
-                                            placeholder: 'Nhập gợi ý trả lời cho part 1-5...',
-                                            toolbar: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                '|',
-                                                'outdent',
-                                                'indent',
-                                                '|',
-                                                'imageUpload',
-                                                'blockQuote',
-                                                'insertTable',
-                                                'mediaEmbed',
-                                                'undo',
-                                                'redo'
-                                            ],
-                                            language: 'vi',
-                                            image: {
-                                                toolbar: [
-                                                    'imageTextAlternative',
-                                                    'imageStyle:full',
-                                                    'imageStyle:side'
-                                                ]
-                                            },
-                                            table: {
-                                                contentToolbar: [
-                                                    'tableColumn',
-                                                    'tableRow',
-                                                    'mergeTableCells'
-                                                ]
-                                            }
-                                        }}
+                                        placeholder="Nhập gợi ý trả lời cho part 1-5..."
+                                        height="170px"
                                     />
                                 </div>
                                 {/* Custom validation error display */}

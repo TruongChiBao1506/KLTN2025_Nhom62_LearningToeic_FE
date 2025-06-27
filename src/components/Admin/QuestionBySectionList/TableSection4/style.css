@@ -1,11 +1,24 @@
+.table-section4 {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .table-section4 th {
    color: #052649; 
    font-weight: bold;
+   white-space: pre-line;
+   max-width: 220px;
 }
+
 .table-section4 td {
    color: #052649; 
    font-weight: normal;
+   white-space: pre-line;
+   vertical-align: middle;
+   max-width: 220px;
+   word-break: break-word;
 }
+
 .table-section4 .table-row.shadow-on-hover:hover {
    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9); 
 }
@@ -17,12 +30,21 @@
   transform: scale(1);
 }
 .table-section4 .question-image {
-    width: 50px;
+    min-width: 80px;
+    max-width: 130px;
 }
 .table-section4 .table {
     font-size: 13px;
+    min-width: 1300px;
 }
 .table-section4 audio {
     width: 100%;
     max-width: 300px;
+}
+
+/* Đặc biệt cho các cột dài */
+.table-section4 td:nth-child(2),    /* CONTENT */
+.table-section4 td:nth-child(11)    /* SCRIPT */ {
+  max-width: 260px;
+  white-space: pre-line;
 }

@@ -71,7 +71,9 @@ class QuestionService {
     // Update question status
     async updateStatus(questionId, newStatus) {
         try {
-            const response = await axiosClient.put(`${this.baseUrl}/${questionId}/status`, newStatus);
+            const response = await axiosClient.put(`${this.baseUrl}/${questionId}/status`, {
+                status: newStatus
+            });
             return response;
         } catch (error) {
             console.error('Update question status error:', error);

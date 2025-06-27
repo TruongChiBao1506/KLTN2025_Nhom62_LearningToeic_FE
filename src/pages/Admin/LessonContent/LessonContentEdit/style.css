@@ -90,3 +90,16 @@ label {
     background-color: #cff4fc;
     border-color: #b6effb;
 }
+.ckeditor-container .ck-editor__editable_inline {
+    border: 1.5px solid #ced4da !important;
+    border-radius: 6px;
+    min-height: 120px;
+    padding: 12px;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.ckeditor-container .ck-editor__editable_inline:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 2px #cce5ff;
+}

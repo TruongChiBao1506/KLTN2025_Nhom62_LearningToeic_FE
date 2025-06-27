@@ -2,13 +2,15 @@ import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import QuestionService from '../../../../../services/questionService';
 import './style.css';
 
 const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
+    const [editorData, setEditorData] = useState('');
+    const editorRef = useRef(null);
 
     // Validation schema
     const questionFormSchema = Yup.object().shape({
@@ -19,14 +21,13 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
             .max(1000, "suggestedAnswer có nhiều nhất 1000 ký tự."),
         questionImage: Yup
             .mixed()
-            // .required("Vui lòng chọn một tệp ảnh.") // Optional - không bắt buộc
             .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
-                if (!value) return true; // Bỏ qua nếu không có tệp
+                if (!value) return true;
                 const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
                 return allowedFormats.includes(value.type);
             })
             .test("fileSize", "Tệp ảnh quá lớn", (value) => {
-                if (!value) return true; // Bỏ qua nếu không có tệp
+                if (!value) return true;
                 return value.size <= 1024 * 1024; // 1 MB
             }),
     });
@@ -49,18 +50,23 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
         setSelectedFile(file);
         formik.setFieldValue('questionImage', file);
         formik.setFieldTouched('questionImage', true);
-        
-        console.log('Selected file:', file);
+    };
+
+    // CKEditorOptimized event handlers
+    const onEditorReady = (editor) => {
+        editorRef.current = editor;
+        setTimeout(() => {
+            if (editor && editor.editing && editor.editing.view) {
+                editor.editing.view.change(writer => {
+                    writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
+                });
+            }
+        }, 100);
     };
 
     const addQuestion = async (values, resetForm) => {
         try {
-            console.log('Section ID:', sectionId);
-            console.log('Form values:', values);
-            console.log('Selected file:', selectedFile);
-
-            // Validate required fields
-            if (!values.suggestedAnswer || values.suggestedAnswer.trim() === '') {
+            if (!editorData || editorData.trim() === '') {
                 toast.error('Suggested Answer phải có giá trị', {
                     autoClose: 1000,
                 });
@@ -70,8 +76,8 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
             // Create FormData
             const formData = new FormData();
             formData.append("sectionId", sectionId);
-            formData.append("suggestedAnswer", values.suggestedAnswer);
-            
+            formData.append("suggestedAnswer", editorData);
+
             // Add image if selected (optional)
             if (selectedFile) {
                 formData.append("questionImage", selectedFile, selectedFile.name);
@@ -83,6 +89,10 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
             // Reset form và các state
             resetForm();
             setSelectedFile(null);
+            setEditorData('');
+            if (editorRef.current) {
+                editorRef.current.setData('');
+            }
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -96,20 +106,15 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
                 autoClose: 1000,
             });
         } catch (error) {
-            console.log('Error adding question:', error);
             let errorMessage = 'Lỗi khi thêm câu hỏi';
-            
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.request?.response) {
                 try {
                     const jsonResponse = JSON.parse(error.request.response);
                     errorMessage = jsonResponse.message;
-                } catch (parseError) {
-                    console.error('Error parsing response:', parseError);
-                }
+                } catch {}
             }
-
             toast.error(errorMessage, {
                 autoClose: 1000,
                 position: 'top-right',
@@ -120,6 +125,10 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
     const handleClose = () => {
         formik.resetForm();
         setSelectedFile(null);
+        setEditorData('');
+        if (editorRef.current) {
+            editorRef.current.setData('');
+        }
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -129,7 +138,7 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
     return (
         <div className="question-add-no3to4-page page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     <div className="row">
                         <div className="col">
                             {/* Question Image Field - Optional */}
@@ -152,7 +161,6 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {formik.touched.questionImage && formik.errors.questionImage && (
                                     <div className="error-feedback">{formik.errors.questionImage}</div>
                                 )}
-                                
                                 {/* File preview */}
                                 {selectedFile && (
                                     <div className="file-preview mt-2">
@@ -173,25 +181,25 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 )}
                             </div>
 
-                            {/* Suggested Answer Field */}
+                            {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
                                     Suggested Answer<span className="required-field">*</span>
                                 </label>
-                                <textarea
-                                    name="suggestedAnswer"
-                                    id="suggestedAnswer"
-                                    className={`form-control border-secondary custom-font ${
-                                        formik.touched.suggestedAnswer && formik.errors.suggestedAnswer ? 'is-invalid' : ''
-                                    }`}
-                                    style={{ height: '150px', resize: 'none' }}
-                                    value={formik.values.suggestedAnswer}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    placeholder="Nhập gợi ý trả lời cho part 3-4"
-                                />
-                                {formik.touched.suggestedAnswer && formik.errors.suggestedAnswer && (
-                                    <div className="error-feedback">{formik.errors.suggestedAnswer}</div>
+                                <div className="ckeditor-container">
+                                    <CKEditorOptimized
+                                        data={formik.values.suggestedAnswer}
+                                        onChange={data => {
+                                            setEditorData(data);
+                                            formik.setFieldValue('suggestedAnswer', data);
+                                        }}
+                                        onReady={onEditorReady}
+                                        placeholder="Nhập gợi ý trả lời cho part 3-4..."
+                                        height="170px"
+                                    />
+                                </div>
+                                {!editorData && formik.submitCount > 0 && (
+                                    <div className="error-feedback">Suggested Answer phải có giá trị.</div>
                                 )}
                             </div>
                         </div>

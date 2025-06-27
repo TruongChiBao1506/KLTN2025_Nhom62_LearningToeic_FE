@@ -1,30 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditorOptimized from '../../../../../components/Admin/EditorOptimized';
 import { toast } from 'react-toastify';
 import QuestionService from '../../../../../services/questionService';
 import QuestionGroupService from '../../../../../services/questionGroupService';
 import './style.css';
 
-const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
+const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
   const [numberOfQuestions, setNumberOfQuestions] = useState(2);
-  const [questionLocal, setQuestionLocal] = useState({
-    groupImage: null,
-    groupPassage: "",
-    questions: Array.from({ length: 2 }, () => ({
-      questionContent: "",
-      optionA: "",
-      optionB: "",
-      optionC: "",
-      optionD: "",
-      correctOption: "",
-      questionType: "",
-      questionExplanation: "",
-    }))
-  });
+  const [groupPassage, setGroupPassage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Generate dynamic validation schema based on number of questions
   const generateValidationSchema = (numQuestions) => {
@@ -33,17 +20,18 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
         .mixed()
         .required("Vui lòng chọn một tệp ảnh.")
         .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
-          if (!value) return true;
+          const file = value && value.length ? value[0] : value;
+          if (!file) return true;
           const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
-          return allowedFormats.includes(value.type);
+          return allowedFormats.includes(file.type);
         })
         .test("fileSize", "Tệp ảnh quá lớn", (value) => {
-          if (!value) return true;
-          return value.size <= 1024 * 1024;
+          const file = value && value.length ? value[0] : value;
+          if (!file) return true;
+          return file.size <= 1024 * 1024;
         }),
     };
 
-    // Add validation for each question
     for (let i = 0; i < numQuestions; i++) {
       baseSchema[`questionContent${i}`] = yup
         .string()
@@ -108,67 +96,64 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
   // Handle number of questions change
   const handleSetNumberOfQuestions = (count) => {
     setNumberOfQuestions(count);
-    
-    // Update questions array
-    const newQuestions = Array.from({ length: count }, () => ({
-      questionContent: "",
-      optionA: "",
-      optionB: "",
-      optionC: "",
-      optionD: "",
-      correctOption: "",
-      questionType: "",
-      questionExplanation: "",
-    }));
-
-    setQuestionLocal(prev => ({
-      ...prev,
-      questions: newQuestions
-    }));
-
-    // Reset form with new validation schema
     reset();
   };
 
   // Handle image change
   const onImageChange = (event) => {
     const file = event.target.files[0];
-    setQuestionLocal(prev => ({ ...prev, groupImage: file }));
+    setSelectedImage(file);
     setValue('groupImage', file);
   };
 
-  // Handle question field changes
-  const handleQuestionChange = (index, field, value) => {
-    setQuestionLocal(prev => ({
-      ...prev,
-      questions: prev.questions.map((q, i) => 
-        i === index ? { ...q, [field]: value } : q
-      )
-    }));
-    setValue(`${field}${index}`, value);
+  // Handle passage change (CKEditorOptimized)
+  const handlePassageChange = (data) => {
+    setGroupPassage(data);
   };
 
-  // Handle passage change
-  const handlePassageChange = (data) => {
-    setQuestionLocal(prev => ({ ...prev, groupPassage: data }));
+  // Reset all form and state
+  const resetFormAndState = () => {
+    setSelectedImage(null);
+    setGroupPassage("");
+    reset();
   };
 
   // Submit form
   const addQuestion = async (data) => {
     try {
+      if (!groupPassage || groupPassage.trim() === "") {
+        toast.error('Question Group Passage phải có giá trị', { autoClose: 1000 });
+        return;
+      }
+
       // Create question group
       const groupFormData = new FormData();
       groupFormData.append("sectionId", sectionId);
-      if (questionLocal.groupImage) {
-        groupFormData.append("groupImage", questionLocal.groupImage, questionLocal.groupImage.name);
+      if (selectedImage) {
+        groupFormData.append("groupImage", selectedImage, selectedImage.name);
       }
-      groupFormData.append("groupPassage", questionLocal.groupPassage);
+      groupFormData.append("groupPassage", groupPassage);
 
       const response = await QuestionGroupService.create(groupFormData);
       const groupId = response.groupId;
 
+      // Build questions từ data react-hook-form
+      const questions = [];
+      for (let i = 0; i < numberOfQuestions; i++) {
+        questions.push({
+          questionContent: data[`questionContent${i}`],
+          optionA: data[`optionA${i}`],
+          optionB: data[`optionB${i}`],
+          optionC: data[`optionC${i}`],
+          optionD: data[`optionD${i}`],
+          correctOption: data[`correctOption${i}`],
+          questionType: data[`questionType${i}`],
+          questionExplanation: data[`questionExplanation${i}`],
+        });
+      }
+
       // Create individual questions
-      for (const question of questionLocal.questions) {
+      for (const question of questions) {
         const formData = new FormData();
         formData.append("sectionId", sectionId);
         formData.append("groupId", groupId);
@@ -177,7 +162,7 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
         formData.append("optionB", question.optionB);
         formData.append("optionC", question.optionC);
         formData.append("optionD", question.optionD);
-        
+
         // Set correct option based on selection
         switch (question.correctOption) {
           case "A":
@@ -195,23 +180,24 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
           default:
             formData.append("correctOption", "");
         }
-        
+
         formData.append("questionType", question.questionType);
         formData.append("questionExplanation", question.questionExplanation);
-        
+
         await QuestionService.create(formData);
       }
 
-      toast.success('Thêm Questions thành công', {
-        autoClose: 1000,
-      });
+      toast.success('Thêm Questions thành công', { autoClose: 1000 });
       retrieveQuestions();
 
+      // Reset form và các state
+      resetFormAndState();
+
+      // Close modal nếu có
+      if (onClose) onClose();
+
     } catch (error) {
-      console.log(error);
-      toast.error('Lỗi khi thêm Questions', {
-        autoClose: 1000,
-      });
+      toast.error('Lỗi khi thêm Questions', { autoClose: 1000 });
     }
   };
 
@@ -229,24 +215,24 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
   return (
     <div className="question-add-section7-1-page page">
       {/* Number of Questions Selection */}
-      <div className="d-flex justify-content-center mt-4">
-        <button 
+      <div className="question-count-selector-sticky d-flex justify-content-center mt-0">
+        <button
           type="button"
-          className="button" 
+          className={`button${numberOfQuestions === 2 ? ' active' : ''}`}
           onClick={() => handleSetNumberOfQuestions(2)}
         >
           2 Câu Hỏi
         </button>
-        <button 
+        <button
           type="button"
-          className="button mx-3" 
+          className={`button mx-3${numberOfQuestions === 3 ? ' active' : ''}`}
           onClick={() => handleSetNumberOfQuestions(3)}
         >
           3 Câu Hỏi
         </button>
-        <button 
+        <button
           type="button"
-          className="button" 
+          className={`button${numberOfQuestions === 4 ? ' active' : ''}`}
           onClick={() => handleSetNumberOfQuestions(4)}
         >
           4 Câu Hỏi
@@ -254,7 +240,7 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
       </div>
 
       <form onSubmit={handleSubmit(addQuestion)} encType="multipart/form-data">
-        <div className="modal-body text-start">
+        <div className="modal-body text-start p-4">
           {/* Group Image */}
           <div className="form-group mb-3">
             <label htmlFor="groupImage">
@@ -269,36 +255,46 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
             {errors.groupImage && (
               <div className="error-feedback">{errors.groupImage.message}</div>
             )}
+            {selectedImage && (
+              <div className="file-preview mt-2">
+                <small className="text-muted">
+                  Đã chọn: {selectedImage.name} ({(selectedImage.size / 1024).toFixed(2)} KB)
+                </small>
+                <div className="image-preview mt-2">
+                  <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Preview"
+                    className="img-thumbnail"
+                    style={{ maxWidth: '200px', maxHeight: '150px' }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Group Passage */}
+          {/* Group Passage với CKEditorOptimized */}
           <div className="form-group mb-3">
             <label htmlFor="groupPassage" className="form-label">
               Question Group Passage<span className="required-field">*</span>
             </label>
-            <CKEditor
-              editor={ClassicEditor}
-              data={questionLocal.groupPassage}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                handlePassageChange(data);
-              }}
-              onReady={(editor) => {
-                editor.editing.view.change(writer => {
-                  writer.setStyle('height', '170px', editor.editing.view.document.getRoot());
-                });
-              }}
-              config={{
-                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo']
-              }}
-            />
+            <div className="ckeditor-container">
+              <CKEditorOptimized
+                data={groupPassage}
+                onChange={handlePassageChange}
+                placeholder="Nhập passage cho Part 7..."
+                height="250px"
+              />
+            </div>
+            {!groupPassage && (
+              <div className="error-feedback">Question Group Passage phải có giá trị.</div>
+            )}
           </div>
 
           <hr />
 
           {/* Questions */}
           <div className="row">
-            {questionLocal.questions.map((question, index) => (
+            {Array.from({ length: numberOfQuestions }).map((_, index) => (
               <div key={index} className="col-md-6 mb-4">
                 {/* Question Content */}
                 <div className="form-group">
@@ -308,8 +304,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.questionContent}
-                    onChange={(e) => handleQuestionChange(index, 'questionContent', e.target.value)}
                     {...register(`questionContent${index}`)}
                   />
                   {errors[`questionContent${index}`] && (
@@ -325,8 +319,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.optionA}
-                    onChange={(e) => handleQuestionChange(index, 'optionA', e.target.value)}
                     {...register(`optionA${index}`)}
                   />
                   {errors[`optionA${index}`] && (
@@ -342,8 +334,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.optionB}
-                    onChange={(e) => handleQuestionChange(index, 'optionB', e.target.value)}
                     {...register(`optionB${index}`)}
                   />
                   {errors[`optionB${index}`] && (
@@ -359,8 +349,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.optionC}
-                    onChange={(e) => handleQuestionChange(index, 'optionC', e.target.value)}
                     {...register(`optionC${index}`)}
                   />
                   {errors[`optionC${index}`] && (
@@ -376,8 +364,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.optionD}
-                    onChange={(e) => handleQuestionChange(index, 'optionD', e.target.value)}
                     {...register(`optionD${index}`)}
                   />
                   {errors[`optionD${index}`] && (
@@ -396,8 +382,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                           className="form-check-input"
                           id={`option${option}${index}`}
                           value={option}
-                          checked={question.correctOption === option}
-                          onChange={(e) => handleQuestionChange(index, 'correctOption', e.target.value)}
                           {...register(`correctOption${index}`)}
                         />
                         <label className="form-check-label" htmlFor={`option${option}${index}`}>
@@ -419,8 +403,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   <input
                     type="text"
                     className="form-control border-secondary custom-font"
-                    value={question.questionExplanation}
-                    onChange={(e) => handleQuestionChange(index, 'questionExplanation', e.target.value)}
                     {...register(`questionExplanation${index}`)}
                   />
                   {errors[`questionExplanation${index}`] && (
@@ -435,8 +417,6 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
                   </label>
                   <select
                     className="form-select border-secondary custom-font"
-                    value={question.questionType}
-                    onChange={(e) => handleQuestionChange(index, 'questionType', e.target.value)}
                     {...register(`questionType${index}`)}
                   >
                     {questionTypeOptions.map((option) => (
@@ -459,7 +439,14 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions }) => {
         </div>
 
         <div className="modal-footer">
-          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              resetFormAndState();
+              if (onClose) onClose();
+            }}
+          >
             Đóng
           </button>
           <button type="submit" className="btn btn-primary">
