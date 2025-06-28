@@ -34,7 +34,7 @@ const LessonContent = () => {
             console.log('🔍 Fetching lesson contents for:');
             console.log('Lesson ID:', lessonId);
             console.log('Section ID:', sectionId);
-            
+
             if (!lessonId) {
                 console.error('❌ No lessonId provided');
                 setLessonContents([]);
@@ -65,34 +65,76 @@ const LessonContent = () => {
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {/* Breadcrumb with AOS */}
             <div
-                className="mt-2 bg-white shadow-lg rounded-1"
+                className="mt-2 shadow-lg rounded-4 px-2 py-1"
+                style={{
+                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
+                    border: 'none'
+                }}
                 data-aos="fade-down"
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
                 <nav>
-                    <ol className="cd-breadcrumb custom-separator">
+                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
                         <li>
-                            <FontAwesomeIcon icon={faHouse} />
-                            <Link to="/admin/section">
-                                <button className="btn btn-link text-decoration-none fw-bolder">
-                                    Section
-                                </button>
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faHouse} color="#fff" />
+                            </span>
+                            <Link to="/admin/section" className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
+                                Section
                             </Link>
                         </li>
                         <li>
-                            <FontAwesomeIcon icon={faPersonChalkboard} />
-                            <Link to={`/admin/section/${sectionId}/lesson`}>
-                                <button className="btn btn-link text-decoration-none fw-bolder">
-                                    Lesson
-                                </button>
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faPersonChalkboard} color="#fff" />
+                            </span>
+                            <Link to={`/admin/section/${sectionId}/lesson`} className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
+                                Lesson
                             </Link>
                         </li>
-                        <li className="current">
-                            <FontAwesomeIcon icon={faBook} />
-                            <button className="btn btn-link text-decoration-none fw-bolder">
+                        <li className="current d-flex align-items-center">
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faBook} color="#fff" />
+                            </span>
+                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 18 }}>
                                 Lesson Content
-                            </button>
+                            </span>
                         </li>
                     </ol>
                 </nav>

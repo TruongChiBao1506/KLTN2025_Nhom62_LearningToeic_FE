@@ -134,9 +134,92 @@ body {
     animation: spin 1s linear infinite;
 }
 
+/* Dashboard background */
+.dashboard-bg {
+    background: linear-gradient(135deg, #f8fbff 0%, #e6f0ff 100%);
+}
+
+/* Statistic card style */
+.dashboard-card {
+    background: #fff;
+    border-radius: 2rem;
+    box-shadow: 0 6px 32px 0 rgba(80, 120, 255, 0.08), 0 1.5px 6px 0 rgba(80, 120, 255, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 2rem 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 40px 0 rgba(80, 120, 255, 0.14);
+}
+
+.stat-card .stat-icon {
+    font-size: 2.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+
+.stat-blue .stat-icon {
+    background: linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%);
+    color: #fff;
+}
+
+.stat-green .stat-icon {
+    background: linear-gradient(135deg, #43e97b 60%, #38f9d7 100%);
+    color: #fff;
+}
+
+.stat-pink .stat-icon {
+    background: linear-gradient(135deg, #fa709a 60%, #fee140 100%);
+    color: #fff;
+}
+
+.stat-yellow .stat-icon {
+    background: linear-gradient(135deg, #ffe259 60%, #ffa751 100%);
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+}
+
+@media (max-width: 991px) {
+    .dashboard-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .stat-card .stat-icon {
+        margin-bottom: 0.5rem;
+    }
+}
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Responsive adjustments */
@@ -144,13 +227,13 @@ body {
     .col-md-3 {
         margin-bottom: 1rem;
     }
-    
+
     .widgets-icons-2 {
         width: 48px;
         height: 48px;
         font-size: 22px;
     }
-    
+
     .card-body h4 {
         font-size: 1.5rem;
     }

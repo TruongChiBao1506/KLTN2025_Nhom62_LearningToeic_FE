@@ -3,7 +3,7 @@ a {
     text-decoration: none;
 }
 
-@media only screen and (min-width: 1170px) {
+/* @media only screen and (min-width: 1170px) {
     section {
         padding: 6em 0;
     }
@@ -11,7 +11,7 @@ a {
     section h2 {
         margin: 0 auto 3em;
     }
-}
+} */
 
 .cd-breadcrumb::after {
     clear: both;

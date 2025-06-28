@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faCirclePlus, 
-    faEdit, 
-    faTrash, 
-    faSearch 
+import {
+    faCirclePlus,
+    faEdit,
+    faTrash,
+    faSearch
 } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -19,23 +20,28 @@ const SectionList = ({ sections = [], retrieveSections }) => {
     const [searchText, setSearchText] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(25);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSectionId, setSelectedSectionId] = useState(null);
-    
+
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
+
+    const itemsPerPageOptions = ITEMS_PER_PAGE_OPTIONS.map((option) => ({
+        value: option,
+        label: `${option} mục/trang`
+    }));
 
     // Filtered sections based on search text
     const filteredSections = useMemo(() => {
         if (!sections || !Array.isArray(sections)) {
             return [];
         }
-        
+
         if (!searchText) {
             return sections.slice();
         }
-        
+
         return sections.filter((section) =>
             Object.values(section).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
@@ -45,12 +51,12 @@ const SectionList = ({ sections = [], retrieveSections }) => {
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredSections.length / itemsPerPage);
-    
+
     const paginatedSections = useMemo(() => {
         if (!filteredSections || filteredSections.length === 0) {
             return [];
         }
-        
+
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return filteredSections.slice(startIndex, endIndex);
@@ -162,34 +168,65 @@ const SectionList = ({ sections = [], retrieveSections }) => {
         <div className="page-heading">
             <div className="section">
                 <div className="card border-0">
-                    <div className="row">
-                        {/* Items per page selector */}
-                        <div className="col-2 mt-4">
-                            <select 
-                                className="form-select ms-3 w-50" 
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    setItemsPerPage(Number(e.target.value));
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                {ITEMS_PER_PAGE_OPTIONS.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="row align-items-center p-3">
+                        {/* Items per page selector cải tiến */}
+                        <div className="col-3">
+                            <div className="d-flex align-items-center px-3 py-2 rounded-4">
+                                <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                                    Hiển thị:
+                                </label>
+                                <div style={{ minWidth: 140 }}>
+                                    <Select
+                                        inputId="itemsPerPageSelect"
+                                        classNamePrefix="react-select"
+                                        options={itemsPerPageOptions}
+                                        value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                                        onChange={(selected) => {
+                                            setItemsPerPage(selected.value);
+                                            setCurrentPage(1);
+                                        }}
+                                        isSearchable={false}
+                                        styles={{
+                                            control: (base) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                minHeight: 32,
+                                                borderColor: '#198754',
+                                                boxShadow: 'none',
+                                                fontWeight: 400,
+                                                color: '#198754',
+                                            }),
+                                            option: (base, state) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                color: state.isSelected ? '#fff' : '#198754',
+                                                backgroundColor: state.isSelected
+                                                    ? '#198754'
+                                                    : state.isFocused
+                                                        ? '#e6f7ef'
+                                                        : '#fff',
+                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                borderRadius: 20,
+                                                overflow: 'hidden'
+                                            }),
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Search input */}
-                        <div className="col-7 mt-4">
-                            <div className="input-group">
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
+                        {/* Search input giữ nguyên */}
+                        <div className="col-6">
+                            <div className="input-group rounded-5">
+                                <input
+                                    type="text"
+                                    className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm" 
+                                    placeholder="Tìm kiếm"
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -199,14 +236,15 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                             </div>
                         </div>
 
-                        {/* Add button - dùng onClick thay vì data-bs-toggle */}
-                        <div className="col-3 mt-4 d-flex justify-content-end">
-                            <button 
-                                type="button" 
-                                className="btn btn-success mb-3 me-3" 
+                        {/* Add button cải tiến */}
+                        <div className="col-3 d-flex justify-content-end">
+                            <button
+                                type="button"
+                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
                                 onClick={handleShowAddModal}
                             >
-                                <FontAwesomeIcon icon={faCirclePlus} />
+                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                Thêm mới
                             </button>
                         </div>
                     </div>
@@ -216,7 +254,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                         <table className="table text-center table-hover shadow">
                             <thead className="shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-success rounded-5 disabled">No.</button></th>
+                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>SECTION NAME</th>
                                     <th>IMAGE</th>
                                     <th>TYPE</th>
@@ -232,28 +270,28 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                         <td>{section.name}</td>
                                         <td>
-                                            <img 
-                                                src={getImageUrl(section.image)} 
-                                                alt="Section Image" 
-                                                className="section-image rounded-5" 
+                                            <img
+                                                src={getImageUrl(section.image)}
+                                                alt="Section Image"
+                                                className="section-image rounded-5"
                                             />
                                         </td>
                                         <td>{getSectionType(section.type)}</td>
                                         <td>{section.description}</td>
                                         <td>
                                             {section.status === 1 ? (
-                                                <span 
+                                                <span
                                                     onClick={() => toggleStatus(section._id, 0)}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{cursor: 'pointer'}}
+                                                    style={{ cursor: 'pointer' }}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
-                                                <span 
+                                                <span
                                                     onClick={() => toggleStatus(section._id, 1)}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{cursor: 'pointer'}}
+                                                    style={{ cursor: 'pointer' }}
                                                 >
                                                     Disable
                                                 </span>
@@ -262,18 +300,18 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 {/* Edit button - dùng onClick */}
-                                                <button 
-                                                    type="button" 
-                                                    className="btn btn-white border-0" 
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(section._id)}
                                                     title={`Chỉnh sửa [${section.name}]`}
                                                 >
-                                                    <FontAwesomeIcon icon={faEdit} style={{color: 'rgb(192, 129, 13)'}} />
+                                                    <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
 
                                                 {/* Delete button */}
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     onClick={() => deleteSection(section._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${section.name}]`}
@@ -312,8 +350,8 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                             <nav aria-label="Page navigation">
                                 <ul className="pagination justify-content-center">
                                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage - 1)}
                                             disabled={currentPage === 1}
                                         >
@@ -321,12 +359,12 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                         </button>
                                     </li>
                                     {Array.from({ length: totalPageCount }, (_, i) => i + 1).map((pageNumber) => (
-                                        <li 
-                                            key={pageNumber} 
+                                        <li
+                                            key={pageNumber}
                                             className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
                                         >
-                                            <button 
-                                                className="page-link" 
+                                            <button
+                                                className="page-link"
                                                 onClick={() => changePage(pageNumber)}
                                             >
                                                 {pageNumber}
@@ -334,8 +372,8 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                                         </li>
                                     ))}
                                     <li className={`page-item ${currentPage === totalPageCount ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage + 1)}
                                             disabled={currentPage === totalPageCount}
                                         >
@@ -358,14 +396,14 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                 </div>
             </div>
 
-            
-            <AddSectionModal 
+
+            <AddSectionModal
                 show={showAddModal}
                 onHide={handleCloseAddModal}
                 retrieveSections={retrieveSections}
             />
 
-            <EditSectionModal 
+            <EditSectionModal
                 show={showEditModal}
                 onHide={handleCloseEditModal}
                 sectionId={selectedSectionId}

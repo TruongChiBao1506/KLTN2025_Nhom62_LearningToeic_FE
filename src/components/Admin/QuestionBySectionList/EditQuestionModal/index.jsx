@@ -25,7 +25,7 @@ import QuestionEditNo8 from '../../../../pages/Admin/QuestionBySection/QuestionE
 const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuestions }) => {
     const renderQuestionEditComponent = () => {
         switch (sectionId) {
-            case "685d00f73264907d89c121dc":
+            case "686007e22278739d2ceea77a":
                 return (
                     <QuestionEditSection1
                         sectionId={sectionId}
@@ -34,7 +34,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d0b33abd7f3cf92add5f1":
+            case "686007e22278739d2ceea77b":
                 return (
                     <QuestionEditSection2
                         sectionId={sectionId}
@@ -43,7 +43,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d0be9abd7f3cf92add5fd":
+            case "686007e22278739d2ceea77c":
                 return (
                     <QuestionEditSection3
                         sectionId={sectionId}
@@ -52,7 +52,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d0eababd7f3cf92add604":
+            case "686007e22278739d2ceea77d":
                 return (
                     <QuestionEditSection4
                         sectionId={sectionId}
@@ -61,7 +61,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d0fa7abd7f3cf92add60b":
+            case "686007e22278739d2ceea77e":
                 return (
                     <QuestionEditSection5
                         sectionId={sectionId}
@@ -70,7 +70,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d0ff9abd7f3cf92add612":
+            case "686007e22278739d2ceea77f":
                 return (
                     <QuestionEditSection6
                         sectionId={sectionId}
@@ -79,7 +79,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d10aaabd7f3cf92add619":
+            case "686007e22278739d2ceea780":
                 return (
                     <QuestionEditSection7Single
                         sectionId={sectionId}

@@ -9,6 +9,7 @@ import {
     faVolumeUp,
     faImage
 } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -37,6 +38,11 @@ const ExamQuestionList = ({
 
     // Constants
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
+
+    const itemsPerPageOptions = [25, 50, 75, 100].map((option) => ({
+        value: option,
+        label: `${option} mục/trang`
+    }));
 
     console.log('Exam ID:', examId);
     console.log('Exam Questions (normalized):', normalizedExamQuestions);
@@ -271,28 +277,59 @@ const ExamQuestionList = ({
             <section className="section">
                 <div className="card border-0">
                     {/* Header Controls */}
-                    <div className="row">
-                        {/* Items per page */}
-                        <div className="col-2 mt-4">
-                            <select
-                                className="form-select ms-3 w-50"
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    setItemsPerPage(Number(e.target.value));
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                {ITEMS_PER_PAGE_OPTIONS.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="row align-items-center p-3">
+                        {/* Items per page selector cải tiến */}
+                        <div className="col-3">
+                            <div className="d-flex align-items-center px-3 py-2 rounded-4">
+                                <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                                    Hiển thị:
+                                </label>
+                                <div style={{ minWidth: 140 }}>
+                                    <Select
+                                        inputId="itemsPerPageSelect"
+                                        classNamePrefix="react-select"
+                                        options={itemsPerPageOptions}
+                                        value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                                        onChange={(selected) => {
+                                            setItemsPerPage(selected.value);
+                                            setCurrentPage(1);
+                                        }}
+                                        isSearchable={false}
+                                        styles={{
+                                            control: (base) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                minHeight: 32,
+                                                borderColor: '#198754',
+                                                boxShadow: 'none',
+                                                fontWeight: 400,
+                                                color: '#198754',
+                                            }),
+                                            option: (base, state) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                color: state.isSelected ? '#fff' : '#198754',
+                                                backgroundColor: state.isSelected
+                                                    ? '#198754'
+                                                    : state.isFocused
+                                                        ? '#e6f7ef'
+                                                        : '#fff',
+                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                borderRadius: 20,
+                                                overflow: 'hidden'
+                                            }),
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Search */}
-                        <div className="col-6 mt-4">
-                            <div className="input-group">
+                        {/* Search input */}
+                        <div className="col-6">
+                            <div className="input-group rounded-5">
                                 <input
                                     type="text"
                                     className="form-control"
@@ -309,36 +346,36 @@ const ExamQuestionList = ({
                         </div>
 
                         {/* Action buttons */}
-                        <div className="col-4 mt-4 d-flex justify-content-end">
-                            {/* Conditional buttons */}
+                        <div className="col-3 d-flex justify-content-end">
                             {showImportButton ? (
-                                <div>
-                                    <button
-                                        type="button"
-                                        className="btn btn-success mb-3 me-3"
-                                        onClick={handleShowAddModal}
-                                        title="Import exam questions"
-                                    >
-                                        <FontAwesomeIcon icon={faCirclePlus} />
-                                    </button>
-                                </div>
+                                <button
+                                    type="button"
+                                    className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5 me-2"
+                                    onClick={handleShowAddModal}
+                                    title="Import exam questions"
+                                >
+                                    <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                    Import
+                                </button>
                             ) : (
                                 <button
-                                    className="btn btn-danger mb-3 ms-2"
+                                    className="btn badge text-bg-danger d-flex align-items-center p-3 rounded-5 me-2"
                                     onClick={deleteAllQuestions}
                                     title="Delete all questions"
                                 >
-                                    <FontAwesomeIcon icon={faTrash} /> Delete All
+                                    <FontAwesomeIcon icon={faTrash} className="me-2" />
+                                    Xóa hết
                                 </button>
                             )}
 
                             <button
                                 type="button"
-                                className="btn btn-success mb-3 ms-2 me-3"
+                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
                                 onClick={downloadTemplate}
                                 title="Export template"
                             >
-                                <FontAwesomeIcon icon={faFileDownload} /> Export
+                                <FontAwesomeIcon icon={faFileDownload} className="me-2" />
+                                Export
                             </button>
                         </div>
                     </div>

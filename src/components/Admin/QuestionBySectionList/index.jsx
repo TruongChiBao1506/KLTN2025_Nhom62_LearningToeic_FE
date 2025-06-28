@@ -4,6 +4,7 @@ import {
   faCirclePlus,
   faSearch
 } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import QuestionService from "../../../services/questionService";
 
 // Table components
@@ -32,6 +33,11 @@ import EditQuestionModal from "./EditQuestionModal";
 import "./style.css";
 
 const ITEMS_PER_PAGE_OPTIONS = [60, 120, 180, 600];
+
+const itemsPerPageOptions = ITEMS_PER_PAGE_OPTIONS.map((option) => ({
+  value: option,
+  label: `${option} mục/trang`
+}));
 
 const QuestionSectionPage = ({
   questions = [],
@@ -110,7 +116,7 @@ const QuestionSectionPage = ({
   // Table selection logic
   const renderTable = () => {
     switch (sectionId) {
-      case "685d00f73264907d89c121dc":
+      case "686007e22278739d2ceea77a":
         return (
           <TableSection1
             paginatedQuestions={paginatedQuestions}
@@ -124,7 +130,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d0b33abd7f3cf92add5f1":
+      case "686007e22278739d2ceea77b":
         return (
           <TableSection2
             paginatedQuestions={paginatedQuestions}
@@ -137,7 +143,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d0be9abd7f3cf92add5fd":
+      case "686007e22278739d2ceea77c":
         return (
           <TableSection3
             paginatedQuestions={paginatedQuestions}
@@ -151,7 +157,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d0eababd7f3cf92add604":
+      case "686007e22278739d2ceea77d":
         return (
           <TableSection4
             paginatedQuestions={paginatedQuestions}
@@ -165,7 +171,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d0fa7abd7f3cf92add60b":
+      case "686007e22278739d2ceea77e":
         return (
           <TableSection5
             paginatedQuestions={paginatedQuestions}
@@ -177,7 +183,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d0ff9abd7f3cf92add612":
+      case "686007e22278739d2ceea77f":
         return (
           <TableSection6
             paginatedQuestions={paginatedQuestions}
@@ -189,7 +195,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d10aaabd7f3cf92add619":
+      case "686007e22278739d2ceea780":
         return (
           <TableSection7Single
             paginatedQuestions={paginatedQuestions}
@@ -340,28 +346,59 @@ const QuestionSectionPage = ({
     <div className="page-heading">
       <div className="section">
         <div className="card border-0">
-          <div className="row">
-            {/* Items per page selector */}
-            <div className="col-2 mt-4">
-              <select
-                className="form-select ms-3 w-50"
-                value={itemsPerPage}
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-              >
-                {ITEMS_PER_PAGE_OPTIONS.map((perPageOption) => (
-                  <option key={perPageOption} value={perPageOption}>
-                    {perPageOption}
-                  </option>
-                ))}
-              </select>
+          <div className="row align-items-center p-3">
+            {/* Items per page selector cải tiến */}
+            <div className="col-3">
+              <div className="d-flex align-items-center px-3 py-2 rounded-4">
+                <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                  Hiển thị:
+                </label>
+                <div style={{ minWidth: 140 }}>
+                  <Select
+                    inputId="itemsPerPageSelect"
+                    classNamePrefix="react-select"
+                    options={itemsPerPageOptions}
+                    value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                    onChange={(selected) => {
+                      setItemsPerPage(selected.value);
+                      setCurrentPage(1);
+                    }}
+                    isSearchable={false}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        borderRadius: 30,
+                        minHeight: 32,
+                        borderColor: '#198754',
+                        boxShadow: 'none',
+                        fontWeight: 400,
+                        color: '#198754',
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        borderRadius: 30,
+                        color: state.isSelected ? '#fff' : '#198754',
+                        backgroundColor: state.isSelected
+                          ? '#198754'
+                          : state.isFocused
+                            ? '#e6f7ef'
+                            : '#fff',
+                        ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        borderRadius: 20,
+                        overflow: 'hidden'
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Search input */}
-            <div className="col-7 mt-4">
-              <div className="input-group">
+            <div className="col-6">
+              <div className="input-group rounded-5">
                 <input
                   type="text"
                   className="form-control"
@@ -378,13 +415,14 @@ const QuestionSectionPage = ({
             </div>
 
             {/* Add button */}
-            <div className="col-3 mt-4 d-flex justify-content-end">
+            <div className="col-3 d-flex justify-content-end">
               <button
                 type="button"
-                className="btn btn-success mb-3 me-3"
+                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
                 onClick={handleShowAddModal}
               >
-                <FontAwesomeIcon icon={faCirclePlus} />
+                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                Thêm mới
               </button>
             </div>
           </div>

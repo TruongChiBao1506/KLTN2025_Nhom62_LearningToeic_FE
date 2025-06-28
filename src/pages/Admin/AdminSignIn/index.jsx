@@ -80,10 +80,8 @@ const AdminSignIn = () => {
   };
 
   return (
-    <div className="page">
-      {/* Sửa prop name từ onSubmit thành onSubmitSignIn */}
-      <SignInForm onSubmitSignIn={submitSignIn} />
-      {message && <p className="text-center text-danger">{message}</p>}
+    <div className="page" style={{overflow: 'hidden'}}>
+      <SignInForm onSubmitSignIn={submitSignIn} message={message}/>
     </div>
   );
 };

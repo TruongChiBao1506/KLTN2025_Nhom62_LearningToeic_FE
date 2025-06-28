@@ -47,7 +47,7 @@ const Dashboard = () => {
             delay: 0,
             easing: 'ease-out',
             once: true,
-            disable: 'mobile' 
+            disable: 'mobile'
         });
     }, []);
 
@@ -86,7 +86,7 @@ const Dashboard = () => {
     const countTotalExams = async () => {
         try {
             const result = await examService.countTotalExams();
-            const count = result;
+            const count = result || 0;
             console.log('Count exams:', count);
             return count;
         } catch (error) {
@@ -99,7 +99,7 @@ const Dashboard = () => {
         try {
             const result = await feedbackService.countTotalFeedbacks();
             console.log('Count feedbacks result:', result);
-            const count = result.success ? result.data : result;
+            const count = result || 0;
             return count;
         } catch (error) {
             console.error('Error counting feedbacks:', error);
@@ -110,7 +110,7 @@ const Dashboard = () => {
     const countTotalFreeMaterials = async () => {
         try {
             const result = await freeMaterialService.countTotalFreeMaterials();
-            const count = result.success ? result.data : result;
+            const count = result || 0;
             console.log('Count free materials:', count);
             return count;
         } catch (error) {
@@ -124,7 +124,7 @@ const Dashboard = () => {
         try {
             const result = await userExamService.getTotalExamCountsByExamNameAndType();
             console.log('Result from getTotalExamCountsByExamNameAndType:', result);
-            const data = result?.success ? result.data : result;
+            const data = result;
 
             setStatisticExamByExamName(data);
             console.log('Exam statistics by name:', data);
@@ -297,14 +297,38 @@ const Dashboard = () => {
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {/* Breadcrumb */}
-            <div className="mt-2 bg-white shadow-lg rounded-1">
+            <div
+                className="mt-2 shadow-lg rounded-4 px-2 py-1"
+                style={{
+                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
+                    minHeight: 70,
+                    border: 'none'
+                }}
+                data-aos="fade-down"
+                data-aos-duration="400"
+                data-aos-delay="50"
+            >
                 <nav>
-                    <ol className="cd-breadcrumb custom-separator">
-                        <li className="current">
-                            <FontAwesomeIcon icon={faHouse} />
-                            <button className="btn btn-link text-decoration-none fw-bolder">
-                                Dash Board
-                            </button>
+                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
+                        <li className="current d-flex align-items-center">
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faHouse} color="#fff" />
+                            </span>
+                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
+                                Dashboard
+                            </span>
                         </li>
                     </ol>
                 </nav>
@@ -312,114 +336,93 @@ const Dashboard = () => {
 
             <div className="mt-3">
                 {/* Statistics Cards */}
-                <div className="row">
+                <div className="row g-4 mb-4">
                     {/* Card 1 - Learners */}
-                    <div className="col-md-3">
+                    <div className="col-md-3 col-6">
                         <div
-                            className="card radius-10 border-start border-0 border-3 border-info card-with-effect"
+                            className="dashboard-card stat-card stat-blue"
                             onClick={toggleEffect}
                         >
-                            <div className="card-body">
-                                <div className="d-flex align-items-center">
-                                    <div>
-                                        <p className="mb-0 text-secondary">Tổng số học viên</p>
-                                        <h4 className="my-1 text-info">
-                                            {isLoading ? '...' : countLearners}
-                                        </h4>
-                                        <p className="mb-0 font-13">+2 từ tuần trước</p>
-                                    </div>
-                                    <div className="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
-                                        <FontAwesomeIcon icon={faUsers} />
-                                    </div>
+                            <div className="stat-icon">
+                                <FontAwesomeIcon icon={faUsers} />
+                            </div>
+                            <div>
+                                <div className="stat-label">Tổng số học viên</div>
+                                <div className="stat-value">
+                                    {isLoading ? '...' : countLearners}
                                 </div>
+                                <div className="font-13 text-success">+2 từ tuần trước</div>
                             </div>
                         </div>
                     </div>
-
                     {/* Card 2 - Exams */}
-                    <div className="col-md-3">
-                        <div className="card radius-10 border-start border-0 border-3 border-success card-with-effect">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center">
-                                    <div>
-                                        <p className="mb-0 text-secondary">Tổng số bài thi</p>
-                                        <h4 className="my-1 text-success">
-                                            {isLoading ? '...' : countExams}
-                                        </h4>
-                                        <p className="mb-0 font-13">+2 từ tuần trước</p>
-                                    </div>
-                                    <div className="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
-                                        <FontAwesomeIcon icon={faFolderOpen} />
-                                    </div>
+                    <div className="col-md-3 col-6">
+                        <div className="dashboard-card stat-card stat-green">
+                            <div className="stat-icon">
+                                <FontAwesomeIcon icon={faFolderOpen} />
+                            </div>
+                            <div>
+                                <div className="stat-label">Tổng số bài thi</div>
+                                <div className="stat-value">
+                                    {isLoading ? '...' : countExams}
                                 </div>
+                                <div className="font-13 text-success">+2 từ tuần trước</div>
                             </div>
                         </div>
                     </div>
-
                     {/* Card 3 - Feedbacks */}
-                    <div className="col-md-3">
-                        <div className="card radius-10 border-start border-0 border-3 border-danger card-with-effect">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center">
-                                    <div>
-                                        <p className="mb-0 text-secondary">Tổng số đánh giá</p>
-                                        <h4 className="my-1 text-danger">
-                                            {isLoading ? '...' : countFeedbacks}
-                                        </h4>
-                                        <p className="mb-0 font-13">+5 từ tuần trước</p>
-                                    </div>
-                                    <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
-                                        <FontAwesomeIcon icon={faComments} />
-                                    </div>
+                    <div className="col-md-3 col-6">
+                        <div className="dashboard-card stat-card stat-pink">
+                            <div className="stat-icon">
+                                <FontAwesomeIcon icon={faComments} />
+                            </div>
+                            <div>
+                                <div className="stat-label">Tổng số đánh giá</div>
+                                <div className="stat-value">
+                                    {isLoading ? '...' : countFeedbacks}
                                 </div>
+                                <div className="font-13 text-danger">+5 từ tuần trước</div>
                             </div>
                         </div>
                     </div>
-
                     {/* Card 4 - Free Materials */}
-                    <div className="col-md-3">
-                        <div className="card radius-10 border-start border-0 border-3 border-warning card-with-effect">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center">
-                                    <div>
-                                        <p className="mb-0 text-secondary">Tổng số tài liệu</p>
-                                        <h4 className="my-1 text-warning">
-                                            {isLoading ? '...' : countFreeMaterials}
-                                        </h4>
-                                        <p className="mb-0 font-13">+2 từ tuần trước</p>
-                                    </div>
-                                    <div className="widgets-icons-2 rounded-circle bg-gradient-blooker text-white ms-auto">
-                                        <FontAwesomeIcon icon={faFile} />
-                                    </div>
+                    <div className="col-md-3 col-6">
+                        <div className="dashboard-card stat-card stat-yellow">
+                            <div className="stat-icon">
+                                <FontAwesomeIcon icon={faFile} />
+                            </div>
+                            <div>
+                                <div className="stat-label">Tổng số tài liệu</div>
+                                <div className="stat-value">
+                                    {isLoading ? '...' : countFreeMaterials}
                                 </div>
+                                <div className="font-13 text-warning">+2 từ tuần trước</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Charts */}
-                <div className="row">
+                <div className="row g-4">
                     {/* Column Chart */}
                     <div className="col-md-6">
-                        <div className="card mb-4 custom-card border border-0">
+                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="columnChartContainer"></div>
                             </div>
                         </div>
                     </div>
-
                     {/* Pie Chart */}
                     <div className="col-md-6">
-                        <div className="card mb-4 custom-card border border-0">
+                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="pieChartContainer"></div>
                             </div>
                         </div>
                     </div>
-
                     {/* Line Chart */}
                     <div className="col-md-12">
-                        <div className="card mb-4 custom-card border border-0">
+                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="lineChartContainer"></div>
                             </div>

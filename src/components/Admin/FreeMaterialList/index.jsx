@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faCirclePlus, 
-    faEdit, 
-    faTrash, 
+import {
+    faCirclePlus,
+    faEdit,
+    faTrash,
     faSearch,
     faFile
 } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -19,24 +20,30 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
     const [searchText, setSearchText] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(25);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     // Modal states
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedMaterialId, setSelectedMaterialId] = useState(null);
-    
+
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
+
+    const itemsPerPageOptions = ITEMS_PER_PAGE_OPTIONS.map((option) => ({
+        value: option,
+        label: `${option} mục/trang`
+    }));
+
 
     // Filtered free materials based on search text
     const filteredFreeMaterials = useMemo(() => {
         if (!freeMaterials || !Array.isArray(freeMaterials)) {
             return [];
         }
-        
+
         if (!searchText) {
             return freeMaterials.slice();
         }
-        
+
         return freeMaterials.filter((freeMaterial) =>
             Object.values(freeMaterial).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
@@ -46,12 +53,12 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredFreeMaterials.length / itemsPerPage);
-    
+
     const paginatedFreeMaterials = useMemo(() => {
         if (!filteredFreeMaterials || filteredFreeMaterials.length === 0) {
             return [];
         }
-        
+
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return filteredFreeMaterials.slice(startIndex, endIndex);
@@ -137,13 +144,13 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
     };
 
     const formatDate = (dateTimeString) => {
-        const options = { 
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         };
         const date = new Date(dateTimeString);
         return date.toLocaleDateString('en-GB', options);
@@ -157,34 +164,65 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
         <div className="page-heading">
             <div className="section">
                 <div className="card border-0">
-                    <div className="row">
-                        {/* Items per page selector */}
-                        <div className="col-2 mt-4">
-                            <select 
-                                className="form-select ms-3 w-50" 
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    setItemsPerPage(Number(e.target.value));
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                {ITEMS_PER_PAGE_OPTIONS.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="row align-items-center p-3">
+                        {/* Items per page selector cải tiến */}
+                        <div className="col-3">
+                            <div className="d-flex align-items-center px-3 py-2 rounded-4">
+                                <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                                    Hiển thị:
+                                </label>
+                                <div style={{ minWidth: 140 }}>
+                                    <Select
+                                        inputId="itemsPerPageSelect"
+                                        classNamePrefix="react-select"
+                                        options={itemsPerPageOptions}
+                                        value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                                        onChange={(selected) => {
+                                            setItemsPerPage(selected.value);
+                                            setCurrentPage(1);
+                                        }}
+                                        isSearchable={false}
+                                        styles={{
+                                            control: (base) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                minHeight: 32,
+                                                borderColor: '#198754',
+                                                boxShadow: 'none',
+                                                fontWeight: 400,
+                                                color: '#198754',
+                                            }),
+                                            option: (base, state) => ({
+                                                ...base,
+                                                borderRadius: 30,
+                                                color: state.isSelected ? '#fff' : '#198754',
+                                                backgroundColor: state.isSelected
+                                                    ? '#198754'
+                                                    : state.isFocused
+                                                        ? '#e6f7ef'
+                                                        : '#fff',
+                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                borderRadius: 20,
+                                                overflow: 'hidden'
+                                            }),
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         {/* Search input */}
-                        <div className="col-7 mt-4">
-                            <div className="input-group">
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
+                        <div className="col-6">
+                            <div className="input-group rounded-5">
+                                <input
+                                    type="text"
+                                    className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm" 
+                                    placeholder="Tìm kiếm"
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -195,13 +233,14 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                         </div>
 
                         {/* Add button */}
-                        <div className="col-3 mt-4 d-flex justify-content-end">
-                            <button 
-                                type="button" 
-                                className="btn btn-success mb-3 me-3" 
+                        <div className="col-3 d-flex justify-content-end">
+                            <button
+                                type="button"
+                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
                                 onClick={handleShowAddModal}
                             >
-                                <FontAwesomeIcon icon={faCirclePlus} />
+                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                Thêm mới
                             </button>
                         </div>
                     </div>
@@ -234,10 +273,10 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                                 <FontAwesomeIcon icon={faFile} className="me-2" />
                                                 {freeMaterial.filePdf ? (
                                                     <p className="mb-0">
-                                                        <a 
-                                                            className="text-decoration-none" 
-                                                            href={getFilePdfUrl(freeMaterial.filePdf)} 
-                                                            target="_blank" 
+                                                        <a
+                                                            className="text-decoration-none"
+                                                            href={getFilePdfUrl(freeMaterial.filePdf)}
+                                                            target="_blank"
                                                             rel="noopener noreferrer"
                                                         >
                                                             View PDF
@@ -250,18 +289,18 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                         </td>
                                         <td>
                                             {freeMaterial.materialStatus === 1 ? (
-                                                <span 
+                                                <span
                                                     onClick={() => toggleStatus(freeMaterial._id, 0)}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{cursor: 'pointer'}}
+                                                    style={{ cursor: 'pointer' }}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
-                                                <span 
+                                                <span
                                                     onClick={() => toggleStatus(freeMaterial._id, 1)}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{cursor: 'pointer'}}
+                                                    style={{ cursor: 'pointer' }}
                                                 >
                                                     Disable
                                                 </span>
@@ -272,20 +311,20 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 {/* Edit button */}
-                                                <button 
-                                                    type="button" 
-                                                    className="btn btn-white border-0 me-1" 
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-white border-0 me-1"
                                                     onClick={() => handleShowEditModal(freeMaterial._id)}
                                                     title={`Chỉnh sửa [${freeMaterial.title}]`}
                                                 >
-                                                    <FontAwesomeIcon icon={faEdit} style={{color: 'rgb(192, 129, 13)'}} />
+                                                    <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
 
                                                 {/* Delete button */}
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     onClick={() => deleteFreeMaterial(freeMaterial._id)}
-                                                    title={`Xóa [${freeMaterial.title}]`} 
+                                                    title={`Xóa [${freeMaterial.title}]`}
                                                     className="btn btn-white border-0"
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
@@ -307,8 +346,8 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                             <nav aria-label="Page navigation">
                                 <ul className="pagination justify-content-center">
                                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage - 1)}
                                             disabled={currentPage === 1}
                                         >
@@ -316,12 +355,12 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                         </button>
                                     </li>
                                     {Array.from({ length: totalPageCount }, (_, i) => i + 1).map((pageNumber) => (
-                                        <li 
-                                            key={pageNumber} 
+                                        <li
+                                            key={pageNumber}
                                             className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
                                         >
-                                            <button 
-                                                className="page-link" 
+                                            <button
+                                                className="page-link"
                                                 onClick={() => changePage(pageNumber)}
                                             >
                                                 {pageNumber}
@@ -329,8 +368,8 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
                                         </li>
                                     ))}
                                     <li className={`page-item ${currentPage === totalPageCount ? 'disabled' : ''}`}>
-                                        <button 
-                                            className="page-link" 
+                                        <button
+                                            className="page-link"
                                             onClick={() => changePage(currentPage + 1)}
                                             disabled={currentPage === totalPageCount}
                                         >
@@ -354,13 +393,13 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
             </div>
 
             {/* Modals */}
-            <AddFreeMaterialModal 
+            <AddFreeMaterialModal
                 show={showAddModal}
                 onHide={handleCloseAddModal}
                 retrieveFreeMaterials={retrieveFreeMaterials}
             />
 
-            <EditFreeMaterialModal 
+            <EditFreeMaterialModal
                 show={showEditModal}
                 onHide={handleCloseEditModal}
                 materialId={selectedMaterialId}

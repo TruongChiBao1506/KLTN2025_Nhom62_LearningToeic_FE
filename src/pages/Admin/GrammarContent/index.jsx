@@ -42,17 +42,17 @@ const GrammarContent = () => {
             setIsLoading(true);
             setError(null);
             console.log('Grammar ID:', grammarId);
-            
+
             // Gọi API để lấy danh sách grammar contents dựa trên grammarId
             const result = await GrammarContentService.getGrammarContentsByGrammar(grammarId);
-            
+
             console.log('🔍 Raw API response:', result);
-            
+
             // Handle the correct response structure from server
             if (result && typeof result === 'object') {
                 // Server returns: { grammarContents: [...], currentPage: 1, totalPages: 1, ... }
                 const contents = result;
-                
+
                 setGrammarContents(contents);
                 setPagination({
                     currentPage: result.currentPage || 1,
@@ -60,7 +60,7 @@ const GrammarContent = () => {
                     totalItems: result.totalItems || 0,
                     itemsPerPage: result.itemsPerPage || 10
                 });
-                
+
                 console.log('  Grammar Contents extracted:', contents);
                 console.log('  Pagination info:', {
                     currentPage: result.currentPage,
@@ -89,10 +89,10 @@ const GrammarContent = () => {
                 });
                 console.log('📝 No grammar contents found');
             }
-            
+
         } catch (error) {
             console.log('❌ Error fetching grammar contents:', error);
-            
+
             // Check if it's a 404 (no data) vs real error
             if (error.response?.status === 404) {
                 console.log('📝 Grammar chưa có contents - hiển thị empty state');
@@ -129,30 +129,61 @@ const GrammarContent = () => {
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             {/* Breadcrumb with AOS */}
             <div
-                className="mt-2 bg-white shadow-lg rounded-1"
+                className="mt-2 shadow-lg rounded-4 px-2 py-1"
+                style={{
+                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
+                    border: 'none'
+                }}
                 data-aos="fade-down"
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
                 <nav>
-                    <ol className="cd-breadcrumb custom-separator">
+                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
                         <li>
-                            <FontAwesomeIcon icon={faSpellCheck} />
-                            <Link to="/admin/grammar">
-                                <button className="btn btn-link text-decoration-none fw-bolder">
-                                    Grammar
-                                </button>
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faSpellCheck} color="#fff" />
+                            </span>
+                            <Link to="/admin/grammar" className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
+                                Grammar
                             </Link>
                         </li>
-                        <li className="current">
-                            <FontAwesomeIcon icon={faBook} />
-                            <button className="btn btn-link text-decoration-none fw-bolder">
+                        <li className="current d-flex align-items-center">
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faBook} color="#fff" />
+                            </span>
+                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 18 }}>
                                 Grammar Content
-                            </button>
+                            </span>
                         </li>
                     </ol>
                 </nav>
             </div>
+
             {/* GrammarContentList with AOS */}
             <div
                 data-aos="fade-up"
@@ -184,7 +215,7 @@ const GrammarContent = () => {
                             <FontAwesomeIcon icon={faBook} size="2x" className="mb-3" />
                             <h5>Lỗi tải dữ liệu</h5>
                             <p>{error}</p>
-                            <button 
+                            <button
                                 className="btn btn-outline-danger"
                                 onClick={retrieveGrammarContents}
                             >

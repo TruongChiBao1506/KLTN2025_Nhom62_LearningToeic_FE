@@ -124,7 +124,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
     }, []);
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-lg mt-2 rounded-1">
+        <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-lg mt-2 rounded-4">
             <div className="container-fluid">
                 <button
                     className="btn btn-white border-0"

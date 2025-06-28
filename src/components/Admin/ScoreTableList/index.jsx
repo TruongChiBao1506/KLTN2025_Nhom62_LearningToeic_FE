@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEdit, faBolt } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 
 import EditScoreTableModal from './EditScoreTableModal';
 import './style.css';
@@ -14,6 +15,11 @@ const ScoreTableList = ({ tableScores = [], getTableScores }) => {
 
     // Items per page options
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
+
+    const itemsPerPageOptions = ITEMS_PER_PAGE_OPTIONS.map((option) => ({
+        value: option,
+        label: `${option} mục/trang`
+    }));
 
     // Filtered scores based on search
     const filteredTableScores = useMemo(() => {
@@ -83,22 +89,59 @@ const ScoreTableList = ({ tableScores = [], getTableScores }) => {
                     <section className="section">
                         <div className="card border-0">
                             {/* Search and Filter Controls */}
-                            <div className="row">
-                                <div className="col-3 mt-4">
-                                    <select
-                                        className="form-select ms-3 w-50"
-                                        value={itemsPerPage}
-                                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                                    >
-                                        {ITEMS_PER_PAGE_OPTIONS.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
+                            <div className="row align-items-center p-3">
+                                {/* Items per page selector */}
+                                <div className="col-4">
+                                    <div className="d-flex align-items-center px-3 py-2 rounded-4">
+                                        <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                                            Hiển thị:
+                                        </label>
+                                        <div style={{ minWidth: 140 }}>
+                                            <Select
+                                                inputId="itemsPerPageSelect"
+                                                classNamePrefix="react-select"
+                                                options={itemsPerPageOptions}
+                                                value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                                                onChange={(selected) => {
+                                                    setItemsPerPage(selected.value);
+                                                    setCurrentPage(1);
+                                                }}
+                                                isSearchable={false}
+                                                styles={{
+                                                    control: (base) => ({
+                                                        ...base,
+                                                        borderRadius: 30,
+                                                        minHeight: 32,
+                                                        borderColor: '#198754',
+                                                        boxShadow: 'none',
+                                                        fontWeight: 400,
+                                                        color: '#198754',
+                                                    }),
+                                                    option: (base, state) => ({
+                                                        ...base,
+                                                        borderRadius: 30,
+                                                        color: state.isSelected ? '#fff' : '#198754',
+                                                        backgroundColor: state.isSelected
+                                                            ? '#198754'
+                                                            : state.isFocused
+                                                                ? '#e6f7ef'
+                                                                : '#fff',
+                                                        ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                    }),
+                                                    menu: (base) => ({
+                                                        ...base,
+                                                        borderRadius: 20,
+                                                        overflow: 'hidden'
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="col-7 mt-4">
-                                    <div className="input-group">
+
+                                {/* Search input */}
+                                <div className="col-6">
+                                    <div className="input-group rounded-5">
                                         <input
                                             type="text"
                                             className="form-control"
@@ -113,6 +156,9 @@ const ScoreTableList = ({ tableScores = [], getTableScores }) => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Không có add button */}
+                                <div className="col-3 d-flex justify-content-end"></div>
                             </div>
 
                             {/* Table */}

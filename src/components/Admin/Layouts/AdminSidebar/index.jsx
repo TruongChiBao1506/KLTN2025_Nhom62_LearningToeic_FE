@@ -92,7 +92,7 @@ const Sidebar = ({ isToggled }) => {
         >
             {/* Logo/Header */}
             <div
-                className="logo-header-glass mb-4"
+                className="logo-header-glass mb-2"
                 style={{
                     background: 'rgba(255, 255, 255, 0.1)',
                     backdropFilter: 'blur(20px)',
@@ -151,12 +151,12 @@ const Sidebar = ({ isToggled }) => {
                         }}>
                             🎓 TOEIC ACADEMY
                         </h4>
-                        <div className="d-flex align-items-center justify-content-center">
+                        {/* <div className="d-flex align-items-center justify-content-center">
                             <span className="badge bg-success me-2" style={{ fontSize: '10px' }}>
                                 ADMIN
                             </span>
                             <small className="text-muted">Dashboard</small>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
