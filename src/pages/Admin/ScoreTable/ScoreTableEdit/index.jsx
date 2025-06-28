@@ -132,7 +132,7 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
                 </div>
             ) : (
                 <form onSubmit={formik.handleSubmit}>
-                    <div className="modal-body text-start">
+                    <div className="modal-body text-start p-4">
                         <div className="form-group mb-3">
                             <label className="form-label">
                                 Score<span className="required-field">*</span>

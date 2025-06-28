@@ -154,7 +154,7 @@ const GrammarContentAdd = ({ grammarId, retrieveGrammarContents, onClose }) => {
     return (
         <div className="page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <Modal.Body className="text-start">
+                <Modal.Body className="text-start p-4">
                     {/* Title Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="title" className="form-label">

@@ -120,7 +120,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
     return (
         <div>
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     {/* Name Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="name" className="form-label">

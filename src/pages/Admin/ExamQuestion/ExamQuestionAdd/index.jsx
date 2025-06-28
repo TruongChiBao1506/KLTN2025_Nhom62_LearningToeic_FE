@@ -199,15 +199,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
     return (
         <div className="exam-question-add">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <Modal.Body className="text-start">
-                    {/* Debug info - Remove in production */}
-                    {process.env.NODE_ENV === 'development' && (
-                        <div className="alert alert-info small mb-3">
-                            <strong>Debug Info:</strong> 
-                            Exam ID: {examId}
-                        </div>
-                    )}
-
+                <Modal.Body className="text-start p-4">
                     {/* Image Upload Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="image" className="form-label">

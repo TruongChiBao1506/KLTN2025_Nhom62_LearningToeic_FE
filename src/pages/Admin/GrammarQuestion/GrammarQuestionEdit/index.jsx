@@ -245,7 +245,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
     return (
         <div className="page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <Modal.Body className="text-start">
+                <Modal.Body className="text-start p-4">
                     {/* Debug info - Remove in production */}
                     {process.env.NODE_ENV === 'development' && (
                         <div className="alert alert-info small mb-3">

@@ -308,7 +308,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
     return (
         <>
             {/* Modal Body */}
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="edit-questionContent" className="form-label">
                         Question Content<span className="required-field">*</span>

@@ -196,7 +196,7 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
     return (
         <>
             {/* Modal Body */}
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="title" className="form-label">
                         Title<span className="required-field">*</span>

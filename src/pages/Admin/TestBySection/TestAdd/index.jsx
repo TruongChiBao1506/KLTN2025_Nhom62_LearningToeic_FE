@@ -111,7 +111,7 @@ const TestAdd = ({ sectionId, retrieveTests, onClose }) => {
     return (
         <>
             {/* Modal Body */}
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="testName" className="form-label">
                         Test Name<span className="required-field">*</span>

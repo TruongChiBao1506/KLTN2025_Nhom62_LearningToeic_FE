@@ -220,7 +220,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
     return (
         <>
             {/* Modal Body */}
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="word" className="form-label">
                         Word<span className="required-field">*</span>

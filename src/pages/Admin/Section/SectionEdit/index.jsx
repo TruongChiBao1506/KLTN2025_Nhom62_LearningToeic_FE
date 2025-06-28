@@ -107,7 +107,7 @@ const SectionEdit = ({ sectionId, retrieveSections, onClose }) => {
 
     return (
         <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label className="form-label">
                         Name<span className="required-field">*</span>

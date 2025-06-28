@@ -122,7 +122,7 @@
 
 /* Main content area optimization */
 .main-content {
-    padding: 1rem;
+    /* padding: 1rem; */
     min-height: calc(100vh - 80px);
     transform: translateZ(0);
     /* Subtle content animation */

@@ -72,7 +72,7 @@ const LessonAdd = ({ sectionId, retrieveLessons, onClose }) => {
     return (
         <div className="page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-                <div className="modal-body text-start">
+                <div className="modal-body text-start p-4">
                     {/* Lesson Name Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="lessonName" className="form-label">

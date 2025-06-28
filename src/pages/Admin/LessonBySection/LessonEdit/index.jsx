@@ -146,7 +146,7 @@ const LessonEdit = ({ lessonId, sectionId, retrieveLessons, onClose }) => {
     if (isLoading) {
         return (
             <>
-                <div className="modal-body text-center">
+                <div className="modal-body text-center p-4">
                     <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
@@ -191,7 +191,7 @@ const LessonEdit = ({ lessonId, sectionId, retrieveLessons, onClose }) => {
     return (
         <>
             {/* Modal Body */}
-            <div className="modal-body text-start">
+            <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="lessonName" className="form-label">
                         Lesson Name<span className="required-field">*</span>
