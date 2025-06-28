@@ -86,6 +86,33 @@ const LearnerLayout = () => {
 
   // Fetch notifications on component mount
   useEffect(() => {
+    // Check if learner tokens exist in localStorage
+    const learnerToken = localStorage.getItem("learnerToken");
+    const learnerRefreshToken = localStorage.getItem("learnerRefreshToken");
+    const learnerAuthenticated = localStorage.getItem("learnerAuthenticated");
+    const accessTokenExpiration = localStorage.getItem(
+      "learnerAccessTokenExpirationTime"
+    );
+
+    console.log("Token verification on layout mount:");
+    console.log("learnerToken exists:", !!learnerToken);
+    console.log("learnerRefreshToken exists:", !!learnerRefreshToken);
+    console.log("learnerAuthenticated flag:", learnerAuthenticated);
+    console.log(
+      "Token expiration:",
+      accessTokenExpiration
+        ? new Date(parseInt(accessTokenExpiration)).toLocaleString()
+        : "Not set"
+    );
+
+    // Check capitalization consistency for the authenticated flag
+    const learnerAuthUppercase = localStorage.getItem("LearnerAuthenticated");
+    if (learnerAuthUppercase !== null && learnerAuthenticated === null) {
+      console.warn(
+        "Warning: Authentication flag found as 'LearnerAuthenticated' (uppercase L) instead of 'learnerAuthenticated'"
+      );
+    }
+
     // Simulated API call for notifications
     const fetchNotifications = async () => {
       try {

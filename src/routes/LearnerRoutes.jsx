@@ -35,17 +35,17 @@ const LearnerRoutes = () => {
         <Route
           index
           element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
               <LearnerDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
         <Route
           path="dashboard"
           element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
               <LearnerDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
         <Route

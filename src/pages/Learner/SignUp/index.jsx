@@ -181,7 +181,8 @@ const SignUp = () => {
                       <input
                         type="tel"
                         className={`form-control ${
-                          formik.touched.phoneNumber && formik.errors.phoneNumber
+                          formik.touched.phoneNumber &&
+                          formik.errors.phoneNumber
                             ? "is-invalid"
                             : ""
                         }`}
@@ -192,11 +193,12 @@ const SignUp = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                        <div className="invalid-feedback">
-                          {formik.errors.phoneNumber}
-                        </div>
-                      )}
+                      {formik.touched.phoneNumber &&
+                        formik.errors.phoneNumber && (
+                          <div className="invalid-feedback">
+                            {formik.errors.phoneNumber}
+                          </div>
+                        )}
                     </div>
 
                     <div className="mb-3">

@@ -69,7 +69,10 @@ const SignIn = () => {
           );
 
           // Cập nhật trạng thái đăng nhập trong Redux store
-          dispatch(setLearnerCredentials({ user, token, refreshToken }));
+          // dispatch(setLearnerCredentials({ user, token, refreshToken }));
+
+          // Đánh dấu đã đăng nhập thành công
+          localStorage.setItem("learnerAuthenticated", "true");
 
           // Lưu thông tin remember me
           if (rememberMe) {
