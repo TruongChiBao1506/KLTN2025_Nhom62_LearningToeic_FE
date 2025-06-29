@@ -32,6 +32,7 @@ import GrammarQuestion from './pages/Admin/GrammarQuestion';
 import ExamQuestion from './pages/Admin/ExamQuestion';
 import ScoreTable from './pages/Admin/ScoreTable';
 import QuestionBySection from './pages/Admin/QuestionBySection';
+import IndicateQuestion from './pages/Admin/IndicateQuestion';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
             <Route path="section/:sectionId/lesson" element={<LessonBySection />} />
             <Route path="section/:sectionId/lesson/:lessonId/lesson-content" element={<LessonContent />} />
             <Route path="section/:sectionId/test" element={<TestBySection />} />
+            <Route path="section/:sectionId/test/:testId/indicate-questions" element={<IndicateQuestion />} />
             <Route path="section/:sectionId/question" element={<QuestionBySection />} />
 
             <Route path="topic" element={<Topic />} />
