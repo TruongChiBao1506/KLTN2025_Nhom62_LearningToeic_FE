@@ -59,4 +59,5 @@ class GrammarService {
   }
 }
 
-export default new GrammarService();
+const grammarService = new GrammarService();
+export default grammarService;

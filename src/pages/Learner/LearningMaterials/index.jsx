@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -50,48 +51,54 @@ const LearningMaterials = () => {
     "Advanced",
   ];
 
-  useEffect(() => {
-    // Initialize AOS animation library
-    AOS.init({
-      duration: 800,
-      easing: "ease-in-out",
-    });
-
-    fetchMaterials();
-  }, [activeFilter, activeTags]);
-
-  const fetchMaterials = async () => {
+  const fetchMaterials = useCallback(async () => {
     try {
       setLoading(true);
       let response;
+      let mergedData = [];
 
-      // Determine which API to call based on the active filter
       if (activeFilter === "lessons") {
-        response = await lessonService.getAllLessons();
+        response = await lessonService.all();
+        mergedData = Array.isArray(response) ? response : response.data;
+        // Gắn type cho từng lesson
+        mergedData = mergedData.map((lesson) => ({
+          ...lesson,
+          type: "lesson",
+        }));
       } else if (activeFilter === "free-materials") {
-        response = await freeMaterialService.getAllFreeMaterials();
+        response = await freeMaterialService.all();
+        mergedData = Array.isArray(response) ? response : response.data;
+        // Gắn type cho từng material
+        mergedData = mergedData.map((material) => ({
+          ...material,
+          type: "material",
+        }));
       } else {
-        // For "all" filter, fetch and combine both
-        const lessonResponse = await lessonService.getAllLessons();
-        const materialResponse =
-          await freeMaterialService.getAllFreeMaterials();
+        const lessonResponse = await lessonService.all();
+        const materialResponse = await freeMaterialService.all();
 
-        response = {
-          data: [
-            ...lessonResponse.data.map((lesson) => ({
-              ...lesson,
-              type: "lesson",
-            })),
-            ...materialResponse.data.map((material) => ({
-              ...material,
-              type: "material",
-            })),
-          ],
-        };
+        const lessons = Array.isArray(lessonResponse)
+          ? lessonResponse
+          : lessonResponse.data;
+        const materials = Array.isArray(materialResponse)
+          ? materialResponse
+          : materialResponse.data;
+
+        mergedData = [
+          ...lessons.map((lesson) => ({
+            ...lesson,
+            type: "lesson",
+          })),
+          ...materials.map((material) => ({
+            ...material,
+            type: "material",
+          })),
+        ];
       }
 
-      // Filter by tags if any are selected
-      let filteredMaterials = response.data;
+      // Lọc theo tag nếu có
+      let filteredMaterials = mergedData;
+
       if (activeTags.length > 0) {
         filteredMaterials = filteredMaterials.filter(
           (material) =>
@@ -99,6 +106,10 @@ const LearningMaterials = () => {
             material.tags.some((tag) => activeTags.includes(tag))
         );
       }
+      console.log(
+        "🚀 ~ fetchMaterials ~ filteredMaterials:",
+        filteredMaterials
+      );
 
       setMaterials(filteredMaterials);
     } catch (error) {
@@ -107,7 +118,7 @@ const LearningMaterials = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeFilter, activeTags]);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -129,11 +140,19 @@ const LearningMaterials = () => {
     setCurrentPage(1);
   };
 
-  const filteredMaterials = materials.filter(
-    (material) =>
-      material.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      material.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMaterials = materials.filter((material) => {
+    const name =
+      material.title || material.lessonName || material.materialName || "";
+    const desc =
+      material.description ||
+      material.lessonDescription ||
+      material.materialDescription ||
+      "";
+    return (
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      desc.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   // Pagination
   const indexOfLastMaterial = currentPage * materialsPerPage;
@@ -163,6 +182,16 @@ const LearningMaterials = () => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
+
+  useEffect(() => {
+    // Initialize AOS animation library
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-out",
+    });
+
+    fetchMaterials();
+  }, [fetchMaterials]);
 
   if (loading) {
     return (
@@ -287,12 +316,12 @@ const LearningMaterials = () => {
                       <FontAwesomeIcon icon={faEye} />
                       {material.views || 0}
                     </span>
-                    <a
-                      href={`/learner/materials/${material.id}`}
+                    <Link
+                      to={`/learner/materials/${material._id || material.materialId}`}
                       className="material-button"
                     >
                       Xem
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

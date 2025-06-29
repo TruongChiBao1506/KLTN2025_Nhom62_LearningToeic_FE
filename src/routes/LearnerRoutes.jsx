@@ -11,6 +11,7 @@ import ExamResult from "../pages/Learner/ExamResult";
 import UserVocabulary from "../pages/Learner/UserVocabulary";
 import Dictionary from "../pages/Learner/Dictionary";
 import LearningMaterials from "../pages/Learner/LearningMaterials";
+import MaterialDetail from "../pages/Learner/MaterialDetail";
 import Progress from "../pages/Learner/Progress";
 import Profile from "../pages/Learner/Profile";
 import Grammar from "../pages/Learner/Grammar";
@@ -35,17 +36,17 @@ const LearnerRoutes = () => {
         <Route
           index
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <LearnerDashboard />
-            // </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="dashboard"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <LearnerDashboard />
-            // </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -69,6 +70,14 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <LearningMaterials />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="materials/:id"
+          element={
+            <ProtectedRoute>
+              <MaterialDetail />
             </ProtectedRoute>
           }
         />

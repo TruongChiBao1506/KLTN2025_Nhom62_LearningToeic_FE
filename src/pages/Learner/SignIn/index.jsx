@@ -47,6 +47,14 @@ const SignIn = () => {
           const refreshTokenExpirationTime =
             response.data.refreshTokenExpirationTime;
 
+          console.log("🔍 Token details:", {
+            token: !!token,
+            refreshToken: !!refreshToken,
+            jwtExpirationTime,
+            refreshTokenExpirationTime,
+            roles
+          });
+
           // Tạo user object từ response
           const user = {
             id: response.data.id,
@@ -84,7 +92,7 @@ const SignIn = () => {
           }
 
           // Kiểm tra role
-          if (roles.includes("ROLE_LEARNER")) {
+          if (roles.includes("ROLE_LEARNER") || roles.includes("ROLE_ADMIN")) {
             toast.success("Đăng nhập thành công!", {
               position: "top-center",
               autoClose: 2000,
@@ -108,7 +116,7 @@ const SignIn = () => {
             localStorage.removeItem("learnerRefreshToken");
             localStorage.removeItem("learnerAccessTokenExpirationTime");
             localStorage.removeItem("learnerRefreshTokenExpirationTime");
-            localStorage.removeItem("LearnerAuthenticated");
+            localStorage.removeItem("learnerAuthenticated");
           }
         }
       } catch (error) {

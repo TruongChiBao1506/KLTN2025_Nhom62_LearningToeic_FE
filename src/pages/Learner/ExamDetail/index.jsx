@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,35 +34,47 @@ const ExamDetail = () => {
   const [savedProgress, setSavedProgress] = useState(false);
   const timerRef = useRef(null);
 
-  useEffect(() => {
-    fetchExam();
-  }, [id]);
-
-  const fetchExam = async () => {
+  const fetchExam = useCallback(async () => {
     try {
       setLoading(true);
       const response = await learnerExamService.getExamById(id);
-      setExam(response.exam);
-      // Nếu bài thi đã có tiến trình lưu, tải lên
-      if (response.exam.progress) {
-        setUserAnswers(response.exam.progress.answers || {});
-        setFlaggedQuestions(response.exam.progress.flaggedQuestions || []);
-        setRemainingTime(
-          response.exam.progress.remainingTime || response.exam.duration * 60
-        );
-        setSavedProgress(true);
-      } else {
-        setRemainingTime(response.exam.duration * 60); // Chuyển đổi phút sang giây
-      }
 
-      // Nếu bài thi đã hoàn thành, tải kết quả
-      if (response.exam.status === "completed") {
-        const resultResponse = await learnerExamService.getExamResult(
-          response.exam.lastAttemptId
-        );
-        setExamResult(resultResponse.result);
-        setExamSubmitted(true);
-      }
+      // Map backend response to expected format
+      const examData = {
+        id: response._id,
+        name: response.examName,
+        description:
+          response.examType === 1
+            ? "Complete TOEIC simulation test with all sections"
+            : "Quick practice test focusing on specific skills",
+        type: response.examType === 1 ? "full-test" : "mini-test",
+        difficulty: response.examType === 1 ? "Medium" : "Easy",
+        duration:
+          response.examDurationMinutes || (response.examType === 1 ? 120 : 60),
+        questions: (response.questions || []).map((q, index) => ({
+          id: q._id,
+          text: q.questionContent || `Question ${index + 1}`,
+          options: [
+            { id: 'A', text: q.optionA || 'Option A' },
+            { id: 'B', text: q.optionB || 'Option B' },
+            { id: 'C', text: q.optionC || 'Option C' },
+            { id: 'D', text: q.optionD || 'Option D' }
+          ].filter(option => option.text), // Remove empty options
+          correctAnswer: q.correctOption,
+          explanation: q.explanation,
+          questionType: q.questionType,
+          image: q.imageUrl,
+          audio: q.audioUrl,
+          _originalData: q
+        })),
+        status: "not-started", // Default status
+        _originalData: response,
+      };
+
+      setExam(examData);
+
+      // For now, set default time since we don't have progress tracking yet
+      setRemainingTime(examData.duration * 60); // Convert minutes to seconds
 
       setLoading(false);
     } catch (error) {
@@ -70,7 +82,11 @@ const ExamDetail = () => {
       setError("Không thể tải bài thi. Vui lòng thử lại sau.");
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchExam();
+  }, [fetchExam]);
   const startExam = () => {
     setExamStarted(true);
     document.title = `Đang làm bài thi: ${exam ? exam.name : "Bài thi TOEIC"}`;
@@ -121,7 +137,7 @@ const ExamDetail = () => {
   };
 
   const goToNextQuestion = () => {
-    if (currentQuestionIndex < exam.questions.length - 1) {
+    if (exam.questions && currentQuestionIndex < exam.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
@@ -133,7 +149,7 @@ const ExamDetail = () => {
   };
 
   const goToQuestion = (index) => {
-    if (index >= 0 && index < exam.questions.length) {
+    if (exam.questions && index >= 0 && index < exam.questions.length) {
       setCurrentQuestionIndex(index);
     }
   };
@@ -408,7 +424,7 @@ const ExamDetail = () => {
               </span>
               <span className="badge bg-primary">
                 <FontAwesomeIcon icon={faQuestionCircle} className="me-1" />
-                {exam.questions.length} câu hỏi
+                {exam.questions ? exam.questions.length : 0} câu hỏi
               </span>
             </div>
           </div>{" "}
@@ -419,7 +435,7 @@ const ExamDetail = () => {
           <div className="exam-instructions">
             <h4>Hướng dẫn</h4>
             <ul>
-              <li>Bài thi này có {exam.questions.length} câu hỏi.</li>
+              <li>Bài thi này có {exam.questions ? exam.questions.length : 0} câu hỏi.</li>
               <li>Bạn có {exam.duration} phút để hoàn thành bài thi này.</li>
               <li>Bạn có thể đánh dấu các câu hỏi để xem lại sau.</li>
               <li>Bạn có thể lưu tiến trình và tiếp tục sau.</li>
@@ -451,6 +467,43 @@ const ExamDetail = () => {
 
   // Main exam taking view
   const currentQuestion = exam.questions[currentQuestionIndex];
+  console.log("🚀 ~ ExamDetail ~ currentQuestion:", currentQuestion);
+
+  // If no questions available, show error
+  if (!exam.questions || exam.questions.length === 0) {
+    return (
+      <div className="exam-detail-container">
+        <div className="alert alert-warning m-4" role="alert">
+          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
+          Bài thi này chưa có câu hỏi nào. Vui lòng thử lại sau.
+        </div>
+        <div className="text-center">
+          <Link to="/learner/exams" className="btn btn-outline-primary">
+            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+            Quay lại Danh sách bài thi
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // If currentQuestion is not available, show error
+  if (!currentQuestion) {
+    return (
+      <div className="exam-detail-container">
+        <div className="alert alert-danger m-4" role="alert">
+          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
+          Không thể tải câu hỏi hiện tại. Vui lòng thử lại.
+        </div>
+        <div className="text-center">
+          <Link to="/learner/exams" className="btn btn-outline-primary">
+            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+            Quay lại Danh sách bài thi
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="exam-container">
@@ -474,7 +527,7 @@ const ExamDetail = () => {
             <h5>Câu hỏi</h5>
           </div>
           <div className="question-nav-list">
-            {exam.questions.map((q, index) => (
+            {exam.questions && exam.questions.map((q, index) => (
               <button
                 key={q.id}
                 className={`question-nav-item ${
@@ -512,7 +565,7 @@ const ExamDetail = () => {
           {" "}
           <div className="question-header">
             <h5>
-              Câu hỏi {currentQuestionIndex + 1} / {exam.questions.length}
+              Câu hỏi {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
             </h5>
             <button
               className={`flag-button ${
@@ -543,7 +596,7 @@ const ExamDetail = () => {
             <p>{currentQuestion.text}</p>
           </div>
           <div className="answer-options">
-            {currentQuestion.options.map((option, optionIndex) => {
+            {currentQuestion.options && currentQuestion.options.map((option, optionIndex) => {
               const optionLetter = String.fromCharCode(65 + optionIndex); // A, B, C, D... cho các lựa chọn
               return (
                 <div className="answer-option" key={option.id}>
@@ -596,7 +649,7 @@ const ExamDetail = () => {
             <button
               className="btn btn-outline-primary"
               onClick={goToNextQuestion}
-              disabled={currentQuestionIndex === exam.questions.length - 1}
+              disabled={!exam.questions || currentQuestionIndex === exam.questions.length - 1}
             >
               Câu tiếp
               <FontAwesomeIcon icon={faChevronRight} className="ms-2" />
@@ -619,13 +672,13 @@ const ExamDetail = () => {
               <div className="stat">
                 <span>Đã trả lời:</span>
                 <strong>
-                  {Object.keys(userAnswers).length}/{exam.questions.length}
+                  {Object.keys(userAnswers).length}/{exam.questions ? exam.questions.length : 0}
                 </strong>
               </div>
               <div className="stat">
                 <span>Chưa trả lời:</span>
                 <strong>
-                  {exam.questions.length - Object.keys(userAnswers).length}
+                  {(exam.questions ? exam.questions.length : 0) - Object.keys(userAnswers).length}
                 </strong>
               </div>
               <div className="stat">

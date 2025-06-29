@@ -48,14 +48,15 @@ class SectionService {
   }
 
   async getAllEnabled() {
-    const response = await axiosClient.get(`${this.baseUrl}/enabled`);
+    const response = await axiosClient.get(`${this.baseUrl}/enable`);
     return response;
   }
 
   async allEnable() {
-    const response = await axiosClient.get(`${this.baseUrl}/enabled`);
+    const response = await axiosClient.get(`${this.baseUrl}/enable`);
     return response;
   }
 }
 
-export default new SectionService();
+const sectionService = new SectionService();
+export default sectionService;

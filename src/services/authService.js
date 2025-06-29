@@ -21,7 +21,7 @@ class AuthService {
   }
 
   async signOut() {
-    // Clear tokens from both storages
+    // Clear tokens from all storages
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
     sessionStorage.removeItem("user");
@@ -29,6 +29,11 @@ class AuthService {
     localStorage.removeItem("adminRefreshToken");
     localStorage.removeItem("adminAccessTokenExpirationTime");
     localStorage.removeItem("adminRefreshTokenExpirationTime");
+    localStorage.removeItem("learnerToken");
+    localStorage.removeItem("learnerRefreshToken");
+    localStorage.removeItem("learnerAccessTokenExpirationTime");
+    localStorage.removeItem("learnerRefreshTokenExpirationTime");
+    localStorage.removeItem("learnerAuthenticated");
 
     try {
       const response = await axiosClient.post(`${this.baseUrl}/signout`);
@@ -138,20 +143,31 @@ class AuthService {
       "learnerRefreshTokenExpirationTime"
     );
 
+    console.log("🔍 checkLearnerTokenValidity:", {
+      hasToken: !!token,
+      hasRefreshToken: !!refreshToken,
+      accessExpiration: accessTokenExpirationTime ? new Date(Number(accessTokenExpirationTime)).toLocaleString() : "None",
+      refreshExpiration: refreshTokenExpirationTime ? new Date(Number(refreshTokenExpirationTime)).toLocaleString() : "None",
+      currentTime: new Date().toLocaleString()
+    });
+
     if (
       token &&
       accessTokenExpirationTime &&
       Number(accessTokenExpirationTime) >= Date.now()
     ) {
+      console.log("✅ Access token is valid");
       return true;
     } else if (
       refreshToken &&
       refreshTokenExpirationTime &&
       Number(refreshTokenExpirationTime) >= Date.now()
     ) {
+      console.log("🔄 Access token expired, trying to refresh...");
       try {
         const response = await this.refreshToken({ refreshToken });
         if (response && response.token) {
+          console.log("✅ Token refreshed successfully");
           localStorage.setItem("learnerToken", response.token);
           if (response.refreshToken) {
             localStorage.setItem("learnerRefreshToken", response.refreshToken);
@@ -164,17 +180,19 @@ class AuthService {
           }
           return true;
         }
+        console.log("❌ Refresh response invalid");
         return false;
       } catch (error) {
-        console.log("Error refreshing learner token:", error);
+        console.log("❌ Error refreshing learner token:", error);
         return false;
       }
     } else {
+      console.log("❌ No valid tokens found, clearing storage");
       localStorage.removeItem("learnerToken");
       localStorage.removeItem("learnerRefreshToken");
       localStorage.removeItem("learnerAccessTokenExpirationTime");
       localStorage.removeItem("learnerRefreshTokenExpirationTime");
-      localStorage.removeItem("LearnerAuthenticated");
+      localStorage.removeItem("learnerAuthenticated");
       return false;
     }
   }

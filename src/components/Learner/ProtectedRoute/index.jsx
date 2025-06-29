@@ -10,8 +10,28 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Kiểm tra token của learner
-        const isValid = await authService.checkTokensValidity(false);
+        // Kiểm tra cơ bản trước - xem có learner token không
+        const learnerToken = localStorage.getItem("learnerToken");
+        const learnerAuthenticated = localStorage.getItem(
+          "learnerAuthenticated"
+        );
+
+        console.log("🔍 Checking learner auth:", {
+          learnerToken: !!learnerToken,
+          learnerAuthenticated,
+        });
+
+        if (!learnerToken || learnerAuthenticated !== "true") {
+          console.log("❌ No learner token or not authenticated");
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          return;
+        }
+
+        // Kiểm tra token của learner chi tiết
+        const isValid = await authService.checkLearnerTokenValidity();
+        console.log("🚀 ~ checkAuth ~ isValid:", isValid);
+
         setIsAuthenticated(isValid);
         setIsLoading(false);
       } catch (error) {

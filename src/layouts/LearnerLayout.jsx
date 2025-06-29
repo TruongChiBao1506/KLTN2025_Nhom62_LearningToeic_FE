@@ -151,7 +151,7 @@ const LearnerLayout = () => {
   }, []);
   return (
     <div className="learner-layout">
-      <CheckAccessToken />
+      {/* <CheckAccessToken /> */}
       {/* Mobile Menu Overlay */}
       <div
         className={`mobile-menu-overlay ${mobileMenuOpen ? "active" : ""}`}

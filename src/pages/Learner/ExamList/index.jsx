@@ -6,7 +6,6 @@ import {
   faFileAlt,
   faFilter,
   faSearch,
-  faSort,
   faClock,
   faQuestionCircle,
   faCheckCircle,
@@ -37,7 +36,31 @@ const ExamList = () => {
     try {
       setLoading(true);
       const response = await learnerExamService.getAllExams();
-      const examData = response.exams || [];
+      console.log("🚀 ~ fetchExams ~ response:", response);
+
+      // Map backend data to frontend expected format
+      const examData = (response || []).map(exam => {
+        const isFullTest = exam.examType === 1;
+        const examTypeText = exam.examTypeText || (isFullTest ? 'Full Test' : 'Mini Test');
+        
+        return {
+          id: exam._id,
+          name: exam.examName,
+          description: isFullTest 
+            ? 'Complete TOEIC simulation test with all sections - perfect for final preparation'
+            : 'Quick practice test focusing on specific skills - ideal for daily practice',
+          type: isFullTest ? "full-test" : "mini-test",
+          difficulty: isFullTest ? "Medium" : "Easy",
+          status: "not-started", // Default status for now
+          duration: exam.examDurationMinutes || (isFullTest ? 120 : 60),
+          questionCount: isFullTest ? 200 : 30,
+          createdAt: exam.createdAt,
+          examTypeText: examTypeText,
+          // Keep original data for debugging
+          _originalData: exam
+        };
+      });
+
       setExams(examData);
       setFilteredExams(examData);
       setLoading(false);
@@ -49,67 +72,67 @@ const ExamList = () => {
 
   // Apply filters when search term or filter options change
   useEffect(() => {
+    const filterExams = () => {
+      let filtered = [...exams];
+
+      // Apply search filter
+      if (searchTerm) {
+        filtered = filtered.filter(
+          (exam) =>
+            exam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            exam.description.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      // Apply type filter
+      if (filterOptions.type !== "all") {
+        filtered = filtered.filter((exam) => exam.type === filterOptions.type);
+      }
+
+      // Apply difficulty filter
+      if (filterOptions.difficulty !== "all") {
+        filtered = filtered.filter(
+          (exam) => exam.difficulty === filterOptions.difficulty
+        );
+      }
+
+      // Apply status filter
+      if (filterOptions.status !== "all") {
+        filtered = filtered.filter(
+          (exam) => exam.status === filterOptions.status
+        );
+      }
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        switch (sortOption) {
+          case "name_asc":
+            return a.name.localeCompare(b.name);
+          case "name_desc":
+            return b.name.localeCompare(a.name);
+          case "date_asc":
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          case "date_desc":
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          case "difficulty_asc":
+            const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
+            return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+          case "difficulty_desc":
+            const difficultyOrderDesc = { Easy: 1, Medium: 2, Hard: 3 };
+            return (
+              difficultyOrderDesc[b.difficulty] -
+              difficultyOrderDesc[a.difficulty]
+            );
+          default:
+            return 0;
+        }
+      });
+
+      setFilteredExams(filtered);
+    };
+
     filterExams();
   }, [searchTerm, filterOptions, sortOption, exams]);
-
-  const filterExams = () => {
-    let filtered = [...exams];
-
-    // Apply search filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (exam) =>
-          exam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          exam.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Apply type filter
-    if (filterOptions.type !== "all") {
-      filtered = filtered.filter((exam) => exam.type === filterOptions.type);
-    }
-
-    // Apply difficulty filter
-    if (filterOptions.difficulty !== "all") {
-      filtered = filtered.filter(
-        (exam) => exam.difficulty === filterOptions.difficulty
-      );
-    }
-
-    // Apply status filter
-    if (filterOptions.status !== "all") {
-      filtered = filtered.filter(
-        (exam) => exam.status === filterOptions.status
-      );
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sortOption) {
-        case "name_asc":
-          return a.name.localeCompare(b.name);
-        case "name_desc":
-          return b.name.localeCompare(a.name);
-        case "date_asc":
-          return new Date(a.createdAt) - new Date(b.createdAt);
-        case "date_desc":
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        case "difficulty_asc":
-          const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
-          return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
-        case "difficulty_desc":
-          const difficultyOrderDesc = { Easy: 1, Medium: 2, Hard: 3 };
-          return (
-            difficultyOrderDesc[b.difficulty] -
-            difficultyOrderDesc[a.difficulty]
-          );
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredExams(filtered);
-  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -138,7 +161,6 @@ const ExamList = () => {
       status: "all",
     });
     setSortOption("name_asc");
-    setFilteredExams(exams);
     setShowFilters(false);
   };
 
