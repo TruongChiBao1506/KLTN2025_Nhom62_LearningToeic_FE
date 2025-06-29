@@ -20,7 +20,7 @@ class TopicService {
   }
 
   async getAllEnabled() {
-    const response = await axiosClient.get(`${this.baseUrl}/enabled`);
+    const response = await axiosClient.get(`${this.baseUrl}/enable`);
     return response;
   }
 
@@ -59,4 +59,5 @@ class TopicService {
   }
 }
 
-export default new TopicService();
+const topicService = new TopicService();
+export default topicService;

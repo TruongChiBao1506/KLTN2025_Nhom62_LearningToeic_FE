@@ -179,9 +179,51 @@ const ExamDetail = () => {
 
     try {
       setLoading(true);
-      const response = await learnerExamService.submitExam(id, userAnswers);
+      
+      // Convert userAnswers object to array format expected by backend
+      const answersArray = Object.entries(userAnswers).map(([questionId, selectedOption]) => ({
+        questionId,
+        selectedOption,
+        timeSpent: 60 // Default time spent per question
+      }));
+
+      console.log('Sending answers array:', answersArray);
+      
+      const response = await learnerExamService.submitExam(id, answersArray);
+      console.log('✅ Submit response:', response);
+      
       setExamSubmitted(true);
-      setExamResult(response.result);
+      // Map backend response to frontend expected format
+      const resultData = {
+        scores: response.scores || {
+          listening: 0,
+          reading: 0,
+          total: 0
+        },
+        details: response.details || {
+          correct: 0,
+          wrong: 0,
+          skipped: 0,
+          listeningCorrect: 0,
+          readingCorrect: 0
+        },
+        userExamId: response.userExamId,
+        message: response.message,
+        // Calculate additional metrics for UI
+        totalQuestions: exam.questions.length,
+        percentage: Math.round((response.details?.correct || 0) * 100 / exam.questions.length),
+        correctCount: response.details?.correct || 0,
+        incorrectCount: response.details?.wrong || 0,
+        unansweredCount: response.details?.skipped || 0,
+        listeningScore: response.scores?.listening || 0,
+        readingScore: response.scores?.reading || 0,
+        totalScore: response.scores?.total || 0,
+        listeningCorrect: response.details?.listeningCorrect || 0,
+        readingCorrect: response.details?.readingCorrect || 0,
+        timeSpent: exam.duration * 60 - remainingTime // Calculate actual time spent
+      };
+      
+      setExamResult(resultData);
       setLoading(false);
     } catch (error) {
       console.error("Lỗi khi nộp bài thi:", error);
@@ -262,127 +304,319 @@ const ExamDetail = () => {
           </nav>
         </div>
         <div className="exam-results-container">
-          {" "}
-          <div className="results-header">
-            <h3>Kết quả bài thi: {exam.name}</h3>
-            <div className="result-score">
-              <div className="score-circle">
-                {examResult.score}/{examResult.totalPossible}
-              </div>
-              <h4>{examResult.percentage}%</h4>
-            </div>
-          </div>{" "}
-          <div className="result-statistics">
+          <div className="results-header text-center mb-4">
+            <h2 className="text-success mb-3">
+              <FontAwesomeIcon icon={faCheck} className="me-2" />
+              Hoàn thành bài thi!
+            </h2>
+            <h3 className="text-primary">{exam.name}</h3>
+            <p className="text-muted">Kết quả chi tiết bài thi của bạn</p>
+          </div>
+
+          {/* Overall Score Section */}
+          <div className="overall-score-section mb-5">
             <div className="row">
-              <div className="col-md-3">
-                <div className="stat-item">
-                  <h5>Số câu đúng</h5>
-                  <p className="text-success">{examResult.correctCount}</p>
+              <div className="col-md-4">
+                <div className="score-circle-container text-center">
+                  <div className="score-circle-large">
+                    <div className="score-percentage">
+                      {examResult.percentage}%
+                    </div>
+                    <div className="score-detail">
+                      {examResult.correctCount}/{examResult.totalQuestions}
+                    </div>
+                    <div className="score-label">Tổng điểm</div>
+                  </div>
                 </div>
               </div>
-              <div className="col-md-3">
-                <div className="stat-item">
-                  <h5>Số câu sai</h5>
-                  <p className="text-danger">{examResult.incorrectCount}</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="stat-item">
-                  <h5>Số câu chưa trả lời</h5>
-                  <p className="text-warning">{examResult.unansweredCount}</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="stat-item">
-                  <h5>Thời gian làm bài</h5>
-                  <p>{formatTime(examResult.timeSpent)}</p>
-                </div>
-              </div>
-            </div>
-          </div>{" "}
-          <div className="question-review-section">
-            <h4>Xem lại câu trả lời</h4>
-            <p>Xem lại các câu trả lời và giải thích cho từng câu hỏi.</p>
-
-            <div className="question-review-list">
-              {exam.questions.map((question, index) => {
-                const isCorrect =
-                  userAnswers[question.id] === question.correctAnswer;
-                const isAnswered = userAnswers[question.id] !== undefined;
-
-                return (
-                  <div
-                    key={question.id}
-                    className={`question-review-item ${
-                      !isAnswered
-                        ? "unanswered"
-                        : isCorrect
-                        ? "correct"
-                        : "incorrect"
-                    }`}
-                  >
-                    <div className="question-number">{index + 1}</div>
-                    <div className="question-content">
-                      <h5>{question.text}</h5>
-                      <div className="options-review">
-                        {question.options.map((option, optionIndex) => {
-                          const optionLetter = String.fromCharCode(
-                            65 + optionIndex
-                          ); // A, B, C, D... cho các lựa chọn
-                          const isUserSelected =
-                            userAnswers[question.id] === option.id;
-                          const isCorrectAnswer =
-                            question.correctAnswer === option.id;
-
-                          return (
-                            <div
-                              key={option.id}
-                              className={`option-item ${
-                                isUserSelected
-                                  ? isCorrectAnswer
-                                    ? "selected-correct"
-                                    : "selected-incorrect"
-                                  : isCorrectAnswer
-                                  ? "correct-answer"
-                                  : ""
-                              }`}
-                            >
-                              <span className="option-letter">
-                                {optionLetter}
-                              </span>
-                              <span className="option-text">{option.text}</span>
-                            </div>
-                          );
-                        })}
-                      </div>{" "}
-                      {question.explanation && (
-                        <div className="explanation-section">
-                          <h6>Giải thích:</h6>
-                          <p>{question.explanation}</p>
+              <div className="col-md-8">
+                <div className="score-breakdown">
+                  {/* TOEIC Scores */}
+                  <div className="row mb-4">
+                    <div className="col-md-6">
+                      <div className="score-section listening">
+                        <div className="score-section-header">
+                          <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                          <h5>LISTENING</h5>
                         </div>
-                      )}
+                        <div className="score-bar-container">
+                          <div className="score-number">{examResult.listeningScore}/495</div>
+                          <div className="progress-container">
+                            <div className="progress">
+                              <div 
+                                className="progress-bar bg-info" 
+                                style={{width: `${(examResult.listeningScore / 495) * 100}%`}}
+                              ></div>
+                            </div>
+                            <div className="score-range">
+                              <span>0</span>
+                              <span>495</span>
+                            </div>
+                          </div>
+                          <div className="correct-count">
+                            Đúng: {examResult.listeningCorrect}/{Math.floor(examResult.totalQuestions / 2)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="score-section reading">
+                        <div className="score-section-header">
+                          <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+                          <h5>READING</h5>
+                        </div>
+                        <div className="score-bar-container">
+                          <div className="score-number">{examResult.readingScore}/495</div>
+                          <div className="progress-container">
+                            <div className="progress">
+                              <div 
+                                className="progress-bar bg-warning" 
+                                style={{width: `${(examResult.readingScore / 495) * 100}%`}}
+                              ></div>
+                            </div>
+                            <div className="score-range">
+                              <span>0</span>
+                              <span>495</span>
+                            </div>
+                          </div>
+                          <div className="correct-count">
+                            Đúng: {examResult.readingCorrect}/{Math.floor(examResult.totalQuestions / 2)}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>{" "}
-          <div className="result-actions mt-4">
-            <button
-              className="btn btn-primary me-3"
-              onClick={() => navigate("/learner/exams")}
-            >
-              <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-              Thêm bài thi luyện tập
-            </button>
 
-            <button
-              className="btn btn-outline-secondary"
-              onClick={() => navigate("/learner/dashboard")}
-            >
-              <FontAwesomeIcon icon={faHouse} className="me-2" />
-              Quay lại Trang chủ
-            </button>
+                  {/* Total TOEIC Score */}
+                  <div className="total-toeic-score text-center">
+                    <h4 className="text-primary">Tổng điểm TOEIC: <span className="badge bg-primary fs-5">{examResult.totalScore}/990</span></h4>
+                    <p className="text-muted">Điểm TOEIC ước tính dựa trên kết quả bài thi</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Detailed Statistics */}
+          <div className="detailed-statistics mb-5">
+            <h4 className="mb-4">
+              <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+              Thống kê chi tiết
+            </h4>
+            <div className="row g-3">
+              <div className="col-md-3">
+                <div className="stat-card correct">
+                  <div className="stat-icon">
+                    <FontAwesomeIcon icon={faCheck} />
+                  </div>
+                  <div className="stat-content">
+                    <h5 className="stat-number text-success">{examResult.correctCount}</h5>
+                    <p className="stat-label">Câu đúng</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-card incorrect">
+                  <div className="stat-icon">
+                    <FontAwesomeIcon icon={faExclamationCircle} />
+                  </div>
+                  <div className="stat-content">
+                    <h5 className="stat-number text-danger">{examResult.incorrectCount}</h5>
+                    <p className="stat-label">Câu sai</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-card unanswered">
+                  <div className="stat-icon">
+                    <FontAwesomeIcon icon={faQuestionCircle} />
+                  </div>
+                  <div className="stat-content">
+                    <h5 className="stat-number text-warning">{examResult.unansweredCount}</h5>
+                    <p className="stat-label">Chưa trả lời</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="stat-card time">
+                  <div className="stat-icon">
+                    <FontAwesomeIcon icon={faClock} />
+                  </div>
+                  <div className="stat-content">
+                    <h5 className="stat-number text-info">{formatTime(examResult.timeSpent)}</h5>
+                    <p className="stat-label">Thời gian làm bài</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Question Review Section */}
+          <div className="question-review-section">
+            <div className="section-header mb-4">
+              <h4>
+                <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+                Xem lại câu trả lời
+              </h4>
+              <p className="text-muted">Xem lại các câu trả lời và giải thích cho từng câu hỏi.</p>
+            </div>
+
+            <div className="question-review-tabs mb-4">
+              <div className="nav nav-pills justify-content-center" role="tablist">
+                <button className="nav-link active" data-bs-toggle="pill" data-bs-target="#all-questions">
+                  Tất cả ({examResult.totalQuestions})
+                </button>
+                <button className="nav-link text-success" data-bs-toggle="pill" data-bs-target="#correct-questions">
+                  Đúng ({examResult.correctCount})
+                </button>
+                <button className="nav-link text-danger" data-bs-toggle="pill" data-bs-target="#incorrect-questions">
+                  Sai ({examResult.incorrectCount})
+                </button>
+                <button className="nav-link text-warning" data-bs-toggle="pill" data-bs-target="#unanswered-questions">
+                  Chưa trả lời ({examResult.unansweredCount})
+                </button>
+              </div>
+            </div>
+
+            <div className="tab-content">
+              <div className="tab-pane fade show active" id="all-questions">
+                <div className="question-review-list">
+                  {exam.questions.map((question, index) => {
+                    const isCorrect = userAnswers[question.id] === question.correctAnswer;
+                    const isAnswered = userAnswers[question.id] !== undefined;
+                    const userAnswer = userAnswers[question.id];
+
+                    return (
+                      <div
+                        key={question.id}
+                        className={`question-review-item ${
+                          !isAnswered
+                            ? "unanswered"
+                            : isCorrect
+                            ? "correct"
+                            : "incorrect"
+                        }`}
+                      >
+                        <div className="question-review-header">
+                          <div className="question-number">
+                            <span className="number">{index + 1}</span>
+                            <div className={`status-badge ${!isAnswered ? "unanswered" : isCorrect ? "correct" : "incorrect"}`}>
+                              {!isAnswered ? (
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                              ) : isCorrect ? (
+                                <FontAwesomeIcon icon={faCheck} />
+                              ) : (
+                                <FontAwesomeIcon icon={faExclamationCircle} />
+                              )}
+                            </div>
+                          </div>
+                          <div className="question-status">
+                            {!isAnswered ? (
+                              <span className="badge bg-warning">Chưa trả lời</span>
+                            ) : isCorrect ? (
+                              <span className="badge bg-success">Đúng</span>
+                            ) : (
+                              <span className="badge bg-danger">Sai</span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="question-content">
+                          <h6 className="question-text mb-3">{question.text}</h6>
+                          
+                          <div className="options-review">
+                            {question.options.map((option, optionIndex) => {
+                              const optionLetter = String.fromCharCode(65 + optionIndex);
+                              const isUserSelected = userAnswer === option.id;
+                              const isCorrectAnswer = question.correctAnswer === option.id;
+
+                              return (
+                                <div
+                                  key={option.id}
+                                  className={`option-review-item ${
+                                    isUserSelected
+                                      ? isCorrectAnswer
+                                        ? "selected-correct"
+                                        : "selected-incorrect"
+                                      : isCorrectAnswer
+                                      ? "correct-answer"
+                                      : ""
+                                  }`}
+                                >
+                                  <div className="option-indicator">
+                                    <span className="option-letter">{optionLetter}</span>
+                                    {isUserSelected && (
+                                      <FontAwesomeIcon 
+                                        icon={isCorrectAnswer ? faCheck : faExclamationCircle} 
+                                        className={isCorrectAnswer ? "text-success" : "text-danger"}
+                                      />
+                                    )}
+                                    {!isUserSelected && isCorrectAnswer && (
+                                      <FontAwesomeIcon icon={faCheck} className="text-success" />
+                                    )}
+                                  </div>
+                                  <span className="option-text">{option.text}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {question.explanation && (
+                            <div className="explanation-section mt-3">
+                              <h6 className="explanation-title">
+                                <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                                Giải thích:
+                              </h6>
+                              <div className="explanation-content">
+                                <p>{question.explanation}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Result Actions */}
+          <div className="result-actions mt-5">
+            <div className="text-center">
+              <div className="action-buttons-group">
+                <button
+                  className="btn btn-primary btn-lg me-3"
+                  onClick={() => navigate("/learner/exams")}
+                >
+                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+                  Thêm bài thi luyện tập
+                </button>
+
+                <button
+                  className="btn btn-success btn-lg me-3"
+                  onClick={() => window.location.reload()}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+                  Làm lại bài thi
+                </button>
+
+                <button
+                  className="btn btn-outline-secondary btn-lg"
+                  onClick={() => navigate("/learner/dashboard")}
+                >
+                  <FontAwesomeIcon icon={faHouse} className="me-2" />
+                  Quay lại Trang chủ
+                </button>
+              </div>
+              
+              <div className="achievement-message mt-4">
+                <div className="alert alert-info">
+                  <FontAwesomeIcon icon={faCheck} className="me-2" />
+                  <strong>Chúc mừng!</strong> Bạn đã hoàn thành bài thi với điểm số {examResult.totalScore}/990. 
+                  {examResult.totalScore >= 600 && " Kết quả rất tốt!"}
+                  {examResult.totalScore >= 800 && " Xuất sắc!"}
+                  {examResult.totalScore < 600 && " Hãy tiếp tục luyện tập để cải thiện kết quả!"}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

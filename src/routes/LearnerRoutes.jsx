@@ -19,6 +19,8 @@ import GrammarDetail from "../pages/Learner/GrammarDetail";
 import Note from "../pages/Learner/Note";
 import Topic from "../pages/Learner/Topic";
 import TopicDetail from "../pages/Learner/TopicDetail";
+import Flashcards from "../pages/Learner/Flashcards";
+import Quiz from "../pages/Learner/Quiz";
 import Section from "../pages/Learner/Section";
 import SectionSW from "../pages/Learner/SectionSW";
 import Lesson from "../pages/Learner/Lesson";
@@ -134,6 +136,22 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <TopicDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="flashcards/:topicId"
+          element={
+            <ProtectedRoute>
+              <Flashcards />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="quiz/:topicId"
+          element={
+            <ProtectedRoute>
+              <Quiz />
             </ProtectedRoute>
           }
         />

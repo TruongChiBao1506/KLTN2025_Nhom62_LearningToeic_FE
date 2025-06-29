@@ -5,9 +5,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import LearnerRoutes from "./routes/LearnerRoutes";
 import AuthRoutes from "./routes/AuthRoutes";
-import Login from "./pages/Auth/Login";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -30,6 +31,20 @@ function App() {
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Router>
   );
 }
