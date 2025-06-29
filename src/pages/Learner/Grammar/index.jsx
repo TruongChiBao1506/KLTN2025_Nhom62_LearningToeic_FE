@@ -7,6 +7,9 @@ import {
   faMicrophone,
   faSearch,
   faBook,
+  faGraduationCap,
+  faArrowRight,
+  faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "./style.css";
@@ -260,7 +263,7 @@ const Grammar = () => {
                             <div className="grammar-card-header">
                               <div className="grammar-icon">
                                 <FontAwesomeIcon
-                                  icon={faBookOpenReader}
+                                  icon={faGraduationCap}
                                 />
                               </div>
                               <div className="grammar-badge">
@@ -278,7 +281,7 @@ const Grammar = () => {
                             <div className="grammar-card-footer">
                               <span className="learn-more">
                                 Học ngay
-                                <FontAwesomeIcon icon={faBookOpenReader} className="ms-1" />
+                                <FontAwesomeIcon icon={faArrowRight} className="ms-1" />
                               </span>
                             </div>
                           </div>
@@ -335,10 +338,15 @@ const Grammar = () => {
                         to={`/learner/practice/${section._id || section.id}`}
                       >
                         <div className="practice-content">
-                          <h6 className="practice-name">{section.name}</h6>
-                          <small className="practice-description">
-                            {section.description || "Luyện tập kỹ năng"}
-                          </small>
+                          <div className="practice-icon">
+                            <FontAwesomeIcon icon={faPlay} />
+                          </div>
+                          <div className="practice-text">
+                            <h6 className="practice-name">{section.name}</h6>
+                            <small className="practice-description">
+                              {section.description || "Luyện tập kỹ năng"}
+                            </small>
+                          </div>
                         </div>
                       </Link>
                     </div>

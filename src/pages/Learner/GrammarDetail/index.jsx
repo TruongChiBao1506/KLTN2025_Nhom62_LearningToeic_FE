@@ -7,6 +7,8 @@ import {
   faChevronRight,
   faCheck,
   faTimes,
+  faGraduationCap,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "./style.css";
@@ -25,32 +27,75 @@ const GrammarDetail = () => {
   const [grammarContents, setGrammarContents] = useState([]);
   const [grammars, setGrammars] = useState([]);
   const [questions, setQuestions] = useState([]);
+  console.log("🚀 ~ GrammarDetail ~ questions:", questions);
+
   const [showExplanation, setShowExplanation] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [isSelecting, setIsSelecting] = useState(false);
 
   useEffect(() => {
     // Fetch all data
     const fetchData = async () => {
       try {
+        setLoading(true);
+
         // Get grammar details
         const grammarResponse = await grammarService.getById(grammarId);
-        setGrammarName(grammarResponse.data.grammarName);
+        console.log("🚀 ~ fetchData ~ grammarResponse:", grammarResponse);
+
+        setGrammarName(grammarResponse.grammarName);
 
         // Get all grammars for sidebar
         const grammarsResponse = await grammarService.getAllEnabled();
-        setGrammars(grammarsResponse.data);
+        console.log("🚀 ~ fetchData ~ grammarsResponse:", grammarsResponse);
+
+        // Handle array response directly
+        const grammarsData = Array.isArray(grammarsResponse)
+          ? grammarsResponse
+          : grammarsResponse.data || [];
+        const formattedGrammars = grammarsData.map((g) => ({
+          ...g,
+          grammarId: g._id || g.grammarId, // Map _id to grammarId for compatibility
+        }));
+        setGrammars(formattedGrammars);
 
         // Get grammar contents
-        const contentsResponse = await grammarContentService.getByGrammarId(
-          grammarId
-        );
-        setGrammarContents(contentsResponse.data);
+        const contentsResponse =
+          await grammarContentService.getEnableGrammarContentsByGrammar(
+            grammarId
+          );
+        console.log("🚀 ~ fetchData ~ contentsResponse:", contentsResponse);
+
+        // Handle array response directly
+        const contentsData = Array.isArray(contentsResponse)
+          ? contentsResponse
+          : contentsResponse.data || [];
+        const formattedContents = contentsData.map((c) => ({
+          ...c,
+          contentId: c._id || c.contentId, // Map _id to contentId for compatibility
+          title: c.title || "Nội dung ngữ pháp", // Ensure title exists
+          content: c.content || "", // Ensure content exists
+          status: c.grammarContentStatus || 1, // Map status
+          createdAt: c.createdAt,
+          updatedAt: c.updatedAt,
+        }));
+        setGrammarContents(formattedContents);
 
         // Get grammar questions
-        const questionsResponse = await grammarQuestionService.getByGrammarId(
-          grammarId
-        );
-        const formattedQuestions = questionsResponse.data.map((q) => ({
+        const questionsResponse =
+          await grammarQuestionService.getEnableGrammarQuestionsByGrammar(
+            grammarId
+          );
+        console.log("🚀 ~ fetchData ~ questionsResponse:", questionsResponse);
+
+        // Handle array response directly
+        const questionsData = Array.isArray(questionsResponse)
+          ? questionsResponse
+          : questionsResponse.data || [];
+        const formattedQuestions = questionsData.map((q) => ({
           ...q,
+          questionId: q._id || q.questionId, // Map _id to questionId for compatibility
+          explanation: q.questionExplanation || q.explanation || "", // Map questionExplanation to explanation
           selectedOption: null,
           isGraded: false,
         }));
@@ -65,6 +110,8 @@ const GrammarDetail = () => {
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu ngữ pháp:", error);
         toast.error("Không thể tải dữ liệu ngữ pháp. Vui lòng thử lại sau.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -80,25 +127,26 @@ const GrammarDetail = () => {
     ].filter(Boolean);
   };
 
-  const getOptionClass = (question, option) => {
-    if (!question.isGraded) return "option-neutral";
-
-    if (option === question.correctOption) {
-      return "option-correct";
-    } else if (
-      option === question.selectedOption &&
-      option !== question.correctOption
-    ) {
-      return "option-incorrect";
+  const getCorrectOptionValue = (question) => {
+    switch (question.correctOption) {
+      case 'A':
+        return question.optionA;
+      case 'B':
+        return question.optionB;
+      case 'C':
+        return question.optionC;
+      case 'D':
+        return question.optionD;
+      default:
+        return null;
     }
-
-    return "option-neutral";
   };
 
   const clearSelection = (question) => {
-    setQuestions(
-      questions.map((q) =>
-        q.questionId === question.questionId
+    const questionId = question._id || question.questionId;
+    setQuestions(prev =>
+      prev.map((q) =>
+        (q._id || q.questionId) === questionId
           ? { ...q, selectedOption: null }
           : q
       )
@@ -113,27 +161,61 @@ const GrammarDetail = () => {
   };
 
   const gradeQuestion = (question) => {
-    setQuestions(
-      questions.map((q) =>
-        q.questionId === question.questionId ? { ...q, isGraded: true } : q
+    const questionId = question._id || question.questionId;
+    setQuestions(prev =>
+      prev.map((q) =>
+        (q._id || q.questionId) === questionId ? { ...q, isGraded: true } : q
       )
     );
   };
 
   const gradeAllQuestions = () => {
-    setQuestions(
-      questions.map((q) => ({
+    setQuestions(prev =>
+      prev.map((q) => ({
         ...q,
         isGraded: true,
       }))
     );
   };
 
+  const resetQuiz = () => {
+    setQuestions(prev =>
+      prev.map((q) => ({
+        ...q,
+        selectedOption: null,
+        isGraded: false,
+      }))
+    );
+    // Reset explanation visibility
+    const initialExplanationState = {};
+    questions.forEach((_, index) => {
+      initialExplanationState[index] = false;
+    });
+    setShowExplanation(initialExplanationState);
+  };
+
+  const handleOptionSelect = (question, option) => {
+    if (question.isGraded || isSelecting) return;
+    
+    setIsSelecting(true);
+    const questionId = question._id || question.questionId;
+    
+    setQuestions(prev =>
+      prev.map((q) =>
+        (q._id || q.questionId) === questionId
+          ? { ...q, selectedOption: option }
+          : q
+      )
+    );
+    
+    setTimeout(() => setIsSelecting(false), 300);
+  };
+
   // Calculate score
   const calculateScore = () => {
     const gradedQuestions = questions.filter((q) => q.isGraded);
     const correctAnswers = gradedQuestions.filter(
-      (q) => q.selectedOption === q.correctOption
+      (q) => q.selectedOption === getCorrectOptionValue(q)
     );
     return {
       score: correctAnswers.length,
@@ -143,239 +225,392 @@ const GrammarDetail = () => {
 
   const score = calculateScore();
 
+  // Handle loading state
+  if (loading) {
+    return (
+      <div className="grammar-detail-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Đang tải dữ liệu ngữ pháp...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mt-4">
-      <div className="button-container mt-5">
-        <button
-          className={showTheory ? "active" : ""}
-          onClick={() => setShowTheory(true)}
-        >
-          Lý thuyết
-        </button>
-        <button
-          className={!showTheory ? "active" : ""}
-          onClick={() => setShowTheory(false)}
-        >
-          Trắc nghiệm
-        </button>
+    <div className="grammar-detail-container">
+      {/* Header Section */}
+      <div className="grammar-detail-header">
+        <h1 className="grammar-title">
+          <FontAwesomeIcon icon={faGraduationCap} className="grammar-title-icon" />
+          {grammarName}
+        </h1>
+        <div className="grammar-subtitle">
+          Học ngữ pháp tiếng Anh hiệu quả với lý thuyết và bài tập thực hành
+        </div>
       </div>
 
-      {showTheory ? (
-        <div className="row mb-3 mt-1">
-          <div className="col-lg col-md col-sm">
-            <div className="card specific-card mt-4">
-              <h1 className="text-center">
-                <span>{grammarName}</span>
-              </h1>
-              <div className="card-body" style={{ minHeight: "500px" }}>
-                <FontAwesomeIcon icon={faBook} className="book-icon ms-1" />
-                {grammarContents.map((content) => (
-                  <div key={content.contentId} className="mb-2">
-                    <h4 className="card-subtitle mb-2 text-body-secondary lesson-subtitle">
-                      <span className="highlight">{content.title}</span>
-                    </h4>
-                    <div
-                      className="card-text"
-                      dangerouslySetInnerHTML={{ __html: content.content }}
-                    />
+      {/* Main Content */}
+      <div className="grammar-detail-content">
+        <div className="content-main">
+          {/* Mode Selection */}
+          <div className="mode-selection">
+            <button
+              className={`mode-btn ${showTheory ? "active" : ""}`}
+              onClick={() => setShowTheory(true)}
+            >
+              <FontAwesomeIcon icon={faBook} />
+              Lý thuyết
+            </button>
+            <button
+              className={`mode-btn ${!showTheory ? "active" : ""}`}
+              onClick={() => setShowTheory(false)}
+            >
+              <FontAwesomeIcon icon={faBolt} />
+              Trắc nghiệm
+            </button>
+          </div>
+
+          {/* Content Section */}
+          <div className="content-section">
+            {showTheory ? (
+              <div className="theory-content">
+                {grammarContents.length > 0 ? (
+                  <div className="theory-wrapper">
+                    <div className="theory-header">
+                      <h1 className="theory-main-title">
+                        <FontAwesomeIcon icon={faBook} />
+                        {grammarName} - Lý thuyết
+                      </h1>
+                      <p className="theory-description">
+                        Tìm hiểu chi tiết về {grammarName} với các khái niệm,
+                        quy tắc và ví dụ thực tế
+                      </p>
+                    </div>
+                    {grammarContents.map((content, index) => (
+                      <div key={content.contentId} className="content-item">
+                        <div className="content-section-header">
+                          <div className="section-number">{index + 1}</div>
+                          <h2 className="content-title">{content.title}</h2>
+                        </div>
+                        <div className="content-body">
+                          <div
+                            className="content-html"
+                            dangerouslySetInnerHTML={{
+                              __html: content.content
+                                .replace(
+                                  /<h([1-6])>/g,
+                                  (match, level) =>
+                                    `<h${Math.min(parseInt(level) + 2, 6)}>`
+                                )
+                                .replace(
+                                  /<\/h([1-6])>/g,
+                                  (match, level) =>
+                                    `</h${Math.min(parseInt(level) + 2, 6)}>`
+                                ),
+                            }}
+                          />
+                        </div>
+                        {index < grammarContents.length - 1 && (
+                          <div className="content-separator">
+                            <div className="separator-line"></div>
+                            <div className="separator-text">• • •</div>
+                            <div className="separator-line"></div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <div className="empty-state">
+                    <FontAwesomeIcon
+                      icon={faBook}
+                      className="empty-state-icon"
+                    />
+                    <h3>Chưa có nội dung lý thuyết</h3>
+                    <p>
+                      Nội dung lý thuyết cho <strong>{grammarName}</strong> sẽ
+                      được cập nhật sớm
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
+            ) : (
+              <div className="quiz-container">
+                {questions.map((question, index) => (
+                  <div className="question-card" key={index}>
+                    <div className="question-header">
+                      <div className="question-number">{index + 1}</div>
+                      <div className="question-text">
+                        {question.questionContent}
+                      </div>
+                    </div>
 
-          <div className="col-lg-4 col-md-4 col-sm-4 text-decoration-none">
-            <h5 className="text-center">
-              <FontAwesomeIcon icon={faBolt} className="text-warning me-2" />
-              NGỮ PHÁP KHÁC
-            </h5>
-            <div style={{ maxHeight: "500px", overflow: "auto" }}>
-              {grammars.map((grammar) => (
-                <div className="card mb-2 me-2 mt-2" key={grammar.grammarId}>
-                  <Link
-                    to={`/learner/grammar/${grammar.grammarId}`}
-                    className="card-body custom-card text-decoration-none"
-                  >
-                    <span className="card-text">{grammar.grammarName}</span>
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="container-fluid">
-          <div className="row mt-3">
-            <div className="col-lg col-md col-sm">
-              <div className="card specific-card border-0 shadow-lg">
-                <div className="card-body">
-                  <div className="row">
-                    <div className="col-lg col-md col-sm">
-                      {/* Questions */}
-                      {questions.map((question, index) => (
+                    <div className="options-container">
+                      {getOptions(question).map((option, optionIndex) => (
                         <div
-                          className="question-section"
-                          key={index}
-                          id={`question-${index}`}
+                          key={optionIndex}
+                          className={`option-item ${
+                            question.selectedOption === option ? "selected" : ""
+                          } ${
+                            question.isGraded
+                              ? option === getCorrectOptionValue(question)
+                                ? "correct"
+                                : option === question.selectedOption &&
+                                  option !== getCorrectOptionValue(question)
+                                ? "incorrect"
+                                : ""
+                              : ""
+                          }`}
                         >
-                          <div className="card specific-card mb-3 border-0 shadow-lg">
-                            <div className="card-body">
-                              <ul className="mt-5 list-unstyled">
-                                <button
-                                  className="btn mb-2"
+                          <div 
+                            className="option-label"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleOptionSelect(question, option);
+                            }}
+                            style={{ cursor: question.isGraded ? 'default' : 'pointer' }}
+                          >
+                            <div
+                              className={`option-radio ${
+                                question.selectedOption === option
+                                  ? "checked"
+                                  : ""
+                              }`}
+                            ></div>
+                            <div className="option-text">{option}</div>
+                            {question.isGraded &&
+                              option === getCorrectOptionValue(question) && (
+                                <FontAwesomeIcon
+                                  icon={faCheck}
                                   style={{
-                                    backgroundColor: "#e8f2ff",
-                                    color: "#35509a",
-                                    width: "60px",
+                                    color: "#10b981",
+                                    marginLeft: "auto",
                                   }}
-                                >
-                                  {index + 1}
-                                </button>
-                                <span className="ms-3">
-                                  {question.questionContent}
-                                </span>
-
-                                {getOptions(question).map(
-                                  (option, optionIndex) => (
-                                    <li
-                                      key={optionIndex}
-                                      className={getOptionClass(
-                                        question,
-                                        option
-                                      )}
-                                    >
-                                      <label className="form-check-label">
-                                        <input
-                                          className="form-check-input"
-                                          type="radio"
-                                          value={option}
-                                          checked={
-                                            question.selectedOption === option
-                                          }
-                                          onChange={() => {
-                                            setQuestions(
-                                              questions.map((q) =>
-                                                q.questionId ===
-                                                question.questionId
-                                                  ? {
-                                                      ...q,
-                                                      selectedOption: option,
-                                                    }
-                                                  : q
-                                              )
-                                            );
-                                          }}
-                                          disabled={question.isGraded}
-                                          name={`flexRadioDefault-${question.questionId}`}
-                                        />
-                                        {option}
-                                        {question.isGraded &&
-                                          option === question.correctOption && (
-                                            <div className="result-icon">
-                                              <FontAwesomeIcon
-                                                icon={faCheck}
-                                                style={{ color: "green" }}
-                                              />
-                                            </div>
-                                          )}
-                                        {question.isGraded &&
-                                          option === question.selectedOption &&
-                                          option !== question.correctOption && (
-                                            <div className="result-icon">
-                                              <FontAwesomeIcon
-                                                icon={faTimes}
-                                                style={{ color: "red" }}
-                                              />
-                                            </div>
-                                          )}
-                                      </label>
-                                    </li>
-                                  )
-                                )}
-
-                                {!question.isGraded && (
-                                  <button
-                                    onClick={() => clearSelection(question)}
-                                    className="btn btn-link text-decoration-none"
-                                  >
-                                    Xóa lựa chọn
-                                  </button>
-                                )}
-                              </ul>
-
-                              {question.isGraded && (
-                                <div className="feedback-section">
-                                  <button
-                                    onClick={() => toggleExplanation(index)}
-                                    className="btn btn-link btn-sm mt-2 link-offset-3"
-                                  >
-                                    {showExplanation[index]
-                                      ? "Ẩn giải thích"
-                                      : "Xem giải thích"}
-                                  </button>
-
-                                  {showExplanation[index] && (
-                                    <div className="explanation-content">
-                                      <div
-                                        dangerouslySetInnerHTML={{
-                                          __html: question.explanation,
-                                        }}
-                                      />
-                                    </div>
-                                  )}
-                                </div>
+                                />
                               )}
-
-                              {!question.isGraded &&
-                                question.selectedOption && (
-                                  <div className="mt-3">
-                                    <button
-                                      onClick={() => gradeQuestion(question)}
-                                      className="btn btn-primary"
-                                    >
-                                      Kiểm tra câu trả lời
-                                    </button>
-                                  </div>
-                                )}
-                            </div>
+                            {question.isGraded &&
+                              option === question.selectedOption &&
+                              option !== getCorrectOptionValue(question) && (
+                                <FontAwesomeIcon
+                                  icon={faTimes}
+                                  style={{
+                                    color: "#ef4444",
+                                    marginLeft: "auto",
+                                  }}
+                                />
+                              )}
                           </div>
                         </div>
                       ))}
+                    </div>
 
-                      {questions.length > 0 &&
-                        questions.some(
-                          (q) => q.selectedOption && !q.isGraded
-                        ) && (
-                          <div className="text-center mb-4">
-                            <button
-                              onClick={gradeAllQuestions}
-                              className="btn btn-primary btn-lg"
-                            >
-                              Kiểm tra tất cả các câu trả lời
-                            </button>
-                          </div>
-                        )}
-
-                      {questions.some((q) => q.isGraded) && (
-                        <div className="score-summary card mb-4 border-0 shadow-sm">
-                          <div className="card-body text-center">
-                            <h5 className="card-title">Kết quả của bạn</h5>
-                            <p className="card-text">
-                              <strong>{score.score}</strong> / {score.total} (
-                              {Math.round((score.score / score.total) * 100)}%)
-                            </p>
-                          </div>
+                    {question.isGraded && (
+                      <div
+                        className={`result-feedback ${
+                          question.selectedOption === getCorrectOptionValue(question)
+                            ? "correct"
+                            : "incorrect"
+                        }`}
+                      >
+                        <div
+                          className={`result-status ${
+                            question.selectedOption === getCorrectOptionValue(question)
+                              ? "correct"
+                              : "incorrect"
+                          }`}
+                        >
+                          <FontAwesomeIcon
+                            icon={
+                              question.selectedOption === getCorrectOptionValue(question)
+                                ? faCheck
+                                : faTimes
+                            }
+                          />
+                          {question.selectedOption === getCorrectOptionValue(question)
+                            ? "Chính xác!"
+                            : "Không chính xác"}
                         </div>
-                      )}
+                        {showExplanation[index] && (
+                          <div
+                            className="explanation-text"
+                            dangerouslySetInnerHTML={{
+                              __html: question.explanation,
+                            }}
+                          />
+                        )}
+                        <button
+                          onClick={() => toggleExplanation(index)}
+                          className="action-btn"
+                          style={{ marginTop: "12px" }}
+                        >
+                          {showExplanation[index]
+                            ? "Ẩn giải thích"
+                            : "Xem giải thích"}
+                        </button>
+                      </div>
+                    )}
+
+                    {!question.isGraded && question.selectedOption && (
+                      <div style={{ marginTop: "16px" }}>
+                        <button
+                          onClick={() => gradeQuestion(question)}
+                          className="action-btn primary"
+                        >
+                          Kiểm tra câu trả lời
+                        </button>
+                        <button
+                          onClick={() => clearSelection(question)}
+                          className="action-btn"
+                          style={{ marginLeft: "12px" }}
+                        >
+                          Xóa lựa chọn
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {questions.length > 0 &&
+                  questions.some((q) => q.selectedOption && !q.isGraded) && (
+                    <div style={{ textAlign: "center", margin: "32px 0" }}>
+                      <button
+                        onClick={gradeAllQuestions}
+                        className="action-btn primary"
+                        style={{ padding: "16px 48px", fontSize: "16px" }}
+                      >
+                        Kiểm tra tất cả các câu trả lời
+                      </button>
+                    </div>
+                  )}
+
+                {questions.some((q) => q.isGraded) && (
+                  <div className="final-score">
+                    <div className="score-header">
+                      <h2 className="score-title">
+                        <FontAwesomeIcon icon={faCheck} style={{ marginRight: "12px", color: "#10b981" }} />
+                        Kết quả bài làm
+                      </h2>
+                    </div>
+                    
+                    <div className="score-content">
+                      <div className="score-circle">
+                        <div className="score-percentage">
+                          {Math.round((score.score / score.total) * 100)}%
+                        </div>
+                        <div className="score-label">Điểm số</div>
+                      </div>
+                      
+                      <div className="score-details">
+                        <div className="score-item correct">
+                          <FontAwesomeIcon icon={faCheck} />
+                          <span className="score-item-label">Câu đúng:</span>
+                          <span className="score-item-value">{score.score}</span>
+                        </div>
+                        <div className="score-item incorrect">
+                          <FontAwesomeIcon icon={faTimes} />
+                          <span className="score-item-label">Câu sai:</span>
+                          <span className="score-item-value">{score.total - score.score}</span>
+                        </div>
+                        <div className="score-item total">
+                          <FontAwesomeIcon icon={faGraduationCap} />
+                          <span className="score-item-label">Tổng câu:</span>
+                          <span className="score-item-value">{score.total}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="score-actions">
+                      <button
+                        onClick={resetQuiz}
+                        className="action-btn reset-btn"
+                      >
+                        <FontAwesomeIcon icon={faSync} style={{ marginRight: "8px" }} />
+                        Làm lại bài trắc nghiệm
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Sidebar */}
+        <div className="content-sidebar">
+          <div className="sidebar-section">
+            <h3 className="sidebar-title">
+              <FontAwesomeIcon icon={faBolt} />
+              Ngữ pháp khác
+            </h3>
+            <div className="other-grammars-container">
+              {grammars.map((grammar) => (
+                <Link
+                  key={grammar._id || grammar.grammarId}
+                  to={`/learner/grammar/${grammar._id || grammar.grammarId}`}
+                  className={`grammar-link ${
+                    (grammar._id || grammar.grammarId) === grammarId
+                      ? "current"
+                      : ""
+                  }`}
+                >
+                  <div className="grammar-link-content">
+                    <span className="grammar-link-text">
+                      {grammar.grammarName}
+                    </span>
+                    <FontAwesomeIcon
+                      icon={faChevronRight}
+                      className="grammar-link-icon"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {!showTheory && questions.length > 0 && (
+            <div className="sidebar-section">
+              <h3 className="sidebar-title">Tiến độ</h3>
+              <div className="quiz-progress">
+                <div className="progress-item">
+                  <span className="progress-label">Tổng câu hỏi:</span>
+                  <span className="progress-value">{questions.length}</span>
+                </div>
+                <div className="progress-item">
+                  <span className="progress-label">Đã làm:</span>
+                  <span className="progress-value">
+                    {questions.filter((q) => q.isGraded).length}
+                  </span>
+                </div>
+                <div className="progress-item">
+                  <span className="progress-label">Câu đúng:</span>
+                  <span className="progress-value">{score.score}</span>
+                </div>
+                {score.total > 0 && (
+                  <>
+                    <div className="progress-bar-container">
+                      <div className="progress-bar">
+                        <div
+                          className="progress-bar-fill"
+                          style={{
+                            width: `${(score.score / score.total) * 100}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "center", marginTop: "12px" }}>
+                      <span style={{ fontSize: "18px", fontWeight: "600" }}>
+                        {Math.round((score.score / score.total) * 100)}%
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
