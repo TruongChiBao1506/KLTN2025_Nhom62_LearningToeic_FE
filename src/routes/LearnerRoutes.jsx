@@ -30,6 +30,7 @@ import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
 import Notification from "../pages/Learner/Notification";
 import ProtectedRoute from "../components/Learner/ProtectedRoute";
+import NotImplemented from "../components/Learner/NotImplemented";
 
 const LearnerRoutes = () => {
   return (
@@ -250,6 +251,197 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Notification />
+            </ProtectedRoute>
+          }
+        />
+        {/* New Modern Features Routes */}
+        <Route
+          path="leaderboard"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="🏆 Bảng xếp hạng"
+                icon="🏆"
+                description="Xem thứ hạng của bạn so với các học viên khác và cạnh tranh để lên top!"
+                features={[
+                  "Bảng xếp hạng toàn cầu",
+                  "Bảng xếp hạng theo tuần/tháng",
+                  "Điểm thành tích chi tiết",
+                  "Huy hiệu và thành tựu",
+                  "So sánh với bạn bè"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="achievements"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="⭐ Thành tích"
+                icon="⭐"
+                description="Theo dõi tiến độ học tập và mở khóa các thành tích đặc biệt!"
+                features={[
+                  "Hệ thống huy hiệu",
+                  "Cấp độ học viên",
+                  "Mốc thành tích",
+                  "Phần thưởng đặc biệt",
+                  "Lịch sử thành tích"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="study-timer"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="⏰ Đồng hồ học tập"
+                icon="⏰"
+                description="Sử dụng kỹ thuật Pomodoro để tối ưu hóa thời gian học tập của bạn!"
+                features={[
+                  "Pomodoro Timer 25/5 phút",
+                  "Thống kê thời gian học",
+                  "Nhắc nhở nghỉ giải lao",
+                  "Báo cáo hiệu suất",
+                  "Âm thanh tập trung"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="focus-mode"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="🎯 Chế độ tập trung"
+                icon="🎯"
+                description="Loại bỏ mọi yếu tố gây xao nhãng để tập trung hoàn toàn vào việc học!"
+                features={[
+                  "Giao diện tối giản",
+                  "Chặn thông báo",
+                  "Chế độ toàn màn hình",
+                  "Nhạc nền thư giãn",
+                  "Theo dõi thời gian tập trung"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="audio-trainer"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="🎧 Luyện nghe"
+                icon="🎧"
+                description="Cải thiện kỹ năng nghe TOEIC với các bài luyện tập đa dạng!"
+                features={[
+                  "Luyện nghe theo cấp độ",
+                  "Điều chỉnh tốc độ phát",
+                  "Lặp lại từng câu",
+                  "Phụ đề tiếng Anh",
+                  "Bài test nghe mini"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="events"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="📅 Sự kiện"
+                icon="📅"
+                description="Tham gia các sự kiện học tập, workshop và cuộc thi đặc biệt!"
+                features={[
+                  "Sự kiện học tập hàng tuần",
+                  "Workshop TOEIC miễn phí",
+                  "Cuộc thi kiến thức",
+                  "Lịch sự kiện cá nhân",
+                  "Thông báo sự kiện mới"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="study-groups"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="👥 Nhóm học tập"
+                icon="👥"
+                description="Kết nối với các học viên khác và cùng nhau tiến bộ!"
+                features={[
+                  "Tạo/tham gia nhóm học",
+                  "Chat nhóm thời gian thực",
+                  "Chia sẻ tài liệu",
+                  "Thảo luận bài tập",
+                  "Lịch học nhóm"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="challenges"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="🎁 Thử thách"
+                icon="🎁"
+                description="Hoàn thành các thử thách hàng ngày để nhận phần thưởng hấp dẫn!"
+                features={[
+                  "Thử thách hàng ngày",
+                  "Thử thách tuần/tháng",
+                  "Phần thưởng điểm số",
+                  "Thử thách nhóm",
+                  "Bảng xếp hạng thử thách"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ai-tutor"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="🤖 AI Gia sư"
+                icon="🤖"
+                description="Nhận hỗ trợ học tập cá nhân hóa từ AI thông minh!"
+                features={[
+                  "Tư vấn học tập cá nhân",
+                  "Giải đáp thắc mắc 24/7",
+                  "Đề xuất bài tập phù hợp",
+                  "Phân tích điểm yếu",
+                  "Lộ trình học tối ưu"
+                ]}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <ProtectedRoute>
+              <NotImplemented 
+                title="⚙️ Cài đặt"
+                icon="⚙️"
+                description="Tùy chỉnh trải nghiệm học tập theo sở thích cá nhân!"
+                features={[
+                  "Cài đặt giao diện",
+                  "Thông báo học tập",
+                  "Mục tiêu học tập",
+                  "Tùy chỉnh âm thanh",
+                  "Bảo mật tài khoản"
+                ]}
+              />
             </ProtectedRoute>
           }
         />

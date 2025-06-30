@@ -17,16 +17,23 @@ import {
   faStickyNote,
   faGraduationCap,
   faClipboardList,
+  faGamepad,
   faNewspaper,
   faRocket,
+  faSpellCheck,
+  faBrain,
+  faPlay,
   faMoon,
   faSun,
   faTrophy,
   faFire,
   faTarget,
   faClock,
+  faAdjust,
   faCards,
+  faQuestion,
   faLayerGroup,
+  faVolume,
   faPen,
   faFlask,
   faHeart,
@@ -38,8 +45,6 @@ import {
   faLightbulb,
   faGlobe,
   faCog,
-  faGamepad,
-  faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -64,19 +69,19 @@ const LearnerLayout = () => {
     community: false,
   });
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
+    localStorage.getItem('darkMode') === 'true'
   );
   const [studyStreak, setStudyStreak] = useState(
-    parseInt(localStorage.getItem("studyStreak") || "0")
+    parseInt(localStorage.getItem('studyStreak') || '0')
   );
   const [todayStudyTime, setTodayStudyTime] = useState(0);
   const user = useSelector((state) => state?.auth?.user);
 
   // Toggle submenu function
   const toggleSubMenu = (menuKey) => {
-    setExpandedMenus((prev) => ({
+    setExpandedMenus(prev => ({
       ...prev,
-      [menuKey]: !prev[menuKey],
+      [menuKey]: !prev[menuKey]
     }));
   };
 
@@ -86,58 +91,40 @@ const LearnerLayout = () => {
   };
 
   // Toggle dark mode
-  // Toggle dark mode
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem("darkMode", newDarkMode.toString());
-    document.documentElement.setAttribute(
-      "data-theme",
-      newDarkMode ? "dark" : "light"
-    );
-    toast.success(
-      `Đã chuyển sang ${newDarkMode ? "chế độ tối" : "chế độ sáng"}`
-    );
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    document.documentElement.setAttribute('data-theme', newDarkMode ? 'dark' : 'light');
   };
 
   // Update study progress
   const updateStudyProgress = () => {
     const today = new Date().toDateString();
-    const lastStudyDate = localStorage.getItem("lastStudyDate");
-    const currentStreak = parseInt(localStorage.getItem("studyStreak") || "0");
-
-    if (lastStudyDate === today) {
-      setTodayStudyTime((prev) => prev + 5);
-      localStorage.setItem("todayStudyTime", (todayStudyTime + 5).toString());
-    } else {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      if (lastStudyDate === yesterday.toDateString()) {
-        setStudyStreak(currentStreak + 1);
-        localStorage.setItem("studyStreak", (currentStreak + 1).toString());
-      } else {
-        setStudyStreak(1);
-        localStorage.setItem("studyStreak", "1");
-      }
-
-      localStorage.setItem("lastStudyDate", today);
-      setTodayStudyTime(5);
-      localStorage.setItem("todayStudyTime", "5");
+    const lastStudyDate = localStorage.getItem('lastStudyDate');
+    
+    if (lastStudyDate !== today) {
+      const newStreak = lastStudyDate === new Date(Date.now() - 86400000).toDateString() 
+        ? studyStreak + 1 
+        : 1;
+      setStudyStreak(newStreak);
+      localStorage.setItem('studyStreak', newStreak.toString());
     }
+    
+    const newStudyTime = todayStudyTime + 5;
+    setTodayStudyTime(newStudyTime);
+    localStorage.setItem('todayStudyTime', newStudyTime.toString());
+    localStorage.setItem('lastStudyDate', today);
     
     toast.success(`🔥 Streak: ${studyStreak} ngày! Đã học thêm 5 phút!`);
   };
 
   // Check if the path starts with the given route
-  const isActive = useCallback(
-    (path) => {
-      return (
-        location.pathname === path || location.pathname.startsWith(`${path}/`)
-      );
-    },
-    [location.pathname]
-  );
+  const isActive = useCallback((path) => {
+    return (
+      location.pathname === path || location.pathname.startsWith(`${path}/`)
+    );
+  }, [location.pathname]);
   const handleLogout = async () => {
     try {
       // Sử dụng authService để đăng xuất
@@ -163,6 +150,38 @@ const LearnerLayout = () => {
     }
   };
 
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    document.documentElement.setAttribute('data-theme', newDarkMode ? 'dark' : 'light');
+    toast.success(`Đã chuyển sang ${newDarkMode ? 'chế độ tối' : 'chế độ sáng'}`);
+  };
+
+  const updateStudyProgress = () => {
+    const today = new Date().toDateString();
+    const lastStudyDate = localStorage.getItem('lastStudyDate');
+    const currentStreak = parseInt(localStorage.getItem('studyStreak') || '0');
+    
+    if (lastStudyDate === today) {
+      setTodayStudyTime(prev => prev + 1);
+    } else {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (lastStudyDate === yesterday.toDateString()) {
+        setStudyStreak(currentStreak + 1);
+        localStorage.setItem('studyStreak', (currentStreak + 1).toString());
+      } else {
+        setStudyStreak(1);
+        localStorage.setItem('studyStreak', '1');
+      }
+      
+      localStorage.setItem('lastStudyDate', today);
+      setTodayStudyTime(1);
+    }
+  };
+
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     // Mark all as read if opening
@@ -182,78 +201,37 @@ const LearnerLayout = () => {
   // Fetch notifications on component mount
   useEffect(() => {
     // Set initial theme
-    document.documentElement.setAttribute(
-      "data-theme",
-      darkMode ? "dark" : "light"
-    );
-
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    
     // Auto-expand menu based on current route
-    if (
-      isActive("/learner/exams") ||
-      isActive("/learner/full-test") ||
-      isActive("/learner/mini-test") ||
-      isActive("/learner/exam-question") ||
-      isActive("/learner/exam-result")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, exams: true }));
+    if (isActive("/learner/exams") || isActive("/learner/full-test") || isActive("/learner/mini-test") || isActive("/learner/exam-question") || isActive("/learner/exam-result")) {
+      setExpandedMenus(prev => ({ ...prev, exams: true }));
     }
-    if (
-      isActive("/learner/materials") ||
-      isActive("/learner/grammar") ||
-      isActive("/learner/improve") ||
-      isActive("/learner/section") ||
-      isActive("/learner/lesson") ||
-      isActive("/learner/study")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, learning: true }));
+    if (isActive("/learner/materials") || isActive("/learner/grammar") || isActive("/learner/improve") || isActive("/learner/section") || isActive("/learner/lesson") || isActive("/learner/study")) {
+      setExpandedMenus(prev => ({ ...prev, learning: true }));
     }
-    if (
-      isActive("/learner/topics") ||
-      isActive("/learner/vocabulary") ||
-      isActive("/learner/dictionary") ||
-      isActive("/learner/flashcards") ||
-      isActive("/learner/quiz")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, vocabulary: true }));
+    if (isActive("/learner/topics") || isActive("/learner/vocabulary") || isActive("/learner/dictionary") || isActive("/learner/flashcards") || isActive("/learner/quiz")) {
+      setExpandedMenus(prev => ({ ...prev, vocabulary: true }));
     }
-    if (
-      isActive("/learner/notes") ||
-      isActive("/learner/blog") ||
-      isActive("/learner/practice-sw")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, practice: true }));
+    if (isActive("/learner/notes") || isActive("/learner/blog") || isActive("/learner/practice-sw")) {
+      setExpandedMenus(prev => ({ ...prev, practice: true }));
     }
-    if (
-      isActive("/learner/leaderboard") ||
-      isActive("/learner/achievements") ||
-      isActive("/learner/focus-mode") ||
-      isActive("/learner/settings") ||
-      isActive("/learner/progress") ||
-      isActive("/learner/study-timer") ||
-      isActive("/learner/audio-trainer")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, tools: true }));
+    if (isActive("/learner/leaderboard") || isActive("/learner/achievements") || isActive("/learner/focus-mode") || isActive("/learner/settings")) {
+      setExpandedMenus(prev => ({ ...prev, tools: true }));
     }
-    if (
-      isActive("/learner/events") ||
-      isActive("/learner/study-groups") ||
-      isActive("/learner/challenges") ||
-      isActive("/learner/ai-tutor")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, community: true }));
+    if (isActive("/learner/community") || isActive("/learner/challenges") || isActive("/learner/friends")) {
+      setExpandedMenus(prev => ({ ...prev, community: true }));
     }
 
     // Load study progress
-    const savedStreak = parseInt(localStorage.getItem("studyStreak") || "0");
+    const savedStreak = parseInt(localStorage.getItem('studyStreak') || '0');
     setStudyStreak(savedStreak);
 
     // Check if studied today
     const today = new Date().toDateString();
-    const lastStudyDate = localStorage.getItem("lastStudyDate");
+    const lastStudyDate = localStorage.getItem('lastStudyDate');
     if (lastStudyDate === today) {
-      setTodayStudyTime(
-        parseInt(localStorage.getItem("todayStudyTime") || "0")
-      );
+      setTodayStudyTime(parseInt(localStorage.getItem('todayStudyTime') || '0'));
     }
 
     // Check if learner tokens exist in localStorage
@@ -361,12 +339,7 @@ const LearnerLayout = () => {
             <div className="user-actions">
               {/* Study Stats */}
               <div className="study-stats">
-                <div
-                  className="stat-item"
-                  onClick={updateStudyProgress}
-                  style={{ cursor: "pointer" }}
-                  title="Click để cập nhật tiến độ"
-                >
+                <div className="stat-item" onClick={updateStudyProgress} style={{cursor: 'pointer'}} title="Click để cập nhật tiến độ">
                   <FontAwesomeIcon icon={faFire} className="stat-icon streak" />
                   <span className="stat-value">{studyStreak}</span>
                   <span className="stat-label">Streak</span>
@@ -379,11 +352,7 @@ const LearnerLayout = () => {
               </div>
 
               {/* Theme Toggle */}
-              <button
-                className="theme-toggle"
-                onClick={toggleDarkMode}
-                title="Chuyển đổi chế độ"
-              >
+              <button className="theme-toggle" onClick={toggleDarkMode} title="Chuyển đổi chế độ">
                 <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
               </button>
 
@@ -485,9 +454,7 @@ const LearnerLayout = () => {
             <li className="nav-item">
               <Link
                 to="/learner/dashboard"
-                className={`nav-link ${
-                  isActive("/learner/dashboard") ? "active" : ""
-                }`}
+                className={`nav-link ${isActive("/learner/dashboard") ? "active" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <FontAwesomeIcon icon={faHouse} className="nav-icon" />
@@ -498,30 +465,21 @@ const LearnerLayout = () => {
             {/* Exams Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.exams ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("exams")}
+                className={`nav-link category-toggle ${expandedMenus.exams ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('exams')}
               >
                 <FontAwesomeIcon icon={faFileAlt} className="nav-icon" />
                 <span className="nav-text">Bài thi & Luyện tập</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.exams ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.exams ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/exams"
                     className={isActive("/learner/exams") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faClipboardList}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faClipboardList} className="submenu-icon" />
                     <span>Danh sách bài thi</span>
                   </Link>
                 </li>
@@ -531,10 +489,7 @@ const LearnerLayout = () => {
                     className={isActive("/learner/full-test") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faGraduationCap}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faGraduationCap} className="submenu-icon" />
                     <span>Thi thử Full Test</span>
                   </Link>
                 </li>
@@ -554,30 +509,21 @@ const LearnerLayout = () => {
             {/* Learning Materials Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.learning ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("learning")}
+                className={`nav-link category-toggle ${expandedMenus.learning ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('learning')}
               >
                 <FontAwesomeIcon icon={faBook} className="nav-icon" />
                 <span className="nav-text">Học tập</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.learning ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.learning ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/materials"
                     className={isActive("/learner/materials") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faBookOpen}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faBookOpen} className="submenu-icon" />
                     <span>Tài liệu học tập</span>
                   </Link>
                 </li>
@@ -587,10 +533,7 @@ const LearnerLayout = () => {
                     className={isActive("/learner/grammar") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faLanguage}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faLanguage} className="submenu-icon" />
                     <span>Ngữ pháp</span>
                   </Link>
                 </li>
@@ -604,46 +547,27 @@ const LearnerLayout = () => {
                     <span>Cải thiện kỹ năng</span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/learner/section"
-                    className={isActive("/learner/section") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faLayerGroup} className="submenu-icon" />
-                    <span>Phần thi</span>
-                  </Link>
-                </li>
               </ul>
             </li>
 
             {/* Vocabulary Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.vocabulary ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("vocabulary")}
+                className={`nav-link category-toggle ${expandedMenus.vocabulary ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('vocabulary')}
               >
                 <FontAwesomeIcon icon={faCards} className="nav-icon" />
                 <span className="nav-text">Từ vựng</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.vocabulary ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.vocabulary ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/topics"
                     className={isActive("/learner/topics") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faBookOpen}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faBookOpen} className="submenu-icon" />
                     <span>Chủ đề từ vựng</span>
                   </Link>
                 </li>
@@ -667,76 +591,27 @@ const LearnerLayout = () => {
                     <span>Từ điển</span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/learner/flashcards"
-                    className={isActive("/learner/flashcards") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faGamepad} className="submenu-icon" />
-                    <span>Flashcards</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/quiz"
-                    className={isActive("/learner/quiz") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faQuestion} className="submenu-icon" />
-                    <span>Quiz từ vựng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/flashcards"
-                    className={isActive("/learner/flashcards") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faPen} className="submenu-icon" />
-                    <span>Flashcards</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/quiz"
-                    className={isActive("/learner/quiz") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faRocket} className="submenu-icon" />
-                    <span>Quiz</span>
-                  </Link>
-                </li>
               </ul>
             </li>
 
             {/* Practice Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.practice ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("practice")}
+                className={`nav-link category-toggle ${expandedMenus.practice ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('practice')}
               >
                 <FontAwesomeIcon icon={faPen} className="nav-icon" />
                 <span className="nav-text">Luyện tập</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.practice ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.practice ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/notes"
                     className={isActive("/learner/notes") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faStickyNote}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faStickyNote} className="submenu-icon" />
                     <span>Ghi chú cá nhân</span>
                   </Link>
                 </li>
@@ -746,24 +621,8 @@ const LearnerLayout = () => {
                     className={isActive("/learner/blog") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faNewspaper}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faNewspaper} className="submenu-icon" />
                     <span>Blog & Tin tức</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/practice-sw"
-                    className={isActive("/learner/practice-sw") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPen}
-                      className="submenu-icon"
-                    />
-                    <span>Luyện Speaking & Writing</span>
                   </Link>
                 </li>
               </ul>
@@ -772,30 +631,21 @@ const LearnerLayout = () => {
             {/* Tools & Features Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.tools ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("tools")}
+                className={`nav-link category-toggle ${expandedMenus.tools ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('tools')}
               >
                 <FontAwesomeIcon icon={faFlask} className="nav-icon" />
                 <span className="nav-text">Công cụ & Tính năng</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.tools ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.tools ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/progress"
                     className={isActive("/learner/progress") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faChartLine}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faChartLine} className="submenu-icon" />
                     <span>Tiến độ học tập</span>
                   </Link>
                 </li>
@@ -812,9 +662,7 @@ const LearnerLayout = () => {
                 <li>
                   <Link
                     to="/learner/achievements"
-                    className={
-                      isActive("/learner/achievements") ? "active" : ""
-                    }
+                    className={isActive("/learner/achievements") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faStar} className="submenu-icon" />
@@ -844,15 +692,10 @@ const LearnerLayout = () => {
                 <li>
                   <Link
                     to="/learner/audio-trainer"
-                    className={
-                      isActive("/learner/audio-trainer") ? "active" : ""
-                    }
+                    className={isActive("/learner/audio-trainer") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faHeadphones}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faHeadphones} className="submenu-icon" />
                     <span>Luyện nghe</span>
                   </Link>
                 </li>
@@ -862,45 +705,31 @@ const LearnerLayout = () => {
             {/* Community Section */}
             <li className="nav-item nav-category">
               <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.community ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("community")}
+                className={`nav-link category-toggle ${expandedMenus.community ? 'expanded' : ''}`}
+                onClick={() => toggleSubMenu('community')}
               >
                 <FontAwesomeIcon icon={faGlobe} className="nav-icon" />
                 <span className="nav-text">Cộng đồng</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.community ? "expanded" : ""
-                }`}
-              >
+              <ul className={`nav-submenu ${expandedMenus.community ? 'expanded' : ''}`}>
                 <li>
                   <Link
                     to="/learner/events"
                     className={isActive("/learner/events") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faCalendarAlt} className="submenu-icon" />
                     <span>Sự kiện</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/learner/study-groups"
-                    className={
-                      isActive("/learner/study-groups") ? "active" : ""
-                    }
+                    className={isActive("/learner/study-groups") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faVideoCamera}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faVideoCamera} className="submenu-icon" />
                     <span>Nhóm học tập</span>
                   </Link>
                 </li>
@@ -920,10 +749,7 @@ const LearnerLayout = () => {
                     className={isActive("/learner/ai-tutor") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faLightbulb}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faLightbulb} className="submenu-icon" />
                     <span>AI Gia sư</span>
                   </Link>
                 </li>
@@ -934,9 +760,7 @@ const LearnerLayout = () => {
             <li className="nav-item">
               <Link
                 to="/learner/profile"
-                className={`nav-link ${
-                  isActive("/learner/profile") ? "active" : ""
-                }`}
+                className={`nav-link ${isActive("/learner/profile") ? "active" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <FontAwesomeIcon icon={faUser} className="nav-icon" />
@@ -946,9 +770,7 @@ const LearnerLayout = () => {
             <li className="nav-item">
               <Link
                 to="/learner/settings"
-                className={`nav-link ${
-                  isActive("/learner/settings") ? "active" : ""
-                }`}
+                className={`nav-link ${isActive("/learner/settings") ? "active" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <FontAwesomeIcon icon={faCog} className="nav-icon" />
