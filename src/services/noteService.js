@@ -2,9 +2,9 @@ import axiosClient from "./axiosClient";
 
 const noteService = {
   // Tạo một ghi chú mới
-  createNote: async (noteData) => {
+  create: async (noteData) => {
     try {
-      const response = await axiosClient.post("/note", noteData);
+      const response = await axiosClient.post("/notes", noteData);
       return response;
     } catch (error) {
       console.error("Lỗi khi tạo ghi chú:", error);
@@ -15,7 +15,7 @@ const noteService = {
   // Lấy tất cả ghi chú của một người dùng
   getAllNotesByUserId: async (userId) => {
     try {
-      const response = await axiosClient.get(`/note/user/${userId}`);
+      const response = await axiosClient.get(`/notes/user/${userId}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy ghi chú của người dùng ${userId}:`, error);
@@ -26,7 +26,7 @@ const noteService = {
   // Cập nhật ghi chú
   update: async (noteId, noteData) => {
     try {
-      const response = await axiosClient.put(`/note/${noteId}`, noteData);
+      const response = await axiosClient.put(`/notes/${noteId}`, noteData);
       return response;
     } catch (error) {
       console.error(`Lỗi khi cập nhật ghi chú ${noteId}:`, error);
@@ -35,9 +35,9 @@ const noteService = {
   },
 
   // Xóa ghi chú
-  deleteNote: async (noteId) => {
+  delete: async (noteId) => {
     try {
-      const response = await axiosClient.delete(`/note/${noteId}`);
+      const response = await axiosClient.delete(`/notes/${noteId}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi xóa ghi chú ${noteId}:`, error);
@@ -48,7 +48,7 @@ const noteService = {
   // Lấy một ghi chú theo ID
   getNoteById: async (noteId) => {
     try {
-      const response = await axiosClient.get(`/note/${noteId}`);
+      const response = await axiosClient.get(`/notes/${noteId}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy ghi chú ${noteId}:`, error);

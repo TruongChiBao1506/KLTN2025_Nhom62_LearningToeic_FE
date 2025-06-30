@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPen,
@@ -52,20 +52,19 @@ const Note = () => {
     getUserId();
   }, []);
 
-  useEffect(() => {
-    // Fetch notes when userId is available
-    if (userId) {
-      getAllNotesByUserId();
-    }
-  }, [userId]);
-
   // Get all notes for the user
-  const getAllNotesByUserId = async () => {
+  const getAllNotesByUserId = useCallback(async () => {
     try {
       const response = await noteService.getAllNotesByUserId(userId);
+      console.log("🚀 ~ getAllNotesByUserId ~ response:", response);
+
+      // Check if response has data property or is array directly
+      const notesData = Array.isArray(response) ? response : response.data;
+
       setNotes(
-        response.data.map((note) => ({
+        notesData.map((note) => ({
           ...note,
+          noteId: note._id, // Map _id to noteId for consistency
           editMode: false,
         }))
       );
@@ -73,7 +72,14 @@ const Note = () => {
       console.error("Lỗi khi tải ghi chú:", error);
       toast.error("Không thể tải ghi chú. Vui lòng thử lại sau.");
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    // Fetch notes when userId is available
+    if (userId) {
+      getAllNotesByUserId();
+    }
+  }, [userId, getAllNotesByUserId]);
 
   // Toggle edit mode for a note
   const toggleEditMode = (note) => {
@@ -136,177 +142,54 @@ const Note = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Ghi chú của tôi</h2>
-
-      {/* Add New Note button */}
-      <div className="mb-4">
-        <button
-          className="btn btn-primary"
-          onClick={() => setShowNewNoteForm(!showNewNoteForm)}
-        >
-          <FontAwesomeIcon icon={faPlus} className="me-2" />
-          Tạo ghi chú mới
-        </button>
-      </div>
-
-      {/* New Note Form */}
-      {showNewNoteForm && (
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <div className="card border-primary">
-              <div className="card-header bg-primary text-white">
-                Tạo ghi chú mới
-              </div>
-              <div className="card-body">
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={noteFormSchema}
-                  onSubmit={createNote}
-                >
-                  {({ isSubmitting }) => (
-                    <Form>
-                      <div className="mb-3">
-                        <label htmlFor="title" className="form-label">
-                          Tiêu đề <span className="required-field">*</span>
-                        </label>
-                        <Field
-                          name="title"
-                          type="text"
-                          className="form-control"
-                          placeholder="Nhập tiêu đề"
-                        />
-                        <ErrorMessage
-                          name="title"
-                          component="div"
-                          className="error-feedback"
-                        />
-                      </div>
-
-                      <div className="mb-3">
-                        <label htmlFor="content" className="form-label">
-                          Nội dung <span className="required-field">*</span>
-                        </label>
-                        <Field
-                          as="textarea"
-                          name="content"
-                          className="form-control"
-                          rows="3"
-                          placeholder="Nhập nội dung"
-                        />
-                        <ErrorMessage
-                          name="content"
-                          component="div"
-                          className="error-feedback"
-                        />
-                      </div>
-
-                      <div className="d-flex justify-content-end">
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary me-2"
-                          onClick={() => setShowNewNoteForm(false)}
-                        >
-                          Hủy
-                        </button>
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          disabled={isSubmitting}
-                        >
-                          Lưu
-                        </button>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Notes Grid */}
-      <div className="row">
-        {notes.length === 0 ? (
-          <div className="col-12 text-center py-5">
-            <p className="text-muted">
-              Bạn chưa có ghi chú nào. Hãy tạo ghi chú mới!
+    <div className="notes-container">
+      <div className="container">
+        <div className="notes-wrapper">
+          {/* Header */}
+          <div className="notes-header">
+            <h1 className="notes-title">Ghi chú của tôi</h1>
+            <p className="notes-subtitle">
+              Quản lý và tổ chức các ghi chú học tập của bạn
             </p>
           </div>
-        ) : (
-          notes.map((note) => (
-            <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={note.noteId}>
-              {!note.editMode ? (
-                <div className="card h-100 note-card">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <span>
-                      <FontAwesomeIcon
-                        icon={faUserPen}
-                        className="me-2 text-warning"
-                      />
-                      {note.title}
-                    </span>
-                    <div className="note-actions">
-                      <button
-                        type="button"
-                        className="btn btn-link p-0"
-                        onClick={() => toggleEditMode(note)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          className="text-primary"
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-link p-0 ms-2"
-                        onClick={() => deleteNote(note.noteId)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faTimes}
-                          className="text-danger"
-                        />
-                      </button>
-                    </div>
+
+          {/* Add New Note button */}
+          <div className="mb-4 text-center">
+            <button
+              className="add-note-btn"
+              onClick={() => setShowNewNoteForm(!showNewNoteForm)}
+            >
+              <FontAwesomeIcon icon={faPlus} className="me-2" />
+              Tạo ghi chú mới
+            </button>
+          </div>
+
+          {/* New Note Form */}
+          {showNewNoteForm && (
+            <div className="row justify-content-center mb-5">
+              <div className="col-lg-8 col-md-10">
+                <div className="new-note-form">
+                  <div className="form-header">
+                    <FontAwesomeIcon icon={faPlus} className="me-2" />
+                    Tạo ghi chú mới
                   </div>
-                  <div className="card-body">
-                    <p className="card-text note-content">{note.content}</p>
-                  </div>
-                  <div className="card-footer text-muted small">
-                    {new Date(
-                      note.updatedAt || note.createdAt
-                    ).toLocaleDateString("vi-VN")}
-                  </div>
-                </div>
-              ) : (
-                <div className="card h-100 note-card-edit">
-                  <div className="card-header bg-light">
-                    <strong>Chỉnh sửa ghi chú</strong>
-                  </div>
-                  <div className="card-body">
+                  <div className="form-body">
                     <Formik
-                      initialValues={{
-                        title: note.title,
-                        content: note.content,
-                      }}
+                      initialValues={initialValues}
                       validationSchema={noteFormSchema}
-                      onSubmit={(values) => updateNote(values, note.noteId)}
+                      onSubmit={createNote}
                     >
                       {({ isSubmitting }) => (
                         <Form>
-                          <div className="mb-3">
-                            <label
-                              htmlFor={`title-${note.noteId}`}
-                              className="form-label"
-                            >
-                              Tiêu đề
+                          <div className="mb-4">
+                            <label htmlFor="title" className="form-label">
+                              Tiêu đề <span className="required-field">*</span>
                             </label>
                             <Field
                               name="title"
                               type="text"
-                              className="form-control"
-                              id={`title-${note.noteId}`}
+                              className="form-control form-input"
+                              placeholder="Nhập tiêu đề cho ghi chú của bạn..."
                             />
                             <ErrorMessage
                               name="title"
@@ -315,19 +198,16 @@ const Note = () => {
                             />
                           </div>
 
-                          <div className="mb-3">
-                            <label
-                              htmlFor={`content-${note.noteId}`}
-                              className="form-label"
-                            >
-                              Nội dung
+                          <div className="mb-4">
+                            <label htmlFor="content" className="form-label">
+                              Nội dung <span className="required-field">*</span>
                             </label>
                             <Field
                               as="textarea"
                               name="content"
-                              className="form-control"
-                              id={`content-${note.noteId}`}
-                              rows="3"
+                              className="form-control form-input"
+                              rows="4"
+                              placeholder="Viết nội dung ghi chú ở đây..."
                             />
                             <ErrorMessage
                               name="content"
@@ -336,25 +216,25 @@ const Note = () => {
                             />
                           </div>
 
-                          <div className="d-flex justify-content-end">
+                          <div className="d-flex justify-content-end gap-3">
                             <button
                               type="button"
-                              className="btn btn-outline-secondary me-2"
-                              onClick={() => toggleEditMode(note)}
+                              className="btn-cancel"
+                              onClick={() => setShowNewNoteForm(false)}
                             >
                               <FontAwesomeIcon
                                 icon={faTimes}
-                                className="me-1"
+                                className="me-2"
                               />
                               Hủy
                             </button>
                             <button
                               type="submit"
-                              className="btn btn-success"
+                              className="btn-primary-custom"
                               disabled={isSubmitting}
                             >
-                              <FontAwesomeIcon icon={faSave} className="me-1" />
-                              Lưu
+                              <FontAwesomeIcon icon={faSave} className="me-2" />
+                              {isSubmitting ? "Đang lưu..." : "Lưu ghi chú"}
                             </button>
                           </div>
                         </Form>
@@ -362,10 +242,171 @@ const Note = () => {
                     </Formik>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          ))
-        )}
+          )}
+
+          {/* Notes Grid */}
+          <div className="row">
+            {notes.length === 0 ? (
+              <div className="col-12">
+                <div className="empty-state">
+                  <div className="empty-icon">
+                    <FontAwesomeIcon icon={faUserPen} />
+                  </div>
+                  <div className="empty-title">Chưa có ghi chú nào</div>
+                  <div className="empty-subtitle">
+                    Hãy tạo ghi chú đầu tiên của bạn để bắt đầu ghi lại những
+                    kiến thức quan trọng!
+                  </div>
+                </div>
+              </div>
+            ) : (
+              notes.map((note) => (
+                <div
+                  className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
+                  key={note.noteId}
+                >
+                  {!note.editMode ? (
+                    <div className="note-card">
+                      <div className="note-card-header">
+                        <div className="note-title">
+                          <FontAwesomeIcon
+                            icon={faUserPen}
+                            className="note-icon"
+                          />
+                          {note.title}
+                        </div>
+                        <div className="note-actions">
+                          <button
+                            type="button"
+                            className="action-btn edit-btn"
+                            onClick={() => toggleEditMode(note)}
+                            title="Chỉnh sửa"
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-btn delete-btn"
+                            onClick={() => deleteNote(note.noteId)}
+                            title="Xóa"
+                          >
+                            <FontAwesomeIcon icon={faTimes} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="note-content-wrapper">
+                        <p className="note-content">{note.content}</p>
+                      </div>
+                      <div className="note-footer">
+                        Cập nhật:{" "}
+                        {new Date(
+                          note.updatedAt || note.createdAt
+                        ).toLocaleDateString("vi-VN", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="note-card-edit">
+                      <div className="edit-header">
+                        <FontAwesomeIcon icon={faEdit} className="me-2" />
+                        Chỉnh sửa ghi chú
+                      </div>
+                      <div className="edit-body">
+                        <Formik
+                          initialValues={{
+                            title: note.title,
+                            content: note.content,
+                          }}
+                          validationSchema={noteFormSchema}
+                          onSubmit={(values) => updateNote(values, note.noteId)}
+                        >
+                          {({ isSubmitting }) => (
+                            <Form>
+                              <div className="mb-3">
+                                <label
+                                  htmlFor={`title-${note.noteId}`}
+                                  className="form-label"
+                                >
+                                  Tiêu đề{" "}
+                                  <span className="required-field">*</span>
+                                </label>
+                                <Field
+                                  name="title"
+                                  type="text"
+                                  className="form-control form-input"
+                                  id={`title-${note.noteId}`}
+                                />
+                                <ErrorMessage
+                                  name="title"
+                                  component="div"
+                                  className="error-feedback"
+                                />
+                              </div>
+
+                              <div className="mb-4">
+                                <label
+                                  htmlFor={`content-${note.noteId}`}
+                                  className="form-label"
+                                >
+                                  Nội dung{" "}
+                                  <span className="required-field">*</span>
+                                </label>
+                                <Field
+                                  as="textarea"
+                                  name="content"
+                                  className="form-control form-input"
+                                  id={`content-${note.noteId}`}
+                                  rows="4"
+                                />
+                                <ErrorMessage
+                                  name="content"
+                                  component="div"
+                                  className="error-feedback"
+                                />
+                              </div>
+
+                              <div className="d-flex justify-content-end gap-2">
+                                <button
+                                  type="button"
+                                  className="btn-cancel"
+                                  onClick={() => toggleEditMode(note)}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faTimes}
+                                    className="me-1"
+                                  />
+                                  Hủy
+                                </button>
+                                <button
+                                  type="submit"
+                                  className="btn-save"
+                                  disabled={isSubmitting}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faSave}
+                                    className="me-1"
+                                  />
+                                  {isSubmitting ? "Đang lưu..." : "Lưu"}
+                                </button>
+                              </div>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

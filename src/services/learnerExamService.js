@@ -84,7 +84,7 @@ const learnerExamService = {
       const response = await axiosClient.get(`/learner/exams/completed/count`);
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải số lượng bài thi đã hoàn thành:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
@@ -95,7 +95,7 @@ const learnerExamService = {
       const response = await axiosClient.get(`/learner/exams/average-score`);
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải điểm trung bình:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
@@ -106,7 +106,7 @@ const learnerExamService = {
       const response = await axiosClient.get(`/learner/exams/upcoming`);
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải bài thi sắp tới:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
@@ -119,7 +119,7 @@ const learnerExamService = {
       );
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải bài thi gần đây:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },

@@ -1,41 +1,357 @@
+/* Main container styles */
+.notes-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.notes-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Header styles */
+.notes-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.notes-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.notes-subtitle {
+  color: #6c757d;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+/* Add new note button */
+.add-note-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.add-note-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Form card styles */
+.new-note-form {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.form-body {
+  padding: 2rem;
+}
+
+/* Note card styles */
 .note-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-  border-left: 3px solid #4a6fdc;
+  background: white;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: 100%;
 }
 
 .note-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
-.note-card-edit {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border-left: 3px solid #28a745;
+.note-card-header {
+  background: linear-gradient(135deg, #f8f9ff 0%, #eef1ff 100%);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.note-content {
-  white-space: pre-line;
-  max-height: 150px;
-  overflow-y: auto;
+.note-title {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.1rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.note-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-right: 8px;
 }
 
 .note-actions {
-  opacity: 0.5;
-  transition: opacity 0.3s;
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 8px;
 }
 
 .note-card:hover .note-actions {
   opacity: 1;
 }
 
+.action-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  background: rgba(102, 126, 234, 0.1);
+  transform: scale(1.1);
+}
+
+.edit-btn {
+  color: #667eea;
+}
+
+.delete-btn {
+  color: #e53e3e;
+}
+
+.note-content-wrapper {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.note-content {
+  color: #4a5568;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  white-space: pre-line;
+  max-height: 120px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.note-footer {
+  padding: 1rem 1.5rem;
+  background: rgba(248, 250, 252, 0.8);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.85rem;
+  color: #718096;
+  text-align: right;
+}
+
+/* Edit mode card */
+.note-card-edit {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 2px solid #667eea;
+  overflow: hidden;
+  height: 100%;
+}
+
+.edit-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+}
+
+.edit-body {
+  padding: 1.5rem;
+}
+
+/* Form inputs */
+.form-input {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: white;
+  outline: none;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-cancel {
+  background: #f8f9fa;
+  border: 2px solid #e2e8f0;
+  color: #6c757d;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #e9ecef;
+  border-color: #ced4da;
+  color: #495057;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+  transform: translateY(-1px);
+}
+
+.btn-primary-custom {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-1px);
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #718096;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: #cbd5e0;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.empty-subtitle {
+  font-size: 1rem;
+  color: #718096;
+}
+
+/* Required field indicator */
 .required-field {
-  color: red;
+  color: #e53e3e;
   font-size: 14px;
   margin-left: 4px;
 }
 
+/* Error feedback */
 .error-feedback {
-  color: #dc3545;
+  color: #e53e3e;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .notes-container {
+    padding: 1rem 0;
+  }
+
+  .notes-wrapper {
+    margin: 0 1rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+
+  .notes-title {
+    font-size: 2rem;
+  }
+
+  .note-card-header {
+    padding: 1rem;
+  }
+
+  .note-content-wrapper {
+    padding: 1rem;
+  }
+
+  .note-footer {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.note-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.new-note-form {
+  animation: fadeInUp 0.3s ease-out;
 }

@@ -7,7 +7,7 @@ const learnerProgressService = {
       const response = await axiosClient.get(`/learner/progress/study-time`);
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải thời gian học:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
@@ -18,7 +18,7 @@ const learnerProgressService = {
       const response = await axiosClient.get(`/learner/progress/certificates`);
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải thông tin chứng chỉ:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
@@ -31,7 +31,7 @@ const learnerProgressService = {
       );
       return response;
     } catch (error) {
-      console.error("Lỗi khi tải hiệu suất học tập:", error);
+      // Endpoint chưa được triển khai - silent fail
       throw error;
     }
   },
