@@ -31,6 +31,8 @@ import Blog from "../pages/Learner/Blog";
 import Notification from "../pages/Learner/Notification";
 import ProtectedRoute from "../components/Learner/ProtectedRoute";
 import NotImplemented from "../components/Learner/NotImplemented";
+import AITutor from "../pages/Learner/AITutor";
+import StudyTimer from "../pages/Learner/StudyTimer";
 
 const LearnerRoutes = () => {
   return (
@@ -297,18 +299,7 @@ const LearnerRoutes = () => {
           path="study-timer"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="⏰ Đồng hồ học tập"
-                icon="⏰"
-                description="Sử dụng kỹ thuật Pomodoro để tối ưu hóa thời gian học tập của bạn!"
-                features={[
-                  "Pomodoro Timer 25/5 phút",
-                  "Thống kê thời gian học",
-                  "Nhắc nhở nghỉ giải lao",
-                  "Báo cáo hiệu suất",
-                  "Âm thanh tập trung"
-                ]}
-              />
+              <StudyTimer />
             </ProtectedRoute>
           }
         />
@@ -411,18 +402,7 @@ const LearnerRoutes = () => {
           path="ai-tutor"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="🤖 AI Gia sư"
-                icon="🤖"
-                description="Nhận hỗ trợ học tập cá nhân hóa từ AI thông minh!"
-                features={[
-                  "Tư vấn học tập cá nhân",
-                  "Giải đáp thắc mắc 24/7",
-                  "Đề xuất bài tập phù hợp",
-                  "Phân tích điểm yếu",
-                  "Lộ trình học tối ưu"
-                ]}
-              />
+              <AITutor />
             </ProtectedRoute>
           }
         />
