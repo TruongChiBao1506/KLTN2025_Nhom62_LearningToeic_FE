@@ -23,9 +23,9 @@ import {
   faSun,
   faTrophy,
   faFire,
-  faTarget,
+  faForward,
   faClock,
-  faCards,
+  faCreditCard,
   faLayerGroup,
   faPen,
   faFlask,
@@ -125,7 +125,7 @@ const LearnerLayout = () => {
       setTodayStudyTime(5);
       localStorage.setItem("todayStudyTime", "5");
     }
-    
+
     toast.success(`🔥 Streak: ${studyStreak} ngày! Đã học thêm 5 phút!`);
   };
 
@@ -600,7 +600,10 @@ const LearnerLayout = () => {
                     className={isActive("/learner/improve") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faTarget} className="submenu-icon" />
+                    <FontAwesomeIcon
+                      icon={faForward}
+                      className="submenu-icon"
+                    />
                     <span>Cải thiện kỹ năng</span>
                   </Link>
                 </li>
@@ -610,7 +613,10 @@ const LearnerLayout = () => {
                     className={isActive("/learner/section") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faLayerGroup} className="submenu-icon" />
+                    <FontAwesomeIcon
+                      icon={faLayerGroup}
+                      className="submenu-icon"
+                    />
                     <span>Phần thi</span>
                   </Link>
                 </li>
@@ -625,7 +631,7 @@ const LearnerLayout = () => {
                 }`}
                 onClick={() => toggleSubMenu("vocabulary")}
               >
-                <FontAwesomeIcon icon={faCards} className="nav-icon" />
+                <FontAwesomeIcon icon={faCreditCard} className="nav-icon" />
                 <span className="nav-text">Từ vựng</span>
                 <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
               </button>
@@ -673,7 +679,10 @@ const LearnerLayout = () => {
                     className={isActive("/learner/flashcards") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faGamepad} className="submenu-icon" />
+                    <FontAwesomeIcon
+                      icon={faGamepad}
+                      className="submenu-icon"
+                    />
                     <span>Flashcards</span>
                   </Link>
                 </li>
@@ -683,28 +692,11 @@ const LearnerLayout = () => {
                     className={isActive("/learner/quiz") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faQuestion} className="submenu-icon" />
+                    <FontAwesomeIcon
+                      icon={faQuestion}
+                      className="submenu-icon"
+                    />
                     <span>Quiz từ vựng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/flashcards"
-                    className={isActive("/learner/flashcards") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faPen} className="submenu-icon" />
-                    <span>Flashcards</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/quiz"
-                    className={isActive("/learner/quiz") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faRocket} className="submenu-icon" />
-                    <span>Quiz</span>
                   </Link>
                 </li>
               </ul>
@@ -759,10 +751,7 @@ const LearnerLayout = () => {
                     className={isActive("/learner/practice-sw") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon
-                      icon={faPen}
-                      className="submenu-icon"
-                    />
+                    <FontAwesomeIcon icon={faPen} className="submenu-icon" />
                     <span>Luyện Speaking & Writing</span>
                   </Link>
                 </li>
@@ -837,7 +826,10 @@ const LearnerLayout = () => {
                     className={isActive("/learner/focus-mode") ? "active" : ""}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faTarget} className="submenu-icon" />
+                    <FontAwesomeIcon
+                      icon={faForward}
+                      className="submenu-icon"
+                    />
                     <span>Chế độ tập trung</span>
                   </Link>
                 </li>

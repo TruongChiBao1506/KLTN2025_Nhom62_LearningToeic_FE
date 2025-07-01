@@ -13,9 +13,6 @@ import {
   faChevronRight,
   faFlag,
   faSave,
-  faVolumeUp,
-  faPlay,
-  faPause,
 } from "@fortawesome/free-solid-svg-icons";
 import learnerExamService from "../../../services/learnerExamService";
 import "./style.css";
@@ -35,11 +32,7 @@ const ExamDetail = () => {
   const [examResult, setExamResult] = useState(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [savedProgress, setSavedProgress] = useState(false);
-  const [audioListened, setAudioListened] = useState({}); // Track which audios have been listened to
-  const [currentAudio, setCurrentAudio] = useState(null); // Currently playing audio
-  const [audioPlaying, setAudioPlaying] = useState(false);
   const timerRef = useRef(null);
-  const audioRef = useRef(null);
 
   const fetchExam = useCallback(async () => {
     try {
@@ -66,20 +59,12 @@ const ExamDetail = () => {
             { id: 'B', text: q.optionB || 'Option B' },
             { id: 'C', text: q.optionC || 'Option C' },
             { id: 'D', text: q.optionD || 'Option D' }
-          ].filter(option => option.text && option.text !== 'Option A' && option.text !== 'Option B' && option.text !== 'Option C' && option.text !== 'Option D'), // Remove empty/default options
+          ].filter(option => option.text), // Remove empty options
           correctAnswer: q.correctOption,
           explanation: q.explanation,
           questionType: q.questionType,
-          question: q.questionContent || `Question ${index + 1}`,
-          questionContent: q.questionContent || `Question ${index + 1}`,
-          questionPart: q.questionPart || 1, // Default to Part 1 if not specified
-          orderNumber: index + 1,
           image: q.imageUrl,
           audio: q.audioUrl,
-          questionImage: q.imageUrl,
-          questionAudio: q.audioUrl,
-          questionPassage: q.passage,
-          questionScript: q.script,
           _originalData: q
         })),
         status: "not-started", // Default status
@@ -102,87 +87,6 @@ const ExamDetail = () => {
   useEffect(() => {
     fetchExam();
   }, [fetchExam]);
-
-  // Add effect to handle audio ended event
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    const handleAudioEnded = () => {
-      setAudioPlaying(false);
-      setCurrentAudio(null);
-      // Mark audio as listened when it ends
-      if (exam && exam.questions && exam.questions[currentQuestionIndex]) {
-        markAudioAsListened(exam.questions[currentQuestionIndex].id);
-      }
-    };
-
-    if (audioElement) {
-      audioElement.addEventListener('ended', handleAudioEnded);
-    }
-
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener('ended', handleAudioEnded);
-      }
-    };
-  }, [currentQuestionIndex, exam]);
-
-  // Audio handling functions
-  const getAudioUrl = (audioName) => {
-    if (audioName) {
-      // Use environment variable for API base URL
-      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-      return `${baseUrl}/uploads/audio/${audioName}`;
-    }
-    return null;
-  };
-
-  const getImageUrl = (imageName) => {
-    if (imageName) {
-      // Use environment variable for API base URL
-      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-      return `${baseUrl}/uploads/images/${imageName}`;
-    }
-    return null;
-  };
-
-  const playAudio = (audioUrl, questionId) => {
-    if (audioRef.current) {
-      if (currentAudio === audioUrl && audioPlaying) {
-        // Pause current audio
-        audioRef.current.pause();
-        setAudioPlaying(false);
-      } else {
-        // Play new audio
-        audioRef.current.src = audioUrl;
-        audioRef.current.play()
-          .then(() => {
-            setCurrentAudio(audioUrl);
-            setAudioPlaying(true);
-          })
-          .catch(error => {
-            console.error('Error playing audio:', error);
-          });
-      }
-    }
-  };
-
-  const markAudioAsListened = (questionId) => {
-    setAudioListened(prev => ({
-      ...prev,
-      [questionId]: true
-    }));
-  };
-
-  const shouldDisplayAudio = (question) => {
-    return question && (question.audio || question.questionAudio) && 
-           question.questionPart <= 4; // Audio only for listening parts (1-4)
-  };
-
-  const shouldDisplayImage = (question) => {
-    return question && (question.image || question.questionImage) && 
-           question.questionPart === 1; // Images only for Part 1
-  };
-
   const startExam = () => {
     setExamStarted(true);
     document.title = `Đang làm bài thi: ${exam ? exam.name : "Bài thi TOEIC"}`;
@@ -835,10 +739,6 @@ const ExamDetail = () => {
     );
   }
 
-  // Exam results view when exam is submitted
-
-  // Exam results view when exam is submitted
-
   return (
     <div className="exam-container">
       {/* Exam Header */}
@@ -913,102 +813,12 @@ const ExamDetail = () => {
                 : " Đánh dấu xem lại"}
             </button>
           </div>
-          {/* Audio Player for Listening Parts (1-4) */}
-          {shouldDisplayAudio(currentQuestion) && (
-            <div className="question-audio-container mb-4">
-              <div className="audio-player-wrapper">
-                <div className="audio-info">
-                  <h6 className="audio-title">
-                    <FontAwesomeIcon icon={faVolumeUp} className="me-2" />
-                    Part {currentQuestion.questionPart} - Audio {currentQuestionIndex + 1}
-                  </h6>
-                  <p className="audio-instruction text-muted">
-                    {currentQuestion.questionPart === 1 && "Look at the picture and listen to the sentences. Choose the sentence that best describes the picture."}
-                    {currentQuestion.questionPart === 2 && "Listen to the question and the three responses. Choose the response that best answers the question."}
-                    {currentQuestion.questionPart === 3 && "Listen to the dialogue. Then read each question and choose the best answer."}
-                    {currentQuestion.questionPart === 4 && "Listen to the talk. Then read each question and choose the best answer."}
-                  </p>
-                  {!audioListened[currentQuestion.id] && (
-                    <div className="alert alert-warning alert-sm">
-                      <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
-                      Lưu ý: Audio chỉ được phát 1 lần duy nhất như trong kỳ thi thực tế
-                    </div>
-                  )}
-                </div>
-                
-                {/* Custom Audio Player */}
-                <div className="custom-audio-player">
-                  <audio 
-                    ref={audioRef}
-                    onEnded={() => markAudioAsListened(currentQuestion.id)}
-                    style={{ display: 'none' }}
-                  />
-                  
-                  <div className="audio-controls">
-                    <button
-                      className={`btn ${audioPlaying && currentAudio === getAudioUrl(currentQuestion.audio || currentQuestion.questionAudio) ? 'btn-danger' : 'btn-primary'} audio-play-btn`}
-                      onClick={() => playAudio(getAudioUrl(currentQuestion.audio || currentQuestion.questionAudio), currentQuestion.id)}
-                      disabled={audioListened[currentQuestion.id]}
-                    >
-                      <FontAwesomeIcon 
-                        icon={audioPlaying && currentAudio === getAudioUrl(currentQuestion.audio || currentQuestion.questionAudio) ? faPause : faPlay} 
-                        className="me-2" 
-                      />
-                      {audioListened[currentQuestion.id] 
-                        ? 'Đã nghe' 
-                        : audioPlaying && currentAudio === getAudioUrl(currentQuestion.audio || currentQuestion.questionAudio)
-                          ? 'Đang phát' 
-                          : 'Phát audio'
-                      }
-                    </button>
-                    
-                    {audioListened[currentQuestion.id] && (
-                      <span className="text-success ms-2">
-                        <FontAwesomeIcon icon={faCheck} className="me-1" />
-                        Audio đã được phát
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Fallback HTML5 Audio */}
-                  <div className="fallback-audio mt-2">
-                    <audio controls style={{ width: '100%' }}>
-                      <source src={getAudioUrl(currentQuestion.audio || currentQuestion.questionAudio)} type="audio/mpeg" />
-                      Trình duyệt của bạn không hỗ trợ phát âm thanh.
-                    </audio>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Image for Part 1 */}
-          {shouldDisplayImage(currentQuestion) && (
-            <div className="question-image-container mb-4">
-              <div className="part1-image-wrapper">
-                <h6 className="image-title">
-                  <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-                  Part 1 - Look at the picture
-                </h6>
-                <div className="image-container">
-                  <img 
-                    src={getImageUrl(currentQuestion.image || currentQuestion.questionImage)} 
-                    alt={`Part 1 Question ${currentQuestionIndex + 1}`}
-                    className="question-image"
-                    style={{ maxWidth: '100%', height: 'auto', border: '2px solid #ddd', borderRadius: '8px' }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Legacy audio/image support */}
-          {currentQuestion.image && !shouldDisplayImage(currentQuestion) && (
+          {currentQuestion.image && (
             <div className="question-image">
               <img src={currentQuestion.image} alt="Hình ảnh câu hỏi" />
             </div>
           )}
-          {currentQuestion.audio && !shouldDisplayAudio(currentQuestion) && (
+          {currentQuestion.audio && (
             <div className="question-audio mb-3">
               <audio controls>
                 <source src={currentQuestion.audio} type="audio/mpeg" />
@@ -1017,13 +827,7 @@ const ExamDetail = () => {
             </div>
           )}
           <div className="question-text">
-            <h6 className="question-content-title">
-              <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-              Câu hỏi {currentQuestionIndex + 1}:
-            </h6>
-            <p className="question-content-text">
-              {currentQuestion.text || currentQuestion.questionContent || currentQuestion.question}
-            </p>
+            <p>{currentQuestion.text}</p>
           </div>
           <div className="answer-options">
             {currentQuestion.options && currentQuestion.options.map((option, optionIndex) => {

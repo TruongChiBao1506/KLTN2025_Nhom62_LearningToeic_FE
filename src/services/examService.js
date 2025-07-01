@@ -5,7 +5,7 @@ class ExamService {
     this.baseUrl = baseUrl;
   } // Get FullTest exams
   async getFullTest() {
-    const response = await axiosClient.get(`${this.baseUrl}/full/tests`);
+    const response = await axiosClient.get(`${this.baseUrl}/full-tests`);
     return response;
   }
 
@@ -17,7 +17,7 @@ class ExamService {
 
   // Get MiniTest exams
   async getMiniTest() {
-    const response = await axiosClient.get(`${this.baseUrl}/mini/tests`);
+    const response = await axiosClient.get(`${this.baseUrl}/mini-tests`);
     return response;
   }
 
@@ -94,4 +94,5 @@ class ExamService {
   }
 }
 
-export default new ExamService();
+const examService = new ExamService();
+export default examService;

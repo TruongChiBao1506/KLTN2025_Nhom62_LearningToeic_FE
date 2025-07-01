@@ -33,6 +33,14 @@ import ProtectedRoute from "../components/Learner/ProtectedRoute";
 import NotImplemented from "../components/Learner/NotImplemented";
 import AITutor from "../pages/Learner/AITutor";
 import StudyTimer from "../pages/Learner/StudyTimer";
+import Achievements from "../pages/Learner/Achievements";
+import FocusMode from "../pages/Learner/FocusMode";
+import AudioTrainer from "../pages/Learner/AudioTrainer";
+import Events from "../pages/Learner/Events";
+import Challenges from "../pages/Learner/Challenges";
+import Settings from "../pages/Learner/Settings";
+import StudyGroups from "../pages/Learner/StudyGroups";
+import Leaderboard from "../pages/Learner/Leaderboard";
 
 const LearnerRoutes = () => {
   return (
@@ -261,18 +269,7 @@ const LearnerRoutes = () => {
           path="leaderboard"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="🏆 Bảng xếp hạng"
-                icon="🏆"
-                description="Xem thứ hạng của bạn so với các học viên khác và cạnh tranh để lên top!"
-                features={[
-                  "Bảng xếp hạng toàn cầu",
-                  "Bảng xếp hạng theo tuần/tháng",
-                  "Điểm thành tích chi tiết",
-                  "Huy hiệu và thành tựu",
-                  "So sánh với bạn bè"
-                ]}
-              />
+              <Leaderboard />
             </ProtectedRoute>
           }
         />
@@ -280,18 +277,7 @@ const LearnerRoutes = () => {
           path="achievements"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="⭐ Thành tích"
-                icon="⭐"
-                description="Theo dõi tiến độ học tập và mở khóa các thành tích đặc biệt!"
-                features={[
-                  "Hệ thống huy hiệu",
-                  "Cấp độ học viên",
-                  "Mốc thành tích",
-                  "Phần thưởng đặc biệt",
-                  "Lịch sử thành tích"
-                ]}
-              />
+              <Achievements />
             </ProtectedRoute>
           }
         />
@@ -307,18 +293,7 @@ const LearnerRoutes = () => {
           path="focus-mode"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="🎯 Chế độ tập trung"
-                icon="🎯"
-                description="Loại bỏ mọi yếu tố gây xao nhãng để tập trung hoàn toàn vào việc học!"
-                features={[
-                  "Giao diện tối giản",
-                  "Chặn thông báo",
-                  "Chế độ toàn màn hình",
-                  "Nhạc nền thư giãn",
-                  "Theo dõi thời gian tập trung"
-                ]}
-              />
+              <FocusMode />
             </ProtectedRoute>
           }
         />
@@ -326,18 +301,7 @@ const LearnerRoutes = () => {
           path="audio-trainer"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="🎧 Luyện nghe"
-                icon="🎧"
-                description="Cải thiện kỹ năng nghe TOEIC với các bài luyện tập đa dạng!"
-                features={[
-                  "Luyện nghe theo cấp độ",
-                  "Điều chỉnh tốc độ phát",
-                  "Lặp lại từng câu",
-                  "Phụ đề tiếng Anh",
-                  "Bài test nghe mini"
-                ]}
-              />
+              <AudioTrainer />
             </ProtectedRoute>
           }
         />
@@ -345,18 +309,7 @@ const LearnerRoutes = () => {
           path="events"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="📅 Sự kiện"
-                icon="📅"
-                description="Tham gia các sự kiện học tập, workshop và cuộc thi đặc biệt!"
-                features={[
-                  "Sự kiện học tập hàng tuần",
-                  "Workshop TOEIC miễn phí",
-                  "Cuộc thi kiến thức",
-                  "Lịch sự kiện cá nhân",
-                  "Thông báo sự kiện mới"
-                ]}
-              />
+              <Events />
             </ProtectedRoute>
           }
         />
@@ -364,18 +317,7 @@ const LearnerRoutes = () => {
           path="study-groups"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="👥 Nhóm học tập"
-                icon="👥"
-                description="Kết nối với các học viên khác và cùng nhau tiến bộ!"
-                features={[
-                  "Tạo/tham gia nhóm học",
-                  "Chat nhóm thời gian thực",
-                  "Chia sẻ tài liệu",
-                  "Thảo luận bài tập",
-                  "Lịch học nhóm"
-                ]}
-              />
+              <StudyGroups />
             </ProtectedRoute>
           }
         />
@@ -383,18 +325,7 @@ const LearnerRoutes = () => {
           path="challenges"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="🎁 Thử thách"
-                icon="🎁"
-                description="Hoàn thành các thử thách hàng ngày để nhận phần thưởng hấp dẫn!"
-                features={[
-                  "Thử thách hàng ngày",
-                  "Thử thách tuần/tháng",
-                  "Phần thưởng điểm số",
-                  "Thử thách nhóm",
-                  "Bảng xếp hạng thử thách"
-                ]}
-              />
+              <Challenges />
             </ProtectedRoute>
           }
         />
@@ -410,18 +341,7 @@ const LearnerRoutes = () => {
           path="settings"
           element={
             <ProtectedRoute>
-              <NotImplemented 
-                title="⚙️ Cài đặt"
-                icon="⚙️"
-                description="Tùy chỉnh trải nghiệm học tập theo sở thích cá nhân!"
-                features={[
-                  "Cài đặt giao diện",
-                  "Thông báo học tập",
-                  "Mục tiêu học tập",
-                  "Tùy chỉnh âm thanh",
-                  "Bảo mật tài khoản"
-                ]}
-              />
+              <Settings />
             </ProtectedRoute>
           }
         />

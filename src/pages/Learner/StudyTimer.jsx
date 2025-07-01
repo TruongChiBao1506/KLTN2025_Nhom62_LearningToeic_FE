@@ -8,7 +8,7 @@ import {
   faChartLine,
   faClock,
   faFire,
-  faTarget,
+  faForward,
   faBell,
   faVolumeUp,
   faVolumeOff,
@@ -314,7 +314,7 @@ const StudyTimer = () => {
             </button>
             
             <button className="control-btn info" onClick={skipPhase}>
-              <FontAwesomeIcon icon={faTarget} />
+              <FontAwesomeIcon icon={faForward} />
               Bỏ qua
             </button>
           </div>

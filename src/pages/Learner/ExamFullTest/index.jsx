@@ -48,7 +48,7 @@ const ExamFullTest = () => {
   }
 
   return (
-    <div data-aos="fade-in" data-aos-duration="1000" data-aos-delay="200">
+    <div data-aos-duration="1000" data-aos-delay="200">
       <div className="container">
         <div id="test">
           <h1 className="text-center mt-5">

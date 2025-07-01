@@ -4,6 +4,38 @@ import examService from "../../../services/examService";
 import Comment from "../../../components/Learner/Comment";
 import "./style.css";
 
+// Inline styles để đảm bảo CSS được áp dụng
+const inlineStyles = {
+  examCard: {
+    border: "1px solid #e3e6f0",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.3s ease",
+    overflow: "hidden",
+    height: "100%",
+  },
+  cardImage: {
+    height: "200px",
+    overflow: "hidden",
+  },
+  cardImg: {
+    width: "100%",
+    height: "200px",
+    objectFit: "cover",
+  },
+  button: {
+    padding: "12px 20px",
+    backgroundColor: "#052649",
+    color: "#fff",
+    border: "none",
+    borderRadius: "25px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    width: "100%",
+    transition: "all 0.3s ease",
+  },
+};
+
 const ExamMiniTest = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +46,8 @@ const ExamMiniTest = () => {
       try {
         setLoading(true);
         const response = await examService.getMiniTest();
+        console.log("🚀 ~ retrieveExams ~ response:", response);
+
         setExams(response.data || []);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách bài thi mini:", error);
@@ -48,7 +82,7 @@ const ExamMiniTest = () => {
   }
 
   return (
-    <div data-aos="fade-in" data-aos-duration="1000" data-aos-delay="200">
+    <div className="exam-mini-test-container">
       <div className="container">
         <div id="test">
           <h1 className="text-center mt-5">
@@ -67,15 +101,19 @@ const ExamMiniTest = () => {
               exams.map((exam) => (
                 <div
                   className="col-lg-3 col-md-6 col-sm-12 mb-4"
-                  key={exam.examId}
+                  key={exam._id}
                 >
-                  <div className="card exam-card">
-                    <div className="card-image">
+                  <div
+                    className="card exam-card h-100"
+                    style={inlineStyles.examCard}
+                  >
+                    <div className="card-image" style={inlineStyles.cardImage}>
                       <img
                         src="https://webhouse.vn/tin-tuc/wp-content/uploads/2022/11/toeic-la-gi-nhung-dieu-can-biet-ve-bai-thi-toeic.jpg"
                         className="card-img-top"
                         alt="Hình ảnh bài thi TOEIC mini"
                         loading="lazy"
+                        style={inlineStyles.cardImg}
                       />
                     </div>
                     <div className="card-body">
@@ -88,33 +126,33 @@ const ExamMiniTest = () => {
                             <div className="col-7">
                               <p className="card-text">
                                 <i
-                                  className="fa-solid fa-user-pen"
+                                  className="fa-solid fa-user-pen me-1"
                                   style={{ color: "chocolate" }}
-                                ></i>{" "}
+                                ></i>
                                 5 người tham gia
                               </p>
                             </div>
                             <div className="col-5">
                               <p className="card-text">
                                 <i
-                                  className="fas fa-clock me-2"
+                                  className="fas fa-clock me-1"
                                   style={{ color: "cornflowerblue" }}
                                 ></i>
-                                {exam.examDuration / 60} phút
+                                {exam.examDurationMinutes || "N/A"} phút
                               </p>
                             </div>
                           </div>
                         </div>
 
                         <Link
-                          to={`/exam-question-minitest-preparation/${exam.examId}`}
+                          to={`/exam-question-minitest-preparation/${exam._id}`}
                           className="text-decoration-none"
                         >
                           <div className="d-flex justify-content-center">
                             <button
                               type="button"
-                              className="button my-2 w-75"
-                              style={{ width: "100%" }}
+                              className="button my-2"
+                              style={inlineStyles.button}
                             >
                               Thi ngay
                             </button>
