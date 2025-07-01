@@ -284,7 +284,7 @@ const GrammarQuestionList = ({
                                                 <tr className="align-middle">
                                                     {/* Use <th> for all header cells, not <td> */}
                                                     <th>
-                                                        <button className="btn btn-success rounded-5 disabled">No.</button>
+                                                        <button className="btn btn-primary rounded-5 disabled">No.</button>
                                                     </th>
                                                     <th>CONTENT</th>
                                                     <th>OPT A</th>

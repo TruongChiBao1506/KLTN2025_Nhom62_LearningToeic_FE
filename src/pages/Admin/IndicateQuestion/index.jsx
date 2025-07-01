@@ -32,7 +32,6 @@ const IndicateQuestion = () => {
         try {
             setIsLoading(true);
             const result = await QuestionService.getQuestionsBySection(sectionId);
-            console.log(`Retrieved questions for section ${sectionId}:`, result);
             setQuestions(result);
         } catch (error) {
             setQuestions([]);
@@ -49,12 +48,11 @@ const IndicateQuestion = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* Breadcrumb with AOS */}
+            {/* Breadcrumb giống LessonContent */}
             <div
                 className="mt-2 shadow-lg rounded-4 px-2 py-1"
                 style={{
                     background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
-                    minHeight: 70,
                     border: 'none'
                 }}
                 data-aos="fade-down"
@@ -79,10 +77,8 @@ const IndicateQuestion = () => {
                             >
                                 <FontAwesomeIcon icon={faHouse} color="#fff" />
                             </span>
-                            <Link to="/admin/section">
-                                <button className="btn btn-link text-decoration-none fw-bolder">
-                                    Section
-                                </button>
+                            <Link to="/admin/section" className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
+                                Section
                             </Link>
                         </li>
                         <li>
@@ -101,10 +97,8 @@ const IndicateQuestion = () => {
                             >
                                 <FontAwesomeIcon icon={faFolder} color="#fff" />
                             </span>
-                            <Link to={`/admin/section/${sectionId}/test`}>
-                                <button className="btn btn-link text-decoration-none fw-bolder">
-                                    Test
-                                </button>
+                            <Link to={`/admin/section/${sectionId}/test`} className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
+                                Test
                             </Link>
                         </li>
                         <li className="current d-flex align-items-center">
@@ -123,7 +117,7 @@ const IndicateQuestion = () => {
                             >
                                 <FontAwesomeIcon icon={faPen} color="#fff" />
                             </span>
-                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
+                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 18 }}>
                                 Indicate Question
                             </span>
                         </li>

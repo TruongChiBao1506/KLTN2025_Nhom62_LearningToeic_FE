@@ -243,7 +243,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                         <table className="table text-center table-hover shadow">
                             <thead className="text-center shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-success rounded-5 disabled">No.</button></th>
+                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>GRAMMAR</th>
                                     <th>STATUS</th>
                                     <th>CREATED_AT</th>

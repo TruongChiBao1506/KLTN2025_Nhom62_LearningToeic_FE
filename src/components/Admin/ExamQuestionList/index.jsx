@@ -400,7 +400,7 @@ const ExamQuestionList = ({
                                                 <thead className="shadow">
                                                     <tr className="align-middle">
                                                         <th>
-                                                            <button className="btn btn-success rounded-5 disabled">No.</button>
+                                                            <button className="btn btn-primary rounded-5 disabled">No.</button>
                                                         </th>
                                                         <th>CONTENT</th>
                                                         <th>OPT A</th>

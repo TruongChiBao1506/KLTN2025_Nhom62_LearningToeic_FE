@@ -286,7 +286,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                         <table className="table text-center table-hover shadow">
                                             <thead className="shadow">
                                                 <tr className="align-middle">
-                                                    <td><button className="btn btn-success rounded-5 disabled">No.</button></td>
+                                                    <td><button className="btn btn-primary rounded-5 disabled">No.</button></td>
                                                     <th>CONTENT</th>
                                                     <th>OPT A</th>
                                                     <th>OPT B</th>

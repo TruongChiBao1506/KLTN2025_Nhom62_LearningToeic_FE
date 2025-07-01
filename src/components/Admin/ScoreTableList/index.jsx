@@ -167,7 +167,7 @@ const ScoreTableList = ({ tableScores = [], getTableScores }) => {
                                     <thead className="shadow">
                                         <tr className="align-middle">
                                             <th className="text-center">
-                                                <button className="btn btn-success rounded-5 disabled">
+                                                <button className="btn btn-primary rounded-5 disabled">
                                                     NUM CORRECT
                                                 </button>
                                             </th>

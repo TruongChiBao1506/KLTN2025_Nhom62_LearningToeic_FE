@@ -258,7 +258,7 @@ const LessonContentList = ({ lessonContents = [], sectionId, lessonId, retrieveL
                         <table className="table text-center table-hover shadow">
                             <thead className="shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-success rounded-5 disabled">No.</button></th>
+                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>TITLE</th>
                                     <th>CONTENT</th>
                                     <th>STATUS</th>

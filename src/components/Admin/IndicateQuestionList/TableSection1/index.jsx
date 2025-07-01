@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { faRandom, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TestService from "../../../../services/testService";
 import "./style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const IndicateQuestionList = ({
     paginatedQuestions,
@@ -88,17 +91,24 @@ const IndicateQuestionList = ({
 
     return (
         <div>
-            <div className="d-flex justify-content-end mb-2">
-                <div className="button" onClick={autoRandom}>
-                    <div>RANDOM</div>
-                </div>
-                <div
-                    className="button ms-1"
-                    onClick={isSubmitEnabled ? submitQuestions : undefined}
-                    style={{ opacity: isSubmitEnabled ? 1 : 0.5, pointerEvents: isSubmitEnabled ? "auto" : "none" }}
+            <div className="d-flex justify-content-end mb-3 gap-3">
+                <button
+                    className="btn-custom btn-random d-flex align-items-center"
+                    onClick={autoRandom}
+                    type="button"
                 >
-                    <div>SUBMIT</div>
-                </div>
+                    <FontAwesomeIcon icon={faRandom} className="me-2" />
+                    RANDOM
+                </button>
+                <button
+                    className="btn-custom btn-submit d-flex align-items-center"
+                    onClick={isSubmitEnabled ? submitQuestions : undefined}
+                    type="button"
+                    disabled={!isSubmitEnabled}
+                >
+                    <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
+                    SUBMIT
+                </button>
             </div>
             <table className="table text-center table-hover shadow">
                 <thead className="shadow">

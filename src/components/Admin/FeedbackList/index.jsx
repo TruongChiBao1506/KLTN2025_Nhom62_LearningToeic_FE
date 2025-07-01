@@ -199,7 +199,7 @@ const FeedbackList = ({ feedbacks = [], retrieveFeedbacks }) => {
                             <thead className="shadow">
                                 <tr className="align-middle">
                                     <th>
-                                        <button className="btn btn-success rounded-5 disabled">No.</button>
+                                        <button className="btn btn-primary rounded-5 disabled">No.</button>
                                     </th>
                                     <th>NAME</th>
                                     <th>EMAIL</th>

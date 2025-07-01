@@ -172,7 +172,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                 />
                             </a>
                             <ul
-                                className={`dropdown-menu text-small custom-dropdown ${isDropdownOpen ? 'show' : ''}`}
+                                className={`dropdown-menu text-small custom-dropdown ${isDropdownOpen ? 'show' : ''} rounded-4`}
                                 style={{
                                     visibility: isDropdownOpen ? 'visible' : 'hidden',
                                     opacity: isDropdownOpen ? 1 : 0,

@@ -296,7 +296,7 @@ const Dashboard = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* Breadcrumb */}
+            {/* Breadcrumb ... */}
             <div
                 className="mt-2 shadow-lg rounded-4 px-2 py-1"
                 style={{
@@ -338,7 +338,11 @@ const Dashboard = () => {
                 {/* Statistics Cards */}
                 <div className="row g-4 mb-4">
                     {/* Card 1 - Learners */}
-                    <div className="col-md-3 col-6">
+                    <div
+                        className="col-md-3 col-6"
+                        data-aos="fade-right"
+                        data-aos-delay="100"
+                    >
                         <div
                             className="dashboard-card stat-card stat-blue"
                             onClick={toggleEffect}
@@ -356,7 +360,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {/* Card 2 - Exams */}
-                    <div className="col-md-3 col-6">
+                    <div
+                        className="col-md-3 col-6"
+                        data-aos="fade-right"
+                        data-aos-delay="200"
+                    >
                         <div className="dashboard-card stat-card stat-green">
                             <div className="stat-icon">
                                 <FontAwesomeIcon icon={faFolderOpen} />
@@ -371,7 +379,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {/* Card 3 - Feedbacks */}
-                    <div className="col-md-3 col-6">
+                    <div
+                        className="col-md-3 col-6"
+                        data-aos="fade-right"
+                        data-aos-delay="300"
+                    >
                         <div className="dashboard-card stat-card stat-pink">
                             <div className="stat-icon">
                                 <FontAwesomeIcon icon={faComments} />
@@ -386,7 +398,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {/* Card 4 - Free Materials */}
-                    <div className="col-md-3 col-6">
+                    <div
+                        className="col-md-3 col-6"
+                        data-aos="fade-right"
+                        data-aos-delay="400"
+                    >
                         <div className="dashboard-card stat-card stat-yellow">
                             <div className="stat-icon">
                                 <FontAwesomeIcon icon={faFile} />
@@ -405,7 +421,11 @@ const Dashboard = () => {
                 {/* Charts */}
                 <div className="row g-4">
                     {/* Column Chart */}
-                    <div className="col-md-6">
+                    <div
+                        className="col-md-6"
+                        data-aos="fade-up"
+                        data-aos-delay="600"
+                    >
                         <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="columnChartContainer"></div>
@@ -413,7 +433,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {/* Pie Chart */}
-                    <div className="col-md-6">
+                    <div
+                        className="col-md-6"
+                        data-aos="fade-up"
+                        data-aos-delay="700"
+                    >
                         <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="pieChartContainer"></div>
@@ -421,7 +445,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {/* Line Chart */}
-                    <div className="col-md-12">
+                    <div
+                        className="col-md-12"
+                        data-aos="fade-up"
+                        data-aos-delay="800"
+                    >
                         <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
                             <div className="card-body custom-card-body-special">
                                 <div id="lineChartContainer"></div>

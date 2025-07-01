@@ -1,13 +1,11 @@
-// Update src/components/Admin/AdminSignInForm/index.jsx
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import './style.css';
 
 const AdminLogin = ({ onSubmit, onSubmitSignIn, message }) => {
-  // Add state for password visibility
   const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
@@ -30,111 +28,106 @@ const AdminLogin = ({ onSubmit, onSubmitSignIn, message }) => {
     }
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
   };
 
   return (
-    <div
-      className="container-fluid"
-      style={{
-        background: "url('https://media.istockphoto.com/vectors/white-and-blue-swirl-abstract-background-computer-image-vector-id460340487?k=20&m=460340487&s=170667a&w=0&h=BhUlEVmiTDRuHgXk9kmbNqySPgW6qvOLPyCsPvQN0eo=')",
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div className="col-lg-6 col-12 mx-auto" style={{ width: '35%' }}>
-        <div className="text-center image-size-small position-relative">
-          <img
-            src="https://annedece.sirv.com/Images/user-vector.jpg"
-            className="rounded-circle p-2 bg-white"
-            alt="User avatar"
-          />
+    <div className="login-container">
+      {/* Background decorative elements */}
+      <div className="login-decorative-element login-decorative-element-1"></div>
+      <div className="login-decorative-element login-decorative-element-2"></div>
+      <div className="login-decorative-element login-decorative-element-3"></div>
+
+      <div className="login-card">
+        {/* Header with avatar */}
+        <div className="login-header">
+          <div className="login-avatar">
+            <FontAwesomeIcon 
+              icon={faUser} 
+              style={{ 
+                fontSize: '1.8rem', 
+                color: 'white' 
+              }} 
+            />
+          </div>
+          <h2 className="login-title">ADMIN LOGIN</h2>
+          <p className="login-subtitle">
+            Welcome back! Please sign in to continue.
+          </p>
         </div>
+
+        {message && (
+          <div className="login-error-message">
+            {message}
+          </div>
+        )}
+
         <Formik
           initialValues={initialValues}
           validationSchema={signInFormSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="mt-3">
-            <div className="p-5 bg-white rounded-4 shadow-lg">
-              <h3 className="mb-2 text-center pt-5">ADMIN LOGIN</h3>
-              {message && (
-                <div className="alert alert-danger text-center py-2 mb-3" style={{ fontSize: 15 }}>
-                  {message}
-                </div>
-              )}
-              {/* Username Field */}
-              <label
-                htmlFor="username"
-                className="font-500 text-secondary fst-bolder d-flex justify-content-start"
-                style={{ fontFamily: "Cambria, Cochin, Georgia, Times, 'Times New Roman', serif" }}
-              >
-                Username
-              </label>
-              <Field
-                name="username"
-                type="text"
-                className="form-control form-control-lg mb-3"
+          <Form>
+            {/* Username Field */}
+            <div className="login-form-group">
+              <label className="login-label">Username</label>
+              <div className="login-input-wrapper">
+                <Field
+                  name="username"
+                  type="text"
+                  className="login-input"
+                />
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="login-icon"
+                />
+              </div>
+              <ErrorMessage 
+                name="username" 
+                component="div" 
+                className="login-error"
               />
-              <ErrorMessage name="username" component="div" className="error-feedback d-flex justify-content-start" />
+            </div>
 
-              {/* Password Field with toggle button */}
-              <label
-                htmlFor="password"
-                className="font-500 text-secondary fst-bolder d-flex justify-content-start"
-                style={{ fontFamily: "Cambria, Cochin, Georgia, Times, 'Times New Roman', serif" }}
-              >
-                Password
-              </label>
-
-              {/* Password input container with relative positioning */}
-              <div className="position-relative">
+            {/* Password Field */}
+            <div className="login-form-group">
+              <label className="login-label">Password</label>
+              <div className="login-input-wrapper">
                 <Field
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  className="form-control form-control-lg"
-                  style={{ paddingRight: '50px' }} // Make space for the button
+                  className="login-input login-input-password"
                 />
-                {/* Toggle password visibility button */}
+                <FontAwesomeIcon
+                  icon={faLock}
+                  className="login-icon"
+                />
                 <button
                   type="button"
-                  className="btn position-absolute"
-                  style={{
-                    right: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    color: '#6c757d',
-                    padding: '0.375rem',
-                    zIndex: 10
-                  }}
+                  className="login-password-toggle"
                   onClick={togglePasswordVisibility}
-                  title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
-                    style={{ fontSize: '1.1rem' }}
+                    style={{ fontSize: '1rem' }}
                   />
                 </button>
               </div>
-
-              <ErrorMessage name="password" component="div" className="error-feedback d-flex justify-content-start" />
-
-              <button
-                type="submit"
-                style={{ backgroundColor: "#1c75bc", color: "#fff", height: "50px" }}
-                className="btn btn-lg w-100 rounded-5 shadow-lg mt-3"
-              >
-                SIGN IN
-              </button>
+              <ErrorMessage 
+                name="password" 
+                component="div" 
+                className="login-error"
+              />
             </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="login-button"
+            >
+              SIGN IN
+            </button>
           </Form>
         </Formik>
       </div>

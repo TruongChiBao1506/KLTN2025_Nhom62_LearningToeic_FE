@@ -247,7 +247,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                         <table className="table text-center table-hover shadow">
                             <thead className="shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-success rounded-5 disabled">No.</button></th>
+                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>NAME</th>
                                     <th>STATUS</th>
                                     <th>CREATED_AT</th>

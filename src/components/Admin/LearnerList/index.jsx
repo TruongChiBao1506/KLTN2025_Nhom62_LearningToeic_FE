@@ -254,7 +254,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                         <table className="table text-center table-hover shadow">
                             <thead className="shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-success rounded-5 disabled">No.</button></th>
+                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>AVATAR</th>
                                     <th>USERNAME</th>
                                     <th>EMAIL</th>

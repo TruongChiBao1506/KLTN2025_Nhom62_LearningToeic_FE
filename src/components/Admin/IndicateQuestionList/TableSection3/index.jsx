@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TestService from "../../../../services/testService";
 import "./style.css";
+import { faRandom, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MAX_SELECTED = 39;
 const GROUP_COUNT = 13;
@@ -66,30 +68,64 @@ const Part3QuestionList = ({
     // Random 13 groups, each group lấy hết câu hỏi trong group
     const autoRandom = () => {
         const groupIds = Object.keys(groupedQuestionMap);
+        const allQuestions = Object.values(groupedQuestionMap).flat();
+
+        // Nếu tổng số câu hỏi < MAX_SELECTED thì báo lỗi ngay
+        if (allQuestions.length < MAX_SELECTED) {
+            Swal.fire({
+                icon: "warning",
+                title: "Không đủ câu hỏi",
+                text: `Hiện chỉ có ${allQuestions.length}/${MAX_SELECTED} câu hỏi. Vui lòng bổ sung thêm câu hỏi để đủ số lượng.`,
+            });
+            setSelectedQuestions([]);
+            setIsSubmitEnabled(false);
+            return;
+        }
+
+        // Nếu không đủ nhóm thì báo lỗi
         if (groupIds.length < GROUP_COUNT) {
             Swal.fire({
                 icon: "error",
                 title: "Lỗi",
                 text: "Không đủ nhóm câu hỏi để random.",
             });
+            setSelectedQuestions([]);
+            setIsSubmitEnabled(false);
             return;
         }
-        // Random group ids
-        const randomGroups = [];
-        while (randomGroups.length < GROUP_COUNT) {
-            const idx = Math.floor(Math.random() * groupIds.length);
-            const groupId = groupIds[idx];
-            if (!randomGroups.includes(groupId)) {
-                randomGroups.push(groupId);
+
+        // Thử random tối đa 20 lần, nếu không đủ thì báo lỗi
+        let found = false;
+        for (let tryCount = 0; tryCount < 20; tryCount++) {
+            const randomGroups = [];
+            while (randomGroups.length < GROUP_COUNT) {
+                const idx = Math.floor(Math.random() * groupIds.length);
+                const groupId = groupIds[idx];
+                if (!randomGroups.includes(groupId)) {
+                    randomGroups.push(groupId);
+                }
+            }
+            // Lấy tất cả câu hỏi của các nhóm random
+            const randomQuestions = [];
+            for (const groupId of randomGroups) {
+                randomQuestions.push(...groupedQuestionMap[groupId].map(q => q._id));
+            }
+            if (randomQuestions.length >= MAX_SELECTED) {
+                setSelectedQuestions(randomQuestions.slice(0, MAX_SELECTED));
+                setIsSubmitEnabled(true);
+                found = true;
+                break;
             }
         }
-        // Lấy tất cả questionId của các group random
-        const randomQuestions = [];
-        for (const groupId of randomGroups) {
-            randomQuestions.push(...groupedQuestionMap[groupId].map(q => q._id));
+        if (!found) {
+            Swal.fire({
+                icon: "warning",
+                title: "Không thể random đủ câu hỏi",
+                text: `Không thể chọn ngẫu nhiên ${GROUP_COUNT} nhóm mà tổng số câu hỏi đủ ${MAX_SELECTED}. Vui lòng kiểm tra lại dữ liệu.`,
+            });
+            setSelectedQuestions([]);
+            setIsSubmitEnabled(false);
         }
-        setSelectedQuestions(randomQuestions.slice(0, MAX_SELECTED));
-        setIsSubmitEnabled(true);
     };
 
     const submitQuestions = async () => {
@@ -120,17 +156,24 @@ const Part3QuestionList = ({
 
     return (
         <div>
-            <div className="d-flex justify-content-end mb-2">
-                <div className="button" onClick={autoRandom}>
-                    <div>RANDOM</div>
-                </div>
-                <div
-                    className="button ms-1"
-                    onClick={isSubmitEnabled ? submitQuestions : undefined}
-                    style={{ opacity: isSubmitEnabled ? 1 : 0.5, pointerEvents: isSubmitEnabled ? "auto" : "none" }}
+            <div className="d-flex justify-content-end mb-3 gap-3">
+                <button
+                    className="btn-custom btn-random d-flex align-items-center"
+                    onClick={autoRandom}
+                    type="button"
                 >
-                    <div>SUBMIT</div>
-                </div>
+                    <FontAwesomeIcon icon={faRandom} className="me-2" />
+                    RANDOM
+                </button>
+                <button
+                    className="btn-custom btn-submit d-flex align-items-center"
+                    onClick={isSubmitEnabled ? submitQuestions : undefined}
+                    type="button"
+                    disabled={!isSubmitEnabled}
+                >
+                    <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
+                    SUBMIT
+                </button>
             </div>
             <table className="table text-center table-bordered shadow">
                 <thead className="shadow">

@@ -16,6 +16,11 @@ import "./../SectionList/style.css";
 
 const ITEMS_PER_PAGE_OPTIONS = [60, 120, 180, 600];
 
+const itemsPerPageOptions = ITEMS_PER_PAGE_OPTIONS.map((option) => ({
+    value: option,
+    label: `${option} mục/trang`
+}));
+
 const IndicateQuestion = ({
     questions = [],
     sectionId,
@@ -157,55 +162,57 @@ const IndicateQuestion = ({
         <div className="page-heading">
             <section className="section">
                 <div className="card border-0">
-                    <div className="row">
-                        <div className="col-2 mt-4">
-                            <Select
-                                classNamePrefix="react-select"
-                                options={ITEMS_PER_PAGE_OPTIONS.map((option) => ({
-                                    value: option,
-                                    label: option,
-                                }))}
-                                value={{
-                                    value: itemsPerPage,
-                                    label: itemsPerPage,
-                                }}
-                                onChange={(selected) => {
-                                    setItemsPerPage(selected.value);
-                                    setCurrentPage(1);
-                                }}
-                                isSearchable={false}
-                                styles={{
-                                    control: (base) => ({
-                                        ...base,
-                                        borderRadius: 30,
-                                        minHeight: 32,
-                                        borderColor: "#198754",
-                                        boxShadow: "none",
-                                        fontWeight: 400,
-                                        color: "#198754",
-                                    }),
-                                    option: (base, state) => ({
-                                        ...base,
-                                        borderRadius: 30,
-                                        color: state.isSelected ? "#fff" : "#198754",
-                                        backgroundColor: state.isSelected
-                                            ? "#198754"
-                                            : state.isFocused
-                                            ? "#e6f7ef"
-                                            : "#fff",
-                                        ":active": { backgroundColor: "#43c59e", color: "#fff" },
-                                    }),
-                                    menu: (base) => ({
-                                        ...base,
-                                        borderRadius: 20,
-                                        overflow: "hidden",
-                                    }),
-                                }}
-                            />
+                    <div className="row align-items-center px-3 pt-3">
+                        {/* Select item per page bên trái */}
+                        <div className="col-3 d-flex align-items-center">
+                            <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
+                                Hiển thị:
+                            </label>
+                            <div style={{ minWidth: 140 }}>
+                                <Select
+                                    inputId="itemsPerPageSelect"
+                                    classNamePrefix="react-select"
+                                    options={itemsPerPageOptions}
+                                    value={itemsPerPageOptions.find(opt => opt.value === itemsPerPage)}
+                                    onChange={(selected) => {
+                                        setItemsPerPage(selected.value);
+                                        setCurrentPage(1);
+                                    }}
+                                    isSearchable={false}
+                                    styles={{
+                                        control: (base) => ({
+                                            ...base,
+                                            borderRadius: 30,
+                                            minHeight: 32,
+                                            borderColor: '#198754',
+                                            boxShadow: 'none',
+                                            fontWeight: 400,
+                                            color: '#198754',
+                                        }),
+                                        option: (base, state) => ({
+                                            ...base,
+                                            borderRadius: 30,
+                                            color: state.isSelected ? '#fff' : '#198754',
+                                            backgroundColor: state.isSelected
+                                                ? '#198754'
+                                                : state.isFocused
+                                                    ? '#e6f7ef'
+                                                    : '#fff',
+                                            ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                        }),
+                                        menu: (base) => ({
+                                            ...base,
+                                            borderRadius: 20,
+                                            overflow: 'hidden'
+                                        }),
+                                    }}
+                                />
+                            </div>
                         </div>
-                        <div className="col-4 mt-4"></div>
-                        <div className="col-6 mt-4 d-flex justify-content-end">
-                            <div className="input-group me-3" style={{ width: "80%" }}>
+                        {/* Spacer */}
+                        <div className="col-4"></div>
+                        <div className="col-5 d-flex justify-content-end">
+                            <div className="input-group rounded-5" style={{ minWidth: 220 }}>
                                 <input
                                     type="text"
                                     className="form-control"
