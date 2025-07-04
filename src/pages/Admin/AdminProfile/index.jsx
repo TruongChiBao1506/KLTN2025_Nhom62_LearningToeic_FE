@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -22,6 +22,11 @@ const Profile = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const fileInputRef = useRef(null);
+
+    // State for password visibility
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         document.title = "Admin - Profile";
@@ -62,9 +67,15 @@ const Profile = () => {
             }),
     });
 
+    // Updated password validation schema
     const passwordFormSchema = Yup.object().shape({
-        oldPassWord: Yup.string().required("Mật khẩu cũ không được để trống."),
-        newPassWord: Yup.string().required("Mật khẩu mới không được để trống."),
+        currentPassword: Yup.string().required("Mật khẩu hiện tại không được để trống."),
+        newPassword: Yup.string()
+            .required("Mật khẩu mới không được để trống.")
+            .min(6, "Mật khẩu mới phải có ít nhất 6 ký tự."),
+        confirmPassword: Yup.string()
+            .required("Xác nhận mật khẩu không được để trống.")
+            .oneOf([Yup.ref('newPassword'), null], "Xác nhận mật khẩu không khớp với mật khẩu mới.")
     });
 
     // Formik for profile update
@@ -95,21 +106,33 @@ const Profile = () => {
         }
     });
 
-    // Formik for password change
+    // Updated Formik for password change
     const passwordFormik = useFormik({
         initialValues: {
-            oldPassWord: '',
-            newPassWord: ''
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: ''
         },
         validationSchema: passwordFormSchema,
         onSubmit: async (values) => {
             try {
-                await UserService.changePassword(userId, values);
+                // Prepare data according to backend API
+                const passwordData = {
+                    currentPassword: values.currentPassword,
+                    newPassword: values.newPassword,
+                    confirmPassword: values.confirmPassword
+                };
+
+                await UserService.changePassword(userId, passwordData);
                 getUserById();
                 toast.success('Đổi mật khẩu thành công', {
                     autoClose: 2000
                 });
                 passwordFormik.resetForm();
+                // Reset password visibility states
+                setShowCurrentPassword(false);
+                setShowNewPassword(false);
+                setShowConfirmPassword(false);
             } catch (error) {
                 console.log(error);
                 const jsonResponse = JSON.parse(error.request.response);
@@ -157,7 +180,7 @@ const Profile = () => {
         if (imageName) {
             return `http://localhost:9004/images/${imageName}`;
         }
-        return "http://localhost:9004/images/anhdaidienmacdinh.jpg";
+        return "https://media.istockphoto.com/id/1223671392/vi/vec-to/%E1%BA%A3nh-h%E1%BB%93-s%C6%A1-m%E1%BA%B7c-%C4%91%E1%BB%8Bnh-h%C3%ACnh-%C4%91%E1%BA%A1i-di%E1%BB%87n-ch%E1%BB%97-d%C3%A0nh-s%E1%BA%B5n-cho-%E1%BA%A3nh-minh-h%E1%BB%8Da-vect%C6%A1.jpg?s=612x612&w=0&k=20&c=l9x3h9RMD16-z4kNjo3z7DXVEORzkxKCMn2IVwn9liI=";
     };
 
     const onFileChange = async (event) => {
@@ -202,6 +225,19 @@ const Profile = () => {
         }
     };
 
+    // Password visibility toggle functions
+    const toggleCurrentPasswordVisibility = () => {
+        setShowCurrentPassword(prev => !prev);
+    };
+
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(prev => !prev);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(prev => !prev);
+    };
+
     useEffect(() => {
         getUserById();
     }, []);
@@ -209,18 +245,37 @@ const Profile = () => {
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             <div
-                className="mt-2 bg-white shadow-lg rounded-1"
+                className="mt-2 shadow-lg rounded-4 px-2 py-1"
+                style={{
+                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
+                    minHeight: 70,
+                    border: 'none'
+                }}
                 data-aos="fade-down"
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
                 <nav>
-                    <ol className="cd-breadcrumb custom-separator">
-                        <li className="current">
-                            <FontAwesomeIcon icon={faUserCircle} />
-                            <button className="btn btn-link text-decoration-none fw-bolder">
+                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
+                        <li className="current d-flex align-items-center">
+                            <span
+                                style={{
+                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                    borderRadius: '50%',
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: 8,
+                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faUserCircle} color="#fff" />
+                            </span>
+                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
                                 Profile
-                            </button>
+                            </span>
                         </li>
                     </ol>
                 </nav>
@@ -421,51 +476,109 @@ const Profile = () => {
                                             </div>
                                         )}
 
-                                        {/* Password Change Form */}
+                                        {/* Updated Password Change Form */}
                                         {!showProfilePage && (
                                             <div className="form-container">
                                                 <form onSubmit={passwordFormik.handleSubmit} className="password-form">
                                                     <div className="form-grid single-column">
+                                                        {/* Current Password */}
                                                         <div className="form-group">
                                                             <label className="form-label">
                                                                 <i className="fas fa-key me-2"></i>
                                                                 Mật khẩu hiện tại
                                                             </label>
-                                                            <input
-                                                                type="password"
-                                                                name="oldPassWord"
-                                                                className={`form-input ${passwordFormik.touched.oldPassWord && passwordFormik.errors.oldPassWord ? 'error' : ''}`}
-                                                                placeholder="Nhập mật khẩu hiện tại"
-                                                                value={passwordFormik.values.oldPassWord}
-                                                                onChange={passwordFormik.handleChange}
-                                                                onBlur={passwordFormik.handleBlur}
-                                                            />
-                                                            {passwordFormik.touched.oldPassWord && passwordFormik.errors.oldPassWord && (
+                                                            <div className="password-input-wrapper">
+                                                                <input
+                                                                    type={showCurrentPassword ? "text" : "password"}
+                                                                    name="currentPassword"
+                                                                    className={`form-input password-input ${passwordFormik.touched.currentPassword && passwordFormik.errors.currentPassword ? 'error' : ''}`}
+                                                                    placeholder="Nhập mật khẩu hiện tại"
+                                                                    value={passwordFormik.values.currentPassword}
+                                                                    onChange={passwordFormik.handleChange}
+                                                                    onBlur={passwordFormik.handleBlur}
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    className="password-toggle"
+                                                                    onClick={toggleCurrentPasswordVisibility}
+                                                                >
+                                                                    <FontAwesomeIcon
+                                                                        icon={showCurrentPassword ? faEyeSlash : faEye}
+                                                                    />
+                                                                </button>
+                                                            </div>
+                                                            {passwordFormik.touched.currentPassword && passwordFormik.errors.currentPassword && (
                                                                 <div className="error-message">
                                                                     <i className="fas fa-exclamation-circle me-1"></i>
-                                                                    {passwordFormik.errors.oldPassWord}
+                                                                    {passwordFormik.errors.currentPassword}
                                                                 </div>
                                                             )}
                                                         </div>
 
+                                                        {/* New Password */}
                                                         <div className="form-group">
                                                             <label className="form-label">
                                                                 <i className="fas fa-lock me-2"></i>
                                                                 Mật khẩu mới
                                                             </label>
-                                                            <input
-                                                                type="password"
-                                                                name="newPassWord"
-                                                                className={`form-input ${passwordFormik.touched.newPassWord && passwordFormik.errors.newPassWord ? 'error' : ''}`}
-                                                                placeholder="Nhập mật khẩu mới"
-                                                                value={passwordFormik.values.newPassWord}
-                                                                onChange={passwordFormik.handleChange}
-                                                                onBlur={passwordFormik.handleBlur}
-                                                            />
-                                                            {passwordFormik.touched.newPassWord && passwordFormik.errors.newPassWord && (
+                                                            <div className="password-input-wrapper">
+                                                                <input
+                                                                    type={showNewPassword ? "text" : "password"}
+                                                                    name="newPassword"
+                                                                    className={`form-input password-input ${passwordFormik.touched.newPassword && passwordFormik.errors.newPassword ? 'error' : ''}`}
+                                                                    placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                                                                    value={passwordFormik.values.newPassword}
+                                                                    onChange={passwordFormik.handleChange}
+                                                                    onBlur={passwordFormik.handleBlur}
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    className="password-toggle"
+                                                                    onClick={toggleNewPasswordVisibility}
+                                                                >
+                                                                    <FontAwesomeIcon
+                                                                        icon={showNewPassword ? faEyeSlash : faEye}
+                                                                    />
+                                                                </button>
+                                                            </div>
+                                                            {passwordFormik.touched.newPassword && passwordFormik.errors.newPassword && (
                                                                 <div className="error-message">
                                                                     <i className="fas fa-exclamation-circle me-1"></i>
-                                                                    {passwordFormik.errors.newPassWord}
+                                                                    {passwordFormik.errors.newPassword}
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Confirm Password */}
+                                                        <div className="form-group">
+                                                            <label className="form-label">
+                                                                <i className="fas fa-shield-alt me-2"></i>
+                                                                Xác nhận mật khẩu mới
+                                                            </label>
+                                                            <div className="password-input-wrapper">
+                                                                <input
+                                                                    type={showConfirmPassword ? "text" : "password"}
+                                                                    name="confirmPassword"
+                                                                    className={`form-input password-input ${passwordFormik.touched.confirmPassword && passwordFormik.errors.confirmPassword ? 'error' : ''}`}
+                                                                    placeholder="Nhập lại mật khẩu mới"
+                                                                    value={passwordFormik.values.confirmPassword}
+                                                                    onChange={passwordFormik.handleChange}
+                                                                    onBlur={passwordFormik.handleBlur}
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    className="password-toggle"
+                                                                    onClick={toggleConfirmPasswordVisibility}
+                                                                >
+                                                                    <FontAwesomeIcon
+                                                                        icon={showConfirmPassword ? faEyeSlash : faEye}
+                                                                    />
+                                                                </button>
+                                                            </div>
+                                                            {passwordFormik.touched.confirmPassword && passwordFormik.errors.confirmPassword && (
+                                                                <div className="error-message">
+                                                                    <i className="fas fa-exclamation-circle me-1"></i>
+                                                                    {passwordFormik.errors.confirmPassword}
                                                                 </div>
                                                             )}
                                                         </div>

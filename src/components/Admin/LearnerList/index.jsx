@@ -91,8 +91,28 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     };
 
     // toggle user status function
-    const toggleUserStatus = async (learnerId, newStatus) => {
+    const toggleUserStatus = async (learnerId, newStatus, learnerName) => {
         try {
+            // Tìm learner theo id
+            const learner = learners.find(l => (l._id || l.userId) === learnerId);
+            // Kiểm tra nếu là admin thì không cho chặn
+            if (
+                learner &&
+                learner.roles &&
+                learner.roles.some(role => role.name?.includes("ROLE_ADMIN")) &&
+                newStatus === 0 // chỉ kiểm tra khi muốn chặn
+            ) {
+                toast.warn('Không thể chặn tài khoản có quyền Admin!', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+                return;
+            }
+
             // Add confirmation dialog
             const isBlocking = newStatus === 0; // 0 = block, 1 = unblock
             const action = isBlocking ? 'chặn' : 'bỏ chặn';
@@ -173,6 +193,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredLearners.length);
 
+    console.log('Filtered Learners:', filteredLearners);
     return (
         <div className="page-heading">
             <div className="section">
@@ -258,6 +279,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                     <th>AVATAR</th>
                                     <th>USERNAME</th>
                                     <th>EMAIL</th>
+                                    <th>ROLE</th>
                                     <th>STATUS</th>
                                     <th>CREATED_AT</th>
                                     <th>ACTION</th>
@@ -281,6 +303,29 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                             </td>
                                             <td>
                                                 <span className="text-muted">{learner.email}</span>
+                                            </td>
+                                            <td>
+                                                {learner.roles && learner.roles.length > 0 ? (
+                                                    <span>
+                                                        {learner.roles.map((role, idx) => {
+                                                            let badgeClass = "badge me-1 ";
+                                                            if (role.name?.toLowerCase().includes("admin")) {
+                                                                badgeClass += "bg-warning";
+                                                            } else if (role.name?.toLowerCase().includes("learner")) {
+                                                                badgeClass += "bg-primary";
+                                                            } else {
+                                                                badgeClass += "bg-secondary";
+                                                            }
+                                                            return (
+                                                                <span key={idx} className={badgeClass}>
+                                                                    {role.name}
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-muted">No roles assigned</span>
+                                                )}
                                             </td>
                                             <td>
                                                 {isUserBlocked(learner) ? (

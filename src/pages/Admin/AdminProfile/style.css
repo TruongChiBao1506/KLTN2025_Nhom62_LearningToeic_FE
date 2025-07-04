@@ -1,6 +1,4 @@
-/* Reset container để giống Section */
 .profile-container {
-    /* Bỏ min-height và background gradient */
     padding: 1rem 0;
     background: transparent;
 }
@@ -12,7 +10,8 @@
 
 .profile-header {
     text-align: center;
-    margin-bottom: 2rem; /* Giảm margin */
+    margin-bottom: 2rem;
+    /* Giảm margin */
     padding: 2rem;
     background: white;
     border-radius: 15px;
@@ -20,15 +19,18 @@
 }
 
 .profile-title {
-    color: #1c75bc; /* Đổi màu từ white sang dark */
+    color: #1c75bc;
+    /* Đổi màu từ white sang dark */
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    text-shadow: none; /* Bỏ text-shadow */
+    text-shadow: none;
+    /* Bỏ text-shadow */
 }
 
 .profile-subtitle {
-    color: #6c757d; /* Đổi màu từ rgba white */
+    color: #6c757d;
+    /* Đổi màu từ rgba white */
     font-size: 1.1rem;
     margin: 0;
 }
@@ -39,7 +41,8 @@
     box-shadow: 0 20px 40px rgba(5, 38, 73, 0.2);
     overflow: hidden;
     backdrop-filter: blur(10px);
-    margin-top: 1rem; /* Thêm margin top */
+    margin-top: 1rem;
+    /* Thêm margin top */
 }
 
 .profile-content {
@@ -231,6 +234,8 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     background: white;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .form-input:focus {
@@ -265,6 +270,54 @@
     display: flex;
     justify-content: center;
     padding-top: 1rem;
+}
+
+/* Fixed Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.password-input {
+    padding-right: 3.5rem !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #1c75bc;
+    background: rgba(28, 117, 188, 0.1);
+}
+
+.password-toggle:focus {
+    outline: none;
+    color: #1c75bc;
+    box-shadow: 0 0 0 2px rgba(28, 117, 188, 0.2);
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
 .submit-btn {
@@ -344,6 +397,12 @@
     .tab-btn {
         padding: 0.75rem 1rem;
     }
+
+    .password-toggle {
+        right: 10px;
+        width: 30px;
+        height: 30px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -363,5 +422,16 @@
     .submit-btn {
         min-width: auto;
         width: 100%;
+    }
+
+    .password-input {
+        padding-right: 3rem !important;
+        font-size: 0.95rem;
+    }
+
+    .password-toggle {
+        right: 8px;
+        width: 28px;
+        height: 28px;
     }
 }
