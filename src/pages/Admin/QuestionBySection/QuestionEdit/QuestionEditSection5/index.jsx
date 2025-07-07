@@ -558,7 +558,7 @@ const QuestionEditSection5 = ({ sectionId, questionId, retrieveQuestions, onClos
         <div className="modal-footer">
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn btn-secondary rounded-5"
             onClick={() => {
               if (onClose) onClose();
             }}
@@ -567,7 +567,7 @@ const QuestionEditSection5 = ({ sectionId, questionId, retrieveQuestions, onClos
           </button>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary rounded-5"
             disabled={formik.isSubmitting}
           >
             {formik.isSubmitting ? 'Đang lưu...' : 'Cập nhật'}

@@ -309,7 +309,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 <Modal.Footer>
                     <button 
                         type="button" 
-                        className="btn btn-secondary"
+                        className="btn btn-secondary rounded-5"
                         onClick={onClose}
                         disabled={isLoading}
                     >
@@ -317,7 +317,7 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                     </button>
                     <button 
                         type="submit" 
-                        className="btn btn-primary"
+                        className="btn btn-primary rounded-5"
                         disabled={isLoading}
                     >
                         {isLoading ? (

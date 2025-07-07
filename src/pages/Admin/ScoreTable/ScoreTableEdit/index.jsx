@@ -159,14 +159,14 @@ const ScoreTableEdit = ({ scoreTableId, getTableScores, onClose }) => {
                     <div className="modal-footer">
                         <button 
                             type="button" 
-                            className="btn btn-secondary"
+                            className="btn btn-secondary rounded-5"
                             onClick={onClose}
                         >
                             Đóng
                         </button>
                         <button 
                             type="submit"
-                            className="btn btn-primary"
+                            className="btn btn-primary rounded-5"
                             disabled={isLoading || !formik.isValid}
                         >
                             {isLoading ? (

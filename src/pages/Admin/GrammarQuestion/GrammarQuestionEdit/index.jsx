@@ -246,15 +246,6 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
         <div className="page">
             <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
                 <Modal.Body className="text-start p-4">
-                    {/* Debug info - Remove in production */}
-                    {process.env.NODE_ENV === 'development' && (
-                        <div className="alert alert-info small mb-3">
-                            <strong>Debug Info:</strong>
-                            Grammar Question ID: {grammarQuestionId},
-                            Grammar ID: {grammarId},
-                            Correct Option: {formik.values.correctOption}
-                        </div>
-                    )}
 
                     {/* Question Content Field */}
                     <div className="form-group mb-3">
@@ -469,14 +460,14 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                 <Modal.Footer>
                     <button
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn btn-secondary rounded-5"
                         onClick={onClose}
                     >
                         Đóng
                     </button>
                     <button
                         type="submit"
-                        className="btn btn-primary"
+                        className="btn btn-primary rounded-5"
                         disabled={formik.isSubmitting || !formik.isValid}
                     >
                         {formik.isSubmitting ? (

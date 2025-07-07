@@ -111,14 +111,14 @@ const QuestionEditNo1To2 = ({ sectionId, questionId, retrieveQuestions, onClose 
         <div className="modal-footer">
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn btn-secondary rounded-5"
             onClick={onClose}
           >
             Đóng
           </button>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary rounded-5"
             disabled={formik.isSubmitting}
           >
             {formik.isSubmitting ? "Đang lưu..." : "Lưu"}

@@ -267,18 +267,18 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         handleClose();
                     }}
                 >
-                    Close
+                    Đóng
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting}
                     onClick={(e) => {
                         e.preventDefault();
@@ -286,7 +286,7 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
                         handleSubmit(e);
                     }}
                 >
-                    {formik.isSubmitting ? 'Đang lưu...' : 'Save'}
+                    {formik.isSubmitting ? 'Đang lưu...' : 'Lưu'}
                 </button>
             </div>
         </>

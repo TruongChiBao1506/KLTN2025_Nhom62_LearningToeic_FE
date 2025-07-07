@@ -405,27 +405,20 @@ const VocabularyQuestionAdd = ({ topicId, retrieveVocabularyQuestions, onClose }
                         <div className="error-feedback">{formik.errors.questionExplanation}</div>
                     )}
                 </div>
-
-                {/* Display topic info */}
-                <div className="alert alert-info">
-                    <small>
-                        <strong>📚 Topic ID:</strong> {topicId}
-                    </small>
-                </div>
             </div>
 
             {/* Modal Footer */}
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={handleClose}
                 >
                     Đóng
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting}
                     onClick={handleSubmit}
                 >

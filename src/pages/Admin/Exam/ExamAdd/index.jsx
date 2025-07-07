@@ -166,7 +166,7 @@ const AddExam = ({ retrieveExams, onClose }) => {
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -177,7 +177,7 @@ const AddExam = ({ retrieveExams, onClose }) => {
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting}
                     onClick={(e) => {
                         e.preventDefault();

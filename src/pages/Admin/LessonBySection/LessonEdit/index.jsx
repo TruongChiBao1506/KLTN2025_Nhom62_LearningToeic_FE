@@ -218,7 +218,7 @@ const LessonEdit = ({ lessonId, sectionId, retrieveLessons, onClose }) => {
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -229,7 +229,7 @@ const LessonEdit = ({ lessonId, sectionId, retrieveLessons, onClose }) => {
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting || isLoading}
                     onClick={(e) => {
                         e.preventDefault();

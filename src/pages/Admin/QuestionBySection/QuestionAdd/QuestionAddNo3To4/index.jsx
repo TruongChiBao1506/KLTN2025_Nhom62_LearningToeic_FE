@@ -209,14 +209,14 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
                 <div className="modal-footer">
                     <button 
                         type="button" 
-                        className="btn btn-secondary" 
+                        className="btn btn-secondary rounded-5" 
                         onClick={handleClose}
                     >
                         Đóng
                     </button>
                     <button 
                         type="submit" 
-                        className="btn btn-primary"
+                        className="btn btn-primary rounded-5"
                         disabled={formik.isSubmitting}
                     >
                         {formik.isSubmitting ? 'Đang lưu...' : 'Lưu'}

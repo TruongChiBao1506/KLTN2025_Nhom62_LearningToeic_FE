@@ -507,29 +507,13 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
                         <div className="error-feedback">{formik.errors.questionExplanation}</div>
                     )}
                 </div>
-
-                {/* Display current vocabulary question info */}
-                <div className="alert alert-info">
-                    <h6 className="alert-heading mb-2">📚 Thông tin Vocabulary Question</h6>
-                    <small>
-                        <strong>Question ID:</strong> {vocabularyQuestion.id || vocabularyQuestion.vocabularyQuestionId}<br />
-                        <strong>Topic ID:</strong> {topicId}<br />
-                        <strong>Current Correct Answer:</strong> {vocabularyQuestion.correctOption}<br />
-                        <strong>Ngày tạo:</strong> {new Date(vocabularyQuestion.createdAt).toLocaleDateString('vi-VN')}<br />
-                        {vocabularyQuestion.updatedAt && (
-                            <>
-                                <strong>Cập nhật lần cuối:</strong> {new Date(vocabularyQuestion.updatedAt).toLocaleDateString('vi-VN')}
-                            </>
-                        )}
-                    </small>
-                </div>
             </div>
 
             {/* Modal Footer */}
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -540,7 +524,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting || isLoading}
                     onClick={(e) => {
                         e.preventDefault();

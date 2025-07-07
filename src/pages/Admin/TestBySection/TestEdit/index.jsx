@@ -220,28 +220,13 @@ const TestEdit = ({ testId, sectionId, retrieveTests, onClose }) => {
                         <div className="error-feedback">{formik.errors.testName}</div>
                     )}
                 </div>
-
-                {/* Display current test info */}
-                <div className="alert alert-info">
-                    <h6 className="alert-heading mb-2">📋 Thông tin Test</h6>
-                    <small>
-                        <strong>Test ID:</strong> {test.id || test.testId}<br />
-                        <strong>Section ID:</strong> {sectionId}<br />
-                        <strong>Ngày tạo:</strong> {new Date(test.createdAt).toLocaleDateString('vi-VN')}<br />
-                        {test.updatedAt && (
-                            <>
-                                <strong>Cập nhật lần cuối:</strong> {new Date(test.updatedAt).toLocaleDateString('vi-VN')}
-                            </>
-                        )}
-                    </small>
-                </div>
             </div>
 
             {/* Modal Footer */}
             <div className="modal-footer">
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary rounded-5"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -252,7 +237,7 @@ const TestEdit = ({ testId, sectionId, retrieveTests, onClose }) => {
                 </button>
                 <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary rounded-5"
                     disabled={formik.isSubmitting || isLoading}
                     onClick={(e) => {
                         e.preventDefault();
