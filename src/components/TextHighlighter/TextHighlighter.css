@@ -91,19 +91,31 @@
 }
 
 /* Custom styles for highlighted text areas */
-.toeic-highlight-yellow { background-color: #fef08a; }
-.toeic-highlight-green { background-color: #bbf7d0; }
-.toeic-highlight-blue { background-color: #bae6fd; }
-.toeic-highlight-pink { background-color: #fbcfe8; }
-.toeic-highlight-purple { background-color: #ddd6fe; }
-.toeic-highlight-orange { background-color: #fed7aa; }
+.toeic-highlight-yellow {
+  background-color: #fef08a;
+}
+.toeic-highlight-green {
+  background-color: #bbf7d0;
+}
+.toeic-highlight-blue {
+  background-color: #bae6fd;
+}
+.toeic-highlight-pink {
+  background-color: #fbcfe8;
+}
+.toeic-highlight-purple {
+  background-color: #ddd6fe;
+}
+.toeic-highlight-orange {
+  background-color: #fed7aa;
+}
 
 /* Responsive styles */
 @media (max-width: 768px) {
   .toeic-highlighter-popover {
     width: 250px;
   }
-  
+
   .toeic-action-buttons {
     flex-wrap: wrap;
     gap: 5px;

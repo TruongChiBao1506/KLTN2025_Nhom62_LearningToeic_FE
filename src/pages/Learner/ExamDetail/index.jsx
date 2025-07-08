@@ -929,7 +929,9 @@ const ExamDetail = () => {
                             message="Giải thích"
                             description={
                               <div id={`explanation-${question.id}`}>
-                                <TextHighlighter containerId={`explanation-${question.id}`}>
+                                <TextHighlighter
+                                  containerId={`explanation-${question.id}`}
+                                >
                                   {question.explanation}
                                 </TextHighlighter>
                               </div>
@@ -1239,7 +1241,10 @@ const ExamDetail = () => {
           </Col>
           <Col>
             <Space align="center" size="large">
-              <Tooltip title="Bạn có thể chọn văn bản để làm nổi bật hoặc dịch" placement="bottom">
+              <Tooltip
+                title="Bạn có thể chọn văn bản để làm nổi bật hoặc dịch"
+                placement="bottom"
+              >
                 <div
                   style={{
                     background: "rgba(255,255,255,0.2)",
@@ -1567,8 +1572,13 @@ const ExamDetail = () => {
                             >
                               {optionLetter}
                             </Tag>
-                            <Text style={{ fontSize: "16px" }} id={`option-text-${option.id}`}>
-                              <TextHighlighter containerId={`option-text-${option.id}`}>
+                            <Text
+                              style={{ fontSize: "16px" }}
+                              id={`option-text-${option.id}`}
+                            >
+                              <TextHighlighter
+                                containerId={`option-text-${option.id}`}
+                              >
                                 {option.text}
                               </TextHighlighter>
                             </Text>
