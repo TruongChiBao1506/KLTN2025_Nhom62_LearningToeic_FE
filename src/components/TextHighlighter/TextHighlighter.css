@@ -1,0 +1,111 @@
+.toeic-text-highlighter-container {
+  position: relative;
+}
+
+.toeic-highlightable-content {
+  position: relative;
+  z-index: 1;
+}
+
+.toeic-text-highlight {
+  border-radius: 2px;
+  position: relative;
+  display: inline;
+  padding: 1px 0;
+  cursor: pointer;
+}
+
+.toeic-text-highlight:hover {
+  opacity: 0.85;
+}
+
+.toeic-highlighter-popover {
+  width: 280px;
+}
+
+.toeic-color-selector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.toeic-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.toeic-color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.toeic-color-swatch.active {
+  border-color: #1890ff;
+  transform: scale(1.1);
+}
+
+.toeic-note-input {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.toeic-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.toeic-translation-result {
+  position: relative;
+  padding: 5px 25px 5px 5px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.toeic-translation-text {
+  max-height: 150px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.toeic-close-translation {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make sure the popover arrow stays visible */
+.ant-popover-arrow {
+  z-index: 2;
+}
+
+/* Custom styles for highlighted text areas */
+.toeic-highlight-yellow { background-color: #fef08a; }
+.toeic-highlight-green { background-color: #bbf7d0; }
+.toeic-highlight-blue { background-color: #bae6fd; }
+.toeic-highlight-pink { background-color: #fbcfe8; }
+.toeic-highlight-purple { background-color: #ddd6fe; }
+.toeic-highlight-orange { background-color: #fed7aa; }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .toeic-highlighter-popover {
+    width: 250px;
+  }
+  
+  .toeic-action-buttons {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}

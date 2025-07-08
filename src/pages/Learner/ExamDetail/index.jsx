@@ -20,6 +20,7 @@ import {
   Divider,
   Tabs,
   Tag,
+  Tooltip,
 } from "antd";
 import {
   Home,
@@ -43,10 +44,12 @@ import {
   Timer,
   TrendingUp,
   X,
+  PenTool,
 } from "lucide-react";
 import learnerExamService from "../../../services/learnerExamService";
 import AudioPlayer from "../../../components/AudioPlayer";
 import audioRegistry from "../../../utils/AudioRegistry";
+import TextHighlighter from "../../../components/TextHighlighter";
 
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -924,7 +927,13 @@ const ExamDetail = () => {
                         {question.explanation && (
                           <Alert
                             message="Giải thích"
-                            description={question.explanation}
+                            description={
+                              <div id={`explanation-${question.id}`}>
+                                <TextHighlighter containerId={`explanation-${question.id}`}>
+                                  {question.explanation}
+                                </TextHighlighter>
+                              </div>
+                            }
                             type="info"
                             showIcon
                             icon={<HelpCircle size={16} />}
@@ -1230,6 +1239,30 @@ const ExamDetail = () => {
           </Col>
           <Col>
             <Space align="center" size="large">
+              <Tooltip title="Bạn có thể chọn văn bản để làm nổi bật hoặc dịch" placement="bottom">
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.2)",
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    backdropFilter: "blur(10px)",
+                    cursor: "help",
+                  }}
+                >
+                  <Space>
+                    <PenTool size={20} />
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Chọn văn bản để highlight/dịch
+                    </Text>
+                  </Space>
+                </div>
+              </Tooltip>
               <div
                 style={{
                   background: "rgba(255,255,255,0.2)",
@@ -1481,8 +1514,11 @@ const ExamDetail = () => {
                 <Title
                   level={4}
                   style={{ marginBottom: "24px", color: "#262626" }}
+                  id="question-text"
                 >
-                  {currentQuestion.text}
+                  <TextHighlighter containerId="question-text">
+                    {currentQuestion.text}
+                  </TextHighlighter>
                 </Title>
               </div>
 
@@ -1531,8 +1567,10 @@ const ExamDetail = () => {
                             >
                               {optionLetter}
                             </Tag>
-                            <Text style={{ fontSize: "16px" }}>
-                              {option.text}
+                            <Text style={{ fontSize: "16px" }} id={`option-text-${option.id}`}>
+                              <TextHighlighter containerId={`option-text-${option.id}`}>
+                                {option.text}
+                              </TextHighlighter>
                             </Text>
                           </Space>
                         </Radio>
