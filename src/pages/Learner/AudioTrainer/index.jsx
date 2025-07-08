@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./style.css";
+import React, { useState, useEffect, useRef } from 'react';
+import './style.css';
 
 const AudioTrainer = () => {
   const [currentAudio, setCurrentAudio] = useState(null);
@@ -8,17 +8,17 @@ const AudioTrainer = () => {
   const [duration, setDuration] = useState(0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showSubtitles, setShowSubtitles] = useState(true);
-  const [selectedLevel, setSelectedLevel] = useState("beginner");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedLevel, setSelectedLevel] = useState('beginner');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [audioList, setAudioList] = useState([]);
-  const [currentSubtitle, setCurrentSubtitle] = useState("");
+  const [currentSubtitle, setCurrentSubtitle] = useState('');
   const [statistics, setStatistics] = useState({
     totalListened: 0,
     totalTime: 0,
     streakDays: 0,
-    completedLessons: 0,
+    completedLessons: 0
   });
-
+  
   const audioRef = useRef(null);
 
   // Mock data for audio lessons
@@ -26,147 +26,99 @@ const AudioTrainer = () => {
     const mockAudioLessons = [
       {
         id: 1,
-        title: "Business Phone Calls",
-        category: "business",
-        level: "intermediate",
+        title: 'Business Phone Calls',
+        category: 'business',
+        level: 'intermediate',
         duration: 180,
-        audioUrl: "/audio/business-calls.mp3",
-        description: "Practice listening to professional phone conversations",
+        audioUrl: '/audio/business-calls.mp3',
+        description: 'Practice listening to professional phone conversations',
         subtitles: [
-          {
-            start: 0,
-            end: 5,
-            text: "Good morning, ABC Company, how may I help you?",
-          },
-          {
-            start: 5,
-            end: 10,
-            text: "I'd like to speak with Mr. Johnson, please.",
-          },
-          {
-            start: 10,
-            end: 15,
-            text: "I'm sorry, he's in a meeting right now.",
-          },
+          { start: 0, end: 5, text: "Good morning, ABC Company, how may I help you?" },
+          { start: 5, end: 10, text: "I'd like to speak with Mr. Johnson, please." },
+          { start: 10, end: 15, text: "I'm sorry, he's in a meeting right now." }
         ],
-        difficulty: 6,
+        difficulty: 6
       },
       {
         id: 2,
-        title: "Airport Announcements",
-        category: "travel",
-        level: "beginner",
+        title: 'Airport Announcements',
+        category: 'travel',
+        level: 'beginner',
         duration: 120,
-        audioUrl: "/audio/airport.mp3",
-        description:
-          "Understanding airport announcements and travel information",
+        audioUrl: '/audio/airport.mp3',
+        description: 'Understanding airport announcements and travel information',
         subtitles: [
-          {
-            start: 0,
-            end: 4,
-            text: "Attention passengers on flight 245 to New York.",
-          },
-          {
-            start: 4,
-            end: 8,
-            text: "Your flight has been delayed by 30 minutes.",
-          },
-          { start: 8, end: 12, text: "Please wait in the departure lounge." },
+          { start: 0, end: 4, text: "Attention passengers on flight 245 to New York." },
+          { start: 4, end: 8, text: "Your flight has been delayed by 30 minutes." },
+          { start: 8, end: 12, text: "Please wait in the departure lounge." }
         ],
-        difficulty: 3,
+        difficulty: 3
       },
       {
         id: 3,
-        title: "Restaurant Conversations",
-        category: "daily",
-        level: "beginner",
+        title: 'Restaurant Conversations',
+        category: 'daily',
+        level: 'beginner',
         duration: 150,
-        audioUrl: "/audio/restaurant.mp3",
-        description: "Common phrases used in restaurants and ordering food",
+        audioUrl: '/audio/restaurant.mp3',
+        description: 'Common phrases used in restaurants and ordering food',
         subtitles: [
           { start: 0, end: 3, text: "Welcome to our restaurant!" },
           { start: 3, end: 7, text: "Table for two, please." },
-          { start: 7, end: 11, text: "Right this way, please follow me." },
+          { start: 7, end: 11, text: "Right this way, please follow me." }
         ],
-        difficulty: 2,
+        difficulty: 2
       },
       {
         id: 4,
-        title: "News Report - Technology",
-        category: "news",
-        level: "advanced",
+        title: 'News Report - Technology',
+        category: 'news',
+        level: 'advanced',
         duration: 240,
-        audioUrl: "/audio/tech-news.mp3",
-        description: "Technology news report with advanced vocabulary",
+        audioUrl: '/audio/tech-news.mp3',
+        description: 'Technology news report with advanced vocabulary',
         subtitles: [
-          {
-            start: 0,
-            end: 6,
-            text: "Scientists have developed a new artificial intelligence system.",
-          },
-          {
-            start: 6,
-            end: 12,
-            text: "This breakthrough could revolutionize the healthcare industry.",
-          },
-          {
-            start: 12,
-            end: 18,
-            text: "The technology uses machine learning algorithms.",
-          },
+          { start: 0, end: 6, text: "Scientists have developed a new artificial intelligence system." },
+          { start: 6, end: 12, text: "This breakthrough could revolutionize the healthcare industry." },
+          { start: 12, end: 18, text: "The technology uses machine learning algorithms." }
         ],
-        difficulty: 9,
+        difficulty: 9
       },
       {
         id: 5,
-        title: "University Lecture - Part 1",
-        category: "academic",
-        level: "advanced",
+        title: 'University Lecture - Part 1',
+        category: 'academic',
+        level: 'advanced',
         duration: 300,
-        audioUrl: "/audio/lecture.mp3",
-        description: "Academic lecture about environmental science",
+        audioUrl: '/audio/lecture.mp3',
+        description: 'Academic lecture about environmental science',
         subtitles: [
-          {
-            start: 0,
-            end: 8,
-            text: "Today we'll discuss the impact of climate change on ecosystems.",
-          },
-          {
-            start: 8,
-            end: 16,
-            text: "Global warming affects biodiversity in various ways.",
-          },
-          {
-            start: 16,
-            end: 24,
-            text: "Let's examine some specific examples from recent studies.",
-          },
+          { start: 0, end: 8, text: "Today we'll discuss the impact of climate change on ecosystems." },
+          { start: 8, end: 16, text: "Global warming affects biodiversity in various ways." },
+          { start: 16, end: 24, text: "Let's examine some specific examples from recent studies." }
         ],
-        difficulty: 10,
-      },
+        difficulty: 10
+      }
     ];
     setAudioList(mockAudioLessons);
     setStatistics({
       totalListened: 25,
       totalTime: 1250,
       streakDays: 7,
-      completedLessons: 12,
+      completedLessons: 12
     });
   }, []);
 
-  const filteredAudio = audioList.filter((audio) => {
-    const levelMatch = selectedLevel === "all" || audio.level === selectedLevel;
-    const categoryMatch =
-      selectedCategory === "all" || audio.category === selectedCategory;
+  const filteredAudio = audioList.filter(audio => {
+    const levelMatch = selectedLevel === 'all' || audio.level === selectedLevel;
+    const categoryMatch = selectedCategory === 'all' || audio.category === selectedCategory;
     return levelMatch && categoryMatch;
   });
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const playAudio = (audio) => {
@@ -191,15 +143,13 @@ const AudioTrainer = () => {
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
-
+      
       // Update current subtitle
       if (currentAudio && showSubtitles) {
         const currentSub = currentAudio.subtitles.find(
-          (sub) =>
-            audioRef.current.currentTime >= sub.start &&
-            audioRef.current.currentTime <= sub.end
+          sub => audioRef.current.currentTime >= sub.start && audioRef.current.currentTime <= sub.end
         );
-        setCurrentSubtitle(currentSub ? currentSub.text : "");
+        setCurrentSubtitle(currentSub ? currentSub.text : '');
       }
     }
   };
@@ -227,33 +177,27 @@ const AudioTrainer = () => {
 
   const skipTime = (seconds) => {
     if (audioRef.current) {
-      audioRef.current.currentTime = Math.max(
-        0,
-        Math.min(duration, currentTime + seconds)
-      );
+      audioRef.current.currentTime = Math.max(0, Math.min(duration, currentTime + seconds));
     }
   };
 
   const getDifficultyColor = (difficulty) => {
-    if (difficulty <= 3) return "#4CAF50";
-    if (difficulty <= 6) return "#FF9800";
-    return "#F44336";
+    if (difficulty <= 3) return '#4CAF50';
+    if (difficulty <= 6) return '#FF9800';
+    return '#F44336';
   };
 
   const getDifficultyLabel = (difficulty) => {
-    if (difficulty <= 3) return "Dễ";
-    if (difficulty <= 6) return "Trung bình";
-    return "Khó";
+    if (difficulty <= 3) return 'Dễ';
+    if (difficulty <= 6) return 'Trung bình';
+    return 'Khó';
   };
 
   return (
     <div className="audio-trainer-container">
       <div className="audio-trainer-header">
         <h1>🎧 Luyện nghe TOEIC</h1>
-        <p>
-          Cải thiện kỹ năng nghe với các bài luyện tập đa dạng và công cụ hỗ trợ
-          hiện đại
-        </p>
+        <p>Cải thiện kỹ năng nghe với các bài luyện tập đa dạng và công cụ hỗ trợ hiện đại</p>
       </div>
 
       <div className="audio-trainer-content">
@@ -266,37 +210,32 @@ const AudioTrainer = () => {
                 <div className="audio-meta">
                   <span className="category">{currentAudio.category}</span>
                   <span className="level">{currentAudio.level}</span>
-                  <span
+                  <span 
                     className="difficulty"
-                    style={{
-                      backgroundColor: getDifficultyColor(
-                        currentAudio.difficulty
-                      ),
-                    }}
+                    style={{ backgroundColor: getDifficultyColor(currentAudio.difficulty) }}
                   >
-                    {getDifficultyLabel(currentAudio.difficulty)} (
-                    {currentAudio.difficulty}/10)
+                    {getDifficultyLabel(currentAudio.difficulty)} ({currentAudio.difficulty}/10)
                   </span>
                 </div>
               </div>
 
               <div className="audio-controls">
                 <div className="main-controls">
-                  <button
+                  <button 
                     className="control-btn skip"
                     onClick={() => skipTime(-10)}
                   >
                     ⏪ 10s
                   </button>
-
-                  <button
+                  
+                  <button 
                     className="control-btn play-pause"
                     onClick={togglePlayPause}
                   >
-                    {isPlaying ? "⏸️" : "▶️"}
+                    {isPlaying ? '⏸️' : '▶️'}
                   </button>
-
-                  <button
+                  
+                  <button 
                     className="control-btn skip"
                     onClick={() => skipTime(10)}
                   >
@@ -306,22 +245,17 @@ const AudioTrainer = () => {
 
                 <div className="progress-section">
                   <span className="time">{formatTime(currentTime)}</span>
-                  <div
+                  <div 
                     className="progress-bar"
                     onClick={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect();
-                      const percentage =
-                        ((e.clientX - rect.left) / rect.width) * 100;
+                      const percentage = ((e.clientX - rect.left) / rect.width) * 100;
                       seekTo(percentage);
                     }}
                   >
-                    <div
+                    <div 
                       className="progress-fill"
-                      style={{
-                        width: `${
-                          duration > 0 ? (currentTime / duration) * 100 : 0
-                        }%`,
-                      }}
+                      style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
                     />
                   </div>
                   <span className="time">{formatTime(duration)}</span>
@@ -329,12 +263,10 @@ const AudioTrainer = () => {
 
                 <div className="speed-controls">
                   <label>Tốc độ:</label>
-                  {[0.5, 0.75, 1, 1.25, 1.5].map((speed) => (
+                  {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
                     <button
                       key={speed}
-                      className={`speed-btn ${
-                        playbackSpeed === speed ? "active" : ""
-                      }`}
+                      className={`speed-btn ${playbackSpeed === speed ? 'active' : ''}`}
                       onClick={() => handleSpeedChange(speed)}
                     >
                       {speed}x
@@ -356,7 +288,7 @@ const AudioTrainer = () => {
 
               {showSubtitles && (
                 <div className="subtitle-display">
-                  <p>{currentSubtitle || "Đang chờ âm thanh..."}</p>
+                  <p>{currentSubtitle || 'Đang chờ âm thanh...'}</p>
                 </div>
               )}
 
@@ -382,7 +314,7 @@ const AudioTrainer = () => {
           <div className="filters">
             <div className="filter-group">
               <label>Cấp độ:</label>
-              <select
+              <select 
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
               >
@@ -395,7 +327,7 @@ const AudioTrainer = () => {
 
             <div className="filter-group">
               <label>Thể loại:</label>
-              <select
+              <select 
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -411,34 +343,28 @@ const AudioTrainer = () => {
 
           <div className="audio-list">
             <h3>📚 Danh sách bài nghe ({filteredAudio.length})</h3>
-            {filteredAudio.map((audio) => (
-              <div
+            {filteredAudio.map(audio => (
+              <div 
                 key={audio.id}
-                className={`audio-item ${
-                  currentAudio?.id === audio.id ? "active" : ""
-                }`}
+                className={`audio-item ${currentAudio?.id === audio.id ? 'active' : ''}`}
                 onClick={() => playAudio(audio)}
               >
                 <div className="audio-item-info">
                   <h4>{audio.title}</h4>
                   <p>{audio.description}</p>
                   <div className="audio-item-meta">
-                    <span className="duration">
-                      {formatTime(audio.duration)}
-                    </span>
+                    <span className="duration">{formatTime(audio.duration)}</span>
                     <span className="category">{audio.category}</span>
-                    <span
+                    <span 
                       className="difficulty-badge"
-                      style={{
-                        backgroundColor: getDifficultyColor(audio.difficulty),
-                      }}
+                      style={{ backgroundColor: getDifficultyColor(audio.difficulty) }}
                     >
                       {getDifficultyLabel(audio.difficulty)}
                     </span>
                   </div>
                 </div>
                 <button className="play-btn">
-                  {currentAudio?.id === audio.id && isPlaying ? "⏸️" : "▶️"}
+                  {currentAudio?.id === audio.id && isPlaying ? '⏸️' : '▶️'}
                 </button>
               </div>
             ))}
@@ -454,9 +380,7 @@ const AudioTrainer = () => {
             <span className="stat-label">Bài đã nghe</span>
           </div>
           <div className="stat-card">
-            <span className="stat-number">
-              {Math.floor(statistics.totalTime / 60)}
-            </span>
+            <span className="stat-number">{Math.floor(statistics.totalTime / 60)}</span>
             <span className="stat-label">Phút luyện nghe</span>
           </div>
           <div className="stat-card">

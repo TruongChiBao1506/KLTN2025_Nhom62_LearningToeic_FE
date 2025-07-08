@@ -276,9 +276,7 @@
 }
 
 @keyframes typing {
-  0%,
-  80%,
-  100% {
+  0%, 80%, 100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
@@ -351,35 +349,35 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
-
+  
   .sidebar {
     height: auto;
   }
-
+  
   .sidebar-section {
     margin-bottom: 20px;
   }
-
+  
   .topic-list {
     flex-direction: row;
     flex-wrap: wrap;
   }
-
+  
   .topic-btn {
     flex: 1;
     min-width: calc(50% - 4px);
   }
-
+  
   .personality-list {
     flex-direction: row;
     flex-wrap: wrap;
   }
-
+  
   .personality-item {
     flex: 1;
     min-width: calc(50% - 5px);
   }
-
+  
   .message-content {
     max-width: 85%;
   }
@@ -389,25 +387,25 @@
   .ai-tutor-container {
     padding: 10px;
   }
-
+  
   .ai-tutor-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
-
+  
   .topic-btn {
     min-width: 100%;
   }
-
+  
   .personality-item {
     min-width: 100%;
   }
-
+  
   .input-container {
     flex-direction: column;
   }
-
+  
   .send-btn {
     align-self: flex-end;
     min-width: 80px;

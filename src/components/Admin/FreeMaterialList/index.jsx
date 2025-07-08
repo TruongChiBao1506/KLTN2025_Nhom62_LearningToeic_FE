@@ -122,7 +122,7 @@ const FreeMaterialList = ({ freeMaterials = [], retrieveFreeMaterials }) => {
 
     const getFilePdfUrl = (filePdf) => {
         if (filePdf) {
-            return `http://localhost:9004/pdfs/${filePdf}`;
+            return `http://localhost:5000/pdfs/${filePdf}`;
         }
         return null;
     };

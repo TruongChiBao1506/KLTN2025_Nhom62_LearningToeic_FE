@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import "./style.css";
+import React, { useState, useEffect } from 'react';
+import './style.css';
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [activeTab, setActiveTab] = useState("overall");
-  const [timeFilter, setTimeFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState('overall');
+  const [timeFilter, setTimeFilter] = useState('all');
   const [userRank, setUserRank] = useState(null);
   const [userStats, setUserStats] = useState({});
 
@@ -13,85 +13,85 @@ const Leaderboard = () => {
     const mockData = [
       {
         id: 1,
-        name: "Nguyễn Văn An",
-        avatar: "https://via.placeholder.com/50x50/667eea/white?text=NA",
+        name: 'Nguyễn Văn An',
+        avatar: 'https://via.placeholder.com/50x50/667eea/white?text=NA',
         score: 2850,
-        level: "Expert",
+        level: 'Expert',
         streak: 45,
-        badges: ["🏆", "⭐", "🔥"],
+        badges: ['🏆', '⭐', '🔥'],
         weeklyScore: 420,
-        monthlyScore: 1650,
+        monthlyScore: 1650
       },
       {
         id: 2,
-        name: "Trần Thị Bình",
-        avatar: "https://via.placeholder.com/50x50/764ba2/white?text=TB",
+        name: 'Trần Thị Bình',
+        avatar: 'https://via.placeholder.com/50x50/764ba2/white?text=TB',
         score: 2720,
-        level: "Advanced",
+        level: 'Advanced',
         streak: 32,
-        badges: ["⭐", "🔥"],
+        badges: ['⭐', '🔥'],
         weeklyScore: 380,
-        monthlyScore: 1580,
+        monthlyScore: 1580
       },
       {
         id: 3,
-        name: "Lê Hoàng Cường",
-        avatar: "https://via.placeholder.com/50x50/4CAF50/white?text=LC",
+        name: 'Lê Hoàng Cường',
+        avatar: 'https://via.placeholder.com/50x50/4CAF50/white?text=LC',
         score: 2650,
-        level: "Advanced",
+        level: 'Advanced',
         streak: 28,
-        badges: ["🔥", "📚"],
+        badges: ['🔥', '📚'],
         weeklyScore: 350,
-        monthlyScore: 1520,
+        monthlyScore: 1520
       },
       {
         id: 4,
-        name: "Phạm Thị Dung",
-        avatar: "https://via.placeholder.com/50x50/FF9800/white?text=PD",
+        name: 'Phạm Thị Dung',
+        avatar: 'https://via.placeholder.com/50x50/FF9800/white?text=PD',
         score: 2580,
-        level: "Intermediate",
+        level: 'Intermediate',
         streak: 21,
-        badges: ["📚"],
+        badges: ['📚'],
         weeklyScore: 320,
-        monthlyScore: 1480,
+        monthlyScore: 1480
       },
       {
         id: 5,
-        name: "Võ Minh Hưng",
-        avatar: "https://via.placeholder.com/50x50/9C27B0/white?text=VH",
+        name: 'Võ Minh Hưng',
+        avatar: 'https://via.placeholder.com/50x50/9C27B0/white?text=VH',
         score: 2420,
-        level: "Intermediate",
+        level: 'Intermediate',
         streak: 15,
-        badges: ["🎯"],
+        badges: ['🎯'],
         weeklyScore: 290,
-        monthlyScore: 1350,
-      },
+        monthlyScore: 1350
+      }
     ];
 
     setLeaderboardData(mockData);
-
+    
     // Set current user rank and stats
     setUserRank({
       rank: 12,
       score: 1850,
-      level: "Intermediate",
-      streak: 8,
+      level: 'Intermediate',
+      streak: 8
     });
 
     setUserStats({
       totalStudyTime: 156,
       completedLessons: 89,
       averageScore: 82,
-      improvement: "+15%",
+      improvement: '+15%'
     });
   }, []);
 
   const getFilteredData = () => {
     let data = [...leaderboardData];
-
-    if (timeFilter === "week") {
+    
+    if (timeFilter === 'week') {
       data = data.sort((a, b) => b.weeklyScore - a.weeklyScore);
-    } else if (timeFilter === "month") {
+    } else if (timeFilter === 'month') {
       data = data.sort((a, b) => b.monthlyScore - a.monthlyScore);
     } else {
       data = data.sort((a, b) => b.score - a.score);
@@ -101,20 +101,20 @@ const Leaderboard = () => {
   };
 
   const getRankIcon = (rank) => {
-    if (rank === 1) return "🥇";
-    if (rank === 2) return "🥈";
-    if (rank === 3) return "🥉";
+    if (rank === 1) return '🥇';
+    if (rank === 2) return '🥈';
+    if (rank === 3) return '🥉';
     return `#${rank}`;
   };
 
   const getLevelColor = (level) => {
     const colors = {
-      Beginner: "#4CAF50",
-      Intermediate: "#FF9800",
-      Advanced: "#9C27B0",
-      Expert: "#F44336",
+      'Beginner': '#4CAF50',
+      'Intermediate': '#FF9800',
+      'Advanced': '#9C27B0',
+      'Expert': '#F44336'
     };
-    return colors[level] || "#666";
+    return colors[level] || '#666';
   };
 
   return (
@@ -128,22 +128,22 @@ const Leaderboard = () => {
         <div className="leaderboard-main">
           <div className="leaderboard-filters">
             <div className="tab-filters">
-              <button
-                className={`tab-btn ${activeTab === "overall" ? "active" : ""}`}
-                onClick={() => setActiveTab("overall")}
+              <button 
+                className={`tab-btn ${activeTab === 'overall' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overall')}
               >
                 🏆 Tổng điểm
               </button>
-              <button
-                className={`tab-btn ${activeTab === "streak" ? "active" : ""}`}
-                onClick={() => setActiveTab("streak")}
+              <button 
+                className={`tab-btn ${activeTab === 'streak' ? 'active' : ''}`}
+                onClick={() => setActiveTab('streak')}
               >
                 🔥 Streak
               </button>
             </div>
 
             <div className="time-filters">
-              <select
+              <select 
                 value={timeFilter}
                 onChange={(e) => setTimeFilter(e.target.value)}
               >
@@ -157,17 +157,15 @@ const Leaderboard = () => {
           <div className="leaderboard-list">
             {getFilteredData().map((user, index) => (
               <div key={user.id} className="leaderboard-item">
-                <div className="rank">{getRankIcon(index + 1)}</div>
-
+                <div className="rank">
+                  {getRankIcon(index + 1)}
+                </div>
+                
                 <div className="user-info">
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="user-avatar"
-                  />
+                  <img src={user.avatar} alt={user.name} className="user-avatar" />
                   <div className="user-details">
                     <h4>{user.name}</h4>
-                    <span
+                    <span 
                       className="user-level"
                       style={{ backgroundColor: getLevelColor(user.level) }}
                     >
@@ -179,11 +177,9 @@ const Leaderboard = () => {
                 <div className="user-stats">
                   <div className="stat">
                     <span className="stat-value">
-                      {timeFilter === "week"
-                        ? user.weeklyScore
-                        : timeFilter === "month"
-                        ? user.monthlyScore
-                        : user.score}
+                      {timeFilter === 'week' ? user.weeklyScore : 
+                       timeFilter === 'month' ? user.monthlyScore : 
+                       user.score}
                     </span>
                     <span className="stat-label">điểm</span>
                   </div>
@@ -195,9 +191,7 @@ const Leaderboard = () => {
 
                 <div className="user-badges">
                   {user.badges.map((badge, idx) => (
-                    <span key={idx} className="badge">
-                      {badge}
-                    </span>
+                    <span key={idx} className="badge">{badge}</span>
                   ))}
                 </div>
               </div>
@@ -226,9 +220,7 @@ const Leaderboard = () => {
                 <span className="stat-label">Giờ học</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">
-                  {userStats.completedLessons}
-                </span>
+                <span className="stat-number">{userStats.completedLessons}</span>
                 <span className="stat-label">Bài hoàn thành</span>
               </div>
               <div className="stat-item">

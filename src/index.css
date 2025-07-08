@@ -1,13 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "~antd/dist/reset.css"; /* Ant Design v5 */
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Custom styles for enhanced UI */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom Search Input */
+.search-input-custom .ant-input {
+  @apply text-lg border-0 h-14 bg-white/90 backdrop-blur-sm;
+}
+
+.search-input-custom .ant-input:focus {
+  @apply shadow-xl;
+}
+
+/* Custom Pagination */
+.custom-pagination .ant-pagination-item {
+  @apply border-2 border-gray-200 rounded-xl;
+}
+
+.custom-pagination .ant-pagination-item-active {
+  @apply border-transparent bg-gradient-to-r from-blue-500 to-purple-600;
+}
+
+.custom-pagination .ant-pagination-item-active a {
+  @apply font-semibold text-white;
+}
+
+.custom-pagination .ant-pagination-item:hover {
+  @apply transition-all duration-300 transform scale-105 border-blue-400;
+}
+
+.custom-pagination .ant-pagination-prev,
+.custom-pagination .ant-pagination-next {
+  @apply transition-all duration-300 border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:scale-105;
+}
+
+/* Smooth animations */
+* {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-gradient-to-b from-blue-400 to-purple-500;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply from-blue-500 to-purple-600;
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text;
+}
+
+/* Hover animations */
+.hover-lift {
+  @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl;
+}
+
+.hover-scale {
+  @apply transition-all duration-300 hover:scale-105;
+}
+
+/* Loading dots animation */
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+/* Card hover effects */
+.ant-card:hover {
+  @apply transform -translate-y-2 shadow-2xl;
+}
+
+/* Button hover effects */
+.ant-btn:hover {
+  @apply transform -translate-y-1;
+}
+
+/* Tag hover effects */
+.ant-tag:hover {
+  @apply transform scale-105 shadow-md;
 }

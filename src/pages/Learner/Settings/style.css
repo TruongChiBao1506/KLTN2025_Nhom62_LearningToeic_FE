@@ -14,7 +14,7 @@
 .settings-header h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .settings-header p {
@@ -30,7 +30,7 @@
   background: white;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   margin-bottom: 30px;
 }
 
@@ -147,7 +147,7 @@
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea, #764ba2);
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .slider::-moz-range-thumb {
@@ -157,7 +157,7 @@
   background: linear-gradient(135deg, #667eea, #764ba2);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .settings-actions {
@@ -169,8 +169,7 @@
   justify-content: flex-end;
 }
 
-.btn-reset,
-.btn-save {
+.btn-reset, .btn-save {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -219,7 +218,7 @@
 }
 
 .info-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 25px;
@@ -229,7 +228,7 @@
 .info-card h4 {
   margin-bottom: 15px;
   font-size: 1.2rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .info-card ul {
@@ -279,8 +278,7 @@
     padding: 15px 20px;
   }
 
-  .btn-reset,
-  .btn-save {
+  .btn-reset, .btn-save {
     width: 100%;
   }
 

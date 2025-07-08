@@ -20,7 +20,7 @@
 
 .title-icon {
   margin-right: 16px;
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .page-description {
@@ -213,12 +213,8 @@
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Modal Styles */
@@ -242,7 +238,7 @@
 }
 
 .ant-modal-close:hover {
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .ant-form-item-label > label {
@@ -255,37 +251,37 @@
   .study-groups-container {
     padding: 16px;
   }
-
+  
   .page-title {
     font-size: 2rem;
   }
-
+  
   .study-groups-controls {
     padding: 16px;
   }
-
+  
   .groups-tabs {
     padding: 16px;
   }
-
+  
   .group-card .ant-card-body {
     padding: 16px;
   }
-
+  
   .group-header {
     flex-direction: column;
     text-align: center;
     gap: 12px;
   }
-
+  
   .group-info {
     margin-left: 0;
   }
-
+  
   .group-meta {
     justify-content: center;
   }
-
+  
   .group-footer {
     flex-direction: column;
     gap: 8px;
@@ -297,15 +293,15 @@
   .page-title {
     font-size: 1.8rem;
   }
-
+  
   .study-groups-controls .ant-row {
     flex-direction: column;
   }
-
+  
   .study-groups-controls .ant-col {
     margin-bottom: 12px;
   }
-
+  
   .study-groups-controls .ant-col:last-child {
     margin-bottom: 0;
   }

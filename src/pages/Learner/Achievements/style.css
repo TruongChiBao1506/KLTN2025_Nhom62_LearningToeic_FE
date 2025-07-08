@@ -20,7 +20,7 @@
 
 .title-icon {
   margin-right: 16px;
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .page-description {
@@ -93,7 +93,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .level-info h3 {
@@ -319,12 +319,8 @@
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsive */
@@ -332,34 +328,34 @@
   .achievements-container {
     padding: 16px;
   }
-
+  
   .page-title {
     font-size: 2rem;
   }
-
+  
   .achievements-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-
+  
   .stat-card .ant-card-body {
     padding: 16px;
   }
-
+  
   .stat-content h3 {
     font-size: 1.5rem;
   }
-
+  
   .stat-icon {
     font-size: 1.5rem;
   }
-
+  
   .level-header {
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
-
+  
   .stats-row {
     margin-bottom: 24px;
   }

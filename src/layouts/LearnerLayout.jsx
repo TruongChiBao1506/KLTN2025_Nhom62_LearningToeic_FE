@@ -1,46 +1,63 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHouse,
-  faFileAlt,
-  faBook,
-  faChartLine,
-  faUser,
-  faSignOutAlt,
-  faBell,
-  faSearch,
-  faBars,
-  faTimes,
-  faLanguage,
-  faBookOpen,
-  faStickyNote,
-  faGraduationCap,
-  faClipboardList,
-  faNewspaper,
-  faRocket,
-  faMoon,
-  faSun,
-  faTrophy,
-  faFire,
-  faForward,
-  faClock,
-  faCreditCard,
-  faLayerGroup,
-  faPen,
-  faFlask,
-  faHeart,
-  faGift,
-  faStar,
-  faCalendarAlt,
-  faVideoCamera,
-  faHeadphones,
-  faLightbulb,
-  faGlobe,
-  faCog,
-  faGamepad,
-  faQuestion,
-} from "@fortawesome/free-solid-svg-icons";
+  Layout,
+  Menu,
+  Avatar,
+  Badge,
+  Dropdown,
+  Input,
+  Button,
+  Space,
+  Card,
+  Drawer,
+  Typography,
+  Divider,
+  Row,
+  Col,
+  FloatButton,
+} from "antd";
+import {
+  Home,
+  FileText,
+  Book,
+  BookOpen,
+  Languages,
+  ArrowRight,
+  Layers,
+  CreditCard,
+  Heart,
+  Search,
+  Gamepad2,
+  HelpCircle,
+  PenTool,
+  StickyNote,
+  Newspaper,
+  Beaker,
+  TrendingUp,
+  Trophy,
+  Star,
+  Clock,
+  Headphones,
+  Globe,
+  Calendar,
+  Video,
+  Gift,
+  Lightbulb,
+  User,
+  Settings,
+  Menu as MenuIcon,
+  X,
+  Bell,
+  Moon,
+  Sun,
+  Flame,
+  LogOut,
+  ClipboardList,
+  GraduationCap,
+  Rocket,
+  Target,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
@@ -48,21 +65,19 @@ import authService from "../services/authService";
 
 import "./LearnerLayout.css";
 
+const { Header, Sider, Content, Footer } = Layout;
+const { Title, Text } = Typography;
+
 const LearnerLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // States
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedMenus, setExpandedMenus] = useState({
-    exams: false,
-    learning: false,
-    vocabulary: false,
-    practice: false,
-    tools: false,
-    community: false,
-  });
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
   );
@@ -70,22 +85,16 @@ const LearnerLayout = () => {
     parseInt(localStorage.getItem("studyStreak") || "0")
   );
   const [todayStudyTime, setTodayStudyTime] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const user = useSelector((state) => state?.auth?.user);
 
-  // Toggle submenu function
-  const toggleSubMenu = (menuKey) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuKey]: !prev[menuKey],
-    }));
-  };
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  // Toggle mobile menu
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  // Toggle dark mode
   // Toggle dark mode
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
@@ -187,62 +196,6 @@ const LearnerLayout = () => {
       darkMode ? "dark" : "light"
     );
 
-    // Auto-expand menu based on current route
-    if (
-      isActive("/learner/exams") ||
-      isActive("/learner/full-test") ||
-      isActive("/learner/mini-test") ||
-      isActive("/learner/exam-question") ||
-      isActive("/learner/exam-result")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, exams: true }));
-    }
-    if (
-      isActive("/learner/materials") ||
-      isActive("/learner/grammar") ||
-      isActive("/learner/improve") ||
-      isActive("/learner/section") ||
-      isActive("/learner/lesson") ||
-      isActive("/learner/study")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, learning: true }));
-    }
-    if (
-      isActive("/learner/topics") ||
-      isActive("/learner/vocabulary") ||
-      isActive("/learner/dictionary") ||
-      isActive("/learner/flashcards") ||
-      isActive("/learner/quiz")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, vocabulary: true }));
-    }
-    if (
-      isActive("/learner/notes") ||
-      isActive("/learner/blog") ||
-      isActive("/learner/practice-sw")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, practice: true }));
-    }
-    if (
-      isActive("/learner/leaderboard") ||
-      isActive("/learner/achievements") ||
-      isActive("/learner/focus-mode") ||
-      isActive("/learner/settings") ||
-      isActive("/learner/progress") ||
-      isActive("/learner/study-timer") ||
-      isActive("/learner/audio-trainer")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, tools: true }));
-    }
-    if (
-      isActive("/learner/events") ||
-      isActive("/learner/study-groups") ||
-      isActive("/learner/challenges") ||
-      isActive("/learner/ai-tutor")
-    ) {
-      setExpandedMenus((prev) => ({ ...prev, community: true }));
-    }
-
     // Load study progress
     const savedStreak = parseInt(localStorage.getItem("studyStreak") || "0");
     setStudyStreak(savedStreak);
@@ -317,665 +270,1012 @@ const LearnerLayout = () => {
 
     fetchNotifications();
   }, [isActive, darkMode]);
-  return (
-    <div className="learner-layout">
-      {/* <CheckAccessToken /> */}
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`mobile-menu-overlay ${mobileMenuOpen ? "active" : ""}`}
-        onClick={toggleMobileMenu}
-      ></div>
+  // Menu items configuration
+  const menuItems = [
+    {
+      key: "/learner/dashboard",
+      icon: <Home size={18} />,
+      label: <Link to="/learner/dashboard">Trang chủ</Link>,
+    },
+    {
+      key: "exams",
+      icon: <FileText size={18} />,
+      label: "Bài thi & Luyện tập",
+      children: [
+        {
+          key: "/learner/exams",
+          icon: <ClipboardList size={16} />,
+          label: <Link to="/learner/exams">Danh sách bài thi</Link>,
+        },
+        {
+          key: "/learner/full-test",
+          icon: <GraduationCap size={16} />,
+          label: <Link to="/learner/full-test">Thi thử Full Test</Link>,
+        },
+        {
+          key: "/learner/mini-test",
+          icon: <Rocket size={16} />,
+          label: <Link to="/learner/mini-test">Mini Test</Link>,
+        },
+      ],
+    },
+    {
+      key: "learning",
+      icon: <Book size={18} />,
+      label: "Học tập",
+      children: [
+        {
+          key: "/learner/materials",
+          icon: <BookOpen size={16} />,
+          label: <Link to="/learner/materials">Tài liệu học tập</Link>,
+        },
+        {
+          key: "/learner/grammar",
+          icon: <Languages size={16} />,
+          label: <Link to="/learner/grammar">Ngữ pháp</Link>,
+        },
+        {
+          key: "/learner/improve",
+          icon: <ArrowRight size={16} />,
+          label: <Link to="/learner/improve">Cải thiện kỹ năng</Link>,
+        },
+        {
+          key: "/learner/section",
+          icon: <Layers size={16} />,
+          label: <Link to="/learner/section">Phần thi</Link>,
+        },
+      ],
+    },
+    {
+      key: "vocabulary",
+      icon: <CreditCard size={18} />,
+      label: "Từ vựng",
+      children: [
+        {
+          key: "/learner/topics",
+          icon: <BookOpen size={16} />,
+          label: <Link to="/learner/topics">Chủ đề từ vựng</Link>,
+        },
+        {
+          key: "/learner/vocabulary",
+          icon: <Heart size={16} />,
+          label: <Link to="/learner/vocabulary">Từ vựng đã lưu</Link>,
+        },
+        {
+          key: "/learner/dictionary",
+          icon: <Search size={16} />,
+          label: <Link to="/learner/dictionary">Từ điển</Link>,
+        },
+        {
+          key: "/learner/flashcards",
+          icon: <Gamepad2 size={16} />,
+          label: <Link to="/learner/flashcards">Flashcards</Link>,
+        },
+        {
+          key: "/learner/quiz",
+          icon: <HelpCircle size={16} />,
+          label: <Link to="/learner/quiz">Quiz từ vựng</Link>,
+        },
+      ],
+    },
+    {
+      key: "practice",
+      icon: <PenTool size={18} />,
+      label: "Luyện tập",
+      children: [
+        {
+          key: "/learner/notes",
+          icon: <StickyNote size={16} />,
+          label: <Link to="/learner/notes">Ghi chú cá nhân</Link>,
+        },
+        {
+          key: "/learner/blog",
+          icon: <Newspaper size={16} />,
+          label: <Link to="/learner/blog">Blog & Tin tức</Link>,
+        },
+        {
+          key: "/learner/practice-sw",
+          icon: <PenTool size={16} />,
+          label: (
+            <Link to="/learner/practice-sw">Luyện Speaking & Writing</Link>
+          ),
+        },
+      ],
+    },
+    {
+      key: "tools",
+      icon: <Beaker size={18} />,
+      label: "Công cụ & Tính năng",
+      children: [
+        {
+          key: "/learner/progress",
+          icon: <TrendingUp size={16} />,
+          label: <Link to="/learner/progress">Tiến độ học tập</Link>,
+        },
+        {
+          key: "/learner/leaderboard",
+          icon: <Trophy size={16} />,
+          label: <Link to="/learner/leaderboard">Bảng xếp hạng</Link>,
+        },
+        {
+          key: "/learner/achievements",
+          icon: <Star size={16} />,
+          label: <Link to="/learner/achievements">Thành tích</Link>,
+        },
+        {
+          key: "/learner/study-timer",
+          icon: <Clock size={16} />,
+          label: <Link to="/learner/study-timer">Đồng hồ học tập</Link>,
+        },
+        {
+          key: "/learner/focus-mode",
+          icon: <Target size={16} />,
+          label: <Link to="/learner/focus-mode">Chế độ tập trung</Link>,
+        },
+        {
+          key: "/learner/audio-trainer",
+          icon: <Headphones size={16} />,
+          label: <Link to="/learner/audio-trainer">Luyện nghe</Link>,
+        },
+      ],
+    },
+    {
+      key: "community",
+      icon: <Globe size={18} />,
+      label: "Cộng đồng",
+      children: [
+        {
+          key: "/learner/events",
+          icon: <Calendar size={16} />,
+          label: <Link to="/learner/events">Sự kiện</Link>,
+        },
+        {
+          key: "/learner/study-groups",
+          icon: <Video size={16} />,
+          label: <Link to="/learner/study-groups">Nhóm học tập</Link>,
+        },
+        {
+          key: "/learner/challenges",
+          icon: <Gift size={16} />,
+          label: <Link to="/learner/challenges">Thử thách</Link>,
+        },
+        {
+          key: "/learner/ai-tutor",
+          icon: <Lightbulb size={16} />,
+          label: <Link to="/learner/ai-tutor">AI Gia sư</Link>,
+        },
+      ],
+    },
+    {
+      key: "/learner/profile",
+      icon: <User size={18} />,
+      label: <Link to="/learner/profile">Hồ sơ cá nhân</Link>,
+    },
+    {
+      key: "/learner/settings",
+      icon: <Settings size={18} />,
+      label: <Link to="/learner/settings">Cài đặt</Link>,
+    },
+  ];
 
-      {/* Header */}
-      <header className="learner-header">
-        <div className="container">
-          <div className="header-inner">
-            <div className="logo-container">
-              <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
-                <FontAwesomeIcon icon={mobileMenuOpen ? faTimes : faBars} />
-              </button>
-              <Link to="/learner/dashboard" className="logo">
-                TOEIC Learning
-              </Link>
-            </div>
+  // Get current menu key based on location
+  const getCurrentMenuKey = () => {
+    const path = location.pathname;
+    // Find exact match first
+    for (const item of menuItems) {
+      if (item.key === path) return [item.key];
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.key === path) return [child.key];
+        }
+      }
+    }
+    return [path];
+  };
 
-            {/* Search Bar */}
-            <div className="search-bar">
-              <form onSubmit={handleSearch}>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Tìm kiếm bài học, tài liệu..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <button className="btn btn-primary" type="submit">
-                    <FontAwesomeIcon icon={faSearch} />
-                  </button>
-                </div>
-              </form>
-            </div>
+  // Get current open keys for submenu
+  const getCurrentOpenKeys = () => {
+    const path = location.pathname;
+    for (const item of menuItems) {
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.key === path) return [item.key];
+        }
+      }
+    }
+    return [];
+  };
 
-            {/* User Actions */}
-            <div className="user-actions">
-              {/* Study Stats */}
-              <div className="study-stats">
-                <div
-                  className="stat-item"
-                  onClick={updateStudyProgress}
-                  style={{ cursor: "pointer" }}
-                  title="Click để cập nhật tiến độ"
-                >
-                  <FontAwesomeIcon icon={faFire} className="stat-icon streak" />
-                  <span className="stat-value">{studyStreak}</span>
-                  <span className="stat-label">Streak</span>
-                </div>
-                <div className="stat-item">
-                  <FontAwesomeIcon icon={faClock} className="stat-icon time" />
-                  <span className="stat-value">{todayStudyTime}</span>
-                  <span className="stat-label">Phút</span>
-                </div>
-              </div>
+  // User menu items
+  const userMenuItems = [
+    {
+      key: "profile",
+      icon: <User size={16} />,
+      label: <Link to="/learner/profile">Hồ sơ cá nhân</Link>,
+    },
+    {
+      key: "settings",
+      icon: <Settings size={16} />,
+      label: <Link to="/learner/settings">Cài đặt</Link>,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "logout",
+      icon: <LogOut size={16} />,
+      label: "Đăng xuất",
+      onClick: handleLogout,
+    },
+  ];
 
-              {/* Theme Toggle */}
-              <button
-                className="theme-toggle"
-                onClick={toggleDarkMode}
-                title="Chuyển đổi chế độ"
+  // Notification menu items
+  const notificationMenuItems = [
+    {
+      key: "header",
+      label: (
+        <div style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
+          <Text strong>Thông báo</Text>
+          <Button
+            type="link"
+            size="small"
+            style={{ float: "right", padding: 0 }}
+          >
+            Đánh dấu đã đọc
+          </Button>
+        </div>
+      ),
+      disabled: true,
+    },
+    ...(notifications.length > 0
+      ? notifications.map((notification) => ({
+          key: notification.id,
+          label: (
+            <div style={{ padding: "8px 0" }}>
+              <div
+                style={{ fontWeight: !notification.read ? "bold" : "normal" }}
               >
-                <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
-              </button>
+                {notification.title}
+              </div>
+              <div
+                style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}
+              >
+                {notification.message}
+              </div>
+              <div
+                style={{ fontSize: "11px", color: "#999", marginTop: "4px" }}
+              >
+                {notification.time}
+              </div>
+            </div>
+          ),
+        }))
+      : [
+          {
+            key: "empty",
+            label: (
+              <div
+                style={{ padding: "20px", textAlign: "center", color: "#999" }}
+              >
+                Không có thông báo nào
+              </div>
+            ),
+            disabled: true,
+          },
+        ]),
+    {
+      type: "divider",
+    },
+    {
+      key: "viewAll",
+      label: <Link to="/learner/notifications">Xem tất cả thông báo</Link>,
+    },
+  ];
 
-              {/* Notifications */}
-              <div className="notification-container">
-                <button
-                  className={`notification-button ${
-                    notifications.some((n) => !n.read) ? "has-new" : ""
-                  }`}
-                  onClick={toggleNotifications}
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      {/* Mobile Drawer */}
+      <Drawer
+        title={
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              margin: "-24px -24px 0 -24px",
+              padding: "20px 24px",
+              color: "#fff",
+            }}
+          >
+            <Space>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "10px",
+                  padding: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <GraduationCap size={24} style={{ color: "#fff" }} />
+              </div>
+              <Title
+                level={4}
+                style={{ margin: 0, color: "#fff", fontWeight: "600" }}
+              >
+                TOEIC Learning
+              </Title>
+            </Space>
+            <Button
+              type="text"
+              icon={<X size={20} />}
+              onClick={() => setMobileDrawerVisible(false)}
+              style={{
+                color: "#fff",
+                background: "rgba(255,255,255,0.15)",
+                border: "none",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
+        }
+        placement="left"
+        onClose={() => setMobileDrawerVisible(false)}
+        open={mobileDrawerVisible}
+        bodyStyle={{
+          padding: 0,
+          background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+        }}
+        width={280}
+        closable={false}
+      >
+        <div style={{ padding: "16px 0" }}>
+          <Menu
+            mode="inline"
+            selectedKeys={getCurrentMenuKey()}
+            defaultOpenKeys={getCurrentOpenKeys()}
+            items={menuItems}
+            style={{
+              border: "none",
+              background: "transparent",
+            }}
+          />
+        </div>
+      </Drawer>
+
+      {/* Desktop Sidebar */}
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        width={280}
+        style={{
+          background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+          boxShadow: "4px 0 20px rgba(0,0,0,0.08)",
+          zIndex: 100,
+          borderRight: "1px solid rgba(0,0,0,0.06)",
+        }}
+        breakpoint="lg"
+        collapsedWidth={0}
+        onBreakpoint={(broken) => {
+          if (broken) {
+            setCollapsed(true);
+          }
+        }}
+        className="desktop-sider"
+      >
+        <div
+          style={{
+            padding: "24px 20px",
+            borderBottom: "1px solid rgba(0,0,0,0.08)",
+            textAlign: collapsed ? "center" : "left",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Background pattern */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background:
+                'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Cpath d="M20 20c0-11.046-8.954-20-20-20v40c11.046 0 20-8.954 20-20z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              opacity: 0.3,
+            }}
+          />
+
+          <Link
+            to="/learner/dashboard"
+            style={{ textDecoration: "none", position: "relative", zIndex: 1 }}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "12px",
+                  padding: "8px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
+                <GraduationCap
+                  size={collapsed ? 20 : 24}
+                  style={{ color: "#fff" }}
+                />
+              </div>
+              {!collapsed && (
+                <Title
+                  level={4}
+                  style={{
+                    margin: 0,
+                    color: "#fff",
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  }}
                 >
-                  <FontAwesomeIcon icon={faBell} />
-                  {notifications.some((n) => !n.read) && (
-                    <span className="notification-badge"></span>
-                  )}
-                </button>
+                  TOEIC Learning
+                </Title>
+              )}
+            </Space>
+          </Link>
+        </div>
 
-                {/* Dropdown for Notifications */}
-                {showNotifications && (
-                  <div className="notification-dropdown">
-                    <div className="notification-header">
-                      <h6>Thông báo</h6>
-                      <button className="btn btn-sm btn-link">
-                        Đánh dấu đã đọc tất cả
-                      </button>
-                    </div>
-                    <div className="notification-body">
-                      {notifications.length > 0 ? (
-                        notifications.map((notification) => (
-                          <div
-                            key={notification.id}
-                            className={`notification-item ${
-                              !notification.read ? "unread" : ""
-                            }`}
-                          >
-                            <div className="notification-content">
-                              <h6 className="notification-title">
-                                {notification.title}
-                              </h6>
-                              <p className="notification-message">
-                                {notification.message}
-                              </p>
-                              <span className="notification-time">
-                                {notification.time}
-                              </span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="no-notifications">
-                          Không có thông báo nào
-                        </p>
-                      )}
-                    </div>
-                    <div className="notification-footer">
-                      <Link
-                        to="/learner/notifications"
-                        onClick={() => setShowNotifications(false)}
-                      >
-                        Xem tất cả thông báo
-                      </Link>
-                    </div>
+        <div style={{ padding: "16px 0" }}>
+          <Menu
+            mode="inline"
+            selectedKeys={getCurrentMenuKey()}
+            defaultOpenKeys={getCurrentOpenKeys()}
+            items={menuItems}
+            style={{
+              border: "none",
+              background: "transparent",
+            }}
+          />
+        </div>
+      </Sider>
+
+      <Layout>
+        {/* Header */}
+        <Header
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            padding: "0 24px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+            zIndex: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            position: "relative",
+            overflow: "hidden",
+            height: "64px",
+          }}
+        >
+          {/* Background decoration */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background:
+                'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="3"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              opacity: 0.6,
+            }}
+          />
+
+          <Space size="medium" style={{ position: "relative", zIndex: 1 }}>
+            {/* Mobile menu button */}
+            <Button
+              type="text"
+              icon={<MenuIcon size={20} />}
+              onClick={() => setMobileDrawerVisible(true)}
+              className="mobile-menu-btn"
+              style={{
+                display: "none",
+                color: "#fff",
+                backgroundColor: "rgba(255,255,255,0.15)",
+                border: "none",
+                borderRadius: "8px",
+              }}
+            />
+
+            {/* Search */}
+            <div style={{ position: "relative" }}>
+              <Input
+                placeholder="Tìm kiếm..."
+                prefix={<Search size={14} style={{ color: "#8c8c8c" }} />}
+                style={{
+                  width:
+                    windowWidth > 1200 ? 200 : windowWidth > 992 ? 180 : 160,
+                  borderRadius: "14px",
+                  border: "none",
+                  background: "rgba(255,255,255,0.92)",
+                  backdropFilter: "blur(10px)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  display: windowWidth > 768 ? "block" : "none",
+                  fontSize: "13px",
+                  height: "32px",
+                }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onPressEnter={handleSearch}
+              />
+            </div>
+          </Space>
+
+          <Space size={16} style={{ position: "relative", zIndex: 1 }}>
+            {/* Study Stats */}
+            <Space
+              size="small"
+              style={{ display: windowWidth > 576 ? "flex" : "none" }}
+            >
+              <Card
+                size="small"
+                style={{
+                  background: "linear-gradient(135deg, #ff6b6b, #ee5a52)",
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(238, 90, 82, 0.2)",
+                  transition: "all 0.3s ease",
+                }}
+                onClick={updateStudyProgress}
+                bodyStyle={{ padding: "6px 10px" }}
+                hoverable
+              >
+                <Space size="small">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "5px",
+                      padding: "2px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Flame size={14} style={{ color: "#fff" }} />
                   </div>
+                  <div style={{ color: "#fff" }}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {studyStreak}
+                    </div>
+                    <div style={{ fontSize: "9px", opacity: 0.9 }}>Streak</div>
+                  </div>
+                </Space>
+              </Card>
+
+              <Card
+                size="small"
+                style={{
+                  background: "linear-gradient(135deg, #4facfe, #00f2fe)",
+                  border: "none",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(79, 172, 254, 0.2)",
+                }}
+                bodyStyle={{ padding: "6px 10px" }}
+              >
+                <Space size="small">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "5px",
+                      padding: "2px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Clock size={14} style={{ color: "#fff" }} />
+                  </div>
+                  <div style={{ color: "#fff" }}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {todayStudyTime}
+                    </div>
+                    <div style={{ fontSize: "9px", opacity: 0.9 }}>Phút</div>
+                  </div>
+                </Space>
+              </Card>
+            </Space>
+
+            {/* Theme Toggle */}
+            <Button
+              type="text"
+              icon={darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              onClick={toggleDarkMode}
+              style={{
+                background: "linear-gradient(135deg, #feca57, #ff9ff3)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                width: "36px",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 2px 8px rgba(254, 202, 87, 0.25)",
+                transition: "all 0.3s ease",
+              }}
+            />
+
+            {/* Notifications */}
+            <Dropdown
+              menu={{ items: notificationMenuItems }}
+              trigger={["click"]}
+              placement="bottomRight"
+              onOpenChange={setShowNotifications}
+            >
+              <div style={{ position: "relative" }}>
+                <Button
+                  type="text"
+                  icon={<Bell size={18} />}
+                  style={{
+                    background: notifications.some((n) => !n.read)
+                      ? "linear-gradient(135deg, #a8edea, #fed6e3)"
+                      : "rgba(255,255,255,0.15)",
+                    color: notifications.some((n) => !n.read)
+                      ? "#722ed1"
+                      : "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    width: "36px",
+                    height: "36px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: notifications.some((n) => !n.read)
+                      ? "0 2px 8px rgba(168, 237, 234, 0.3)"
+                      : "0 2px 8px rgba(0,0,0,0.08)",
+                    transition: "all 0.3s ease",
+                  }}
+                />
+                {notifications.filter((n) => !n.read).length > 0 && (
+                  <Badge
+                    count={notifications.filter((n) => !n.read).length}
+                    size="small"
+                    style={{
+                      position: "absolute",
+                      top: "-5px",
+                      right: "-5px",
+                      background: "#ff4d4f",
+                      boxShadow: "0 2px 8px rgba(255, 77, 79, 0.3)",
+                    }}
+                  />
                 )}
               </div>
+            </Dropdown>
 
-              {/* User Profile */}
-              <div className="user-profile-menu">
-                <div className="user-avatar">
-                  {user && user.avatar ? (
-                    <img src={user.avatar} alt="Avatar" />
-                  ) : (
-                    <div className="default-avatar">
-                      {user?.fullName?.charAt(0) || "U"}
-                    </div>
-                  )}
-                </div>
-                <div className="user-dropdown">
-                  <Link to="/learner/profile" className="dropdown-item">
-                    <FontAwesomeIcon icon={faUser} className="me-2" />
-                    Hồ sơ cá nhân
-                  </Link>
-                  <button className="dropdown-item" onClick={handleLogout}>
-                    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />
-                    Đăng xuất
-                  </button>
-                </div>
-              </div>
-            </div>
+            {/* User Profile */}
+            <Dropdown
+              menu={{ items: userMenuItems }}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <Space
+                style={{
+                  cursor: "pointer",
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "18px",
+                  padding: "4px 10px",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  transition: "all 0.3s ease",
+                }}
+                className="user-profile-hover"
+              >
+                <Avatar
+                  size={32}
+                  src={user?.avatar}
+                  style={{
+                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                    color: "#fff",
+                    border: "2px solid rgba(255,255,255,0.3)",
+                  }}
+                >
+                  {user?.fullName?.charAt(0) || "U"}
+                </Avatar>
+                <Text
+                  style={{
+                    display: windowWidth > 768 ? "block" : "none",
+                    color: "#fff",
+                    fontWeight: "500",
+                    fontSize: "14px",
+                  }}
+                >
+                  {user?.fullName || "User"}
+                </Text>
+              </Space>
+            </Dropdown>
+          </Space>
+        </Header>
+
+        {/* Main Content */}
+        <Content
+          style={{
+            margin: "20px",
+            padding: 0,
+            minHeight: "calc(100vh - 104px)",
+            background: "transparent",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "16px",
+              minHeight: "100%",
+              overflow: "hidden",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "1px solid rgba(0,0,0,0.06)",
+            }}
+          >
+            <Outlet />
           </div>
-        </div>
-      </header>
+        </Content>
 
-      {/* Sidebar Navigation */}
-      <aside className={`learner-sidebar ${mobileMenuOpen ? "active" : ""}`}>
-        <nav className="sidebar-nav">
-          <ul className="nav-list">
-            {/* Dashboard */}
-            <li className="nav-item">
-              <Link
-                to="/learner/dashboard"
-                className={`nav-link ${
-                  isActive("/learner/dashboard") ? "active" : ""
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FontAwesomeIcon icon={faHouse} className="nav-icon" />
-                <span className="nav-text">Trang chủ</span>
-              </Link>
-            </li>
+        {/* Footer */}
+        <Footer
+          style={{
+            textAlign: "center",
+            background: "linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)",
+            borderTop: "1px solid rgba(0,0,0,0.06)",
+            padding: "32px 24px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Footer background pattern */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background:
+                'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23667eea" fill-opacity="0.03"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              opacity: 0.6,
+            }}
+          />
 
-            {/* Exams Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.exams ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("exams")}
-              >
-                <FontAwesomeIcon icon={faFileAlt} className="nav-icon" />
-                <span className="nav-text">Bài thi & Luyện tập</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.exams ? "expanded" : ""
-                }`}
-              >
-                <li>
-                  <Link
-                    to="/learner/exams"
-                    className={isActive("/learner/exams") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <Row justify="center" align="middle" gutter={[32, 16]}>
+              <Col>
+                <Space direction="vertical" align="center">
+                  <div
+                    style={{
+                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      borderRadius: "12px",
+                      padding: "8px",
+                      display: "inline-flex",
+                      marginBottom: "8px",
+                    }}
                   >
-                    <FontAwesomeIcon
-                      icon={faClipboardList}
-                      className="submenu-icon"
+                    <GraduationCap size={20} style={{ color: "#fff" }} />
+                  </div>
+                  <Text
+                    type="secondary"
+                    style={{
+                      fontSize: "14px",
+                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      fontWeight: "500",
+                    }}
+                  >
+                    &copy; {new Date().getFullYear()} TOEIC Learning. Đã đăng ký
+                    bản quyền.
+                  </Text>
+                </Space>
+              </Col>
+            </Row>
+            <Row justify="center" style={{ marginTop: "16px" }}>
+              <Col>
+                <Space
+                  split={
+                    <Divider
+                      type="vertical"
+                      style={{ borderColor: "rgba(102, 126, 234, 0.3)" }}
                     />
-                    <span>Danh sách bài thi</span>
-                  </Link>
-                </li>
-                <li>
+                  }
+                  size="large"
+                >
                   <Link
-                    to="/learner/full-test"
-                    className={isActive("/learner/full-test") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
+                    to="/help"
+                    style={{
+                      color: "#8c8c8c",
+                      textDecoration: "none",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      transition: "color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
-                    <FontAwesomeIcon
-                      icon={faGraduationCap}
-                      className="submenu-icon"
-                    />
-                    <span>Thi thử Full Test</span>
+                    Trợ giúp
                   </Link>
-                </li>
-                <li>
                   <Link
-                    to="/learner/mini-test"
-                    className={isActive("/learner/mini-test") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
+                    to="/privacy"
+                    style={{
+                      color: "#8c8c8c",
+                      textDecoration: "none",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      transition: "color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
-                    <FontAwesomeIcon icon={faRocket} className="submenu-icon" />
-                    <span>Mini Test</span>
+                    Chính sách bảo mật
                   </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Learning Materials Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.learning ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("learning")}
-              >
-                <FontAwesomeIcon icon={faBook} className="nav-icon" />
-                <span className="nav-text">Học tập</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.learning ? "expanded" : ""
-                }`}
-              >
-                <li>
                   <Link
-                    to="/learner/materials"
-                    className={isActive("/learner/materials") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
+                    to="/terms"
+                    style={{
+                      color: "#8c8c8c",
+                      textDecoration: "none",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      transition: "color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
-                    <FontAwesomeIcon
-                      icon={faBookOpen}
-                      className="submenu-icon"
-                    />
-                    <span>Tài liệu học tập</span>
+                    Điều khoản sử dụng
                   </Link>
-                </li>
-                <li>
                   <Link
-                    to="/learner/grammar"
-                    className={isActive("/learner/grammar") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
+                    to="/contact"
+                    style={{
+                      color: "#8c8c8c",
+                      textDecoration: "none",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      transition: "color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
-                    <FontAwesomeIcon
-                      icon={faLanguage}
-                      className="submenu-icon"
-                    />
-                    <span>Ngữ pháp</span>
+                    Liên hệ
                   </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/improve"
-                    className={isActive("/learner/improve") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faForward}
-                      className="submenu-icon"
-                    />
-                    <span>Cải thiện kỹ năng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/section"
-                    className={isActive("/learner/section") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faLayerGroup}
-                      className="submenu-icon"
-                    />
-                    <span>Phần thi</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Vocabulary Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.vocabulary ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("vocabulary")}
-              >
-                <FontAwesomeIcon icon={faCreditCard} className="nav-icon" />
-                <span className="nav-text">Từ vựng</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.vocabulary ? "expanded" : ""
-                }`}
-              >
-                <li>
-                  <Link
-                    to="/learner/topics"
-                    className={isActive("/learner/topics") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faBookOpen}
-                      className="submenu-icon"
-                    />
-                    <span>Chủ đề từ vựng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/vocabulary"
-                    className={isActive("/learner/vocabulary") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faHeart} className="submenu-icon" />
-                    <span>Từ vựng đã lưu</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/dictionary"
-                    className={isActive("/learner/dictionary") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faSearch} className="submenu-icon" />
-                    <span>Từ điển</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/flashcards"
-                    className={isActive("/learner/flashcards") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faGamepad}
-                      className="submenu-icon"
-                    />
-                    <span>Flashcards</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/quiz"
-                    className={isActive("/learner/quiz") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faQuestion}
-                      className="submenu-icon"
-                    />
-                    <span>Quiz từ vựng</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Practice Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.practice ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("practice")}
-              >
-                <FontAwesomeIcon icon={faPen} className="nav-icon" />
-                <span className="nav-text">Luyện tập</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.practice ? "expanded" : ""
-                }`}
-              >
-                <li>
-                  <Link
-                    to="/learner/notes"
-                    className={isActive("/learner/notes") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faStickyNote}
-                      className="submenu-icon"
-                    />
-                    <span>Ghi chú cá nhân</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/blog"
-                    className={isActive("/learner/blog") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faNewspaper}
-                      className="submenu-icon"
-                    />
-                    <span>Blog & Tin tức</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/practice-sw"
-                    className={isActive("/learner/practice-sw") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faPen} className="submenu-icon" />
-                    <span>Luyện Speaking & Writing</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Tools & Features Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.tools ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("tools")}
-              >
-                <FontAwesomeIcon icon={faFlask} className="nav-icon" />
-                <span className="nav-text">Công cụ & Tính năng</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.tools ? "expanded" : ""
-                }`}
-              >
-                <li>
-                  <Link
-                    to="/learner/progress"
-                    className={isActive("/learner/progress") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faChartLine}
-                      className="submenu-icon"
-                    />
-                    <span>Tiến độ học tập</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/leaderboard"
-                    className={isActive("/learner/leaderboard") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faTrophy} className="submenu-icon" />
-                    <span>Bảng xếp hạng</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/achievements"
-                    className={
-                      isActive("/learner/achievements") ? "active" : ""
-                    }
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faStar} className="submenu-icon" />
-                    <span>Thành tích</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/study-timer"
-                    className={isActive("/learner/study-timer") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faClock} className="submenu-icon" />
-                    <span>Đồng hồ học tập</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/focus-mode"
-                    className={isActive("/learner/focus-mode") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faForward}
-                      className="submenu-icon"
-                    />
-                    <span>Chế độ tập trung</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/audio-trainer"
-                    className={
-                      isActive("/learner/audio-trainer") ? "active" : ""
-                    }
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faHeadphones}
-                      className="submenu-icon"
-                    />
-                    <span>Luyện nghe</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Community Section */}
-            <li className="nav-item nav-category">
-              <button
-                className={`nav-link category-toggle ${
-                  expandedMenus.community ? "expanded" : ""
-                }`}
-                onClick={() => toggleSubMenu("community")}
-              >
-                <FontAwesomeIcon icon={faGlobe} className="nav-icon" />
-                <span className="nav-text">Cộng đồng</span>
-                <FontAwesomeIcon icon={faLayerGroup} className="nav-arrow" />
-              </button>
-              <ul
-                className={`nav-submenu ${
-                  expandedMenus.community ? "expanded" : ""
-                }`}
-              >
-                <li>
-                  <Link
-                    to="/learner/events"
-                    className={isActive("/learner/events") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
-                      className="submenu-icon"
-                    />
-                    <span>Sự kiện</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/study-groups"
-                    className={
-                      isActive("/learner/study-groups") ? "active" : ""
-                    }
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faVideoCamera}
-                      className="submenu-icon"
-                    />
-                    <span>Nhóm học tập</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/challenges"
-                    className={isActive("/learner/challenges") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon icon={faGift} className="submenu-icon" />
-                    <span>Thử thách</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/learner/ai-tutor"
-                    className={isActive("/learner/ai-tutor") ? "active" : ""}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faLightbulb}
-                      className="submenu-icon"
-                    />
-                    <span>AI Gia sư</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Settings */}
-            <li className="nav-item">
-              <Link
-                to="/learner/profile"
-                className={`nav-link ${
-                  isActive("/learner/profile") ? "active" : ""
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FontAwesomeIcon icon={faUser} className="nav-icon" />
-                <span className="nav-text">Hồ sơ cá nhân</span>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to="/learner/settings"
-                className={`nav-link ${
-                  isActive("/learner/settings") ? "active" : ""
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FontAwesomeIcon icon={faCog} className="nav-icon" />
-                <span className="nav-text">Cài đặt</span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="learner-main">
-        <div className="main-content">
-          <Outlet />
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="learner-footer">
-        <div className="container">
-          <div className="footer-inner">
-            <div className="footer-copyright">
-              &copy; {new Date().getFullYear()} TOEIC Learning. Đã đăng ký bản
-              quyền.
-            </div>
-            <div className="footer-links">
-              <Link to="/help">Trợ giúp</Link>
-              <Link to="/privacy">Chính sách bảo mật</Link>
-              <Link to="/terms">Điều khoản sử dụng</Link>
-              <Link to="/contact">Liên hệ</Link>
-            </div>
+                </Space>
+              </Col>
+            </Row>
           </div>
-        </div>
-      </footer>
-    </div>
+        </Footer>
+      </Layout>
+
+      {/* Floating Action Button */}
+      <FloatButton.BackTop
+        style={{
+          background: "linear-gradient(135deg, #667eea, #764ba2)",
+          border: "none",
+          boxShadow: "0 4px 16px rgba(102, 126, 234, 0.3)",
+        }}
+        icon={<ArrowRight style={{ transform: "rotate(-90deg)" }} />}
+      />
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        .mobile-menu-btn {
+          display: none !important;
+        }
+
+        @media (max-width: 992px) {
+          .desktop-sider {
+            display: none !important;
+          }
+          .mobile-menu-btn {
+            display: inline-flex !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .ant-layout-header {
+            padding: 0 20px !important;
+            height: 64px !important;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .ant-layout-header {
+            padding: 0 16px !important;
+          }
+        }
+
+        /* Menu Styling */
+        .ant-menu-item,
+        .ant-menu-submenu {
+          border-radius: 8px !important;
+          margin: 4px 12px !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .ant-menu-item-selected {
+          background: linear-gradient(135deg, #e6f7ff, #bae7ff) !important;
+          color: #1890ff !important;
+          box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
+          transform: translateX(4px) !important;
+        }
+
+        .ant-menu-item:hover {
+          background: linear-gradient(135deg, #f0f9ff, #e1f5fe) !important;
+          transform: translateX(2px) !important;
+        }
+
+        .ant-menu-submenu-title:hover {
+          background: linear-gradient(135deg, #f0f9ff, #e1f5fe) !important;
+          transform: translateX(2px) !important;
+        }
+
+        .ant-menu-submenu-selected > .ant-menu-submenu-title {
+          color: #1890ff !important;
+          background: linear-gradient(135deg, #e6f7ff, #bae7ff) !important;
+        }
+
+        .ant-layout-sider-collapsed .ant-menu-item-icon {
+          font-size: 18px !important;
+        }
+
+        /* Header User Profile Hover Effect */
+        .user-profile-hover:hover {
+          background: rgba(255, 255, 255, 0.25) !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Notification and button hover effects */
+        .ant-btn:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Card hover effects */
+        .ant-card:hover {
+          transform: translateY(-2px) !important;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+      `}</style>
+    </Layout>
   );
 };
 

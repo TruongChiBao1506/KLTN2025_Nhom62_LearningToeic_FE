@@ -215,7 +215,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
     // Get image URL
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `${process.env.REACT_APP_API_URL || 'http://localhost:9004'}/images/vocabulary/${imageName}`;
+            return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/images/vocabulary/${imageName}`;
         }
         return `https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png`;
     };

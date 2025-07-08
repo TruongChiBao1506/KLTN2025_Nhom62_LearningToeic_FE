@@ -155,9 +155,9 @@ const Profile = () => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:9004/images/${imageName}`;
+            return `http://localhost:5000/images/${imageName}`;
         }
-        return "http://localhost:9004/images/anhdaidienmacdinh.jpg";
+        return "http://localhost:5000/images/anhdaidienmacdinh.jpg";
     };
 
     const onFileChange = async (event) => {

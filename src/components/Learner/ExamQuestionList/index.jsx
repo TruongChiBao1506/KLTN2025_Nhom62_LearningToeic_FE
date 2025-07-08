@@ -120,14 +120,14 @@ const ExamQuestionList = ({
 
   const getImageUrl = (imageName) => {
     if (imageName) {
-      return `http://localhost:9004/images/${imageName}`;
+      return `http://localhost:5000/images/${imageName}`;
     }
     return "";
   };
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `http://localhost:9004/audios/${audioName}`;
+      return `http://localhost:5000/audios/${audioName}`;
     }
     return "";
   };

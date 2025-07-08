@@ -121,7 +121,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:9004/images/${imageName}`;
+            return `http://localhost:5000/images/${imageName}`;
         }
         return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsfjXYvk-1w7U3EVJgTlll6d6I0ntyjj18fg&s";
     };

@@ -14,7 +14,7 @@
 .challenges-header h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .challenges-header p {
@@ -36,7 +36,7 @@
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 20px;
@@ -88,7 +88,7 @@
   padding: 12px 24px;
   border: none;
   border-radius: 25px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   color: white;
   cursor: pointer;
@@ -98,14 +98,14 @@
 }
 
 .tab-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255,255,255,0.25);
   transform: translateY(-2px);
 }
 
 .tab-btn.active {
   background: white;
   color: #667eea;
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(255,255,255,0.3);
 }
 
 .challenges-grid {
@@ -118,7 +118,7 @@
   background: white;
   border-radius: 15px;
   padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -126,16 +126,12 @@
 
 .challenge-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .challenge-card.completed {
-  border: 3px solid #4caf50;
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1),
-    rgba(139, 195, 74, 0.05)
-  );
+  border: 3px solid #4CAF50;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.05));
 }
 
 .challenge-card.expired {
@@ -171,8 +167,7 @@
   align-items: flex-end;
 }
 
-.difficulty-badge,
-.category-badge {
+.difficulty-badge, .category-badge {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -267,12 +262,7 @@
   flex: 1;
 }
 
-.btn-details,
-.btn-join,
-.btn-leave,
-.btn-completed,
-.btn-expired,
-.btn-progress {
+.btn-details, .btn-join, .btn-leave, .btn-completed, .btn-expired, .btn-progress {
   flex: 1;
   min-width: 100px;
   padding: 10px 15px;
@@ -315,7 +305,7 @@
 }
 
 .btn-progress {
-  background: #4caf50;
+  background: #4CAF50;
   color: white;
   flex: 1;
 }
@@ -330,7 +320,7 @@
 }
 
 .btn-completed {
-  background: #4caf50;
+  background: #4CAF50;
   color: white;
   cursor: not-allowed;
 }
@@ -348,7 +338,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -525,12 +515,7 @@
     flex-direction: column;
   }
 
-  .btn-details,
-  .btn-join,
-  .btn-leave,
-  .btn-completed,
-  .btn-expired,
-  .btn-progress {
+  .btn-details, .btn-join, .btn-leave, .btn-completed, .btn-expired, .btn-progress {
     min-width: auto;
   }
 
@@ -548,9 +533,7 @@
     margin: 10px;
   }
 
-  .modal-header,
-  .modal-body,
-  .modal-footer {
+  .modal-header, .modal-body, .modal-footer {
     padding: 15px 20px;
   }
 

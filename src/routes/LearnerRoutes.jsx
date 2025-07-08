@@ -30,17 +30,16 @@ import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
 import Notification from "../pages/Learner/Notification";
 import ProtectedRoute from "../components/Learner/ProtectedRoute";
-import NotImplemented from "../components/Learner/NotImplemented";
 import AITutor from "../pages/Learner/AITutor";
 import StudyTimer from "../pages/Learner/StudyTimer";
+import Leaderboard from "../pages/Learner/Leaderboard";
 import Achievements from "../pages/Learner/Achievements";
+import StudyGroups from "../pages/Learner/StudyGroups";
 import FocusMode from "../pages/Learner/FocusMode";
 import AudioTrainer from "../pages/Learner/AudioTrainer";
 import Events from "../pages/Learner/Events";
 import Challenges from "../pages/Learner/Challenges";
 import Settings from "../pages/Learner/Settings";
-import StudyGroups from "../pages/Learner/StudyGroups";
-import Leaderboard from "../pages/Learner/Leaderboard";
 
 const LearnerRoutes = () => {
   return (

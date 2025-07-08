@@ -7,33 +7,33 @@ import "./style.css";
 // Inline styles để đảm bảo CSS được áp dụng
 const inlineStyles = {
   examCard: {
-    border: "1px solid #e3e6f0",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    transition: "transform 0.3s ease",
-    overflow: "hidden",
-    height: "100%",
+    border: '1px solid #e3e6f0',
+    borderRadius: '10px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease',
+    overflow: 'hidden',
+    height: '100%'
   },
   cardImage: {
-    height: "200px",
-    overflow: "hidden",
+    height: '200px',
+    overflow: 'hidden'
   },
   cardImg: {
-    width: "100%",
-    height: "200px",
-    objectFit: "cover",
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover'
   },
   button: {
-    padding: "12px 20px",
-    backgroundColor: "#052649",
-    color: "#fff",
-    border: "none",
-    borderRadius: "25px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    width: "100%",
-    transition: "all 0.3s ease",
-  },
+    padding: '12px 20px',
+    backgroundColor: '#052649',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '25px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    width: '100%',
+    transition: 'all 0.3s ease'
+  }
 };
 
 const ExamMiniTest = () => {
@@ -82,7 +82,7 @@ const ExamMiniTest = () => {
   }
 
   return (
-    <div className="exam-mini-test-container">
+    <div className="exam-mini-test-container" >
       <div className="container">
         <div id="test">
           <h1 className="text-center mt-5">
@@ -103,10 +103,7 @@ const ExamMiniTest = () => {
                   className="col-lg-3 col-md-6 col-sm-12 mb-4"
                   key={exam._id}
                 >
-                  <div
-                    className="card exam-card h-100"
-                    style={inlineStyles.examCard}
-                  >
+                  <div className="card exam-card h-100" style={inlineStyles.examCard}>
                     <div className="card-image" style={inlineStyles.cardImage}>
                       <img
                         src="https://webhouse.vn/tin-tuc/wp-content/uploads/2022/11/toeic-la-gi-nhung-dieu-can-biet-ve-bai-thi-toeic.jpg"
@@ -138,7 +135,7 @@ const ExamMiniTest = () => {
                                   className="fas fa-clock me-1"
                                   style={{ color: "cornflowerblue" }}
                                 ></i>
-                                {exam.examDurationMinutes || "N/A"} phút
+                                {exam.examDurationMinutes || 'N/A'} phút
                               </p>
                             </div>
                           </div>

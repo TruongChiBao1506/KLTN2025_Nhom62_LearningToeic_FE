@@ -1,21 +1,55 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHouse,
-  faFileAlt,
-  faArrowLeft,
-  faClock,
-  faCheck,
-  faExclamationCircle,
-  faQuestionCircle,
-  faChevronLeft,
-  faChevronRight,
-  faFlag,
-  faSave,
-} from "@fortawesome/free-solid-svg-icons";
+  Layout,
+  Card,
+  Button,
+  Radio,
+  Progress,
+  Typography,
+  Space,
+  Breadcrumb,
+  Statistic,
+  Row,
+  Col,
+  Badge,
+  Alert,
+  Spin,
+  Modal,
+  Image,
+  Divider,
+  Tabs,
+  Tag,
+} from "antd";
+import {
+  Home,
+  FileText,
+  ArrowLeft,
+  Clock,
+  AlertCircle,
+  HelpCircle,
+  ChevronLeft,
+  ChevronRight,
+  Flag,
+  Save,
+  Volume2,
+  PlayCircle,
+  Trophy,
+  Target,
+  BookOpen,
+  RotateCcw,
+  CheckCircle,
+  XCircle,
+  Timer,
+  TrendingUp,
+  X,
+} from "lucide-react";
 import learnerExamService from "../../../services/learnerExamService";
-import "./style.css";
+import AudioPlayer from "../../../components/AudioPlayer";
+import audioRegistry from "../../../utils/AudioRegistry";
+
+const { Content } = Layout;
+const { Title, Text, Paragraph } = Typography;
 
 const ExamDetail = () => {
   const { id } = useParams();
@@ -38,6 +72,12 @@ const ExamDetail = () => {
     try {
       setLoading(true);
       const response = await learnerExamService.getExamById(id);
+      console.log("🚀 ~ fetchExam ~ response:", response);
+      console.log("🚀 ~ fetchExam ~ response.questions:", response.questions);
+      console.log(
+        "🚀 ~ fetchExam ~ questions length:",
+        response.questions?.length
+      );
 
       // Map backend response to expected format
       const examData = {
@@ -55,23 +95,49 @@ const ExamDetail = () => {
           id: q._id,
           text: q.questionContent || `Question ${index + 1}`,
           options: [
-            { id: 'A', text: q.optionA || 'Option A' },
-            { id: 'B', text: q.optionB || 'Option B' },
-            { id: 'C', text: q.optionC || 'Option C' },
-            { id: 'D', text: q.optionD || 'Option D' }
-          ].filter(option => option.text), // Remove empty options
-          correctAnswer: q.correctOption,
-          explanation: q.explanation,
+            { id: "A", text: q.optionA || "Option A" },
+            { id: "B", text: q.optionB || "Option B" },
+            { id: "C", text: q.optionC || "Option C" },
+            { id: "D", text: q.optionD || "Option D" },
+          ].filter(
+            (option) => option.text && option.text !== `Option ${option.id}`
+          ), // Remove empty/default options
+          correctAnswer: q.correctOption || q.correctAnswer,
+          explanation:
+            q.questionExplanation ||
+            q.explanation ||
+            q._originalData?.explanation,
           questionType: q.questionType,
-          image: q.imageUrl,
-          audio: q.audioUrl,
-          _originalData: q
+          image: q.questionImage
+            ? `http://localhost:5000/images/${q.questionImage}`
+            : q.imageUrl ||
+              q.image ||
+              (q.imagePath ? `http://localhost:5000/${q.imagePath}` : null),
+          audio: q.questionAudio
+            ? `http://localhost:5000/audios/${q.questionAudio}`
+            : q.audioUrl ||
+              q.audio ||
+              (q.audioPath ? `http://localhost:5000/${q.audioPath}` : null),
+          _originalData: q,
         })),
         status: "not-started", // Default status
         _originalData: response,
       };
 
+      console.log("🚀 ~ fetchExam ~ examData.questions:", examData.questions);
+      console.log("🚀 ~ fetchExam ~ mapped exam data:", examData);
+
       setExam(examData);
+
+      // Check if exam has questions
+      if (!examData.questions || examData.questions.length === 0) {
+        console.warn("⚠️ Exam has no questions!");
+        setError(
+          "Bài thi này chưa có câu hỏi nào. Vui lòng liên hệ quản trị viên."
+        );
+        setLoading(false);
+        return;
+      }
 
       // For now, set default time since we don't have progress tracking yet
       setRemainingTime(examData.duration * 60); // Convert minutes to seconds
@@ -86,7 +152,37 @@ const ExamDetail = () => {
 
   useEffect(() => {
     fetchExam();
+
+    // Initialize audio registry
+    audioRegistry.init();
+
+    // Make sure audio is fully stopped when leaving exam
+    return () => {
+      audioRegistry.stopAll();
+    };
   }, [fetchExam]);
+
+  // Stop any playing audio when question changes
+  useEffect(() => {
+    // Stop all audio when changing questions
+    console.log(
+      "🔇 Question index changed to:",
+      currentQuestionIndex,
+      "- stopping all audio"
+    );
+    try {
+      // Try both methods to ensure audio stops
+      if (window.audioRegistry) {
+        window.audioRegistry.stopAll();
+      }
+      if (window.stopAllAudio) {
+        window.stopAllAudio();
+      }
+    } catch (e) {
+      console.error("Error stopping audio:", e);
+    }
+  }, [currentQuestionIndex]);
+
   const startExam = () => {
     setExamStarted(true);
     document.title = `Đang làm bài thi: ${exam ? exam.name : "Bài thi TOEIC"}`;
@@ -138,18 +234,59 @@ const ExamDetail = () => {
 
   const goToNextQuestion = () => {
     if (exam.questions && currentQuestionIndex < exam.questions.length - 1) {
+      // Stop audio before changing question
+      console.log("🔄 Moving to next question, stopping all audio");
+      try {
+        // Try both methods to ensure audio stops
+        if (window.audioRegistry) {
+          window.audioRegistry.stopAll();
+        }
+        if (window.stopAllAudio) {
+          window.stopAllAudio();
+        }
+      } catch (e) {
+        console.error("Error stopping audio:", e);
+      }
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   const goToPrevQuestion = () => {
     if (currentQuestionIndex > 0) {
+      // Stop audio before changing question
+      console.log("🔄 Moving to previous question, stopping all audio");
+      try {
+        // Try both methods to ensure audio stops
+        if (window.audioRegistry) {
+          window.audioRegistry.stopAll();
+        }
+        if (window.stopAllAudio) {
+          window.stopAllAudio();
+        }
+      } catch (e) {
+        console.error("Error stopping audio:", e);
+      }
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
 
   const goToQuestion = (index) => {
     if (exam.questions && index >= 0 && index < exam.questions.length) {
+      // Stop audio before changing question
+      console.log(
+        `🔄 Directly navigating to question ${index}, stopping all audio`
+      );
+      try {
+        // Try both methods to ensure audio stops
+        if (window.audioRegistry) {
+          window.audioRegistry.stopAll();
+        }
+        if (window.stopAllAudio) {
+          window.stopAllAudio();
+        }
+      } catch (e) {
+        console.error("Error stopping audio:", e);
+      }
       setCurrentQuestionIndex(index);
     }
   };
@@ -179,39 +316,43 @@ const ExamDetail = () => {
 
     try {
       setLoading(true);
-      
-      // Convert userAnswers object to array format expected by backend
-      const answersArray = Object.entries(userAnswers).map(([questionId, selectedOption]) => ({
-        questionId,
-        selectedOption,
-        timeSpent: 60 // Default time spent per question
-      }));
 
-      console.log('Sending answers array:', answersArray);
-      
+      // Convert userAnswers object to array format expected by backend
+      const answersArray = Object.entries(userAnswers).map(
+        ([questionId, selectedOption]) => ({
+          questionId,
+          selectedOption,
+          timeSpent: 60, // Default time spent per question
+        })
+      );
+
+      console.log("Sending answers array:", answersArray);
+
       const response = await learnerExamService.submitExam(id, answersArray);
-      console.log('✅ Submit response:', response);
-      
+      console.log("✅ Submit response:", response);
+
       setExamSubmitted(true);
       // Map backend response to frontend expected format
       const resultData = {
         scores: response.scores || {
           listening: 0,
           reading: 0,
-          total: 0
+          total: 0,
         },
         details: response.details || {
           correct: 0,
           wrong: 0,
           skipped: 0,
           listeningCorrect: 0,
-          readingCorrect: 0
+          readingCorrect: 0,
         },
         userExamId: response.userExamId,
         message: response.message,
         // Calculate additional metrics for UI
         totalQuestions: exam.questions.length,
-        percentage: Math.round((response.details?.correct || 0) * 100 / exam.questions.length),
+        percentage: Math.round(
+          ((response.details?.correct || 0) * 100) / exam.questions.length
+        ),
         correctCount: response.details?.correct || 0,
         incorrectCount: response.details?.wrong || 0,
         unansweredCount: response.details?.skipped || 0,
@@ -220,9 +361,9 @@ const ExamDetail = () => {
         totalScore: response.scores?.total || 0,
         listeningCorrect: response.details?.listeningCorrect || 0,
         readingCorrect: response.details?.readingCorrect || 0,
-        timeSpent: exam.duration * 60 - remainingTime // Calculate actual time spent
+        timeSpent: exam.duration * 60 - remainingTime, // Calculate actual time spent
       };
-      
+
       setExamResult(resultData);
       setLoading(false);
     } catch (error) {
@@ -234,468 +375,782 @@ const ExamDetail = () => {
 
   if (loading && !exam) {
     return (
-      <div className="exam-detail-container">
-        <div className="text-center my-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Đang tải...</span>
-          </div>
-          <p className="mt-3">Đang tải bài thi...</p>
-        </div>
-      </div>
+      <Content
+        style={{
+          padding: "24px",
+          minHeight: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Space direction="vertical" align="center" size="large">
+          <Spin size="large" />
+          <Text type="secondary" style={{ fontSize: "16px" }}>
+            Đang tải bài thi...
+          </Text>
+        </Space>
+      </Content>
     );
   }
 
   if (error) {
     return (
-      <div className="exam-detail-container">
-        <div className="alert alert-danger m-4" role="alert">
-          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
-          {error}
-        </div>
-        <div className="text-center">
-          <Link to="/learner/exams" className="btn btn-outline-primary">
-            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-            Quay lại Danh sách bài thi
-          </Link>
-        </div>
-      </div>
+      <Content style={{ padding: "24px" }}>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Alert
+            message="Lỗi tải bài thi"
+            description={error}
+            type="error"
+            showIcon
+            icon={<AlertCircle size={20} />}
+          />
+          <div style={{ textAlign: "center" }}>
+            <Link to="/learner/exams">
+              <Button type="primary" icon={<ArrowLeft size={16} />}>
+                Quay lại Danh sách bài thi
+              </Button>
+            </Link>
+          </div>
+        </Space>
+      </Content>
     );
   }
 
   if (!exam) {
     return (
-      <div className="exam-detail-container">
-        <div className="alert alert-warning m-4" role="alert">
-          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
-          Không tìm thấy bài thi.
-        </div>
-        <div className="text-center">
-          <Link to="/learner/exams" className="btn btn-outline-primary">
-            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-            Quay lại Danh sách bài thi
-          </Link>
-        </div>
-      </div>
+      <Content style={{ padding: "24px" }}>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Alert
+            message="Không tìm thấy bài thi"
+            description="Bài thi bạn tìm kiếm không tồn tại hoặc đã bị xóa."
+            type="warning"
+            showIcon
+            icon={<HelpCircle size={20} />}
+          />
+          <div style={{ textAlign: "center" }}>
+            <Link to="/learner/exams">
+              <Button type="primary" icon={<ArrowLeft size={16} />}>
+                Quay lại Danh sách bài thi
+              </Button>
+            </Link>
+          </div>
+        </Space>
+      </Content>
     );
   }
 
   // Exam results view when exam is submitted
   if (examSubmitted && examResult) {
     return (
-      <div className="exam-detail-container">
-        {/* Breadcrumb */}{" "}
-        <div className="breadcrumb-container">
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <Link to="/learner/dashboard">
-                  <FontAwesomeIcon icon={faHouse} className="me-2" />
-                  Trang chủ
-                </Link>
-              </li>
-              <li className="breadcrumb-item">
-                <Link to="/learner/exams">
-                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-                  Bài thi thực hành
-                </Link>
-              </li>
-              <li className="breadcrumb-item active">{exam.name} - Kết quả</li>
-            </ol>
-          </nav>
-        </div>
-        <div className="exam-results-container">
-          <div className="results-header text-center mb-4">
-            <h2 className="text-success mb-3">
-              <FontAwesomeIcon icon={faCheck} className="me-2" />
-              Hoàn thành bài thi!
-            </h2>
-            <h3 className="text-primary">{exam.name}</h3>
-            <p className="text-muted">Kết quả chi tiết bài thi của bạn</p>
-          </div>
+      <Content style={{ padding: "24px", background: "#f5f5f5" }}>
+        {/* Breadcrumb */}
+        <Breadcrumb style={{ marginBottom: "24px" }}>
+          <Breadcrumb.Item>
+            <Link to="/learner/dashboard">
+              <Home size={16} style={{ marginRight: "4px" }} />
+              Trang chủ
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/learner/exams">
+              <FileText size={16} style={{ marginRight: "4px" }} />
+              Bài thi thực hành
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>{exam.name} - Kết quả</Breadcrumb.Item>
+        </Breadcrumb>
 
-          {/* Overall Score Section */}
-          <div className="overall-score-section mb-5">
-            <div className="row">
-              <div className="col-md-4">
-                <div className="score-circle-container text-center">
-                  <div className="score-circle-large">
-                    <div className="score-percentage">
-                      {examResult.percentage}%
-                    </div>
-                    <div className="score-detail">
-                      {examResult.correctCount}/{examResult.totalQuestions}
-                    </div>
-                    <div className="score-label">Tổng điểm</div>
-                  </div>
+        {/* Results Header */}
+        <Card
+          style={{
+            marginBottom: "24px",
+            textAlign: "center",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            border: "none",
+          }}
+        >
+          <Space direction="vertical" size="large">
+            <div style={{ color: "#fff" }}>
+              <CheckCircle
+                size={48}
+                style={{ color: "#52c41a", marginBottom: "16px" }}
+              />
+              <Title level={2} style={{ color: "#fff", margin: 0 }}>
+                Hoàn thành bài thi!
+              </Title>
+              <Title level={3} style={{ color: "#fff", margin: "8px 0" }}>
+                {exam.name}
+              </Title>
+              <Text
+                style={{ color: "rgba(255,255,255,0.8)", fontSize: "16px" }}
+              >
+                Kết quả chi tiết bài thi của bạn
+              </Text>
+            </div>
+          </Space>
+        </Card>
+
+        {/* Overall Score Section */}
+        <Row gutter={[24, 24]} style={{ marginBottom: "32px" }}>
+          <Col xs={24} md={8}>
+            <Card
+              style={{
+                height: "100%",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                border: "none",
+              }}
+            >
+              <Space direction="vertical" size="large">
+                <div style={{ position: "relative" }}>
+                  <Progress
+                    type="circle"
+                    percent={examResult.percentage}
+                    format={() => `${examResult.percentage}%`}
+                    strokeWidth={8}
+                    size={120}
+                    strokeColor={{
+                      "0%": "#108ee9",
+                      "100%": "#87d068",
+                    }}
+                  />
                 </div>
-              </div>
-              <div className="col-md-8">
-                <div className="score-breakdown">
-                  {/* TOEIC Scores */}
-                  <div className="row mb-4">
-                    <div className="col-md-6">
-                      <div className="score-section listening">
-                        <div className="score-section-header">
-                          <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-                          <h5>LISTENING</h5>
-                        </div>
-                        <div className="score-bar-container">
-                          <div className="score-number">{examResult.listeningScore}/495</div>
-                          <div className="progress-container">
-                            <div className="progress">
-                              <div 
-                                className="progress-bar bg-info" 
-                                style={{width: `${(examResult.listeningScore / 495) * 100}%`}}
-                              ></div>
-                            </div>
-                            <div className="score-range">
-                              <span>0</span>
-                              <span>495</span>
-                            </div>
-                          </div>
-                          <div className="correct-count">
-                            Đúng: {examResult.listeningCorrect}/{Math.floor(examResult.totalQuestions / 2)}
-                          </div>
+                <div style={{ color: "#fff" }}>
+                  <Title level={4} style={{ color: "#fff", margin: "8px 0" }}>
+                    {examResult.correctCount}/{examResult.totalQuestions}
+                  </Title>
+                  <Text style={{ color: "rgba(255,255,255,0.8)" }}>
+                    Tổng điểm
+                  </Text>
+                </div>
+              </Space>
+            </Card>
+          </Col>
+          <Col xs={24} md={16}>
+            <Row gutter={[16, 16]}>
+              <Col xs={24} md={12}>
+                <Card style={{ height: "100%" }}>
+                  <Space
+                    direction="vertical"
+                    size="small"
+                    style={{ width: "100%" }}
+                  >
+                    <Space align="center">
+                      <Volume2 size={20} style={{ color: "#1890ff" }} />
+                      <Title level={5} style={{ margin: 0 }}>
+                        LISTENING
+                      </Title>
+                    </Space>
+                    <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+                      {examResult.listeningScore}/495
+                    </Title>
+                    <Progress
+                      percent={(examResult.listeningScore / 495) * 100}
+                      strokeColor="#1890ff"
+                      showInfo={false}
+                    />
+                    <Text type="secondary">
+                      Đúng: {examResult.listeningCorrect}/
+                      {Math.floor(examResult.totalQuestions / 2)}
+                    </Text>
+                  </Space>
+                </Card>
+              </Col>
+              <Col xs={24} md={12}>
+                <Card style={{ height: "100%" }}>
+                  <Space
+                    direction="vertical"
+                    size="small"
+                    style={{ width: "100%" }}
+                  >
+                    <Space align="center">
+                      <BookOpen size={20} style={{ color: "#faad14" }} />
+                      <Title level={5} style={{ margin: 0 }}>
+                        READING
+                      </Title>
+                    </Space>
+                    <Title level={3} style={{ margin: 0, color: "#faad14" }}>
+                      {examResult.readingScore}/495
+                    </Title>
+                    <Progress
+                      percent={(examResult.readingScore / 495) * 100}
+                      strokeColor="#faad14"
+                      showInfo={false}
+                    />
+                    <Text type="secondary">
+                      Đúng: {examResult.readingCorrect}/
+                      {Math.floor(examResult.totalQuestions / 2)}
+                    </Text>
+                  </Space>
+                </Card>
+              </Col>
+              <Col span={24}>
+                <Card
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    border: "none",
+                    textAlign: "center",
+                  }}
+                >
+                  <Space direction="vertical">
+                    <Title level={4} style={{ color: "#fff", margin: 0 }}>
+                      Tổng điểm TOEIC:{" "}
+                      <Badge
+                        count={`${examResult.totalScore}/990`}
+                        style={{ backgroundColor: "#52c41a", fontSize: "16px" }}
+                      />
+                    </Title>
+                    <Text style={{ color: "rgba(255,255,255,0.8)" }}>
+                      Điểm TOEIC ước tính dựa trên kết quả bài thi
+                    </Text>
+                  </Space>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        {/* Detailed Statistics */}
+        <Card style={{ marginBottom: "24px" }}>
+          <Title level={4} style={{ marginBottom: "24px" }}>
+            <TrendingUp
+              size={20}
+              style={{ marginRight: "8px", color: "#1890ff" }}
+            />
+            Thống kê chi tiết
+          </Title>
+          <Row gutter={[16, 16]}>
+            <Col xs={12} md={6}>
+              <Card
+                size="small"
+                style={{ background: "#f6ffed", border: "1px solid #b7eb8f" }}
+              >
+                <Statistic
+                  title="Câu đúng"
+                  value={examResult.correctCount}
+                  prefix={
+                    <CheckCircle size={20} style={{ color: "#52c41a" }} />
+                  }
+                  valueStyle={{ color: "#52c41a", fontWeight: "bold" }}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} md={6}>
+              <Card
+                size="small"
+                style={{ background: "#fff2f0", border: "1px solid #ffccc7" }}
+              >
+                <Statistic
+                  title="Câu sai"
+                  value={examResult.incorrectCount}
+                  prefix={<XCircle size={20} style={{ color: "#ff4d4f" }} />}
+                  valueStyle={{ color: "#ff4d4f", fontWeight: "bold" }}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} md={6}>
+              <Card
+                size="small"
+                style={{ background: "#fffbf0", border: "1px solid #ffe58f" }}
+              >
+                <Statistic
+                  title="Chưa trả lời"
+                  value={examResult.unansweredCount}
+                  prefix={<HelpCircle size={20} style={{ color: "#faad14" }} />}
+                  valueStyle={{ color: "#faad14", fontWeight: "bold" }}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} md={6}>
+              <Card
+                size="small"
+                style={{ background: "#f0f9ff", border: "1px solid #91d5ff" }}
+              >
+                <Statistic
+                  title="Thời gian làm bài"
+                  value={formatTime(examResult.timeSpent)}
+                  prefix={<Timer size={20} style={{ color: "#1890ff" }} />}
+                  valueStyle={{ color: "#1890ff", fontWeight: "bold" }}
+                />
+              </Card>
+            </Col>
+          </Row>
+        </Card>
+        {/* Question Review Section */}
+        <Card style={{ marginBottom: "24px" }}>
+          <Title level={4} style={{ marginBottom: "16px" }}>
+            <FileText
+              size={20}
+              style={{ marginRight: "8px", color: "#1890ff" }}
+            />
+            Xem lại câu trả lời
+          </Title>
+          <Text
+            type="secondary"
+            style={{ marginBottom: "24px", display: "block" }}
+          >
+            Xem lại các câu trả lời và giải thích cho từng câu hỏi.
+          </Text>
+
+          <Tabs
+            defaultActiveKey="all"
+            centered
+            style={{ marginBottom: "24px" }}
+            items={[
+              {
+                key: "all",
+                label: `Tất cả (${examResult.totalQuestions})`,
+              },
+              {
+                key: "correct",
+                label: (
+                  <span style={{ color: "#52c41a" }}>
+                    Đúng ({examResult.correctCount})
+                  </span>
+                ),
+              },
+              {
+                key: "incorrect",
+                label: (
+                  <span style={{ color: "#ff4d4f" }}>
+                    Sai ({examResult.incorrectCount})
+                  </span>
+                ),
+              },
+              {
+                key: "unanswered",
+                label: (
+                  <span style={{ color: "#faad14" }}>
+                    Chưa trả lời ({examResult.unansweredCount})
+                  </span>
+                ),
+              },
+            ]}
+          />
+
+          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            {exam.questions.map((question, index) => {
+              const isCorrect =
+                userAnswers[question.id] === question.correctAnswer;
+              const isAnswered = userAnswers[question.id] !== undefined;
+              const userAnswer = userAnswers[question.id];
+
+              return (
+                <Card
+                  key={question.id}
+                  size="small"
+                  style={{
+                    border: `2px solid ${
+                      !isAnswered
+                        ? "#faad14"
+                        : isCorrect
+                        ? "#52c41a"
+                        : "#ff4d4f"
+                    }`,
+                    background: !isAnswered
+                      ? "#fffbf0"
+                      : isCorrect
+                      ? "#f6ffed"
+                      : "#fff2f0",
+                  }}
+                >
+                  <Row gutter={[16, 16]}>
+                    <Col span={2}>
+                      <div style={{ textAlign: "center" }}>
+                        <Badge
+                          count={index + 1}
+                          style={{
+                            backgroundColor: !isAnswered
+                              ? "#faad14"
+                              : isCorrect
+                              ? "#52c41a"
+                              : "#ff4d4f",
+                            fontSize: "14px",
+                          }}
+                        />
+                        <div style={{ marginTop: "8px" }}>
+                          {!isAnswered ? (
+                            <HelpCircle
+                              size={20}
+                              style={{ color: "#faad14" }}
+                            />
+                          ) : isCorrect ? (
+                            <CheckCircle
+                              size={20}
+                              style={{ color: "#52c41a" }}
+                            />
+                          ) : (
+                            <XCircle size={20} style={{ color: "#ff4d4f" }} />
+                          )}
                         </div>
                       </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="score-section reading">
-                        <div className="score-section-header">
-                          <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-                          <h5>READING</h5>
-                        </div>
-                        <div className="score-bar-container">
-                          <div className="score-number">{examResult.readingScore}/495</div>
-                          <div className="progress-container">
-                            <div className="progress">
-                              <div 
-                                className="progress-bar bg-warning" 
-                                style={{width: `${(examResult.readingScore / 495) * 100}%`}}
-                              ></div>
-                            </div>
-                            <div className="score-range">
-                              <span>0</span>
-                              <span>495</span>
-                            </div>
-                          </div>
-                          <div className="correct-count">
-                            Đúng: {examResult.readingCorrect}/{Math.floor(examResult.totalQuestions / 2)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Total TOEIC Score */}
-                  <div className="total-toeic-score text-center">
-                    <h4 className="text-primary">Tổng điểm TOEIC: <span className="badge bg-primary fs-5">{examResult.totalScore}/990</span></h4>
-                    <p className="text-muted">Điểm TOEIC ước tính dựa trên kết quả bài thi</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Detailed Statistics */}
-          <div className="detailed-statistics mb-5">
-            <h4 className="mb-4">
-              <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-              Thống kê chi tiết
-            </h4>
-            <div className="row g-3">
-              <div className="col-md-3">
-                <div className="stat-card correct">
-                  <div className="stat-icon">
-                    <FontAwesomeIcon icon={faCheck} />
-                  </div>
-                  <div className="stat-content">
-                    <h5 className="stat-number text-success">{examResult.correctCount}</h5>
-                    <p className="stat-label">Câu đúng</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="stat-card incorrect">
-                  <div className="stat-icon">
-                    <FontAwesomeIcon icon={faExclamationCircle} />
-                  </div>
-                  <div className="stat-content">
-                    <h5 className="stat-number text-danger">{examResult.incorrectCount}</h5>
-                    <p className="stat-label">Câu sai</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="stat-card unanswered">
-                  <div className="stat-icon">
-                    <FontAwesomeIcon icon={faQuestionCircle} />
-                  </div>
-                  <div className="stat-content">
-                    <h5 className="stat-number text-warning">{examResult.unansweredCount}</h5>
-                    <p className="stat-label">Chưa trả lời</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="stat-card time">
-                  <div className="stat-icon">
-                    <FontAwesomeIcon icon={faClock} />
-                  </div>
-                  <div className="stat-content">
-                    <h5 className="stat-number text-info">{formatTime(examResult.timeSpent)}</h5>
-                    <p className="stat-label">Thời gian làm bài</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Question Review Section */}
-          <div className="question-review-section">
-            <div className="section-header mb-4">
-              <h4>
-                <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-                Xem lại câu trả lời
-              </h4>
-              <p className="text-muted">Xem lại các câu trả lời và giải thích cho từng câu hỏi.</p>
-            </div>
-
-            <div className="question-review-tabs mb-4">
-              <div className="nav nav-pills justify-content-center" role="tablist">
-                <button className="nav-link active" data-bs-toggle="pill" data-bs-target="#all-questions">
-                  Tất cả ({examResult.totalQuestions})
-                </button>
-                <button className="nav-link text-success" data-bs-toggle="pill" data-bs-target="#correct-questions">
-                  Đúng ({examResult.correctCount})
-                </button>
-                <button className="nav-link text-danger" data-bs-toggle="pill" data-bs-target="#incorrect-questions">
-                  Sai ({examResult.incorrectCount})
-                </button>
-                <button className="nav-link text-warning" data-bs-toggle="pill" data-bs-target="#unanswered-questions">
-                  Chưa trả lời ({examResult.unansweredCount})
-                </button>
-              </div>
-            </div>
-
-            <div className="tab-content">
-              <div className="tab-pane fade show active" id="all-questions">
-                <div className="question-review-list">
-                  {exam.questions.map((question, index) => {
-                    const isCorrect = userAnswers[question.id] === question.correctAnswer;
-                    const isAnswered = userAnswers[question.id] !== undefined;
-                    const userAnswer = userAnswers[question.id];
-
-                    return (
-                      <div
-                        key={question.id}
-                        className={`question-review-item ${
-                          !isAnswered
-                            ? "unanswered"
-                            : isCorrect
-                            ? "correct"
-                            : "incorrect"
-                        }`}
+                    </Col>
+                    <Col span={22}>
+                      <Space
+                        direction="vertical"
+                        size="middle"
+                        style={{ width: "100%" }}
                       >
-                        <div className="question-review-header">
-                          <div className="question-number">
-                            <span className="number">{index + 1}</span>
-                            <div className={`status-badge ${!isAnswered ? "unanswered" : isCorrect ? "correct" : "incorrect"}`}>
-                              {!isAnswered ? (
-                                <FontAwesomeIcon icon={faQuestionCircle} />
-                              ) : isCorrect ? (
-                                <FontAwesomeIcon icon={faCheck} />
-                              ) : (
-                                <FontAwesomeIcon icon={faExclamationCircle} />
-                              )}
-                            </div>
-                          </div>
-                          <div className="question-status">
-                            {!isAnswered ? (
-                              <span className="badge bg-warning">Chưa trả lời</span>
-                            ) : isCorrect ? (
-                              <span className="badge bg-success">Đúng</span>
-                            ) : (
-                              <span className="badge bg-danger">Sai</span>
-                            )}
-                          </div>
+                        <div>
+                          <Tag
+                            color={
+                              !isAnswered
+                                ? "orange"
+                                : isCorrect
+                                ? "green"
+                                : "red"
+                            }
+                          >
+                            {!isAnswered
+                              ? "Chưa trả lời"
+                              : isCorrect
+                              ? "Đúng"
+                              : "Sai"}
+                          </Tag>
                         </div>
-                        
-                        <div className="question-content">
-                          <h6 className="question-text mb-3">{question.text}</h6>
-                          
-                          <div className="options-review">
+
+                        {/* Question Content */}
+                        <div>
+                          <Title level={5} style={{ marginBottom: "16px" }}>
+                            {question.text}
+                          </Title>
+
+                          {/* Display image if exists */}
+                          {question.image && (
+                            <div style={{ marginBottom: "16px" }}>
+                              <Image
+                                src={question.image}
+                                alt="Question image"
+                                style={{
+                                  maxWidth: "300px",
+                                  borderRadius: "8px",
+                                }}
+                                placeholder={
+                                  <div
+                                    style={{
+                                      padding: "20px",
+                                      textAlign: "center",
+                                      background: "#f5f5f5",
+                                    }}
+                                  >
+                                    Loading image...
+                                  </div>
+                                }
+                              />
+                            </div>
+                          )}
+
+                          {/* Display audio if exists */}
+                          {question.audio && (
+                            <div style={{ marginBottom: "16px" }}>
+                              <AudioPlayer
+                                src={question.audio}
+                                questionId={question.id}
+                                style={{ maxWidth: "300px" }}
+                                key={`audio-${question.id}-${question.audio}`}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Options Review */}
+                        <div>
+                          <Space
+                            direction="vertical"
+                            size="small"
+                            style={{ width: "100%" }}
+                          >
                             {question.options.map((option, optionIndex) => {
-                              const optionLetter = String.fromCharCode(65 + optionIndex);
+                              const optionLetter = String.fromCharCode(
+                                65 + optionIndex
+                              );
                               const isUserSelected = userAnswer === option.id;
-                              const isCorrectAnswer = question.correctAnswer === option.id;
+                              const isCorrectAnswer =
+                                question.correctAnswer === option.id;
 
                               return (
                                 <div
                                   key={option.id}
-                                  className={`option-review-item ${
-                                    isUserSelected
+                                  style={{
+                                    padding: "8px 12px",
+                                    borderRadius: "6px",
+                                    border: "1px solid",
+                                    borderColor: isUserSelected
                                       ? isCorrectAnswer
-                                        ? "selected-correct"
-                                        : "selected-incorrect"
+                                        ? "#52c41a"
+                                        : "#ff4d4f"
                                       : isCorrectAnswer
-                                      ? "correct-answer"
-                                      : ""
-                                  }`}
+                                      ? "#52c41a"
+                                      : "#d9d9d9",
+                                    background: isUserSelected
+                                      ? isCorrectAnswer
+                                        ? "#f6ffed"
+                                        : "#fff2f0"
+                                      : isCorrectAnswer
+                                      ? "#f6ffed"
+                                      : "#fafafa",
+                                  }}
                                 >
-                                  <div className="option-indicator">
-                                    <span className="option-letter">{optionLetter}</span>
-                                    {isUserSelected && (
-                                      <FontAwesomeIcon 
-                                        icon={isCorrectAnswer ? faCheck : faExclamationCircle} 
-                                        className={isCorrectAnswer ? "text-success" : "text-danger"}
+                                  <Space>
+                                    <Tag color="blue">{optionLetter}</Tag>
+                                    <Text>{option.text}</Text>
+                                    {isUserSelected &&
+                                      (isCorrectAnswer ? (
+                                        <CheckCircle
+                                          size={16}
+                                          style={{ color: "#52c41a" }}
+                                        />
+                                      ) : (
+                                        <XCircle
+                                          size={16}
+                                          style={{ color: "#ff4d4f" }}
+                                        />
+                                      ))}
+                                    {!isUserSelected && isCorrectAnswer && (
+                                      <CheckCircle
+                                        size={16}
+                                        style={{ color: "#52c41a" }}
                                       />
                                     )}
-                                    {!isUserSelected && isCorrectAnswer && (
-                                      <FontAwesomeIcon icon={faCheck} className="text-success" />
-                                    )}
-                                  </div>
-                                  <span className="option-text">{option.text}</span>
+                                  </Space>
                                 </div>
                               );
                             })}
-                          </div>
-
-                          {question.explanation && (
-                            <div className="explanation-section mt-3">
-                              <h6 className="explanation-title">
-                                <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-                                Giải thích:
-                              </h6>
-                              <div className="explanation-content">
-                                <p>{question.explanation}</p>
-                              </div>
-                            </div>
-                          )}
+                          </Space>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Result Actions */}
-          <div className="result-actions mt-5">
-            <div className="text-center">
-              <div className="action-buttons-group">
-                <button
-                  className="btn btn-primary btn-lg me-3"
-                  onClick={() => navigate("/learner/exams")}
-                >
-                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-                  Thêm bài thi luyện tập
-                </button>
 
-                <button
-                  className="btn btn-success btn-lg me-3"
-                  onClick={() => window.location.reload()}
-                >
-                  <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                  Làm lại bài thi
-                </button>
+                        {/* Explanation */}
+                        {question.explanation && (
+                          <Alert
+                            message="Giải thích"
+                            description={question.explanation}
+                            type="info"
+                            showIcon
+                            icon={<HelpCircle size={16} />}
+                            style={{ marginTop: "16px" }}
+                          />
+                        )}
+                      </Space>
+                    </Col>
+                  </Row>
+                </Card>
+              );
+            })}
+          </Space>
+        </Card>
+        {/* Result Actions */}
+        <Card
+          style={{
+            textAlign: "center",
+            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            border: "none",
+          }}
+        >
+          <Space direction="vertical" size="large">
+            <Space size="large" wrap>
+              <Button
+                type="primary"
+                size="large"
+                icon={<FileText size={16} />}
+                onClick={() => navigate("/learner/exams")}
+                style={{ background: "#1890ff", borderColor: "#1890ff" }}
+              >
+                Thêm bài thi luyện tập
+              </Button>
+              <Button
+                type="default"
+                size="large"
+                icon={<RotateCcw size={16} />}
+                onClick={() => window.location.reload()}
+                style={{
+                  background: "#52c41a",
+                  borderColor: "#52c41a",
+                  color: "#fff",
+                }}
+              >
+                Làm lại bài thi
+              </Button>
+              <Button
+                type="default"
+                size="large"
+                icon={<Home size={16} />}
+                onClick={() => navigate("/learner/dashboard")}
+              >
+                Quay lại Trang chủ
+              </Button>
+            </Space>
 
-                <button
-                  className="btn btn-outline-secondary btn-lg"
-                  onClick={() => navigate("/learner/dashboard")}
-                >
-                  <FontAwesomeIcon icon={faHouse} className="me-2" />
-                  Quay lại Trang chủ
-                </button>
-              </div>
-              
-              <div className="achievement-message mt-4">
-                <div className="alert alert-info">
-                  <FontAwesomeIcon icon={faCheck} className="me-2" />
-                  <strong>Chúc mừng!</strong> Bạn đã hoàn thành bài thi với điểm số {examResult.totalScore}/990. 
+            <Alert
+              message={
+                <Space>
+                  <Trophy size={16} />
+                  <strong>Chúc mừng!</strong>
+                  Bạn đã hoàn thành bài thi với điểm số {examResult.totalScore}
+                  /990.
                   {examResult.totalScore >= 600 && " Kết quả rất tốt!"}
                   {examResult.totalScore >= 800 && " Xuất sắc!"}
-                  {examResult.totalScore < 600 && " Hãy tiếp tục luyện tập để cải thiện kết quả!"}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                  {examResult.totalScore < 600 &&
+                    " Hãy tiếp tục luyện tập để cải thiện kết quả!"}
+                </Space>
+              }
+              type="info"
+              style={{ background: "rgba(255,255,255,0.9)", border: "none" }}
+            />
+          </Space>
+        </Card>
+      </Content>
     );
   }
 
   // Exam start/intro view when not yet started
   if (!examStarted) {
     return (
-      <div className="exam-detail-container">
-        {/* Breadcrumb */}{" "}
-        <div className="breadcrumb-container">
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <Link to="/learner/dashboard">
-                  <FontAwesomeIcon icon={faHouse} className="me-2" />
-                  Trang chủ
-                </Link>
-              </li>
-              <li className="breadcrumb-item">
-                <Link to="/learner/exams">
-                  <FontAwesomeIcon icon={faFileAlt} className="me-2" />
-                  Bài thi thực hành
-                </Link>
-              </li>
-              <li className="breadcrumb-item active">{exam.name}</li>
-            </ol>
-          </nav>
-        </div>
-        <div className="exam-intro-container">
-          <div className="exam-intro-header">
-            <h2>{exam.name}</h2>
-            <div className="exam-badges">
-              {" "}
-              <span className="badge bg-info me-2">
-                <FontAwesomeIcon icon={faClock} className="me-1" />
-                {exam.duration} phút
-              </span>
-              <span className="badge bg-primary">
-                <FontAwesomeIcon icon={faQuestionCircle} className="me-1" />
-                {exam.questions ? exam.questions.length : 0} câu hỏi
-              </span>
-            </div>
-          </div>{" "}
-          <div className="exam-description">
-            <h4>Mô tả</h4>
-            <p>{exam.description}</p>
-          </div>
-          <div className="exam-instructions">
-            <h4>Hướng dẫn</h4>
-            <ul>
-              <li>Bài thi này có {exam.questions ? exam.questions.length : 0} câu hỏi.</li>
-              <li>Bạn có {exam.duration} phút để hoàn thành bài thi này.</li>
-              <li>Bạn có thể đánh dấu các câu hỏi để xem lại sau.</li>
-              <li>Bạn có thể lưu tiến trình và tiếp tục sau.</li>
-              <li>Sau khi nộp bài, bạn không thể thay đổi câu trả lời.</li>
-            </ul>
-          </div>{" "}
-          {savedProgress && (
-            <div className="alert alert-info" role="alert">
-              <FontAwesomeIcon icon={faCheck} className="me-2" />
-              Bạn có một phiên đã lưu cho bài thi này. Bạn có thể tiếp tục từ
-              nơi bạn đã dừng lại.
-            </div>
-          )}{" "}
-          <div className="exam-intro-actions">
-            <button className="btn btn-primary btn-lg" onClick={startExam}>
-              {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
-            </button>
-            <Link
-              to="/learner/exams"
-              className="btn btn-outline-secondary btn-lg ms-3"
-            >
-              Quay lại
+      <Content style={{ padding: "24px", background: "#f5f5f5" }}>
+        {/* Breadcrumb */}
+        <Breadcrumb style={{ marginBottom: "24px" }}>
+          <Breadcrumb.Item>
+            <Link to="/learner/dashboard">
+              <Home size={16} style={{ marginRight: "4px" }} />
+              Trang chủ
             </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/learner/exams">
+              <FileText size={16} style={{ marginRight: "4px" }} />
+              Bài thi thực hành
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>{exam.name}</Breadcrumb.Item>
+        </Breadcrumb>
+
+        {/* Exam Introduction */}
+        <Card
+          style={{
+            marginBottom: "24px",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            border: "none",
+          }}
+        >
+          <div style={{ textAlign: "center", color: "#fff" }}>
+            <Title level={2} style={{ color: "#fff", marginBottom: "16px" }}>
+              {exam.name}
+            </Title>
+            <Space size="large">
+              <Badge
+                count={
+                  <Space>
+                    <Clock size={16} />
+                    {exam.duration} phút
+                  </Space>
+                }
+                style={{
+                  backgroundColor: "#1890ff",
+                  fontSize: "14px",
+                  padding: "4px 12px",
+                  borderRadius: "16px",
+                }}
+              />
+              <Badge
+                count={
+                  <Space>
+                    <HelpCircle size={16} />
+                    {exam.questions ? exam.questions.length : 0} câu hỏi
+                  </Space>
+                }
+                style={{
+                  backgroundColor: "#52c41a",
+                  fontSize: "14px",
+                  padding: "4px 12px",
+                  borderRadius: "16px",
+                }}
+              />
+            </Space>
           </div>
-        </div>
-      </div>
+        </Card>
+
+        <Row gutter={[24, 24]}>
+          <Col xs={24} lg={12}>
+            {/* Description */}
+            <Card
+              title={
+                <>
+                  <BookOpen size={16} style={{ marginRight: "8px" }} />
+                  Mô tả
+                </>
+              }
+              style={{ height: "100%", marginBottom: "24px" }}
+            >
+              <Paragraph>{exam.description}</Paragraph>
+            </Card>
+          </Col>
+          <Col xs={24} lg={12}>
+            {/* Instructions */}
+            <Card
+              title={
+                <>
+                  <Target size={16} style={{ marginRight: "8px" }} />
+                  Hướng dẫn
+                </>
+              }
+              style={{ height: "100%", marginBottom: "24px" }}
+            >
+              <ul style={{ paddingLeft: "20px", margin: 0 }}>
+                <li style={{ marginBottom: "8px" }}>
+                  Bài thi này có {exam.questions ? exam.questions.length : 0}{" "}
+                  câu hỏi.
+                </li>
+                <li style={{ marginBottom: "8px" }}>
+                  Bạn có {exam.duration} phút để hoàn thành bài thi này.
+                </li>
+                <li style={{ marginBottom: "8px" }}>
+                  Bạn có thể đánh dấu các câu hỏi để xem lại sau.
+                </li>
+                <li style={{ marginBottom: "8px" }}>
+                  Bạn có thể lưu tiến trình và tiếp tục sau.
+                </li>
+                <li style={{ marginBottom: "8px" }}>
+                  Sau khi nộp bài, bạn không thể thay đổi câu trả lời.
+                </li>
+              </ul>
+            </Card>
+          </Col>
+        </Row>
+
+        {savedProgress && (
+          <Alert
+            message="Tiếp tục bài thi"
+            description="Bạn có một phiên đã lưu cho bài thi này. Bạn có thể tiếp tục từ nơi bạn đã dừng lại."
+            type="info"
+            showIcon
+            style={{ marginBottom: "24px" }}
+          />
+        )}
+
+        {/* Action Buttons */}
+        <Card style={{ textAlign: "center" }}>
+          <Space size="large">
+            <Button
+              type="primary"
+              size="large"
+              onClick={startExam}
+              icon={<PlayCircle size={20} />}
+              style={{ minWidth: "200px", height: "50px", fontSize: "16px" }}
+            >
+              {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
+            </Button>
+            <Link to="/learner/exams">
+              <Button
+                size="large"
+                icon={<ArrowLeft size={16} />}
+                style={{ minWidth: "120px", height: "50px" }}
+              >
+                Quay lại
+              </Button>
+            </Link>
+          </Space>
+        </Card>
+      </Content>
     );
   }
 
@@ -706,240 +1161,536 @@ const ExamDetail = () => {
   // If no questions available, show error
   if (!exam.questions || exam.questions.length === 0) {
     return (
-      <div className="exam-detail-container">
-        <div className="alert alert-warning m-4" role="alert">
-          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
-          Bài thi này chưa có câu hỏi nào. Vui lòng thử lại sau.
-        </div>
-        <div className="text-center">
-          <Link to="/learner/exams" className="btn btn-outline-primary">
-            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-            Quay lại Danh sách bài thi
-          </Link>
-        </div>
-      </div>
+      <Content style={{ padding: "24px" }}>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Alert
+            message="Không có câu hỏi"
+            description="Bài thi này chưa có câu hỏi nào. Vui lòng thử lại sau."
+            type="warning"
+            showIcon
+            icon={<AlertCircle size={20} />}
+          />
+          <div style={{ textAlign: "center" }}>
+            <Link to="/learner/exams">
+              <Button type="primary" icon={<ArrowLeft size={16} />}>
+                Quay lại Danh sách bài thi
+              </Button>
+            </Link>
+          </div>
+        </Space>
+      </Content>
     );
   }
 
   // If currentQuestion is not available, show error
   if (!currentQuestion) {
     return (
-      <div className="exam-detail-container">
-        <div className="alert alert-danger m-4" role="alert">
-          <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
-          Không thể tải câu hỏi hiện tại. Vui lòng thử lại.
-        </div>
-        <div className="text-center">
-          <Link to="/learner/exams" className="btn btn-outline-primary">
-            <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-            Quay lại Danh sách bài thi
-          </Link>
-        </div>
-      </div>
+      <Content style={{ padding: "24px" }}>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Alert
+            message="Lỗi tải câu hỏi"
+            description="Không thể tải câu hỏi hiện tại. Vui lòng thử lại."
+            type="error"
+            showIcon
+            icon={<AlertCircle size={20} />}
+          />
+          <div style={{ textAlign: "center" }}>
+            <Link to="/learner/exams">
+              <Button type="primary" icon={<ArrowLeft size={16} />}>
+                Quay lại Danh sách bài thi
+              </Button>
+            </Link>
+          </div>
+        </Space>
+      </Content>
     );
   }
 
+  // ...existing code...
+
   return (
-    <div className="exam-container">
+    <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
       {/* Exam Header */}
-      <div className="exam-header">
-        <div className="exam-title">
-          <h4>{exam.name}</h4>
-        </div>
-        <div className="exam-timer">
-          <FontAwesomeIcon icon={faClock} className="me-2" />
-          <span className="timer-text">{formatTime(remainingTime)}</span>
-        </div>
+      <div
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          padding: "16px 24px",
+          color: "#fff",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+        }}
+      >
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Title level={4} style={{ color: "#fff", margin: 0 }}>
+              {exam.name}
+            </Title>
+          </Col>
+          <Col>
+            <Space align="center" size="large">
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.2)",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <Space>
+                  <Clock size={20} />
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {formatTime(remainingTime)}
+                  </Text>
+                </Space>
+              </div>
+            </Space>
+          </Col>
+        </Row>
       </div>
 
       {/* Main Exam Content */}
-      <div className="exam-content">
-        {/* Question Navigation Sidebar */}
-        <div className="question-nav">
-          {" "}
-          <div className="question-nav-header">
-            <h5>Câu hỏi</h5>
-          </div>
-          <div className="question-nav-list">
-            {exam.questions && exam.questions.map((q, index) => (
-              <button
-                key={q.id}
-                className={`question-nav-item ${
-                  index === currentQuestionIndex ? "active" : ""
-                } ${userAnswers[q.id] !== undefined ? "answered" : ""} ${
-                  flaggedQuestions.includes(q.id) ? "flagged" : ""
-                }`}
-                onClick={() => goToQuestion(index)}
+      <Content style={{ padding: "24px" }}>
+        <Row gutter={[24, 24]}>
+          {/* Question Navigation Sidebar */}
+          <Col xs={24} lg={6} xl={5}>
+            <Card
+              title={
+                <>
+                  <HelpCircle size={16} style={{ marginRight: "8px" }} />
+                  Câu hỏi
+                </>
+              }
+              style={{
+                position: "sticky",
+                top: "120px",
+                maxHeight: "calc(100vh - 200px)",
+                overflow: "auto",
+                display: window.innerWidth < 992 ? "none" : "block",
+              }}
+              size="small"
+            >
+              <Row gutter={[8, 8]}>
+                {exam.questions &&
+                  exam.questions.map((q, index) => (
+                    <Col span={6} key={q.id}>
+                      <Button
+                        type={
+                          index === currentQuestionIndex ? "primary" : "default"
+                        }
+                        size="small"
+                        onClick={() => goToQuestion(index)}
+                        style={{
+                          width: "100%",
+                          background:
+                            userAnswers[q.id] !== undefined
+                              ? index === currentQuestionIndex
+                                ? "#1890ff"
+                                : "#52c41a"
+                              : index === currentQuestionIndex
+                              ? "#1890ff"
+                              : "#fff",
+                          borderColor: flaggedQuestions.includes(q.id)
+                            ? "#faad14"
+                            : index === currentQuestionIndex
+                            ? "#1890ff"
+                            : userAnswers[q.id] !== undefined
+                            ? "#52c41a"
+                            : "#d9d9d9",
+                          color:
+                            index === currentQuestionIndex
+                              ? "#fff"
+                              : userAnswers[q.id] !== undefined
+                              ? "#fff"
+                              : "#262626",
+                          position: "relative",
+                        }}
+                      >
+                        {index + 1}
+                        {flaggedQuestions.includes(q.id) && (
+                          <Flag
+                            size={10}
+                            style={{
+                              position: "absolute",
+                              top: "2px",
+                              right: "2px",
+                              color: "#faad14",
+                            }}
+                          />
+                        )}
+                      </Button>
+                    </Col>
+                  ))}
+              </Row>
+
+              {/* Legend */}
+              <Divider />
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
               >
-                {index + 1}
-                {flaggedQuestions.includes(q.id) && (
-                  <FontAwesomeIcon icon={faFlag} className="flag-icon" />
+                <Space size="small">
+                  <div
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      background: "#1890ff",
+                      borderRadius: "2px",
+                    }}
+                  ></div>
+                  <Text type="secondary" style={{ fontSize: "12px" }}>
+                    Hiện tại
+                  </Text>
+                </Space>
+                <Space size="small">
+                  <div
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      background: "#52c41a",
+                      borderRadius: "2px",
+                    }}
+                  ></div>
+                  <Text type="secondary" style={{ fontSize: "12px" }}>
+                    Đã trả lời
+                  </Text>
+                </Space>
+                <Space size="small">
+                  <div
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      border: "2px solid #faad14",
+                      borderRadius: "2px",
+                    }}
+                  ></div>
+                  <Text type="secondary" style={{ fontSize: "12px" }}>
+                    Đã đánh dấu
+                  </Text>
+                </Space>
+              </Space>
+            </Card>
+          </Col>
+
+          {/* Question Content */}
+          <Col xs={24} lg={18} xl={19}>
+            <Card>
+              {/* Question Header */}
+              <div
+                style={{
+                  marginBottom: "24px",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #f0f0f0",
+                }}
+              >
+                <Row justify="space-between" align="middle">
+                  <Col>
+                    <Title level={5} style={{ margin: 0 }}>
+                      Câu hỏi {currentQuestionIndex + 1} /{" "}
+                      {exam.questions ? exam.questions.length : 0}
+                    </Title>
+                  </Col>
+                  <Col>
+                    <Button
+                      type={
+                        flaggedQuestions.includes(currentQuestion.id)
+                          ? "primary"
+                          : "default"
+                      }
+                      icon={<Flag size={16} />}
+                      onClick={() => toggleFlagQuestion(currentQuestion.id)}
+                      style={{
+                        borderColor: flaggedQuestions.includes(
+                          currentQuestion.id
+                        )
+                          ? "#faad14"
+                          : "#d9d9d9",
+                        background: flaggedQuestions.includes(
+                          currentQuestion.id
+                        )
+                          ? "#faad14"
+                          : "#fff",
+                        color: flaggedQuestions.includes(currentQuestion.id)
+                          ? "#fff"
+                          : "#262626",
+                      }}
+                    >
+                      {flaggedQuestions.includes(currentQuestion.id)
+                        ? "Bỏ đánh dấu"
+                        : "Đánh dấu"}
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+
+              {/* Question Media */}
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ width: "100%", marginBottom: "24px" }}
+              >
+                {currentQuestion.image && (
+                  <div>
+                    <Image
+                      src={currentQuestion.image}
+                      alt="Hình ảnh câu hỏi"
+                      style={{ maxWidth: "100%", borderRadius: "8px" }}
+                      placeholder={
+                        <div
+                          style={{
+                            padding: "40px",
+                            textAlign: "center",
+                            background: "#f5f5f5",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          Loading image...
+                        </div>
+                      }
+                    />
+                  </div>
                 )}
-              </button>
-            ))}
-          </div>{" "}
-          <div className="question-nav-legend">
-            <div className="legend-item">
-              <div className="legend-color current"></div>
-              <span>Hiện tại</span>
-            </div>
-            <div className="legend-item">
-              <div className="legend-color answered"></div>
-              <span>Đã trả lời</span>
-            </div>
-            <div className="legend-item">
-              <div className="legend-color flagged"></div>
-              <span>Đã đánh dấu</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Question Content */}
-        <div className="question-content">
-          {" "}
-          <div className="question-header">
-            <h5>
-              Câu hỏi {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
-            </h5>
-            <button
-              className={`flag-button ${
-                flaggedQuestions.includes(currentQuestion.id) ? "flagged" : ""
-              }`}
-              onClick={() => toggleFlagQuestion(currentQuestion.id)}
-            >
-              <FontAwesomeIcon icon={faFlag} />
-              {flaggedQuestions.includes(currentQuestion.id)
-                ? " Bỏ đánh dấu"
-                : " Đánh dấu xem lại"}
-            </button>
-          </div>
-          {currentQuestion.image && (
-            <div className="question-image">
-              <img src={currentQuestion.image} alt="Hình ảnh câu hỏi" />
-            </div>
-          )}
-          {currentQuestion.audio && (
-            <div className="question-audio mb-3">
-              <audio controls>
-                <source src={currentQuestion.audio} type="audio/mpeg" />
-                Trình duyệt của bạn không hỗ trợ phát âm thanh.
-              </audio>
-            </div>
-          )}
-          <div className="question-text">
-            <p>{currentQuestion.text}</p>
-          </div>
-          <div className="answer-options">
-            {currentQuestion.options && currentQuestion.options.map((option, optionIndex) => {
-              const optionLetter = String.fromCharCode(65 + optionIndex); // A, B, C, D... cho các lựa chọn
-              return (
-                <div className="answer-option" key={option.id}>
-                  <input
-                    type="radio"
-                    id={`option-${option.id}`}
-                    name={`question-${currentQuestion.id}`}
-                    value={option.id}
-                    checked={userAnswers[currentQuestion.id] === option.id}
-                    onChange={() =>
-                      handleAnswerSelect(currentQuestion.id, option.id)
-                    }
-                  />
-                  <label htmlFor={`option-${option.id}`}>
-                    <span className="option-letter">{optionLetter}</span>
-                    <span className="option-text">{option.text}</span>
-                  </label>
-                </div>
-              );
-            })}
-          </div>
-          {/* Navigation buttons */}
-          <div className="question-navigation">
-            {" "}
-            <button
-              className="btn btn-outline-secondary"
-              onClick={goToPrevQuestion}
-              disabled={currentQuestionIndex === 0}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} className="me-2" />
-              Câu trước
-            </button>
-            <div className="center-buttons">
-              <button
-                className="btn btn-outline-info me-2"
-                onClick={saveProgress}
-              >
-                <FontAwesomeIcon icon={faSave} className="me-1" />
-                {savedProgress ? "Đã lưu" : "Lưu tiến trình"}
-              </button>
+                {currentQuestion.audio && (
+                  <Card
+                    size="small"
+                    style={{
+                      background: "#f0f9ff",
+                      border: "1px solid #91d5ff",
+                    }}
+                  >
+                    <AudioPlayer
+                      src={currentQuestion.audio}
+                      questionId={currentQuestion.id}
+                      key={`audio-${currentQuestion.id}-${currentQuestion.audio}`}
+                    />
+                  </Card>
+                )}
+              </Space>
 
-              <button
-                className="btn btn-success"
-                onClick={() => setShowConfirmSubmit(true)}
+              {/* Question Text */}
+              <div style={{ marginBottom: "32px" }}>
+                <Title
+                  level={4}
+                  style={{ marginBottom: "24px", color: "#262626" }}
+                >
+                  {currentQuestion.text}
+                </Title>
+              </div>
+
+              {/* Answer Options */}
+              <Radio.Group
+                value={userAnswers[currentQuestion.id]}
+                onChange={(e) =>
+                  handleAnswerSelect(currentQuestion.id, e.target.value)
+                }
+                style={{ width: "100%" }}
               >
-                <FontAwesomeIcon icon={faCheck} className="me-1" />
-                Nộp bài
-              </button>
-            </div>
-            <button
-              className="btn btn-outline-primary"
-              onClick={goToNextQuestion}
-              disabled={!exam.questions || currentQuestionIndex === exam.questions.length - 1}
-            >
-              Câu tiếp
-              <FontAwesomeIcon icon={faChevronRight} className="ms-2" />
-            </button>
-          </div>
-        </div>
-      </div>
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%" }}
+                >
+                  {currentQuestion.options &&
+                    currentQuestion.options.map((option, optionIndex) => {
+                      const optionLetter = String.fromCharCode(
+                        65 + optionIndex
+                      );
+                      return (
+                        <Radio
+                          key={option.id}
+                          value={option.id}
+                          style={{
+                            width: "100%",
+                            padding: "16px",
+                            borderRadius: "8px",
+                            border: "2px solid",
+                            borderColor:
+                              userAnswers[currentQuestion.id] === option.id
+                                ? "#1890ff"
+                                : "#f0f0f0",
+                            background:
+                              userAnswers[currentQuestion.id] === option.id
+                                ? "#f0f9ff"
+                                : "#fff",
+                            transition: "all 0.3s ease",
+                          }}
+                        >
+                          <Space align="center" style={{ width: "100%" }}>
+                            <Tag
+                              color="blue"
+                              style={{ minWidth: "28px", textAlign: "center" }}
+                            >
+                              {optionLetter}
+                            </Tag>
+                            <Text style={{ fontSize: "16px" }}>
+                              {option.text}
+                            </Text>
+                          </Space>
+                        </Radio>
+                      );
+                    })}
+                </Space>
+              </Radio.Group>
+
+              {/* Navigation buttons */}
+              <div
+                style={{
+                  marginTop: "32px",
+                  paddingTop: "24px",
+                  borderTop: "1px solid #f0f0f0",
+                }}
+              >
+                <Row justify="space-between" align="middle">
+                  <Col>
+                    <Button
+                      type="default"
+                      size="large"
+                      onClick={goToPrevQuestion}
+                      disabled={currentQuestionIndex === 0}
+                      icon={<ChevronLeft size={16} />}
+                      style={{ minWidth: "120px" }}
+                    >
+                      Câu trước
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Space size="middle">
+                      <Button
+                        type="default"
+                        size="large"
+                        onClick={saveProgress}
+                        icon={<Save size={16} />}
+                        style={{
+                          background: savedProgress ? "#52c41a" : "#1890ff",
+                          borderColor: savedProgress ? "#52c41a" : "#1890ff",
+                          color: "#fff",
+                        }}
+                      >
+                        {savedProgress ? "Đã lưu" : "Lưu tiến trình"}
+                      </Button>
+
+                      <Button
+                        type="primary"
+                        size="large"
+                        onClick={() => setShowConfirmSubmit(true)}
+                        icon={<CheckCircle size={16} />}
+                        style={{
+                          background: "#52c41a",
+                          borderColor: "#52c41a",
+                          minWidth: "120px",
+                        }}
+                      >
+                        Nộp bài
+                      </Button>
+                    </Space>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="default"
+                      size="large"
+                      onClick={goToNextQuestion}
+                      disabled={
+                        !exam.questions ||
+                        currentQuestionIndex === exam.questions.length - 1
+                      }
+                      style={{ minWidth: "120px" }}
+                    >
+                      Câu tiếp
+                      <ChevronRight size={16} />
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </Content>
 
       {/* Confirm Submit Modal */}
-      {showConfirmSubmit && (
-        <div className="modal-overlay">
-          <div className="confirm-modal">
-            <h4>Nộp bài?</h4>
-            <p>
-              Bạn có chắc chắn muốn nộp bài thi? Bạn không thể thay đổi câu trả
-              lời sau khi đã nộp.
-            </p>
+      <Modal
+        title={
+          <Space>
+            <AlertCircle size={20} style={{ color: "#faad14" }} />
+            Nộp bài thi?
+          </Space>
+        }
+        open={showConfirmSubmit}
+        onCancel={() => setShowConfirmSubmit(false)}
+        footer={null}
+        width={500}
+        centered
+      >
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Text style={{ fontSize: "16px", color: "#595959" }}>
+            Bạn có chắc chắn muốn nộp bài thi? Bạn không thể thay đổi câu trả
+            lời sau khi đã nộp.
+          </Text>
 
-            <div className="stats-summary">
-              <div className="stat">
-                <span>Đã trả lời:</span>
-                <strong>
-                  {Object.keys(userAnswers).length}/{exam.questions ? exam.questions.length : 0}
-                </strong>
-              </div>
-              <div className="stat">
-                <span>Chưa trả lời:</span>
-                <strong>
-                  {(exam.questions ? exam.questions.length : 0) - Object.keys(userAnswers).length}
-                </strong>
-              </div>
-              <div className="stat">
-                <span>Đã đánh dấu:</span>
-                <strong>{flaggedQuestions.length}</strong>
-              </div>
-            </div>
+          <Card size="small" style={{ background: "#f8f9fa" }}>
+            <Row gutter={[16, 16]}>
+              <Col span={8}>
+                <Statistic
+                  title="Đã trả lời"
+                  value={Object.keys(userAnswers).length}
+                  suffix={`/ ${exam.questions ? exam.questions.length : 0}`}
+                  valueStyle={{ color: "#52c41a", fontWeight: "bold" }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="Chưa trả lời"
+                  value={
+                    (exam.questions ? exam.questions.length : 0) -
+                    Object.keys(userAnswers).length
+                  }
+                  valueStyle={{ color: "#ff4d4f", fontWeight: "bold" }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="Đã đánh dấu"
+                  value={flaggedQuestions.length}
+                  valueStyle={{ color: "#faad14", fontWeight: "bold" }}
+                />
+              </Col>
+            </Row>
+          </Card>
 
-            <div className="modal-actions">
-              <button
-                className="btn btn-secondary"
+          <Row gutter={[16, 16]} justify="end">
+            <Col>
+              <Button
+                size="large"
                 onClick={() => setShowConfirmSubmit(false)}
+                icon={<X size={16} />}
               >
                 Tiếp tục làm bài
-              </button>
-              <button
-                className="btn btn-primary"
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                size="large"
                 onClick={submitExam}
-                disabled={loading}
+                loading={loading}
+                icon={<CheckCircle size={16} />}
+                style={{ background: "#52c41a", borderColor: "#52c41a" }}
               >
                 {loading ? "Đang nộp bài..." : "Nộp bài ngay"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+              </Button>
+            </Col>
+          </Row>
+        </Space>
+      </Modal>
+    </Layout>
   );
 };
 

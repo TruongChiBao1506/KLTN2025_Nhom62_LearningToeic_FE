@@ -1,36 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
-  faArrowLeft,
-  faDownload,
-  faFileAlt,
-  faCalendarAlt,
-  faSpinner,
-  faExclamationTriangle,
-  faBook,
-  faTag,
-  faShare,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
+  Card,
+  Button,
+  Typography,
+  Breadcrumb,
+  Tag,
+  Space,
+  Row,
+  Col,
+  Spin,
+  Badge,
+  Descriptions,
+  message,
+} from "antd";
+import {
+  ArrowLeftOutlined,
+  DownloadOutlined,
+  FileTextOutlined,
+  CalendarOutlined,
+  ShareAltOutlined,
+  CustomerServiceOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  InfoCircleOutlined,
+  HomeOutlined,
+  BookOutlined,
+  TagOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import "./style.css";
 
-// Import services
 import freeMaterialService from "../../../services/freeMaterialService";
 
-const MaterialDetail = () => {
-  const { id } = useParams();
-  console.log("🚀 ~ MaterialDetail ~ id:", id);
+const { Title, Paragraph, Text } = Typography;
 
+
+const MaterialDetailAntd = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   // States
   const [material, setMaterial] = useState(null);
-  console.log("🚀 ~ MaterialDetail ~ material:", material);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
@@ -41,27 +55,19 @@ const MaterialDetail = () => {
       try {
         setLoading(true);
         setError(null);
-
         const response = await freeMaterialService.get(id);
-        console.log("🚀 ~ fetchMaterialDetail ~ response:", response);
-
-        // Handle response structure - check if data is nested
         const materialData = response.data?.data || response.data || response;
-        console.log("🚀 ~ fetchMaterialDetail ~ materialData:", materialData);
-        
         setMaterial(materialData);
       } catch (error) {
         console.error("Error fetching material detail:", error);
         setError("Không thể tải thông tin tài liệu. Vui lòng thử lại sau.");
-        toast.error("Không thể tải thông tin tài liệu");
+        message.error("Không thể tải thông tin tài liệu");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchMaterialDetail();
-    }
+    fetchMaterialDetail();
   }, [id]);
 
   // Initialize AOS
@@ -75,20 +81,17 @@ const MaterialDetail = () => {
   // Handle download
   const handleDownload = async () => {
     if (!material?.fileName) {
-      toast.error("Không tìm thấy file để tải xuống");
+      message.error("Không tìm thấy file để tải xuống");
       return;
     }
 
     try {
       setDownloading(true);
-
-      // Use the fileName from the response structure
       await freeMaterialService.downloadFile(material.fileName);
-
-      toast.success("Bắt đầu tải xuống tài liệu");
+      message.success("Bắt đầu tải xuống tài liệu");
     } catch (error) {
       console.error("Download error:", error);
-      toast.error("Lỗi khi tải xuống tài liệu");
+      message.error("Lỗi khi tải xuống tài liệu");
     } finally {
       setDownloading(false);
     }
@@ -96,26 +99,52 @@ const MaterialDetail = () => {
 
   // Handle back navigation
   const handleBackClick = () => {
-    navigate("/learner/materials");
+    navigate
+      ? navigate("/learner/materials")
+      : message.info("Quay lại danh sách tài liệu");
+  };
+
+  // Handle share
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: material.title,
+        text: material.description || material.shortDescription,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      message.success("Đã sao chép link vào clipboard");
+    }
   };
 
   // Loading state
   if (loading) {
     return (
-      <div className="container-fluid py-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="text-center">
-              <FontAwesomeIcon
-                icon={faSpinner}
-                spin
-                size="3x"
-                className="text-primary mb-3"
-              />
-              <h4>Đang tải thông tin tài liệu...</h4>
-            </div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <Card
+          className="w-full max-w-md mx-4 text-center border-0 shadow-2xl"
+          style={{
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <div className="py-12">
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 48, color: "#3b82f6" }}
+                  spin
+                />
+              }
+              className="mb-6"
+            />
+            <Title level={4} className="mb-2 text-gray-800">
+              Đang tải thông tin tài liệu...
+            </Title>
+            <Text className="text-gray-600">Vui lòng chờ trong giây lát</Text>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -123,318 +152,387 @@ const MaterialDetail = () => {
   // Error state
   if (error || !material) {
     return (
-      <div className="container-fluid py-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="text-center">
-              <FontAwesomeIcon
-                icon={faExclamationTriangle}
-                size="3x"
-                className="text-warning mb-3"
-              />
-              <h4 className="mb-3">Không tìm thấy tài liệu</h4>
-              <p className="text-muted mb-4">
-                {error || "Tài liệu không tồn tại hoặc đã bị xóa."}
-              </p>
-              <button className="btn btn-primary" onClick={handleBackClick}>
-                <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                Quay lại danh sách tài liệu
-              </button>
-            </div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <Card
+          className="w-full max-w-lg mx-4 text-center border-0 shadow-2xl"
+          style={{
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <div className="py-12">
+            <div className="mb-6 text-6xl text-yellow-500">⚠️</div>
+            <Title level={3} className="mb-4 text-gray-800">
+              Không tìm thấy tài liệu
+            </Title>
+            <Paragraph className="mb-8 text-gray-600">
+              {error || "Tài liệu không tồn tại hoặc đã bị xóa."}
+            </Paragraph>
+            <Button
+              type="primary"
+              size="large"
+              icon={<ArrowLeftOutlined />}
+              onClick={handleBackClick}
+              className="h-12 px-8 bg-blue-500 border-0 hover:bg-blue-600 rounded-xl"
+            >
+              Quay lại danh sách tài liệu
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="material-detail-container">
-      <div className="container-fluid py-4">
-        {/* Breadcrumb */}
-        <div className="row mb-4">
-          <div className="col-12">
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <Link
-                    to="/learner/dashboard"
-                    className="text-decoration-none"
-                  >
-                    Trang chủ
-                  </Link>
-                </li>
-                <li className="breadcrumb-item">
-                  <Link
-                    to="/learner/materials"
-                    className="text-decoration-none"
-                  >
-                    Tài liệu học tập
-                  </Link>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  {material.title}
-                </li>
-              </ol>
-            </nav>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Hero Section */}
+      <div className="bg-white border-b border-gray-100 shadow-lg">
+        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <div className="mb-6" data-aos="fade-down">
+            <Breadcrumb
+              className="text-sm"
+              items={[
+                {
+                  href: "/learner/dashboard",
+                  title: (
+                    <Space>
+                      <HomeOutlined />
+                      <span>Trang chủ</span>
+                    </Space>
+                  ),
+                },
+                {
+                  href: "/learner/materials",
+                  title: (
+                    <Space>
+                      <BookOutlined />
+                      <span>Tài liệu học tập</span>
+                    </Space>
+                  ),
+                },
+                {
+                  title: (
+                    <Text
+                      className="font-medium text-gray-800"
+                      ellipsis={{ tooltip: material.title }}
+                    >
+                      {material.title}
+                    </Text>
+                  ),
+                },
+              ]}
+            />
           </div>
-        </div>
 
-        {/* Back button */}
-        <div className="row mb-4">
-          <div className="col-12">
-            <button
-              className="btn btn-outline-primary btn-sm"
+          {/* Back Button */}
+          <div className="mb-8" data-aos="fade-right">
+            <Button
+              type="default"
+              icon={<ArrowLeftOutlined />}
               onClick={handleBackClick}
-              data-aos="fade-right"
+              className="h-10 px-6 font-medium text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 rounded-xl"
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
               Quay lại danh sách
-            </button>
+            </Button>
+          </div>
+
+          {/* Hero Content */}
+          <div className="max-w-4xl" data-aos="fade-up" data-aos-delay="200">
+            <Title
+              level={1}
+              className="mb-6 text-4xl font-bold leading-tight text-gray-900 lg:text-5xl"
+            >
+              {material.title}
+            </Title>
+
+            {/* Meta Information */}
+            <div className="flex flex-wrap gap-6 mb-6">
+              <Space className="text-gray-600">
+                <CalendarOutlined className="text-gray-400" />
+                <Text>
+                  {new Date(material.createdAt).toLocaleDateString("vi-VN")}
+                </Text>
+              </Space>
+              <Space className="text-gray-600">
+                <FileTextOutlined className="text-gray-400" />
+                <Text>
+                  {material.fileExtension?.toUpperCase() || "PDF"} Document
+                </Text>
+              </Space>
+              <Space className="text-gray-600">
+                <TagOutlined className="text-gray-400" />
+                <Text>Tài liệu miễn phí</Text>
+              </Space>
+            </div>
+
+            {/* Status Badge */}
+            <div className="mb-4">
+              <Badge
+                status={material.materialStatus === 1 ? "success" : "error"}
+                text={
+                  <Text
+                    className={`font-semibold ${
+                      material.materialStatus === 1
+                        ? "text-green-700"
+                        : "text-red-700"
+                    }`}
+                  >
+                    {material.statusDisplay ||
+                      (material.materialStatus === 1
+                        ? "Đang hoạt động"
+                        : "Không hoạt động")}
+                  </Text>
+                }
+              />
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Material Detail Content */}
-        <div className="row">
-          <div className="col-lg-8 col-xl-9">
-            {/* Main Material Card */}
-            <div
-              className="card material-main-card shadow-sm mb-4"
-              data-aos="fade-up"
-            >
-              <div className="card-body p-4">
-                {/* Header */}
-                <div className="material-header mb-4">
-                  <div className="d-flex align-items-start justify-content-between">
-                    <div className="flex-grow-1">
-                      <h1 className="material-title mb-3">{material.title}</h1>
+      {/* Main Content */}
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <Row gutter={[32, 32]}>
+          {/* Main Content */}
+          <Col xs={24} lg={16}>
+            <Space direction="vertical" size="large" className="w-full">
+              {/* Download Section */}
+              <Card
+                className="overflow-hidden border-0 shadow-xl"
+                style={{
+                  background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                }}
+                data-aos="fade-up"
+              >
+                <div className="flex flex-col items-center justify-between gap-8 text-white lg:flex-row">
+                  <div className="flex-1 text-center lg:text-left">
+                    <Title level={3} className="mb-2 text-white">
+                      Tải xuống tài liệu
+                    </Title>
+                    <Paragraph className="mb-0 text-lg text-blue-100">
+                      Nhấn vào nút bên dưới để tải xuống tài liệu PDF
+                    </Paragraph>
+                  </div>
+                  <div>
+                    <Button
+                      type="primary"
+                      size="large"
+                      icon={
+                        downloading ? (
+                          <LoadingOutlined spin />
+                        ) : (
+                          <DownloadOutlined />
+                        )
+                      }
+                      onClick={handleDownload}
+                      loading={downloading}
+                      disabled={material.materialStatus !== 1}
+                      className="px-8 text-lg font-semibold text-white bg-white border-white bg-opacity-20 border-opacity-30 hover:bg-opacity-30 rounded-2xl h-14 backdrop-blur-sm"
+                      style={{
+                        minWidth: "180px",
+                      }}
+                    >
+                      {downloading ? "Đang tải..." : "Tải xuống"}
+                    </Button>
+                  </div>
+                </div>
+              </Card>
 
-                      {/* Meta Information */}
-                      <div className="material-meta d-flex flex-wrap gap-3 mb-3">
-                        <span className="meta-item">
-                          <FontAwesomeIcon
-                            icon={faCalendarAlt}
-                            className="me-1 text-muted"
-                          />
-                          {new Date(material.createdAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
-                        </span>
-                        <span className="meta-item">
-                          <FontAwesomeIcon
-                            icon={faFileAlt}
-                            className="me-1 text-muted"
-                          />
-                          {material.fileExtension?.toUpperCase() || 'PDF'} Document
-                        </span>
-                        <span className="meta-item">
-                          <FontAwesomeIcon
-                            icon={faTag}
-                            className="me-1 text-muted"
-                          />
-                          Tài liệu miễn phí
-                        </span>
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="mb-3">
-                        <span
-                          className={`badge ${
-                            material.materialStatus === 1
-                              ? "bg-success"
-                              : "bg-secondary"
-                          }`}
+              {/* Description Section */}
+              {(material.description || material.shortDescription) && (
+                <Card
+                  title={
+                    <Space>
+                      <BookOutlined className="text-blue-500" />
+                      <Text className="text-xl font-bold">Mô tả tài liệu</Text>
+                    </Space>
+                  }
+                  className="border-0 shadow-lg rounded-2xl"
+                  data-aos="fade-up"
+                  data-aos-delay="100"
+                >
+                  <div className="prose max-w-none">
+                    {(material.description || material.shortDescription)
+                      .split("\n")
+                      .map((paragraph, index) => (
+                        <Paragraph
+                          key={index}
+                          className="mb-4 text-base leading-relaxed text-gray-700"
                         >
-                          {material.statusDisplay || (material.materialStatus === 1
-                            ? "Đang hoạt động"
-                            : "Không hoạt động")}
-                        </span>
-                      </div>
-                    </div>
+                          {paragraph}
+                        </Paragraph>
+                      ))}
+                  </div>
+                </Card>
+              )}
 
-                    {/* Download Button */}
-                    <div className="download-section">
-                      <button
-                        className="btn btn-primary btn-lg"
-                        onClick={handleDownload}
-                        disabled={downloading || material.materialStatus !== 1}
-                        title={
-                          material.materialStatus !== 1
-                            ? "Tài liệu này hiện không khả dụng"
-                            : "Tải xuống tài liệu"
-                        }
-                      >
-                        <FontAwesomeIcon
-                          icon={downloading ? faSpinner : faDownload}
-                          spin={downloading}
-                          className="me-2"
-                        />
-                        {downloading ? "Đang tải..." : "Tải xuống"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                {(material.description || material.shortDescription) && (
-                  <div className="material-description">
-                    <h3 className="section-title mb-3">
-                      <FontAwesomeIcon
-                        icon={faBook}
-                        className="me-2 text-primary"
-                      />
-                      Mô tả tài liệu
-                    </h3>
-                    <div className="description-content p-3 bg-light rounded">
-                      <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
-                        {material.description || material.shortDescription}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Additional Information */}
-            <div
-              className="card shadow-sm"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <div className="card-body">
-                <h3 className="section-title mb-3">
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="me-2 text-primary"
-                  />
-                  Thông tin bổ sung
-                </h3>
-
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="info-item mb-3">
-                      <strong>Tên file:</strong>
-                      <p className="mb-0 text-muted">{material.fileName || material.filePdf}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="info-item mb-3">
-                      <strong>Định dạng:</strong>
-                      <p className="mb-0 text-muted">{material.fileExtension?.toUpperCase() || 'PDF'}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="info-item mb-3">
-                      <strong>Ngày tạo:</strong>
-                      <p className="mb-0 text-muted">
-                        {new Date(material.createdAt).toLocaleString("vi-VN")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="info-item mb-3">
-                      <strong>Cập nhật lần cuối:</strong>
-                      <p className="mb-0 text-muted">
-                        {new Date(material.updatedAt).toLocaleString("vi-VN")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              {/* Additional Information */}
+              <Card
+                title={
+                  <Space>
+                    <InfoCircleOutlined className="text-blue-500" />
+                    <Text className="text-xl font-bold">
+                      Thông tin chi tiết
+                    </Text>
+                  </Space>
+                }
+                className="border-0 shadow-lg rounded-2xl"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
+                <Descriptions column={{ xs: 1, sm: 2 }} bordered size="middle">
+                  <Descriptions.Item label="Tên file" span={2}>
+                    <Text code className="px-2 py-1 bg-gray-100 rounded">
+                      {material.fileName || material.filePdf}
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Định dạng">
+                    <Tag color="blue" className="font-medium">
+                      {material.fileExtension?.toUpperCase() || "PDF"}
+                    </Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Trạng thái">
+                    <Tag
+                      color={
+                        material.materialStatus === 1 ? "success" : "error"
+                      }
+                      icon={
+                        material.materialStatus === 1 ? (
+                          <CheckCircleOutlined />
+                        ) : (
+                          <CloseCircleOutlined />
+                        )
+                      }
+                      className="font-medium"
+                    >
+                      {material.statusDisplay ||
+                        (material.materialStatus === 1
+                          ? "Khả dụng"
+                          : "Không khả dụng")}
+                    </Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày tạo">
+                    <Text>
+                      {new Date(material.createdAt).toLocaleString("vi-VN")}
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Cập nhật lần cuối">
+                    <Text>
+                      {new Date(material.updatedAt).toLocaleString("vi-VN")}
+                    </Text>
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
+            </Space>
+          </Col>
 
           {/* Sidebar */}
-          <div className="col-lg-4 col-xl-3">
-            <div className="material-sidebar">
+          <Col xs={24} lg={8}>
+            <Space direction="vertical" size="large" className="w-full">
               {/* Quick Actions */}
-              <div className="card shadow-sm mb-4" data-aos="fade-left">
-                <div className="card-body">
-                  <h5 className="card-title mb-3">Thao tác nhanh</h5>
-
-                  <div className="d-grid gap-2">
-                    <button
-                      className="btn btn-outline-primary"
-                      onClick={handleDownload}
-                      disabled={downloading || material.materialStatus !== 1}
-                    >
-                      <FontAwesomeIcon icon={faDownload} className="me-2" />
-                      Tải xuống
-                    </button>
-
-                    <button
-                      className="btn btn-outline-secondary"
-                      onClick={() => {
-                        navigator.share &&
-                          navigator.share({
-                            title: material.title,
-                            text: material.description || material.shortDescription,
-                            url: window.location.href,
-                          });
-                      }}
-                      disabled={!navigator.share}
-                    >
-                      <FontAwesomeIcon icon={faShare} className="me-2" />
-                      Chia sẻ
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <Card
+                title={
+                  <Text className="text-lg font-bold">Thao tác nhanh</Text>
+                }
+                className="border-0 shadow-lg rounded-2xl"
+                data-aos="fade-left"
+              >
+                <Space direction="vertical" size="middle" className="w-full">
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={
+                      downloading ? (
+                        <LoadingOutlined spin />
+                      ) : (
+                        <DownloadOutlined />
+                      )
+                    }
+                    onClick={handleDownload}
+                    loading={downloading}
+                    disabled={material.materialStatus !== 1}
+                    className="w-full h-12 font-semibold bg-blue-500 border-0 hover:bg-blue-600 rounded-xl"
+                  >
+                    Tải xuống
+                  </Button>
+                  <Button
+                    size="large"
+                    icon={<ShareAltOutlined />}
+                    onClick={handleShare}
+                    className="w-full h-12 font-semibold text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 rounded-xl"
+                  >
+                    Chia sẻ
+                  </Button>
+                </Space>
+              </Card>
 
               {/* File Information */}
-              <div
-                className="card shadow-sm mb-4"
+              <Card
+                title={
+                  <Text className="text-lg font-bold">Thông tin file</Text>
+                }
+                className="border-0 shadow-lg rounded-2xl"
                 data-aos="fade-left"
                 data-aos-delay="100"
               >
-                <div className="card-body">
-                  <h5 className="card-title mb-3">Thông tin file</h5>
-
-                  <div className="file-info">
-                    <div className="info-row d-flex justify-content-between mb-2">
-                      <span className="text-muted">Định dạng:</span>
-                      <span>{material.fileExtension?.toUpperCase() || 'PDF'}</span>
-                    </div>
-                    <div className="info-row d-flex justify-content-between mb-2">
-                      <span className="text-muted">Trạng thái:</span>
-                      <span
-                        className={`badge ${
-                          material.materialStatus === 1
-                            ? "bg-success"
-                            : "bg-secondary"
-                        }`}
-                      >
-                        {material.statusDisplay || (material.materialStatus === 1
+                <Space direction="vertical" size="middle" className="w-full">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <Text className="text-gray-600">Định dạng:</Text>
+                    <Tag color="blue" className="font-medium">
+                      {material.fileExtension?.toUpperCase() || "PDF"}
+                    </Tag>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <Text className="text-gray-600">Trạng thái:</Text>
+                    <Tag
+                      color={
+                        material.materialStatus === 1 ? "success" : "error"
+                      }
+                      icon={
+                        material.materialStatus === 1 ? (
+                          <CheckCircleOutlined />
+                        ) : (
+                          <CloseCircleOutlined />
+                        )
+                      }
+                      className="font-medium"
+                    >
+                      {material.statusDisplay ||
+                        (material.materialStatus === 1
                           ? "Khả dụng"
                           : "Không khả dụng")}
-                      </span>
-                    </div>
+                    </Tag>
                   </div>
-                </div>
-              </div>
+                </Space>
+              </Card>
 
               {/* Help Section */}
-              <div
-                className="card shadow-sm"
+              <Card
+                title={<Text className="text-lg font-bold">Cần hỗ trợ?</Text>}
+                className="border-0 border-blue-100 shadow-lg rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50"
                 data-aos="fade-left"
                 data-aos-delay="200"
               >
-                <div className="card-body">
-                  <h5 className="card-title mb-3">Cần hỗ trợ?</h5>
-                  <p className="text-muted small mb-3">
-                    Nếu bạn gặp vấn đề với việc tải xuống hoặc sử dụng tài liệu,
-                    hãy liên hệ với chúng tôi.
-                  </p>
-                  <button className="btn btn-outline-info btn-sm">
-                    Liên hệ hỗ trợ
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                <Paragraph className="mb-4 leading-relaxed text-blue-800">
+                  Nếu bạn gặp vấn đề với việc tải xuống hoặc sử dụng tài liệu,
+                  hãy liên hệ với chúng tôi.
+                </Paragraph>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<CustomerServiceOutlined />}
+                  onClick={() => message.info("Chức năng hỗ trợ sẽ sớm có!")}
+                  className="w-full h-12 font-semibold border-0 bg-cyan-500 hover:bg-cyan-600 rounded-xl"
+                >
+                  Liên hệ hỗ trợ
+                </Button>
+              </Card>
+            </Space>
+          </Col>
+        </Row>
       </div>
     </div>
   );
 };
 
-export default MaterialDetail;
+export default MaterialDetailAntd;

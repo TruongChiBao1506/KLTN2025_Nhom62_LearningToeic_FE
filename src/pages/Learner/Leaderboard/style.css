@@ -20,7 +20,7 @@
 
 .title-icon {
   margin-right: 16px;
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .page-description {
@@ -78,7 +78,7 @@
 
 .leaderboard-item.top-three {
   background: linear-gradient(135deg, #fff9e6 0%, #fff1b8 100%);
-  border: 2px solid #ffd700;
+  border: 2px solid #FFD700;
 }
 
 .rank-section {
@@ -178,7 +178,7 @@
 .big-rank {
   font-size: 3rem;
   font-weight: 900;
-  color: #ffd700;
+  color: #FFD700;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -197,7 +197,7 @@
   display: block;
   font-size: 20px;
   font-weight: 700;
-  color: #ffd700;
+  color: #FFD700;
 }
 
 .stat-text {
@@ -316,34 +316,34 @@
   .leaderboard-container {
     padding: 16px;
   }
-
+  
   .page-title {
     font-size: 2rem;
   }
-
+  
   .leaderboard-controls {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
   }
-
+  
   .leaderboard-item {
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
-
+  
   .stats-section {
     margin: 0;
     justify-content: space-around;
     width: 100%;
   }
-
+  
   .current-rank-content {
     flex-direction: column;
     text-align: center;
   }
-
+  
   .rank-stats {
     grid-template-columns: 1fr;
     gap: 8px;

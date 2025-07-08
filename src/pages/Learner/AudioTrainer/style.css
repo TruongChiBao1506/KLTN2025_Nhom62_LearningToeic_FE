@@ -14,7 +14,7 @@
 .audio-trainer-header h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .audio-trainer-header p {
@@ -37,7 +37,7 @@
   background: white;
   border-radius: 15px;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   min-height: 500px;
 }
 
@@ -149,7 +149,7 @@
 }
 
 .time {
-  font-family: "Courier New", monospace;
+  font-family: 'Courier New', monospace;
   font-weight: bold;
   color: #333;
   min-width: 50px;
@@ -259,7 +259,7 @@
   background: white;
   border-radius: 15px;
   padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   height: fit-content;
 }
 
@@ -324,11 +324,7 @@
 
 .audio-item.active {
   border-color: #667eea;
-  background: linear-gradient(
-    135deg,
-    rgba(102, 126, 234, 0.1),
-    rgba(118, 75, 162, 0.1)
-  );
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 .audio-item-info {
@@ -364,7 +360,7 @@
 .duration {
   background: #e8f5e8;
   color: #2e7d32;
-  font-family: "Courier New", monospace;
+  font-family: 'Courier New', monospace;
   font-weight: bold;
 }
 
@@ -396,7 +392,7 @@
 .statistics-section {
   max-width: 1400px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 25px;
@@ -407,7 +403,7 @@
   text-align: center;
   margin-bottom: 20px;
   font-size: 1.3rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .stats-grid {
@@ -417,7 +413,7 @@
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.2);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
@@ -448,7 +444,7 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
-
+  
   .audio-list-section {
     order: -1;
   }
