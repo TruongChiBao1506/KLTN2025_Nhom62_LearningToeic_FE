@@ -49,7 +49,7 @@ import {
 import learnerExamService from "../../../services/learnerExamService";
 import AudioPlayer from "../../../components/AudioPlayer";
 import audioRegistry from "../../../utils/AudioRegistry";
-import TextHighlighter from "../../../components/TextHighlighter";
+import TextHighlighter from "../../../components/TextHighlighter/TextHighlighter";
 
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;

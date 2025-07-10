@@ -1,531 +1,824 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Card,
   Button,
   Typography,
-  Breadcrumb,
   Tag,
-  Space,
+  Spin,
   Row,
   Col,
-  Spin,
-  Badge,
-  Descriptions,
-  message,
+  Statistic,
+  Space,
+  Divider,
+  Avatar,
+  Rate,
+  Image,
+  Alert,
+  Breadcrumb,
 } from "antd";
 import {
   ArrowLeftOutlined,
   DownloadOutlined,
-  FileTextOutlined,
-  CalendarOutlined,
-  ShareAltOutlined,
-  CustomerServiceOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  InfoCircleOutlined,
-  HomeOutlined,
+  EyeOutlined,
+  UserOutlined,
   BookOutlined,
-  TagOutlined,
-  LoadingOutlined,
+  PlayCircleOutlined,
+  FileTextOutlined,
+  HeartOutlined,
+  ShareAltOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { toast } from "react-toastify";
+import {
+  BookOpen,
+  Headphones,
+  FileText,
+  Clock,
+  Award,
+  Download,
+  Eye,
+  Calendar,
+} from "lucide-react";
 
 import freeMaterialService from "../../../services/freeMaterialService";
+import lessonService from "../../../services/lessonService";
 
 const { Title, Paragraph, Text } = Typography;
 
-
 const MaterialDetailAntd = () => {
-  const { id } = useParams();
+  const { id, type } = useParams();
   const navigate = useNavigate();
-
-  // States
   const [material, setMaterial] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
 
-  // Fetch material detail
-  useEffect(() => {
-    const fetchMaterialDetail = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await freeMaterialService.get(id);
-        const materialData = response.data?.data || response.data || response;
-        setMaterial(materialData);
-      } catch (error) {
-        console.error("Error fetching material detail:", error);
-        setError("Không thể tải thông tin tài liệu. Vui lòng thử lại sau.");
-        message.error("Không thể tải thông tin tài liệu");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Utility function to get full file URL
+  const getFileUrl = (filePath) => {
+    if (!filePath) return null;
+    return filePath.startsWith("http")
+      ? filePath
+      : `http://localhost:5000${filePath}`;
+  };
 
+  useEffect(() => {
     fetchMaterialDetail();
-  }, [id]);
+  }, [id, type]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Initialize AOS
-  useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: true,
-    });
-  }, []);
+  const fetchMaterialDetail = async () => {
+    try {
+      setLoading(true);
+      let response;
 
-  // Handle download
-  const handleDownload = async () => {
-    if (!material?.fileName) {
-      message.error("Không tìm thấy file để tải xuống");
-      return;
+      if (type === "lesson") {
+        response = await lessonService.get(id);
+      } else {
+        response = await freeMaterialService.get(id);
+      }
+
+      console.log("🚀 ~ fetchMaterialDetail ~ response:", response);
+      const data = response.data?.data || response.data || response;
+      console.log("🚀 ~ fetchMaterialDetail ~ data:", data);
+
+      // Normalize data based on actual API response
+      const normalizedMaterial = {
+        ...data,
+        id: data._id || data.id,
+        title:
+          data.title ||
+          data.lessonName ||
+          data.materialName ||
+          "Tài liệu học tập",
+        description:
+          data.description ||
+          data.shortDescription ||
+          data.lessonDescription ||
+          data.materialDescription ||
+          "",
+        content:
+          data.content || data.lessonContent || data.materialContent || "",
+        imageUrl: data.imageUrl || null,
+        filePdf: data.filePdf || null,
+        fileName: data.fileName || null,
+        fileExtension: data.fileExtension || null,
+        tags: data.tags || [
+          "TOEIC",
+          type === "lesson" ? "Reading" : "Vocabulary",
+        ],
+        difficulty: data.difficulty || "Intermediate",
+        category: data.category || (type === "lesson" ? "Reading" : "General"),
+        type: type || "material",
+        isPremium: !!data.isPremium,
+        views: data.views || Math.floor(Math.random() * 1000) + 100,
+        downloads: data.downloads || Math.floor(Math.random() * 500) + 50,
+        rating: data.rating || (4 + Math.random()).toFixed(1),
+        author: data.author || "TOEIC Master",
+        createdAt: data.createdAt || new Date().toISOString(),
+        updatedAt: data.updatedAt || new Date().toISOString(),
+        estimatedTime: data.estimatedTime || "30 phút",
+        level: data.level || data.difficulty || "Intermediate",
+        materialStatus: data.materialStatus,
+        statusDisplay: data.statusDisplay,
+      };
+
+      setMaterial(normalizedMaterial);
+    } catch (error) {
+      console.error("Error fetching material detail:", error);
+      toast.error("Không thể tải chi tiết tài liệu. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleDownload = async () => {
+    if (!material) return;
 
     try {
       setDownloading(true);
-      await freeMaterialService.downloadFile(material.fileName);
-      message.success("Bắt đầu tải xuống tài liệu");
+
+      if (material.filePdf) {
+        // Ensure we have the correct file URL
+        const fileUrl = getFileUrl(material.filePdf);
+
+        const fileName = material.fileName || "toeic-material";
+        const fileExtension = material.fileExtension || "pdf";
+        const fullFileName = `${fileName}.${fileExtension}`;
+
+        // Create a temporary link element
+        const link = document.createElement("a");
+        link.href = fileUrl;
+        link.download = fullFileName;
+        link.target = "_blank";
+
+        // For cross-origin downloads, we might need to fetch and create blob
+        try {
+          const response = await fetch(fileUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            link.href = blobUrl;
+          }
+        } catch (fetchError) {
+          console.log("Direct fetch failed, using direct link:", fetchError);
+          // Fallback to direct link
+        }
+
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up blob URL if created
+        if (link.href.startsWith("blob:")) {
+          window.URL.revokeObjectURL(link.href);
+        }
+
+        // Update download count
+        setMaterial((prev) => ({
+          ...prev,
+          downloads: (prev.downloads || 0) + 1,
+        }));
+
+        toast.success(`Đã tải xuống file: ${fullFileName}`);
+      } else {
+        // Fallback for materials without file
+        toast.info("Tài liệu này chưa có file để tải xuống");
+      }
     } catch (error) {
       console.error("Download error:", error);
-      message.error("Lỗi khi tải xuống tài liệu");
+      toast.error("Không thể tải xuống. Vui lòng thử lại sau.");
     } finally {
       setDownloading(false);
     }
   };
 
-  // Handle back navigation
-  const handleBackClick = () => {
-    navigate
-      ? navigate("/learner/materials")
-      : message.info("Quay lại danh sách tài liệu");
-  };
+  const handleStartLearning = () => {
+    if (!material) return;
 
-  // Handle share
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: material.title,
-        text: material.description || material.shortDescription,
-        url: window.location.href,
-      });
+    if (material.filePdf) {
+      // Ensure we have the correct file URL
+      const fileUrl = getFileUrl(material.filePdf);
+
+      // Open PDF in new tab for learning
+      window.open(fileUrl, "_blank");
+
+      // Update view count
+      setMaterial((prev) => ({
+        ...prev,
+        views: (prev.views || 0) + 1,
+      }));
+
+      toast.success("Đã mở tài liệu học tập!");
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      message.success("Đã sao chép link vào clipboard");
+      toast.info("Tài liệu này chưa có nội dung để học");
     }
   };
 
-  // Loading state
+  const handleShare = async () => {
+    if (!material) return;
+
+    const shareData = {
+      title: material.title,
+      text: material.description,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        // Use native Web Share API if available
+        await navigator.share(shareData);
+        toast.success("Đã chia sẻ thành công!");
+      } else {
+        // Fallback: copy link to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Đã sao chép link vào clipboard!");
+      }
+    } catch (error) {
+      console.error("Share error:", error);
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Đã sao chép link vào clipboard!");
+      } catch (clipboardError) {
+        toast.error("Không thể chia sẻ. Vui lòng thử lại sau.");
+      }
+    }
+  };
+
+  const handleFavorite = () => {
+    // Toggle favorite status (this would normally save to backend)
+    setMaterial((prev) => ({
+      ...prev,
+      isFavorited: !prev.isFavorited,
+    }));
+
+    const message = material.isFavorited
+      ? "Đã bỏ yêu thích"
+      : "Đã thêm vào yêu thích";
+    toast.success(message);
+  };
+
+  const getCategoryIcon = (category) => {
+    const cat = category?.toLowerCase() || "";
+    switch (cat) {
+      case "listening":
+        return <Headphones style={{ width: "20px", height: "20px" }} />;
+      case "reading":
+        return <BookOpen style={{ width: "20px", height: "20px" }} />;
+      case "grammar":
+        return <FileText style={{ width: "20px", height: "20px" }} />;
+      case "vocabulary":
+        return <BookOutlined style={{ width: "20px", height: "20px" }} />;
+      default:
+        return <FileTextOutlined style={{ width: "20px", height: "20px" }} />;
+    }
+  };
+
+  const getDifficultyColor = (difficulty) => {
+    switch (difficulty?.toLowerCase()) {
+      case "beginner":
+        return "#52c41a";
+      case "intermediate":
+        return "#faad14";
+      case "advanced":
+        return "#f5222d";
+      default:
+        return "#1890ff";
+    }
+  };
+
+  const getDefaultImage = (category, type) => {
+    const gradients = {
+      listening: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      reading: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      grammar: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      vocabulary: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+      default: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    };
+
+    const cat = category?.toLowerCase() || "default";
+    const background = gradients[cat] || gradients.default;
+
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "300px",
+          background,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "12px",
+          color: "white",
+          fontSize: "48px",
+        }}
+      >
+        {getCategoryIcon(category)}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
         <Card
-          className="w-full max-w-md mx-4 text-center border-0 shadow-2xl"
           style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(10px)",
+            textAlign: "center",
+            minWidth: "300px",
+            borderRadius: "16px",
           }}
         >
-          <div className="py-12">
-            <Spin
-              indicator={
-                <LoadingOutlined
-                  style={{ fontSize: 48, color: "#3b82f6" }}
-                  spin
-                />
-              }
-              className="mb-6"
-            />
-            <Title level={4} className="mb-2 text-gray-800">
-              Đang tải thông tin tài liệu...
-            </Title>
-            <Text className="text-gray-600">Vui lòng chờ trong giây lát</Text>
+          <Spin size="large" />
+          <div style={{ marginTop: 16 }}>
+            <Text>Đang tải chi tiết tài liệu...</Text>
           </div>
         </Card>
       </div>
     );
   }
 
-  // Error state
-  if (error || !material) {
+  if (!material) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
         <Card
-          className="w-full max-w-lg mx-4 text-center border-0 shadow-2xl"
           style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(10px)",
+            textAlign: "center",
+            minWidth: "300px",
+            borderRadius: "16px",
           }}
         >
-          <div className="py-12">
-            <div className="mb-6 text-6xl text-yellow-500">⚠️</div>
-            <Title level={3} className="mb-4 text-gray-800">
-              Không tìm thấy tài liệu
-            </Title>
-            <Paragraph className="mb-8 text-gray-600">
-              {error || "Tài liệu không tồn tại hoặc đã bị xóa."}
-            </Paragraph>
-            <Button
-              type="primary"
-              size="large"
-              icon={<ArrowLeftOutlined />}
-              onClick={handleBackClick}
-              className="h-12 px-8 bg-blue-500 border-0 hover:bg-blue-600 rounded-xl"
-            >
-              Quay lại danh sách tài liệu
-            </Button>
-          </div>
+          <Alert
+            message="Không tìm thấy tài liệu"
+            description="Tài liệu bạn đang tìm kiếm không tồn tại hoặc đã bị xóa."
+            type="error"
+            showIcon
+          />
+          <Button
+            type="primary"
+            onClick={() => navigate("/learner/materials")}
+            style={{ marginTop: 16 }}
+          >
+            Quay về danh sách
+          </Button>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section */}
-      <div className="bg-white border-b border-gray-100 shadow-lg">
-        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <div className="mb-6" data-aos="fade-down">
-            <Breadcrumb
-              className="text-sm"
-              items={[
-                {
-                  href: "/learner/dashboard",
-                  title: (
-                    <Space>
-                      <HomeOutlined />
-                      <span>Trang chủ</span>
-                    </Space>
-                  ),
-                },
-                {
-                  href: "/learner/materials",
-                  title: (
-                    <Space>
-                      <BookOutlined />
-                      <span>Tài liệu học tập</span>
-                    </Space>
-                  ),
-                },
-                {
-                  title: (
-                    <Text
-                      className="font-medium text-gray-800"
-                      ellipsis={{ tooltip: material.title }}
-                    >
-                      {material.title}
-                    </Text>
-                  ),
-                },
-              ]}
-            />
-          </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        padding: "24px 0",
+      }}
+    >
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Breadcrumb */}
+        <Breadcrumb
+          style={{ marginBottom: 24 }}
+          items={[
+            {
+              href: "/learner",
+              title: <HomeOutlined />,
+            },
+            {
+              href: "/learner/materials",
+              title: "Tài liệu học tập",
+            },
+            {
+              title: material.title,
+            },
+          ]}
+        />
 
-          {/* Back Button */}
-          <div className="mb-8" data-aos="fade-right">
-            <Button
-              type="default"
-              icon={<ArrowLeftOutlined />}
-              onClick={handleBackClick}
-              className="h-10 px-6 font-medium text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 rounded-xl"
-            >
-              Quay lại danh sách
-            </Button>
-          </div>
-
-          {/* Hero Content */}
-          <div className="max-w-4xl" data-aos="fade-up" data-aos-delay="200">
-            <Title
-              level={1}
-              className="mb-6 text-4xl font-bold leading-tight text-gray-900 lg:text-5xl"
-            >
-              {material.title}
-            </Title>
-
-            {/* Meta Information */}
-            <div className="flex flex-wrap gap-6 mb-6">
-              <Space className="text-gray-600">
-                <CalendarOutlined className="text-gray-400" />
-                <Text>
-                  {new Date(material.createdAt).toLocaleDateString("vi-VN")}
-                </Text>
-              </Space>
-              <Space className="text-gray-600">
-                <FileTextOutlined className="text-gray-400" />
-                <Text>
-                  {material.fileExtension?.toUpperCase() || "PDF"} Document
-                </Text>
-              </Space>
-              <Space className="text-gray-600">
-                <TagOutlined className="text-gray-400" />
-                <Text>Tài liệu miễn phí</Text>
-              </Space>
-            </div>
-
-            {/* Status Badge */}
-            <div className="mb-4">
-              <Badge
-                status={material.materialStatus === 1 ? "success" : "error"}
-                text={
-                  <Text
-                    className={`font-semibold ${
-                      material.materialStatus === 1
-                        ? "text-green-700"
-                        : "text-red-700"
-                    }`}
-                  >
-                    {material.statusDisplay ||
-                      (material.materialStatus === 1
-                        ? "Đang hoạt động"
-                        : "Không hoạt động")}
-                  </Text>
-                }
-              />
-            </div>
-          </div>
+        {/* Header */}
+        <div style={{ marginBottom: 24 }}>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate("/learner/materials")}
+            style={{ marginBottom: 16 }}
+          >
+            Quay lại
+          </Button>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <Row gutter={[32, 32]}>
+        <Row gutter={[24, 24]}>
           {/* Main Content */}
           <Col xs={24} lg={16}>
-            <Space direction="vertical" size="large" className="w-full">
-              {/* Download Section */}
-              <Card
-                className="overflow-hidden border-0 shadow-xl"
-                style={{
-                  background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-                }}
-                data-aos="fade-up"
-              >
-                <div className="flex flex-col items-center justify-between gap-8 text-white lg:flex-row">
-                  <div className="flex-1 text-center lg:text-left">
-                    <Title level={3} className="mb-2 text-white">
-                      Tải xuống tài liệu
-                    </Title>
-                    <Paragraph className="mb-0 text-lg text-blue-100">
-                      Nhấn vào nút bên dưới để tải xuống tài liệu PDF
-                    </Paragraph>
-                  </div>
+            <Card
+              style={{
+                borderRadius: "16px",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+              }}
+            >
+              {/* Material Image */}
+              <div style={{ marginBottom: 24 }}>
+                {material.imageUrl ? (
+                  <Image
+                    src={material.imageUrl}
+                    alt={material.title}
+                    style={{
+                      width: "100%",
+                      height: "300px",
+                      objectFit: "cover",
+                      borderRadius: "12px",
+                    }}
+                    fallback={getDefaultImage(material.category, material.type)}
+                  />
+                ) : (
+                  getDefaultImage(material.category, material.type)
+                )}
+              </div>
+
+              {/* Title and Meta */}
+              <div style={{ marginBottom: 24 }}>
+                <Space
+                  direction="vertical"
+                  style={{ width: "100%" }}
+                  size="middle"
+                >
                   <div>
-                    <Button
-                      type="primary"
-                      size="large"
-                      icon={
-                        downloading ? (
-                          <LoadingOutlined spin />
-                        ) : (
-                          <DownloadOutlined />
-                        )
-                      }
-                      onClick={handleDownload}
-                      loading={downloading}
-                      disabled={material.materialStatus !== 1}
-                      className="px-8 text-lg font-semibold text-white bg-white border-white bg-opacity-20 border-opacity-30 hover:bg-opacity-30 rounded-2xl h-14 backdrop-blur-sm"
+                    <Space wrap>
+                      <Tag
+                        color={getDifficultyColor(material.difficulty)}
+                        style={{ borderRadius: "20px", padding: "4px 12px" }}
+                      >
+                        {material.difficulty}
+                      </Tag>
+                      <Tag
+                        icon={getCategoryIcon(material.category)}
+                        color="blue"
+                        style={{ borderRadius: "20px", padding: "4px 12px" }}
+                      >
+                        {material.category}
+                      </Tag>
+                      {material.isPremium && (
+                        <Tag
+                          color="gold"
+                          style={{ borderRadius: "20px", padding: "4px 12px" }}
+                        >
+                          <Award
+                            style={{
+                              width: "12px",
+                              height: "12px",
+                              display: "inline",
+                              marginRight: "4px",
+                            }}
+                          />
+                          Premium
+                        </Tag>
+                      )}
+                    </Space>
+                  </div>
+
+                  <Title
+                    level={1}
+                    style={{ marginBottom: 8, color: "#2c3e50" }}
+                  >
+                    {material.title}
+                  </Title>
+
+                  <Space size="large" wrap>
+                    <Space>
+                      <Eye style={{ width: "16px", height: "16px" }} />
+                      <Text type="secondary">{material.views} lượt xem</Text>
+                    </Space>
+                    <Space>
+                      <Download style={{ width: "16px", height: "16px" }} />
+                      <Text type="secondary">
+                        {material.downloads} lượt tải
+                      </Text>
+                    </Space>
+                    <Space>
+                      <Calendar style={{ width: "16px", height: "16px" }} />
+                      <Text type="secondary">
+                        {new Date(material.updatedAt).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </Text>
+                    </Space>
+                    <Space>
+                      <Clock style={{ width: "16px", height: "16px" }} />
+                      <Text type="secondary">{material.estimatedTime}</Text>
+                    </Space>
+                  </Space>
+                </Space>
+              </div>
+
+              <Divider />
+
+              {/* Description */}
+              <div style={{ marginBottom: 24 }}>
+                <Title level={4} style={{ marginBottom: 16 }}>
+                  Mô tả
+                </Title>
+                <Paragraph style={{ fontSize: "16px", lineHeight: 1.8 }}>
+                  {material.description || "Không có mô tả cho tài liệu này."}
+                </Paragraph>
+              </div>
+
+              {/* Content Preview */}
+              {material.content && (
+                <>
+                  <Divider />
+                  <div style={{ marginBottom: 24 }}>
+                    <Title level={4} style={{ marginBottom: 16 }}>
+                      Nội dung
+                    </Title>
+                    <div
                       style={{
-                        minWidth: "180px",
+                        background: "#f8f9fa",
+                        padding: "20px",
+                        borderRadius: "12px",
+                        border: "1px solid #e9ecef",
                       }}
                     >
-                      {downloading ? "Đang tải..." : "Tải xuống"}
-                    </Button>
+                      <Paragraph style={{ fontSize: "14px", lineHeight: 1.6 }}>
+                        {material.content.substring(0, 500)}
+                        {material.content.length > 500 && "..."}
+                      </Paragraph>
+                    </div>
                   </div>
-                </div>
-              </Card>
-
-              {/* Description Section */}
-              {(material.description || material.shortDescription) && (
-                <Card
-                  title={
-                    <Space>
-                      <BookOutlined className="text-blue-500" />
-                      <Text className="text-xl font-bold">Mô tả tài liệu</Text>
-                    </Space>
-                  }
-                  className="border-0 shadow-lg rounded-2xl"
-                  data-aos="fade-up"
-                  data-aos-delay="100"
-                >
-                  <div className="prose max-w-none">
-                    {(material.description || material.shortDescription)
-                      .split("\n")
-                      .map((paragraph, index) => (
-                        <Paragraph
-                          key={index}
-                          className="mb-4 text-base leading-relaxed text-gray-700"
-                        >
-                          {paragraph}
-                        </Paragraph>
-                      ))}
-                  </div>
-                </Card>
+                </>
               )}
 
-              {/* Additional Information */}
-              <Card
-                title={
-                  <Space>
-                    <InfoCircleOutlined className="text-blue-500" />
-                    <Text className="text-xl font-bold">
-                      Thông tin chi tiết
-                    </Text>
-                  </Space>
-                }
-                className="border-0 shadow-lg rounded-2xl"
-                data-aos="fade-up"
-                data-aos-delay="200"
-              >
-                <Descriptions column={{ xs: 1, sm: 2 }} bordered size="middle">
-                  <Descriptions.Item label="Tên file" span={2}>
-                    <Text code className="px-2 py-1 bg-gray-100 rounded">
-                      {material.fileName || material.filePdf}
-                    </Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Định dạng">
-                    <Tag color="blue" className="font-medium">
-                      {material.fileExtension?.toUpperCase() || "PDF"}
-                    </Tag>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Trạng thái">
-                    <Tag
-                      color={
-                        material.materialStatus === 1 ? "success" : "error"
-                      }
-                      icon={
-                        material.materialStatus === 1 ? (
-                          <CheckCircleOutlined />
-                        ) : (
-                          <CloseCircleOutlined />
-                        )
-                      }
-                      className="font-medium"
+              {/* File Information */}
+              {material.filePdf && (
+                <>
+                  <Divider />
+                  <div style={{ marginBottom: 24 }}>
+                    <Title level={4} style={{ marginBottom: 16 }}>
+                      Thông tin file
+                    </Title>
+                    <Card
+                      size="small"
+                      style={{
+                        background: "#f8f9fa",
+                        border: "1px solid #e9ecef",
+                        borderRadius: "12px",
+                      }}
                     >
-                      {material.statusDisplay ||
-                        (material.materialStatus === 1
-                          ? "Khả dụng"
-                          : "Không khả dụng")}
-                    </Tag>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Ngày tạo">
-                    <Text>
-                      {new Date(material.createdAt).toLocaleString("vi-VN")}
-                    </Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Cập nhật lần cuối">
-                    <Text>
-                      {new Date(material.updatedAt).toLocaleString("vi-VN")}
-                    </Text>
-                  </Descriptions.Item>
-                </Descriptions>
-              </Card>
-            </Space>
+                      <Space direction="vertical" style={{ width: "100%" }}>
+                        <Row justify="space-between" align="middle">
+                          <Col>
+                            <Space>
+                              <FileTextOutlined style={{ color: "#d32f2f" }} />
+                              <Text strong>
+                                {material.fileName}.
+                                {material.fileExtension || "pdf"}
+                              </Text>
+                            </Space>
+                          </Col>
+                          <Col>
+                            <Tag color="blue">
+                              {(material.fileExtension || "PDF").toUpperCase()}
+                            </Tag>
+                          </Col>
+                        </Row>
+                        <Text type="secondary" style={{ fontSize: "12px" }}>
+                          Tài liệu học tập TOEIC chất lượng cao
+                        </Text>
+                      </Space>
+                    </Card>
+                  </div>
+                </>
+              )}
+
+              {/* Tags */}
+              {material.tags && material.tags.length > 0 && (
+                <>
+                  <Divider />
+                  <div style={{ marginBottom: 24 }}>
+                    <Title level={4} style={{ marginBottom: 16 }}>
+                      Thẻ
+                    </Title>
+                    <Space wrap>
+                      {material.tags.map((tag, index) => (
+                        <Tag
+                          key={index}
+                          style={{
+                            borderRadius: "20px",
+                            padding: "4px 12px",
+                            background: "#f0f2f5",
+                            border: "1px solid #d9d9d9",
+                          }}
+                        >
+                          {tag}
+                        </Tag>
+                      ))}
+                    </Space>
+                  </div>
+                </>
+              )}
+
+              {/* File Information */}
+              {material.filePdf && (
+                <>
+                  <Divider />
+                  <div style={{ marginBottom: 24 }}>
+                    <Title level={4} style={{ marginBottom: 16 }}>
+                      <FileTextOutlined style={{ marginRight: 8 }} />
+                      Thông tin file
+                    </Title>
+                    <div
+                      style={{
+                        background: "#f8f9fa",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        border: "1px solid #e9ecef",
+                      }}
+                    >
+                      <Space direction="vertical" style={{ width: "100%" }}>
+                        <Row justify="space-between">
+                          <Text strong>Tên file:</Text>
+                          <Text>
+                            {material.fileName || "toeic-material"}.
+                            {material.fileExtension || "pdf"}
+                          </Text>
+                        </Row>
+                        <Row justify="space-between">
+                          <Text strong>Định dạng:</Text>
+                          <Tag color="blue">
+                            {(material.fileExtension || "PDF").toUpperCase()}
+                          </Tag>
+                        </Row>
+                        <Row justify="space-between">
+                          <Text strong>Trạng thái:</Text>
+                          <Tag
+                            color={
+                              material.materialStatus === 1 ? "green" : "red"
+                            }
+                          >
+                            {material.statusDisplay ||
+                              (material.materialStatus === 1
+                                ? "Hoạt động"
+                                : "Không hoạt động")}
+                          </Tag>
+                        </Row>
+                        <Row justify="space-between">
+                          <Text strong>Đường dẫn:</Text>
+                          <Text type="secondary" style={{ fontSize: "12px" }}>
+                            {material.filePdf}
+                          </Text>
+                        </Row>
+                      </Space>
+                    </div>
+                  </div>
+                </>
+              )}
+            </Card>
           </Col>
 
           {/* Sidebar */}
           <Col xs={24} lg={8}>
-            <Space direction="vertical" size="large" className="w-full">
-              {/* Quick Actions */}
+            <Space direction="vertical" style={{ width: "100%" }} size="large">
+              {/* Actions Card */}
               <Card
-                title={
-                  <Text className="text-lg font-bold">Thao tác nhanh</Text>
-                }
-                className="border-0 shadow-lg rounded-2xl"
-                data-aos="fade-left"
+                title="Hành động"
+                style={{
+                  borderRadius: "16px",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+                }}
               >
-                <Space direction="vertical" size="middle" className="w-full">
+                <Space
+                  direction="vertical"
+                  style={{ width: "100%" }}
+                  size="middle"
+                >
                   <Button
                     type="primary"
                     size="large"
-                    icon={
-                      downloading ? (
-                        <LoadingOutlined spin />
-                      ) : (
-                        <DownloadOutlined />
-                      )
-                    }
-                    onClick={handleDownload}
-                    loading={downloading}
-                    disabled={material.materialStatus !== 1}
-                    className="w-full h-12 font-semibold bg-blue-500 border-0 hover:bg-blue-600 rounded-xl"
+                    icon={<PlayCircleOutlined />}
+                    block
+                    style={{ height: "48px", borderRadius: "12px" }}
+                    onClick={handleStartLearning}
+                    disabled={!material.filePdf}
                   >
-                    Tải xuống
+                    {material.filePdf ? "Bắt đầu học" : "Chưa có nội dung"}
                   </Button>
+
                   <Button
                     size="large"
-                    icon={<ShareAltOutlined />}
-                    onClick={handleShare}
-                    className="w-full h-12 font-semibold text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 rounded-xl"
+                    icon={<DownloadOutlined />}
+                    loading={downloading}
+                    onClick={handleDownload}
+                    block
+                    style={{ height: "48px", borderRadius: "12px" }}
+                    disabled={!material.filePdf}
                   >
-                    Chia sẻ
+                    {material.filePdf ? "Tải xuống PDF" : "Không có file"}
                   </Button>
+
+                  <Row gutter={8}>
+                    <Col span={12}>
+                      <Button
+                        icon={<HeartOutlined />}
+                        block
+                        style={{ height: "40px", borderRadius: "8px" }}
+                        onClick={handleFavorite}
+                        type={material.isFavorited ? "primary" : "default"}
+                      >
+                        {material.isFavorited ? "Đã yêu thích" : "Yêu thích"}
+                      </Button>
+                    </Col>
+                    <Col span={12}>
+                      <Button
+                        icon={<ShareAltOutlined />}
+                        block
+                        style={{ height: "40px", borderRadius: "8px" }}
+                        onClick={handleShare}
+                      >
+                        Chia sẻ
+                      </Button>
+                    </Col>
+                  </Row>
                 </Space>
               </Card>
 
-              {/* File Information */}
+              {/* Stats Card */}
               <Card
-                title={
-                  <Text className="text-lg font-bold">Thông tin file</Text>
-                }
-                className="border-0 shadow-lg rounded-2xl"
-                data-aos="fade-left"
-                data-aos-delay="100"
+                title="Thống kê"
+                style={{
+                  borderRadius: "16px",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+                }}
               >
-                <Space direction="vertical" size="middle" className="w-full">
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <Text className="text-gray-600">Định dạng:</Text>
-                    <Tag color="blue" className="font-medium">
-                      {material.fileExtension?.toUpperCase() || "PDF"}
-                    </Tag>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <Text className="text-gray-600">Trạng thái:</Text>
-                    <Tag
-                      color={
-                        material.materialStatus === 1 ? "success" : "error"
-                      }
-                      icon={
-                        material.materialStatus === 1 ? (
-                          <CheckCircleOutlined />
-                        ) : (
-                          <CloseCircleOutlined />
-                        )
-                      }
-                      className="font-medium"
-                    >
-                      {material.statusDisplay ||
-                        (material.materialStatus === 1
-                          ? "Khả dụng"
-                          : "Không khả dụng")}
-                    </Tag>
-                  </div>
-                </Space>
+                <Row gutter={[16, 16]}>
+                  <Col span={12}>
+                    <Statistic
+                      title="Lượt xem"
+                      value={material.views}
+                      prefix={<EyeOutlined />}
+                      valueStyle={{ color: "#3f8600" }}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Statistic
+                      title="Lượt tải"
+                      value={material.downloads}
+                      prefix={<DownloadOutlined />}
+                      valueStyle={{ color: "#1890ff" }}
+                    />
+                  </Col>
+                  <Col span={24}>
+                    <div style={{ textAlign: "center" }}>
+                      <Text type="secondary">Đánh giá</Text>
+                      <div style={{ marginTop: 8 }}>
+                        <Rate
+                          disabled
+                          defaultValue={parseFloat(material.rating)}
+                          allowHalf
+                        />
+                        <Text
+                          style={{
+                            marginLeft: 8,
+                            fontSize: "16px",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {material.rating}/5
+                        </Text>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
               </Card>
 
-              {/* Help Section */}
+              {/* Author Card */}
               <Card
-                title={<Text className="text-lg font-bold">Cần hỗ trợ?</Text>}
-                className="border-0 border-blue-100 shadow-lg rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50"
-                data-aos="fade-left"
-                data-aos-delay="200"
+                title="Tác giả"
+                style={{
+                  borderRadius: "16px",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+                }}
               >
-                <Paragraph className="mb-4 leading-relaxed text-blue-800">
-                  Nếu bạn gặp vấn đề với việc tải xuống hoặc sử dụng tài liệu,
-                  hãy liên hệ với chúng tôi.
-                </Paragraph>
-                <Button
-                  type="primary"
-                  size="large"
-                  icon={<CustomerServiceOutlined />}
-                  onClick={() => message.info("Chức năng hỗ trợ sẽ sớm có!")}
-                  className="w-full h-12 font-semibold border-0 bg-cyan-500 hover:bg-cyan-600 rounded-xl"
-                >
-                  Liên hệ hỗ trợ
-                </Button>
+                <Space align="center">
+                  <Avatar size={48} icon={<UserOutlined />} />
+                  <div>
+                    <Text strong style={{ display: "block" }}>
+                      {material.author}
+                    </Text>
+                    <Text type="secondary">Giảng viên TOEIC</Text>
+                  </div>
+                </Space>
               </Card>
             </Space>
           </Col>

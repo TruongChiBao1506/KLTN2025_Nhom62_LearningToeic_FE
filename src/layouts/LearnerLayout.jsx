@@ -62,6 +62,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
 import authService from "../services/authService";
+import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
 
 import "./LearnerLayout.css";
 
@@ -1175,8 +1176,10 @@ const LearnerLayout = () => {
         icon={<ArrowRight style={{ transform: "rotate(-90deg)" }} />}
       />
 
-      {/* Custom Styles */}
-      <style jsx>{`
+      {/* AI Chatbot Button */}
+      <ChatbotButton />
+
+      <style jsx global>{`
         .mobile-menu-btn {
           display: none !important;
         }
