@@ -347,16 +347,6 @@ const LearnerLayout = () => {
           icon: <Search size={16} />,
           label: <Link to="/learner/dictionary">Từ điển</Link>,
         },
-        {
-          key: "/learner/flashcards",
-          icon: <Gamepad2 size={16} />,
-          label: <Link to="/learner/flashcards">Flashcards</Link>,
-        },
-        {
-          key: "/learner/quiz",
-          icon: <HelpCircle size={16} />,
-          label: <Link to="/learner/quiz">Quiz từ vựng</Link>,
-        },
       ],
     },
     {

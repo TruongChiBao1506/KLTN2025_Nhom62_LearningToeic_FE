@@ -121,3 +121,106 @@
     gap: 5px;
   }
 }
+
+/* === PERFORMANCE OPTIMIZATIONS FOR RESIZEOBSERVER STABILITY === */
+
+/* Optimize container rendering to prevent ResizeObserver issues */
+.toeic-text-highlighter-container {
+  contain: layout style paint;
+  will-change: auto;
+}
+
+.toeic-highlightable-content {
+  contain: layout;
+  user-select: text;
+}
+
+/* Optimize Popover rendering and positioning */
+.toeic-highlighter-overlay {
+  z-index: 9999 !important;
+  contain: layout style paint;
+  will-change: transform, opacity;
+}
+
+.toeic-highlighter-overlay .ant-popover-content {
+  contain: layout style;
+  overflow: visible; /* Allow content to be visible */
+  /* Stable dimensions to prevent resize events */
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.toeic-highlighter-overlay .ant-popover-inner {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toeic-highlighter-overlay .ant-popover-arrow {
+  display: block !important;
+}
+
+.toeic-highlighter-popover {
+  contain: layout style;
+  /* Fixed dimensions to prevent resize events */
+  width: 280px;
+  padding: 8px 12px;
+}
+
+/* Improve positioning accuracy */
+.toeic-highlighter-overlay.ant-popover-placement-top .ant-popover-content {
+  margin-bottom: 12px;
+}
+
+.toeic-highlighter-overlay.ant-popover-placement-bottom .ant-popover-content {
+  margin-top: 12px;
+}
+
+/* Optimize color swatches */
+.toeic-color-swatch {
+  will-change: transform, border-color;
+  contain: layout style;
+}
+
+/* Optimize buttons */
+.toeic-action-buttons .ant-btn {
+  contain: layout style;
+  backface-visibility: hidden;
+}
+
+/* Optimize highlighted text elements */
+.toeic-text-highlight {
+  contain: layout style;
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* Prevent unnecessary repaints */
+.toeic-highlighter-overlay * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimized animations */
+@keyframes stablePopoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toeic-highlighter-overlay .ant-popover-content {
+  animation: stablePopoverIn 0.1s ease-out;
+}
+
+/* Force GPU acceleration for smooth rendering */
+.toeic-highlighter-overlay,
+.toeic-color-swatch,
+.toeic-text-highlight {
+  transform: translateZ(0);
+}

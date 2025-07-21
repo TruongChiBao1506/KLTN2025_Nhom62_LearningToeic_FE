@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faVolumeUp,
-  faArrowLeft,
-  faCheck,
-  faTimes,
-  faRotateRight,
-  faHome,
-  faStar,
-  faGraduationCap,
-  faClock,
-  faQuestionCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
-import "./style.css";
+  Card,
+  Button,
+  Progress,
+  Row,
+  Col,
+  Typography,
+  Space,
+  Spin,
+  message,
+} from "antd";
+import {
+  Volume2,
+  ArrowLeft,
+  Check,
+  X,
+  RotateCcw,
+  Home,
+  Star,
+  GraduationCap,
+  Clock,
+  HelpCircle,
+  ChevronRight,
+} from "lucide-react";
 
 // Import services
 import topicService from "../../../services/topicService";
@@ -72,14 +81,14 @@ const Quiz = () => {
 
         if (vocabList.length === 0) {
           console.warn("No vocabularies found");
-          toast.warning("Chủ đề này chưa có từ vựng nào");
+          message.warning("Chủ đề này chưa có từ vựng nào");
           setLoading(false);
           return;
         }
 
         if (vocabList.length < 4) {
           console.warn("Not enough vocabularies for quiz");
-          toast.warning("Cần ít nhất 4 từ vựng để tạo bài kiểm tra");
+          message.warning("Cần ít nhất 4 từ vựng để tạo bài kiểm tra");
           setLoading(false);
           return;
         }
@@ -91,7 +100,7 @@ const Quiz = () => {
 
         if (quizQuestions.length === 0) {
           console.error("Failed to generate questions");
-          toast.error("Không thể tạo câu hỏi từ dữ liệu từ vựng");
+          message.error("Không thể tạo câu hỏi từ dữ liệu từ vựng");
           setLoading(false);
           return;
         }
@@ -106,7 +115,7 @@ const Quiz = () => {
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
-        toast.error("Không thể tải dữ liệu. Vui lòng thử lại sau.");
+        message.error("Không thể tải dữ liệu. Vui lòng thử lại sau.");
         setLoading(false);
       }
     };
@@ -207,7 +216,7 @@ const Quiz = () => {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            toast.error("Hết thời gian!");
+            message.error("Hết thời gian!");
             setQuizCompleted(true);
             setShowResult(true);
             return 0;
@@ -237,7 +246,7 @@ const Quiz = () => {
   // Submit answer and go to next question
   const submitAnswer = () => {
     if (selectedAnswer === null) {
-      toast.warning("Vui lòng chọn một đáp án");
+      message.warning("Vui lòng chọn một đáp án");
       return;
     }
 
@@ -272,29 +281,13 @@ const Quiz = () => {
     // Show celebration toast based on performance
     setTimeout(() => {
       if (percentage >= 90) {
-        toast.success("🎉 Xuất sắc! Bạn đã làm bài tuyệt vời!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        message.success("🎉 Xuất sắc! Bạn đã làm bài tuyệt vời!");
       } else if (percentage >= 70) {
-        toast.success("🎊 Tốt lắm! Bạn đã vượt qua bài kiểm tra!", {
-          position: "top-center",
-          autoClose: 4000,
-        });
+        message.success("🎊 Tốt lắm! Bạn đã vượt qua bài kiểm tra!");
       } else if (percentage >= 50) {
-        toast.warning("📚 Cần cố gắng thêm! Hãy ôn tập và thử lại.", {
-          position: "top-center",
-          autoClose: 4000,
-        });
+        message.warning("📚 Cần cố gắng thêm! Hãy ôn tập và thử lại.");
       } else {
-        toast.error("💪 Đừng nản lòng! Hãy học thêm và thử lại nhé!", {
-          position: "top-center",
-          autoClose: 4000,
-        });
+        message.error("💪 Đừng nản lòng! Hãy học thêm và thử lại nhé!");
       }
     }, 500);
   };
@@ -324,7 +317,7 @@ const Quiz = () => {
       window.speechSynthesis.speak(speech);
     } catch (error) {
       console.error("Error playing pronunciation:", error);
-      toast.error("Không thể phát âm từ này");
+      message.error("Không thể phát âm từ này");
     }
   };
 
@@ -337,49 +330,97 @@ const Quiz = () => {
 
   if (loading) {
     return (
-      <div className="container-fluid py-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6 text-center">
-            <div className="spinner-border text-primary mb-3" role="status">
-              <span className="visually-hidden">Đang tải...</span>
-            </div>
-            <p className="text-muted">Đang tải dữ liệu quiz...</p>
-          </div>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f0f2f5 0%, #ffffff 100%)",
+          padding: "20px",
+        }}
+      >
+        <Card
+          style={{
+            textAlign: "center",
+            borderRadius: "16px",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            padding: "24px",
+            border: "none",
+          }}
+        >
+          <Spin size="large" />
+          <Typography.Title
+            level={4}
+            style={{ marginTop: "16px", marginBottom: "8px", color: "#1890ff" }}
+          >
+            Đang tải dữ liệu quiz...
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Vui lòng chờ trong giây lát
+          </Typography.Text>
+        </Card>
       </div>
     );
   }
 
   if (!loading && (vocabularies.length === 0 || questions.length === 0)) {
     return (
-      <div className="container-fluid py-5">
-        <div className="row justify-content-center">
-          <div className="col-md-8 text-center">
-            <FontAwesomeIcon
-              icon={faGraduationCap}
-              className="fs-1 text-muted mb-4"
-            />
-            <h3 className="text-muted mb-3">Không thể tạo bài kiểm tra</h3>
-            <p className="text-muted mb-4">
-              {vocabularies.length === 0
-                ? "Chủ đề này chưa có từ vựng nào để kiểm tra."
-                : "Không đủ dữ liệu để tạo câu hỏi kiểm tra."}
-            </p>
-            <div className="d-flex gap-3 justify-content-center">
-              <Link
-                to={`/learner/topic/${topicId}`}
-                className="btn btn-primary"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                Quay lại chi tiết chủ đề
-              </Link>
-              <Link to="/learner/topics" className="btn btn-outline-secondary">
-                <FontAwesomeIcon icon={faHome} className="me-2" />
-                Danh sách chủ đề
-              </Link>
-            </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f0f2f5 0%, #ffffff 100%)",
+          padding: "20px",
+        }}
+      >
+        <Card
+          style={{
+            textAlign: "center",
+            borderRadius: "16px",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            padding: "24px",
+            border: "none",
+            maxWidth: "500px",
+            width: "100%",
+          }}
+        >
+          <div style={{ marginBottom: "16px" }}>
+            <GraduationCap size={48} style={{ color: "#8c8c8c" }} />
           </div>
-        </div>
+          <Typography.Title
+            level={3}
+            style={{ color: "#8c8c8c", marginBottom: "12px" }}
+          >
+            Không thể tạo bài kiểm tra
+          </Typography.Title>
+          <Typography.Text
+            type="secondary"
+            style={{ fontSize: "14px", marginBottom: "24px", display: "block" }}
+          >
+            {vocabularies.length === 0
+              ? "Chủ đề này chưa có từ vựng nào để kiểm tra."
+              : "Không đủ dữ liệu để tạo câu hỏi kiểm tra."}
+          </Typography.Text>
+          <Space size="middle">
+            <Link to={`/learner/topic/${topicId}`}>
+              <Button
+                type="primary"
+                size="large"
+                icon={<ArrowLeft size={16} />}
+              >
+                Quay lại chi tiết chủ đề
+              </Button>
+            </Link>
+            <Link to="/learner/topics">
+              <Button size="large" icon={<Home size={16} />}>
+                Danh sách chủ đề
+              </Button>
+            </Link>
+          </Space>
+        </Card>
       </div>
     );
   }
@@ -390,197 +431,343 @@ const Quiz = () => {
     const percentage = Math.round((score / questions.length) * 100);
 
     return (
-      <div className="quiz-results">
-        {/* SVG Gradients */}
-        <svg className="svg-gradients">
-          <defs>
-            <linearGradient
-              id="scoreGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f0f2f5 0%, #ffffff 100%)",
+          padding: "16px",
+        }}
+      >
+        <Row justify="center">
+          <Col xs={24} sm={22} md={20} lg={16} xl={14}>
+            <Card
+              style={{
+                borderRadius: "16px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                border: "none",
+                textAlign: "center",
+              }}
             >
-              <stop offset="0%" stopColor="#28a745" />
-              <stop offset="100%" stopColor="#20c997" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Confetti for excellent performance */}
-        {percentage >= 90 && (
-          <div className="confetti">
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className="confetti-piece"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 2}s`,
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        <div className="container-fluid">
-          <div className="row justify-content-center">
-            <div className="col-lg-10 col-xl-8">
-              <div className="card results-card fade-in">
-                <div className="card-body text-center p-5">
-                  {/* Results Icon */}
-                  <div className="results-icon mb-4">
+              <div style={{ padding: "24px 16px" }}>
+                {/* Results Icon */}
+                <div style={{ marginBottom: "20px" }}>
+                  {percentage >= 70 ? (
                     <div
-                      className={
-                        percentage >= 70 ? "success-checkmark" : "error-cross"
-                      }
-                    ></div>
-                  </div>
-
-                  {/* Score Ring */}
-                  <div className="score-ring mb-4">
-                    <svg viewBox="0 0 150 150">
-                      <circle
-                        className="bg"
-                        strokeDasharray="408.4"
-                        strokeDashoffset="0"
-                      />
-                      <circle
-                        className="progress"
-                        strokeDasharray="408.4"
-                        strokeDashoffset={408.4 - (408.4 * percentage) / 100}
-                      />
-                    </svg>
-                    <div className="score-text">
-                      <div className="score">{percentage}</div>
-                      <div className="total">%</div>
-                    </div>
-                  </div>
-
-                  {/* Result Title */}
-                  <h2 className="mb-3 text-gradient">
-                    {percentage >= 90
-                      ? "🎉 Xuất sắc!"
-                      : percentage >= 70
-                      ? "🎊 Tốt lắm!"
-                      : percentage >= 50
-                      ? "📚 Cần cố gắng thêm!"
-                      : "💪 Hãy thử lại!"}
-                  </h2>
-
-                  {/* Score Details */}
-                  <div className="row justify-content-center mb-4">
-                    <div className="col-4 text-center">
-                      <div className="info-item">
-                        <h5>{score}</h5>
-                        <p>Câu đúng</p>
-                      </div>
-                    </div>
-                    <div className="col-4 text-center">
-                      <div className="info-item">
-                        <h5>{questions.length - score}</h5>
-                        <p>Câu sai</p>
-                      </div>
-                    </div>
-                    <div className="col-4 text-center">
-                      <div className="info-item">
-                        <h5>{questions.length}</h5>
-                        <p>Tổng câu</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="d-flex flex-wrap gap-3 justify-content-center mb-4">
-                    <button
-                      onClick={resetQuiz}
-                      className="btn btn-primary btn-lg"
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        background:
+                          "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "0 auto",
+                        boxShadow: "0 8px 24px rgba(82, 196, 26, 0.3)",
+                      }}
                     >
-                      <FontAwesomeIcon icon={faRotateRight} className="me-2" />
-                      Làm lại
-                    </button>
-                    <Link
-                      to={`/learner/topic/${topicId}`}
-                      className="btn btn-secondary btn-lg"
+                      <Check size={30} style={{ color: "white" }} />
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        background:
+                          "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "0 auto",
+                        boxShadow: "0 8px 24px rgba(255, 77, 79, 0.3)",
+                      }}
                     >
-                      <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                      Quay lại
-                    </Link>
-                    <Link
-                      to={`/learner/topic/${topicId}/flashcards`}
-                      className="btn btn-warning btn-lg"
-                    >
-                      <FontAwesomeIcon icon={faStar} className="me-2" />
-                      Flashcards
-                    </Link>
-                  </div>
+                      <X size={30} style={{ color: "white" }} />
+                    </div>
+                  )}
+                </div>
 
-                  {/* Question Review */}
-                  <div className="question-review">
-                    <h4 className="mb-4 text-gradient">Xem lại kết quả</h4>
-                    {answers.map((answer, index) => (
-                      <div
-                        key={index}
-                        className={`card review-item mb-3 ${
-                          answer?.isCorrect ? "border-success" : "border-danger"
-                        } slide-up`}
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                      >
-                        <div className="card-body">
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div className="flex-grow-1">
-                              <div className="review-word mb-2">
-                                <strong>{questions[index]?.word}</strong>
-                                {questions[index]?.ipa && (
-                                  <span className="ipa ms-2">
-                                    {questions[index].ipa}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="review-answer mb-1">
-                                <span className="fw-medium">Bạn chọn: </span>
-                                <span
-                                  className={
-                                    answer?.isCorrect
-                                      ? "text-success"
-                                      : "text-danger"
-                                  }
-                                >
-                                  {answer?.selectedAnswer}
-                                </span>
-                              </div>
-                              {!answer?.isCorrect && (
-                                <div className="review-correct">
-                                  <span className="fw-medium">
-                                    Đáp án đúng:{" "}
-                                  </span>
-                                  <span className="text-success">
-                                    {answer?.correctAnswer}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="result-icon ms-3">
-                              <FontAwesomeIcon
-                                icon={answer?.isCorrect ? faCheck : faTimes}
-                                className={`fs-4 ${
-                                  answer?.isCorrect
-                                    ? "text-success"
-                                    : "text-danger"
-                                }`}
-                              />
-                            </div>
-                          </div>
+                {/* Score Circle */}
+                <div style={{ marginBottom: "20px" }}>
+                  <Progress
+                    type="circle"
+                    percent={percentage}
+                    size={120}
+                    strokeWidth={8}
+                    strokeColor={percentage >= 70 ? "#52c41a" : "#ff4d4f"}
+                    trailColor="#f0f0f0"
+                    format={() => (
+                      <div style={{ textAlign: "center" }}>
+                        <div
+                          style={{
+                            fontSize: "28px",
+                            fontWeight: "bold",
+                            color: percentage >= 70 ? "#52c41a" : "#ff4d4f",
+                          }}
+                        >
+                          {percentage}
+                        </div>
+                        <div style={{ fontSize: "14px", color: "#8c8c8c" }}>
+                          %
                         </div>
                       </div>
+                    )}
+                  />
+                </div>
+
+                {/* Result Title */}
+                <Typography.Title
+                  level={3}
+                  style={{
+                    marginBottom: "16px",
+                    background:
+                      percentage >= 70
+                        ? "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)"
+                        : "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  {percentage >= 90
+                    ? "🎉 Xuất sắc!"
+                    : percentage >= 70
+                    ? "🎊 Tốt lắm!"
+                    : percentage >= 50
+                    ? "📚 Cần cố gắng thêm!"
+                    : "💪 Hãy thử lại!"}
+                </Typography.Title>
+
+                {/* Score Details */}
+                <Row gutter={16} style={{ marginBottom: "20px" }}>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #d9f7be",
+                      }}
+                    >
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#52c41a" }}
+                      >
+                        {score}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Câu đúng
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #ffccc7",
+                      }}
+                    >
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#ff4d4f" }}
+                      >
+                        {questions.length - score}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Câu sai
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #d6e4ff",
+                      }}
+                    >
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#1890ff" }}
+                      >
+                        {questions.length}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Tổng câu
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                </Row>
+
+                {/* Action Buttons */}
+                <Space size="middle" wrap style={{ marginBottom: "20px" }}>
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={<RotateCcw size={16} />}
+                    onClick={resetQuiz}
+                    style={{
+                      borderRadius: "8px",
+                      height: "40px",
+                    }}
+                  >
+                    Làm lại
+                  </Button>
+                  <Link to={`/learner/topic/${topicId}`}>
+                    <Button
+                      size="large"
+                      icon={<ArrowLeft size={16} />}
+                      style={{
+                        borderRadius: "8px",
+                        height: "40px",
+                      }}
+                    >
+                      Quay lại
+                    </Button>
+                  </Link>
+                  <Link to={`/learner/flashcards/${topicId}`}>
+                    <Button
+                      type="default"
+                      size="large"
+                      icon={<Star size={16} />}
+                      style={{
+                        borderRadius: "8px",
+                        height: "40px",
+                        background: "#fff7e6",
+                        borderColor: "#ffd591",
+                      }}
+                    >
+                      Flashcards
+                    </Button>
+                  </Link>
+                </Space>
+
+                {/* Question Review */}
+                <div>
+                  <Typography.Title
+                    level={5}
+                    style={{
+                      marginBottom: "16px",
+                      background:
+                        "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Xem lại kết quả
+                  </Typography.Title>
+                  <Space
+                    direction="vertical"
+                    size={12}
+                    style={{ width: "100%" }}
+                  >
+                    {answers.map((answer, index) => (
+                      <Card
+                        key={index}
+                        size="small"
+                        style={{
+                          borderRadius: "8px",
+                          border: `1px solid ${
+                            answer?.isCorrect ? "#d9f7be" : "#ffccc7"
+                          }`,
+                          background: answer?.isCorrect ? "#f6ffed" : "#fff2f0",
+                        }}
+                      >
+                        <Row justify="space-between" align="middle">
+                          <Col flex="auto">
+                            <div style={{ marginBottom: "4px" }}>
+                              <Typography.Text
+                                strong
+                                style={{ fontSize: "14px" }}
+                              >
+                                {questions[index]?.word}
+                              </Typography.Text>
+                              {questions[index]?.ipa && (
+                                <Typography.Text
+                                  type="secondary"
+                                  style={{
+                                    marginLeft: "8px",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {questions[index].ipa}
+                                </Typography.Text>
+                              )}
+                            </div>
+                            <div style={{ marginBottom: "2px" }}>
+                              <Typography.Text style={{ fontSize: "12px" }}>
+                                Bạn chọn:{" "}
+                              </Typography.Text>
+                              <Typography.Text
+                                style={{
+                                  color: answer?.isCorrect
+                                    ? "#52c41a"
+                                    : "#ff4d4f",
+                                  fontWeight: "500",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                {answer?.selectedAnswer}
+                              </Typography.Text>
+                            </div>
+                            {!answer?.isCorrect && (
+                              <div>
+                                <Typography.Text style={{ fontSize: "12px" }}>
+                                  Đáp án đúng:{" "}
+                                </Typography.Text>
+                                <Typography.Text
+                                  style={{
+                                    color: "#52c41a",
+                                    fontWeight: "500",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  {answer?.correctAnswer}
+                                </Typography.Text>
+                              </div>
+                            )}
+                          </Col>
+                          <Col>
+                            <div
+                              style={{
+                                width: "28px",
+                                height: "28px",
+                                background: answer?.isCorrect
+                                  ? "#52c41a"
+                                  : "#ff4d4f",
+                                borderRadius: "50%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {answer?.isCorrect ? (
+                                <Check size={14} style={{ color: "white" }} />
+                              ) : (
+                                <X size={14} style={{ color: "white" }} />
+                              )}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Card>
                     ))}
-                  </div>
+                  </Space>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
@@ -588,87 +775,218 @@ const Quiz = () => {
   // Quiz start screen
   if (!quizStarted) {
     return (
-      <div className="container-fluid quiz-intro">
-        <div className="row justify-content-center">
-          <div className="col-md-8">
-            <div className="card intro-card">
-              <div className="card-body text-center p-5">
-                <div className="intro-icon mb-4">
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    className="fs-1 text-primary"
-                  />
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f0f2f5 0%, #ffffff 100%)",
+          padding: "16px",
+        }}
+      >
+        <Row justify="center">
+          <Col xs={24} sm={22} md={18} lg={14} xl={12}>
+            <Card
+              style={{
+                borderRadius: "16px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                border: "none",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ padding: "24px 16px" }}>
+                <div
+                  style={{
+                    marginBottom: "20px",
+                    width: "60px",
+                    height: "60px",
+                    background:
+                      "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto",
+                    boxShadow: "0 8px 24px rgba(24, 144, 255, 0.3)",
+                  }}
+                >
+                  <HelpCircle size={30} style={{ color: "white" }} />
                 </div>
-                <h2 className="mb-3">Kiểm tra từ vựng</h2>
-                <h4 className="text-primary mb-4">
+
+                <Typography.Title level={3} style={{ marginBottom: "12px" }}>
+                  Kiểm tra từ vựng
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{
+                    color: "#1890ff",
+                    marginBottom: "20px",
+                    background:
+                      "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
                   {topic.topicName || "Chủ đề không xác định"}
-                </h4>
+                </Typography.Title>
 
-                <div className="quiz-info mb-5">
-                  <div className="row text-center">
-                    <div className="col-md-4">
-                      <div className="info-item">
-                        <FontAwesomeIcon
-                          icon={faQuestionCircle}
-                          className="fs-3 text-primary mb-2"
-                        />
-                        <h5>{questions.length}</h5>
-                        <p className="text-muted">Câu hỏi</p>
+                <Row gutter={16} style={{ marginBottom: "24px" }}>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #d6e4ff",
+                        background:
+                          "linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%)",
+                      }}
+                    >
+                      <div style={{ marginBottom: "4px" }}>
+                        <HelpCircle size={18} style={{ color: "#1890ff" }} />
                       </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="info-item">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          className="fs-3 text-warning mb-2"
-                        />
-                        <h5>{formatTime(timeLeft)}</h5>
-                        <p className="text-muted">Thời gian</p>
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#1890ff" }}
+                      >
+                        {questions.length}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Câu hỏi
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #fff7e6",
+                        background:
+                          "linear-gradient(135deg, #fff7e6 0%, #ffffff 100%)",
+                      }}
+                    >
+                      <div style={{ marginBottom: "4px" }}>
+                        <Clock size={18} style={{ color: "#fa8c16" }} />
                       </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="info-item">
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="fs-3 text-success mb-2"
-                        />
-                        <h5>70%</h5>
-                        <p className="text-muted">Để đạt</p>
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#fa8c16" }}
+                      >
+                        {formatTime(timeLeft)}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Thời gian
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                  <Col span={8}>
+                    <Card
+                      size="small"
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #d9f7be",
+                        background:
+                          "linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)",
+                      }}
+                    >
+                      <div style={{ marginBottom: "4px" }}>
+                        <Star size={18} style={{ color: "#52c41a" }} />
                       </div>
-                    </div>
+                      <Typography.Title
+                        level={5}
+                        style={{ margin: 0, color: "#52c41a" }}
+                      >
+                        70%
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Để đạt
+                      </Typography.Text>
+                    </Card>
+                  </Col>
+                </Row>
+
+                <Card
+                  size="small"
+                  style={{
+                    borderRadius: "8px",
+                    background: "#fafafa",
+                    border: "1px solid #e8e8e8",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <Typography.Title level={5} style={{ marginBottom: "12px" }}>
+                    Hướng dẫn:
+                  </Typography.Title>
+                  <div style={{ textAlign: "left" }}>
+                    <Typography.Paragraph
+                      style={{ margin: "4px 0", fontSize: "13px" }}
+                    >
+                      • Chọn nghĩa đúng cho từ vựng được hiển thị
+                    </Typography.Paragraph>
+                    <Typography.Paragraph
+                      style={{ margin: "4px 0", fontSize: "13px" }}
+                    >
+                      • Mỗi câu hỏi có 30 giây để trả lời
+                    </Typography.Paragraph>
+                    <Typography.Paragraph
+                      style={{ margin: "4px 0", fontSize: "13px" }}
+                    >
+                      • Bạn cần đạt 70% để vượt qua bài kiểm tra
+                    </Typography.Paragraph>
+                    <Typography.Paragraph
+                      style={{ margin: "4px 0", fontSize: "13px" }}
+                    >
+                      • Có thể làm lại nhiều lần
+                    </Typography.Paragraph>
                   </div>
-                </div>
+                </Card>
 
-                <div className="quiz-rules mb-4">
-                  <h5>Hướng dẫn:</h5>
-                  <ul className="list-unstyled">
-                    <li>• Chọn nghĩa đúng cho từ vựng được hiển thị</li>
-                    <li>• Mỗi câu hỏi có 30 giây để trả lời</li>
-                    <li>• Bạn cần đạt 70% để vượt qua bài kiểm tra</li>
-                    <li>• Có thể làm lại nhiều lần</li>
-                  </ul>
-                </div>
-
-                <div className="d-flex gap-3 justify-content-center">
-                  <button
+                <Space size="middle">
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={<Check size={16} />}
                     onClick={startQuiz}
-                    className="btn btn-success btn-lg"
+                    style={{
+                      borderRadius: "8px",
+                      height: "40px",
+                      paddingLeft: "20px",
+                      paddingRight: "20px",
+                      background:
+                        "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                      border: "none",
+                      boxShadow: "0 4px 12px rgba(82, 196, 26, 0.3)",
+                    }}
                   >
-                    <FontAwesomeIcon icon={faCheck} className="me-2" />
                     Bắt đầu kiểm tra
-                  </button>
-                  <Link
-                    to={`/learner/topic/${topicId}`}
-                    className="btn btn-outline-secondary btn-lg"
-                  >
-                    <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-                    Quay lại
+                  </Button>
+                  <Link to={`/learner/topic/${topicId}`}>
+                    <Button
+                      size="large"
+                      icon={<ArrowLeft size={16} />}
+                      style={{
+                        borderRadius: "8px",
+                        height: "40px",
+                        paddingLeft: "20px",
+                        paddingRight: "20px",
+                      }}
+                    >
+                      Quay lại
+                    </Button>
                   </Link>
-                </div>
+                </Space>
               </div>
-            </div>
-          </div>
-        </div>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
@@ -688,160 +1006,322 @@ const Quiz = () => {
   });
 
   return (
-    <div className="quiz-container">
-      {/* Background decoration */}
-      <div className="quiz-background">
-        <div className="quiz-circle quiz-circle-1"></div>
-        <div className="quiz-circle quiz-circle-2"></div>
-        <div className="quiz-circle quiz-circle-3"></div>
-      </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f0f2f5 0%, #ffffff 100%)",
+        padding: "16px",
+      }}
+    >
+      {/* Modern Header */}
+      <Card
+        style={{
+          marginBottom: "16px",
+          borderRadius: "12px",
+          border: "none",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        }}
+      >
+        <Row align="middle">
+          <Col xs={24} sm={8}>
+            <div>
+              <Typography.Text type="secondary" style={{ fontSize: "12px" }}>
+                Câu hỏi
+              </Typography.Text>
+              <Typography.Title
+                level={5}
+                style={{ margin: 0, color: "#1890ff" }}
+              >
+                {currentQuestion + 1}/{questions.length}
+              </Typography.Title>
+            </div>
+          </Col>
+          <Col xs={24} sm={8} style={{ textAlign: "center" }}>
+            <Progress
+              percent={Math.round(
+                ((currentQuestion + 1) / questions.length) * 100
+              )}
+              strokeColor="#1890ff"
+              trailColor="#f0f0f0"
+              strokeWidth={6}
+              showInfo={false}
+              style={{ marginBottom: "4px" }}
+            />
+            <Typography.Text
+              strong
+              style={{ color: "#1890ff", fontSize: "12px" }}
+            >
+              {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
+            </Typography.Text>
+          </Col>
+          <Col xs={24} sm={8} style={{ textAlign: "right" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: "4px",
+              }}
+            >
+              <Clock
+                size={16}
+                style={{
+                  color: timeLeft <= 30 ? "#ff4d4f" : "#1890ff",
+                }}
+              />
+              <Typography.Text
+                strong
+                style={{
+                  color: timeLeft <= 30 ? "#ff4d4f" : "#1890ff",
+                  fontSize: "14px",
+                }}
+              >
+                {formatTime(timeLeft)}
+              </Typography.Text>
+            </div>
+          </Col>
+        </Row>
+      </Card>
 
-      <div className="container-fluid">
-        {/* Modern Header */}
-        <div className="quiz-header-modern">
-          <div className="row align-items-center">
-            <div className="col-md-4">
-              <div className="quiz-progress-info">
-                <span className="progress-text">Câu hỏi</span>
-                <span className="progress-number">
-                  {currentQuestion + 1}/{questions.length}
-                </span>
-              </div>
-            </div>
-            <div className="col-md-4 text-center">
-              <div className="quiz-progress-bar">
-                <div className="progress-track">
-                  <div
-                    className="progress-fill"
-                    style={{
-                      width: `${
-                        ((currentQuestion + 1) / questions.length) * 100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
-                <span className="progress-percentage">
-                  {Math.round(((currentQuestion + 1) / questions.length) * 100)}
-                  %
-                </span>
-              </div>
-            </div>
-            <div className="col-md-4 text-end">
-              <div className="quiz-timer-modern">
-                <FontAwesomeIcon icon={faClock} className="timer-icon" />
-                <span
-                  className={`timer-text ${
-                    timeLeft <= 30 ? "timer-urgent" : ""
-                  }`}
+      {/* Question Card */}
+      <Row justify="center">
+        <Col xs={24} sm={22} md={20} lg={16} xl={14}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              border: "none",
+            }}
+          >
+            <div style={{ padding: "24px 16px" }}>
+              {/* Question Header */}
+              <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background:
+                      "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 12px auto",
+                    boxShadow: "0 8px 24px rgba(24, 144, 255, 0.3)",
+                  }}
                 >
-                  {formatTime(timeLeft)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Question Card */}
-        <div className="row justify-content-center mt-4">
-          <div className="col-lg-10 col-xl-8">
-            <div className="question-card-modern">
-              <div className="question-header">
-                <div className="question-icon">
-                  <FontAwesomeIcon icon={faQuestionCircle} />
+                  <HelpCircle size={20} style={{ color: "white" }} />
                 </div>
-                <h3 className="question-title-modern">
+                <Typography.Title level={4} style={{ marginBottom: 0 }}>
                   Nghĩa của từ này là gì?
-                </h3>
+                </Typography.Title>
               </div>
 
-              <div className="word-section">
-                <div className="word-display-modern">
-                  <h1 className="vocabulary-word">
+              {/* Word Section */}
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <Card
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%)",
+                    border: "2px solid #d6e4ff",
+                    borderRadius: "12px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <Typography.Title
+                    level={2}
+                    style={{
+                      margin: "12px 0",
+                      color: "#1890ff",
+                      fontSize: "36px",
+                      fontWeight: "700",
+                    }}
+                  >
                     {question.word || "Unknown"}
-                  </h1>
-                  <div className="word-details">
-                    {question.ipa && (
-                      <div className="pronunciation-section">
-                        <span className="ipa-text">{question.ipa}</span>
-                        <button
-                          className="pronunciation-btn"
-                          onClick={() => playPronunciation(question.word)}
-                          disabled={!question.word}
-                        >
-                          <FontAwesomeIcon icon={faVolumeUp} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  </Typography.Title>
+
+                  {question.ipa && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "12px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <Typography.Text
+                        style={{ color: "#1890ff", fontSize: "14px" }}
+                      >
+                        {question.ipa}
+                      </Typography.Text>
+                      <Button
+                        type="text"
+                        shape="circle"
+                        size="small"
+                        icon={<Volume2 size={16} />}
+                        onClick={() => playPronunciation(question.word)}
+                        disabled={!question.word}
+                        style={{
+                          color: "#1890ff",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #d6e4ff",
+                          boxShadow: "0 2px 4px rgba(24, 144, 255, 0.1)",
+                        }}
+                      />
+                    </div>
+                  )}
+                </Card>
 
                 {question.exampleSentence &&
                   question.exampleSentence.trim() && (
-                    <div className="example-section">
-                      <div className="example-label">Ví dụ:</div>
-                      <div className="example-text">
+                    <Card
+                      size="small"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #fff7e6 0%, #ffffff 100%)",
+                        border: "1px solid #ffd591",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <Typography.Text
+                        strong
+                        style={{ color: "#fa8c16", fontSize: "12px" }}
+                      >
+                        Ví dụ:
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text
+                        style={{
+                          color: "#595959",
+                          fontStyle: "italic",
+                          fontSize: "12px",
+                        }}
+                      >
                         "{question.exampleSentence}"
-                      </div>
-                    </div>
+                      </Typography.Text>
+                    </Card>
                   )}
               </div>
 
-              <div className="options-grid">
+              {/* Options Grid */}
+              <Row gutter={[12, 12]} style={{ marginBottom: "20px" }}>
                 {question.options.map((option, index) => (
-                  <button
-                    key={index}
-                    className={`option-card ${
-                      selectedAnswer === option ? "option-selected" : ""
-                    }`}
-                    onClick={() => selectAnswer(option)}
-                  >
-                    <div className="option-letter">
-                      {String.fromCharCode(65 + index)}
-                    </div>
-                    <div className="option-content">
-                      <span className="option-text">{option}</span>
-                    </div>
-                    <div className="option-indicator">
+                  <Col span={12} key={index}>
+                    <Button
+                      block
+                      size="large"
+                      onClick={() => selectAnswer(option)}
+                      style={{
+                        height: "60px",
+                        borderRadius: "8px",
+                        border:
+                          selectedAnswer === option
+                            ? "2px solid #1890ff"
+                            : "1px solid #d9d9d9",
+                        background:
+                          selectedAnswer === option
+                            ? "linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%)"
+                            : "#ffffff",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "relative",
+                        boxShadow:
+                          selectedAnswer === option
+                            ? "0 4px 12px rgba(24, 144, 255, 0.2)"
+                            : "0 2px 4px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "6px",
+                          left: "8px",
+                          width: "20px",
+                          height: "20px",
+                          background:
+                            selectedAnswer === option ? "#1890ff" : "#f0f0f0",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {String.fromCharCode(65 + index)}
+                      </div>
+                      <Typography.Text
+                        style={{
+                          color:
+                            selectedAnswer === option ? "#1890ff" : "#262626",
+                          fontWeight: selectedAnswer === option ? "600" : "400",
+                          textAlign: "center",
+                          paddingTop: "12px",
+                          fontSize: "13px",
+                        }}
+                      >
+                        {option}
+                      </Typography.Text>
                       {selectedAnswer === option && (
-                        <FontAwesomeIcon icon={faCheck} />
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "6px",
+                            right: "8px",
+                          }}
+                        >
+                          <Check size={14} style={{ color: "#1890ff" }} />
+                        </div>
                       )}
-                    </div>
-                  </button>
+                    </Button>
+                  </Col>
                 ))}
-              </div>
+              </Row>
 
-              <div className="question-footer">
-                <button
-                  className={`submit-btn ${
-                    selectedAnswer ? "submit-ready" : "submit-disabled"
-                  }`}
+              {/* Submit Button */}
+              <div style={{ textAlign: "center" }}>
+                <Button
+                  type="primary"
+                  size="large"
                   onClick={submitAnswer}
                   disabled={selectedAnswer === null}
+                  style={{
+                    borderRadius: "8px",
+                    height: "40px",
+                    paddingLeft: "20px",
+                    paddingRight: "20px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    background: selectedAnswer
+                      ? "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)"
+                      : "#f0f0f0",
+                    border: "none",
+                    boxShadow: selectedAnswer
+                      ? "0 4px 12px rgba(24, 144, 255, 0.3)"
+                      : "none",
+                  }}
+                  icon={
+                    currentQuestion === questions.length - 1 ? (
+                      <Check size={16} />
+                    ) : (
+                      <ChevronRight size={16} />
+                    )
+                  }
+                  iconPosition="end"
                 >
-                  <span className="submit-text">
-                    {currentQuestion === questions.length - 1
-                      ? "Hoàn thành bài kiểm tra"
-                      : "Câu tiếp theo"}
-                  </span>
-                  <FontAwesomeIcon
-                    icon={
-                      currentQuestion === questions.length - 1
-                        ? faCheck
-                        : faArrowLeft
-                    }
-                    className="submit-icon"
-                    style={
-                      currentQuestion !== questions.length - 1
-                        ? { transform: "rotate(180deg)" }
-                        : {}
-                    }
-                  />
-                </button>
+                  {currentQuestion === questions.length - 1
+                    ? "Hoàn thành bài kiểm tra"
+                    : "Câu tiếp theo"}
+                </Button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

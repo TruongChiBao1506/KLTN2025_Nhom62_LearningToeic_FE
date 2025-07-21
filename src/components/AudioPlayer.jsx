@@ -10,10 +10,6 @@ if (!window.stopAllAudio) {
 
 const AudioPlayer = ({ src, style = {}, questionId }) => {
   // Debug log when component renders
-  console.log(
-    `🔊 AudioPlayer rendering with src: ${src} and questionId: ${questionId}`
-  );
-
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState(null);

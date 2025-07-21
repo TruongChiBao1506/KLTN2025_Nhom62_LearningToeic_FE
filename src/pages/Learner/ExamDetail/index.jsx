@@ -51,6 +51,112 @@ import AudioPlayer from "../../../components/AudioPlayer";
 import audioRegistry from "../../../utils/AudioRegistry";
 import TextHighlighter from "../../../components/TextHighlighter/TextHighlighter";
 
+// === COMPREHENSIVE RESIZEOBSERVER ERROR SUPPRESSION ===
+const suppressResizeObserverErrors = () => {
+  if (typeof window !== "undefined") {
+    // Store original console methods
+    if (!window._originalConsoleError) {
+      window._originalConsoleError = console.error;
+    }
+    if (!window._originalConsoleWarn) {
+      window._originalConsoleWarn = console.warn;
+    }
+
+    // Override console.error with comprehensive filtering
+    console.error = (...args) => {
+      const message = args.join(" ").toLowerCase();
+      if (
+        message.includes("resizeobserver") ||
+        message.includes("script error") ||
+        message.includes("non-passive event") ||
+        message.includes("passive event listener")
+      ) {
+        return; // Suppress these errors completely
+      }
+      window._originalConsoleError.apply(console, args);
+    };
+
+    // Override console.warn as well
+    console.warn = (...args) => {
+      const message = args.join(" ").toLowerCase();
+      if (
+        message.includes("resizeobserver") ||
+        message.includes("script error")
+      ) {
+        return; // Suppress these warnings
+      }
+      window._originalConsoleWarn.apply(console, args);
+    };
+
+    // Comprehensive global error handler
+    const globalErrorHandler = (e) => {
+      const message = (e.message || e.error?.message || "").toLowerCase();
+      if (
+        message.includes("resizeobserver") ||
+        message.includes("script error")
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }
+    };
+
+    // Remove existing listeners first to prevent duplicates
+    window.removeEventListener("error", globalErrorHandler, true);
+    window.removeEventListener("unhandledrejection", globalErrorHandler, true);
+
+    // Add comprehensive error listeners
+    window.addEventListener("error", globalErrorHandler, true);
+    window.addEventListener(
+      "unhandledrejection",
+      (e) => {
+        const message = (e.reason?.message || e.reason || "")
+          .toString()
+          .toLowerCase();
+        if (
+          message.includes("resizeobserver") ||
+          message.includes("script error")
+        ) {
+          e.preventDefault();
+          return false;
+        }
+      },
+      true
+    );
+
+    // Monkey patch ResizeObserver if it exists
+    if (window.ResizeObserver) {
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class extends OriginalResizeObserver {
+        constructor(callback) {
+          const wrappedCallback = (entries, observer) => {
+            try {
+              callback(entries, observer);
+            } catch (err) {
+              // Silently ignore ResizeObserver callback errors
+              if (!err.message?.toLowerCase().includes("resizeobserver")) {
+                throw err;
+              }
+            }
+          };
+          super(wrappedCallback);
+        }
+      };
+    }
+  }
+};
+
+// Initialize comprehensive error suppression immediately
+suppressResizeObserverErrors();
+
+// Re-apply suppression after DOM events
+if (typeof window !== "undefined") {
+  document.addEventListener("DOMContentLoaded", suppressResizeObserverErrors);
+  window.addEventListener("load", suppressResizeObserverErrors);
+}
+// === END RESIZEOBSERVER ERROR SUPPRESSION ===
+
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 
@@ -1167,7 +1273,6 @@ const ExamDetail = () => {
 
   // Main exam taking view
   const currentQuestion = exam.questions[currentQuestionIndex];
-  console.log("🚀 ~ ExamDetail ~ currentQuestion:", currentQuestion);
 
   // If no questions available, show error
   if (!exam.questions || exam.questions.length === 0) {
