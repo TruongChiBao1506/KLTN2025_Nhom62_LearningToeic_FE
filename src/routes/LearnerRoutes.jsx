@@ -40,6 +40,7 @@ import AudioTrainer from "../pages/Learner/AudioTrainer";
 import Events from "../pages/Learner/Events";
 import Challenges from "../pages/Learner/Challenges";
 import Settings from "../pages/Learner/Settings";
+import SectionList from "../pages/Learner/SectionList";
 
 const LearnerRoutes = () => {
   return (
@@ -162,6 +163,14 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Quiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="section"
+          element={
+            <ProtectedRoute>
+              <SectionList />
             </ProtectedRoute>
           }
         />

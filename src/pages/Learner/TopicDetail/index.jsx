@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faVolumeUp,
-  faBook,
-  faStar,
-  faArrowLeft,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
-import "./style.css";
+import { Card, Row, Col, Typography, Input, Button, Spin, message } from "antd";
+import { Volume2, BookOpen, Star, ArrowLeft, Search } from "lucide-react";
+// import "./style.css";
 
 // Import services
 import topicService from "../../../services/topicService";
 import vocabularyService from "../../../services/vocabularyService";
 import userVocabularyService from "../../../services/userVocabularyService";
+
+const { Title, Text, Paragraph } = Typography;
 
 const TopicDetail = () => {
   const { topicId } = useParams();
@@ -58,14 +53,17 @@ const TopicDetail = () => {
             setFavoriteVocabs([]);
           }
         } catch (favoriteError) {
-          console.warn("Không thể tải danh sách từ vựng yêu thích:", favoriteError);
+          console.warn(
+            "Không thể tải danh sách từ vựng yêu thích:",
+            favoriteError
+          );
           console.warn("favoriteError details:", favoriteError.response?.data);
           // Continue without favorites - not critical
           setFavoriteVocabs([]);
         }
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu từ vựng:", error);
-        toast.error("Không thể tải dữ liệu từ vựng. Vui lòng thử lại sau.");
+        message.error("Không thể tải dữ liệu từ vựng. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
       }
@@ -81,7 +79,8 @@ const TopicDetail = () => {
     return (
       (vocab.word && vocab.word.toLowerCase().includes(searchLower)) ||
       (vocab.meaning && vocab.meaning.toLowerCase().includes(searchLower)) ||
-      (vocab.exampleSentence && vocab.exampleSentence.toLowerCase().includes(searchLower))
+      (vocab.exampleSentence &&
+        vocab.exampleSentence.toLowerCase().includes(searchLower))
     );
   });
 
@@ -95,37 +94,44 @@ const TopicDetail = () => {
   // Add vocabulary to favorites
   const toggleFavorite = async (vocabularyId) => {
     if (!vocabularyId) {
-      toast.error("ID từ vựng không hợp lệ");
+      message.error("ID từ vựng không hợp lệ");
       return;
     }
 
     // Check if user is authenticated
     const token = localStorage.getItem("learnerToken");
     if (!token) {
-      toast.warning("Vui lòng đăng nhập để sử dụng tính năng yêu thích");
+      message.warning("Vui lòng đăng nhập để sử dụng tính năng yêu thích");
       return;
     }
 
     try {
       const isCurrentlyFavorite = favoriteVocabs.includes(vocabularyId);
-      console.log("🚀 ~ toggleFavorite ~ isCurrentlyFavorite:", isCurrentlyFavorite);
+      console.log(
+        "🚀 ~ toggleFavorite ~ isCurrentlyFavorite:",
+        isCurrentlyFavorite
+      );
       console.log("🚀 ~ toggleFavorite ~ vocabularyId:", vocabularyId);
       console.log("🚀 ~ toggleFavorite ~ favoriteVocabs:", favoriteVocabs);
-      
+
       if (isCurrentlyFavorite) {
         // Remove from favorites
         try {
           await userVocabularyService.removeFromFavorites(vocabularyId);
           setFavoriteVocabs(favoriteVocabs.filter((id) => id !== vocabularyId));
-          toast.success("Đã xóa từ vựng khỏi danh sách yêu thích");
+          message.success("Đã xóa từ vựng khỏi danh sách yêu thích");
         } catch (removeError) {
           console.warn("Remove error:", removeError);
           // Even if backend says "not found", update frontend state
           setFavoriteVocabs(favoriteVocabs.filter((id) => id !== vocabularyId));
-          if (removeError.response?.data?.message?.includes("không có trong danh sách")) {
-            toast.info("Từ vựng đã được xóa khỏi danh sách");
+          if (
+            removeError.response?.data?.message?.includes(
+              "không có trong danh sách"
+            )
+          ) {
+            message.info("Từ vựng đã được xóa khỏi danh sách");
           } else {
-            toast.success("Đã xóa từ vựng khỏi danh sách yêu thích");
+            message.success("Đã xóa từ vựng khỏi danh sách yêu thích");
           }
         }
       } else {
@@ -136,35 +142,41 @@ const TopicDetail = () => {
           if (!favoriteVocabs.includes(vocabularyId)) {
             setFavoriteVocabs([...favoriteVocabs, vocabularyId]);
           }
-          toast.success("Đã thêm từ vựng vào danh sách yêu thích");
+          message.success("Đã thêm từ vựng vào danh sách yêu thích");
         } catch (addError) {
           console.warn("Add error:", addError);
           console.warn("Add error details:", addError.response?.data);
-          
+
           // Xử lý trường hợp từ vựng đã tồn tại trong backend
-          if (addError.response?.status === 400 && 
-              addError.response?.data?.message?.includes("đã có trong danh sách")) {
-            
-            console.log("Vocabulary already exists in backend, syncing frontend state");
+          if (
+            addError.response?.status === 400 &&
+            addError.response?.data?.message?.includes("đã có trong danh sách")
+          ) {
+            console.log(
+              "Vocabulary already exists in backend, syncing frontend state"
+            );
             // Từ vựng đã có trong backend, đồng bộ state frontend
             if (!favoriteVocabs.includes(vocabularyId)) {
               setFavoriteVocabs([...favoriteVocabs, vocabularyId]);
             }
-            toast.info("Từ vựng đã có trong danh sách yêu thích");
-            
+            message.info("Từ vựng đã có trong danh sách yêu thích");
+
             // Refresh toàn bộ danh sách để đảm bảo đồng bộ
             setTimeout(async () => {
               console.log("Refreshing favorites to ensure sync...");
               await refreshFavorites();
             }, 300);
-            
           } else {
             // Lỗi khác - hiển thị thông báo lỗi
             console.error("Unexpected add error:", addError);
             if (addError.response?.status === 401) {
-              toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+              message.error(
+                "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+              );
             } else {
-              toast.error("Không thể thêm từ vựng vào danh sách yêu thích. Vui lòng thử lại.");
+              message.error(
+                "Không thể thêm từ vựng vào danh sách yêu thích. Vui lòng thử lại."
+              );
             }
           }
         }
@@ -172,11 +184,13 @@ const TopicDetail = () => {
     } catch (error) {
       console.error("Lỗi khi cập nhật từ vựng yêu thích:", error);
       if (error.response?.status === 401) {
-        toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        message.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
       } else if (error.response?.status === 400) {
-        toast.warning("Có lỗi xảy ra với từ vựng này");
+        message.warning("Có lỗi xảy ra với từ vựng này");
       } else {
-        toast.error("Không thể cập nhật từ vựng yêu thích. Vui lòng thử lại sau.");
+        message.error(
+          "Không thể cập nhật từ vựng yêu thích. Vui lòng thử lại sau."
+        );
       }
     }
   };
@@ -191,29 +205,43 @@ const TopicDetail = () => {
       }
 
       console.log("🚀 ~ refreshFavorites ~ Fetching from backend...");
-      const favoritesResponse = await userVocabularyService.getUserVocabularies();
-      console.log("🚀 ~ refreshFavorites ~ favoritesResponse:", favoritesResponse);
-      
+      const favoritesResponse =
+        await userVocabularyService.getUserVocabularies();
+      console.log(
+        "🚀 ~ refreshFavorites ~ favoritesResponse:",
+        favoritesResponse
+      );
+
       // Backend trả về object có userVocabularies array
       const userVocabularies = favoritesResponse?.userVocabularies || [];
-      console.log("🚀 ~ refreshFavorites ~ userVocabularies:", userVocabularies);
-      
-      const favoriteIds = Array.isArray(userVocabularies) 
-        ? userVocabularies.map((v, index) => {
-            console.log(`🚀 ~ refreshFavorites ~ Processing item [${index}]:`, v);
-            if (v.vocabulary?._id) {
-              console.log(`🚀 ~ Using v.vocabulary._id: ${v.vocabulary._id}`);
-              return v.vocabulary._id;
-            }
-            if (v.vocabulary && typeof v.vocabulary === 'string') {
-              console.log(`🚀 ~ Using v.vocabulary as string: ${v.vocabulary}`);
-              return v.vocabulary;
-            }
-            console.log(`🚀 ~ Could not extract ID from:`, v);
-            return null;
-          }).filter(Boolean) 
+      console.log(
+        "🚀 ~ refreshFavorites ~ userVocabularies:",
+        userVocabularies
+      );
+
+      const favoriteIds = Array.isArray(userVocabularies)
+        ? userVocabularies
+            .map((v, index) => {
+              console.log(
+                `🚀 ~ refreshFavorites ~ Processing item [${index}]:`,
+                v
+              );
+              if (v.vocabulary?._id) {
+                console.log(`🚀 ~ Using v.vocabulary._id: ${v.vocabulary._id}`);
+                return v.vocabulary._id;
+              }
+              if (v.vocabulary && typeof v.vocabulary === "string") {
+                console.log(
+                  `🚀 ~ Using v.vocabulary as string: ${v.vocabulary}`
+                );
+                return v.vocabulary;
+              }
+              console.log(`🚀 ~ Could not extract ID from:`, v);
+              return null;
+            })
+            .filter(Boolean)
         : [];
-      
+
       console.log("🚀 ~ refreshFavorites ~ favoriteIds:", favoriteIds);
       setFavoriteVocabs(favoriteIds);
       return favoriteIds;
@@ -225,174 +253,365 @@ const TopicDetail = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Đang tải...</span>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Spin size="large" tip="Đang tải..." />
       </div>
     );
   }
 
   return (
-    <div className="topic-detail-container">
-      <div className="container-fluid px-4">
+    <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
+      <div style={{ padding: "0 16px" }}>
         {/* Compact Header */}
-        <div className="row py-3 border-bottom">
-          <div className="col-md-8">
-            <Link to="/learner/topics" className="back-link mb-2 d-inline-flex align-items-center">
-              <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
-              Quay lại danh sách chủ đề
-            </Link>
-            <div className="d-flex align-items-center">
-              <div className="topic-badge me-3">
-                <FontAwesomeIcon icon={faBook} className="me-1" />
+        <Row style={{ padding: "12px 0", borderBottom: "1px solid #d9d9d9" }}>
+          <Col md={16}>
+            <div style={{ marginBottom: "8px" }}>
+              <Link
+                to="/learner/topics"
+                style={{
+                  color: "#1890ff",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <ArrowLeft size={16} style={{ marginRight: "8px" }} />
+                Quay lại danh sách chủ đề
+              </Link>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  backgroundColor: "#1890ff",
+                  color: "white",
+                  padding: "4px 12px",
+                  borderRadius: "16px",
+                  fontSize: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "12px",
+                }}
+              >
+                <BookOpen size={14} style={{ marginRight: "4px" }} />
                 Chủ đề
               </div>
               <div>
-                <h1 className="topic-title mb-1">{topic.topicName || 'Đang tải...'}</h1>
-                <p className="topic-subtitle mb-0 text-muted">
-                  {filteredVocabularies.length} từ vựng • {favoriteVocabs.length} yêu thích
-                </p>
+                <Title level={3} style={{ margin: "0 0 4px 0" }}>
+                  {topic.topicName || "Đang tải..."}
+                </Title>
+                <Text type="secondary">
+                  {filteredVocabularies.length} từ vựng •{" "}
+                  {favoriteVocabs.length} yêu thích
+                </Text>
               </div>
             </div>
-          </div>
-          <div className="col-md-4 d-flex align-items-center justify-content-end">
-            <div className="search-compact">
-              <FontAwesomeIcon icon={faSearch} className="search-icon-compact" />
-              <input
-                type="text"
-                className="search-input-compact"
+          </Col>
+          <Col
+            md={8}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
+            <div
+              style={{ position: "relative", width: "100%", maxWidth: "300px" }}
+            >
+              <Input
+                prefix={<Search size={16} />}
                 placeholder="Tìm kiếm từ vựng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ borderRadius: "8px" }}
               />
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
 
-        <div className="row">
+        <Row>
           {/* Vocabulary List - Main Content */}
-          <div className="col-lg-8">
-            <div className="vocabulary-content py-3">
+          <Col lg={18}>
+            <div style={{ padding: "12px 0" }}>
               {filteredVocabularies.length === 0 ? (
-                <div className="empty-state text-center py-5">
-                  <FontAwesomeIcon icon={faSearch} className="empty-icon mb-3" />
-                  <h4>Không tìm thấy từ vựng</h4>
-                  <p className="text-muted">
-                    {searchTerm 
-                      ? 'Thử tìm kiếm với từ khóa khác' 
-                      : 'Chưa có từ vựng nào trong chủ đề này'}
-                  </p>
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <Search
+                    size={48}
+                    style={{ color: "#bfbfbf", marginBottom: "12px" }}
+                  />
+                  <Title level={4}>Không tìm thấy từ vựng</Title>
+                  <Text type="secondary">
+                    {searchTerm
+                      ? "Thử tìm kiếm với từ khóa khác"
+                      : "Chưa có từ vựng nào trong chủ đề này"}
+                  </Text>
                 </div>
               ) : (
-                <div className="vocab-grid">
+                <Row gutter={[16, 16]}>
                   {filteredVocabularies.map((vocab, index) => (
-                    <div key={vocab._id} className="vocab-card">
-                      <div className="vocab-card-header">
-                        <div className="vocab-number">{index + 1}</div>
-                        <button
-                          className={`favorite-btn ${
-                            favoriteVocabs.includes(vocab._id) ? "active" : ""
-                          }`}
-                          onClick={() => toggleFavorite(vocab._id)}
+                    <Col key={vocab._id} xs={24} sm={12} md={8} lg={6}>
+                      <Card
+                        hoverable
+                        style={{
+                          borderRadius: "12px",
+                          overflow: "hidden",
+                          height: "100%",
+                          border: "1px solid #f0f0f0",
+                        }}
+                        bodyStyle={{ padding: "16px" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "12px",
+                          }}
                         >
-                          <FontAwesomeIcon icon={faStar} />
-                        </button>
-                      </div>
-                      
-                      <div className="vocab-word-section">
-                        <div className="d-flex align-items-center justify-content-between">
-                          <h3 className="vocab-word">{vocab.word}</h3>
-                          <button
-                            className="sound-btn"
-                            onClick={() => playPronunciation(vocab.word)}
+                          <span
+                            style={{
+                              backgroundColor: "#f0f0f0",
+                              borderRadius: "50%",
+                              width: "24px",
+                              height: "24px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "12px",
+                              fontWeight: "bold",
+                            }}
                           >
-                            <FontAwesomeIcon icon={faVolumeUp} />
-                          </button>
+                            {index + 1}
+                          </span>
+                          <Button
+                            type="text"
+                            icon={
+                              <Star
+                                size={16}
+                                fill={
+                                  favoriteVocabs.includes(vocab._id)
+                                    ? "#faad14"
+                                    : "none"
+                                }
+                                color={
+                                  favoriteVocabs.includes(vocab._id)
+                                    ? "#faad14"
+                                    : "#d9d9d9"
+                                }
+                              />
+                            }
+                            onClick={() => toggleFavorite(vocab._id)}
+                            style={{ border: "none", padding: "4px" }}
+                          />
                         </div>
-                        <div className="vocab-pronunciation text-muted">
-                          {vocab.ipa}
+
+                        <div style={{ marginBottom: "12px" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              marginBottom: "4px",
+                            }}
+                          >
+                            <Title
+                              level={5}
+                              style={{ margin: 0, fontWeight: "bold" }}
+                            >
+                              {vocab.word}
+                            </Title>
+                            <Button
+                              type="text"
+                              icon={<Volume2 size={16} />}
+                              onClick={() => playPronunciation(vocab.word)}
+                              style={{ border: "none", padding: "4px" }}
+                            />
+                          </div>
+                          <Text type="secondary" style={{ fontSize: "12px" }}>
+                            {vocab.ipa}
+                          </Text>
                         </div>
-                      </div>
-                      
-                      <div className="vocab-details">
-                        <div className="vocab-meaning">
-                          <strong>Nghĩa:</strong> {vocab.meaning}
+
+                        <div style={{ marginBottom: "8px" }}>
+                          <Text strong>Nghĩa:</Text>{" "}
+                          <Text>{vocab.meaning}</Text>
                           {(vocab.wordType || vocab.type) && (
-                            <span className="word-type ms-2">({vocab.wordType || vocab.type})</span>
+                            <Text
+                              type="secondary"
+                              style={{ marginLeft: "8px" }}
+                            >
+                              ({vocab.wordType || vocab.type})
+                            </Text>
                           )}
                         </div>
-                        
+
                         {vocab.exampleSentence && (
-                          <div className="vocab-example mt-2">
-                            <strong>Ví dụ:</strong>
-                            <em className="d-block mt-1">"{vocab.exampleSentence}"</em>
+                          <div>
+                            <Text strong>Ví dụ:</Text>
+                            <Paragraph
+                              italic
+                              style={{ margin: "4px 0 0 0", fontSize: "12px" }}
+                            >
+                              "{vocab.exampleSentence}"
+                            </Paragraph>
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </Card>
+                    </Col>
                   ))}
-                </div>
+                </Row>
               )}
             </div>
-          </div>
+          </Col>
 
           {/* Practice Sidebar */}
-          <div className="col-lg-4">
-            <div className="practice-sidebar py-3">
-              <h4 className="sidebar-title mb-3">
-                <FontAwesomeIcon icon={faBook} className="me-2" />
+          <Col lg={6}>
+            <div style={{ padding: "12px 0" }}>
+              <Title
+                level={4}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "16px",
+                }}
+              >
+                <BookOpen size={20} style={{ marginRight: "8px" }} />
                 Phương pháp luyện tập
-              </h4>
-              
-              <div className="practice-options">
-                <div className="practice-option flashcard">
-                  <div className="option-header">
-                    <FontAwesomeIcon icon={faBook} className="option-icon" />
-                    <h5>Flashcards</h5>
-                  </div>
-                  <p className="option-desc">Học từ vựng với thẻ ghi nhớ tương tác</p>
-                  <Link
-                    to={`/learner/flashcards/${topicId}`}
-                    className="btn-practice btn-flashcard"
+              </Title>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <Card
+                  hoverable
+                  style={{
+                    borderRadius: "12px",
+                    border: "1px solid #1890ff",
+                  }}
+                  bodyStyle={{ padding: "16px" }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "8px",
+                    }}
                   >
-                    Bắt đầu ôn tập
-                  </Link>
-                </div>
-                
-                <div className="practice-option quiz">
-                  <div className="option-header">
-                    <FontAwesomeIcon icon={faSearch} className="option-icon" />
-                    <h5>Trắc nghiệm</h5>
+                    <BookOpen
+                      size={20}
+                      style={{ marginRight: "8px", color: "#1890ff" }}
+                    />
+                    <Title level={5} style={{ margin: 0 }}>
+                      Flashcards
+                    </Title>
                   </div>
-                  <p className="option-desc">Kiểm tra kiến thức với bài trắc nghiệm</p>
-                  <Link
-                    to={`/learner/quiz/${topicId}`}
-                    className="btn-practice btn-quiz"
-                  >
-                    Bắt đầu kiểm tra
+                  <Paragraph style={{ fontSize: "14px", marginBottom: "16px" }}>
+                    Học từ vựng với thẻ ghi nhớ tương tác
+                  </Paragraph>
+                  <Link to={`/learner/flashcards/${topicId}`}>
+                    <Button
+                      type="primary"
+                      block
+                      size="large"
+                      style={{ borderRadius: "8px" }}
+                    >
+                      Bắt đầu ôn tập
+                    </Button>
                   </Link>
-                </div>
+                </Card>
+
+                <Card
+                  hoverable
+                  style={{
+                    borderRadius: "12px",
+                    border: "1px solid #52c41a",
+                  }}
+                  bodyStyle={{ padding: "16px" }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <Search
+                      size={20}
+                      style={{ marginRight: "8px", color: "#52c41a" }}
+                    />
+                    <Title level={5} style={{ margin: 0 }}>
+                      Trắc nghiệm
+                    </Title>
+                  </div>
+                  <Paragraph style={{ fontSize: "14px", marginBottom: "16px" }}>
+                    Kiểm tra kiến thức với bài trắc nghiệm
+                  </Paragraph>
+                  <Link to={`/learner/quiz/${topicId}`}>
+                    <Button
+                      type="primary"
+                      block
+                      size="large"
+                      style={{
+                        borderRadius: "8px",
+                        backgroundColor: "#52c41a",
+                        borderColor: "#52c41a",
+                      }}
+                    >
+                      Bắt đầu kiểm tra
+                    </Button>
+                  </Link>
+                </Card>
               </div>
-              
-              <div className="stats-summary mt-4">
-                <h6 className="stats-title">Thống kê</h6>
-                <div className="stats-item">
-                  <span>Tổng từ vựng:</span>
-                  <strong>{vocabularies.length}</strong>
+
+              <Card
+                style={{ marginTop: "16px", borderRadius: "12px" }}
+                bodyStyle={{ padding: "16px" }}
+              >
+                <Title level={5} style={{ marginBottom: "12px" }}>
+                  Thống kê
+                </Title>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Text>Tổng từ vựng:</Text>
+                    <Text strong>{vocabularies.length}</Text>
+                  </div>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Text>Đang hiển thị:</Text>
+                    <Text strong>{filteredVocabularies.length}</Text>
+                  </div>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Text>Yêu thích:</Text>
+                    <Text strong style={{ color: "#faad14" }}>
+                      {favoriteVocabs.length}
+                    </Text>
+                  </div>
                 </div>
-                <div className="stats-item">
-                  <span>Đang hiển thị:</span>
-                  <strong>{filteredVocabularies.length}</strong>
-                </div>
-                <div className="stats-item">
-                  <span>Yêu thích:</span>
-                  <strong>{favoriteVocabs.length}</strong>
-                </div>
-              </div>
+              </Card>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     </div>
   );

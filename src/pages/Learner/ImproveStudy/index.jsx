@@ -1,5 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { 
+  Card, 
+  Select, 
+  Button, 
+  Typography, 
+  Row, 
+  Col, 
+  Tag, 
+  Tooltip,
+  Space,
+  Divider,
+  Alert
+} from "antd";
+import { 
+  BookOpen, 
+  Headphones, 
+  PenTool, 
+  Eye, 
+  PlayCircle, 
+  Target,
+  ChevronRight,
+  Clock,
+  Award,
+  Zap
+} from "lucide-react";
 import Swal from "sweetalert2";
 import sectionsService from "../../../services/sectionsService";
 import questionService from "../../../services/questionService";
@@ -16,11 +41,16 @@ import TestPart7Double from "../../../components/Learner/TestPart7Double";
 import TestPart7Triple from "../../../components/Learner/TestPart7Triple";
 import "./style.css";
 
+const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
+
 const ImproveStudy = () => {
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState("");
   const [selectedQuestionType, setSelectedQuestionType] = useState("");
   const [questionTypeOptions, setQuestionTypeOptions] = useState([]);
+  console.log("🚀 ~ ImproveStudy ~ questionTypeOptions:", questionTypeOptions);
+
   const [showImproveTest, setShowImproveTest] = useState(false);
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
@@ -29,7 +59,13 @@ const ImproveStudy = () => {
     const fetchSections = async () => {
       try {
         const fetchedSections = await sectionsService.allEnable();
-        setSections(fetchedSections);
+        console.log("🚀 ~ fetchSections ~ fetchedSections:", fetchedSections);
+        // Map API data to include id field for React components
+        const mappedSections = fetchedSections.map(section => ({
+          ...section,
+          id: section._id // Map _id to id for easier handling
+        }));
+        setSections(mappedSections);
       } catch (error) {
         console.error("Lỗi khi tải danh sách phần:", error);
       }
@@ -38,19 +74,29 @@ const ImproveStudy = () => {
     fetchSections();
   }, []);
 
-  useEffect(() => {
-    if (selectedSection) {
-      updateQuestionTypeOptions(selectedSection);
-    }
-  }, [selectedSection]);
-
-  const docngheSections = sections.filter(
-    (section) => section.type === 1 || section.type === 2
-  );
-
-  const updateQuestionTypeOptions = (sectionId) => {
+  const updateQuestionTypeOptions = useCallback((sectionId) => {
+    console.log("🚀 ~ updateQuestionTypeOptions ~ called with sectionId:", sectionId);
+    console.log("🚀 ~ updateQuestionTypeOptions ~ sections:", sections);
+    
     let options = [];
-    switch (parseInt(sectionId)) {
+    
+    // Find the section by _id to get the part number
+    const selectedSectionData = sections.find(section => section._id === sectionId);
+    if (!selectedSectionData) {
+      console.log("🚀 ~ updateQuestionTypeOptions ~ selectedSectionData not found for:", sectionId);
+      setQuestionTypeOptions([]);
+      return;
+    }
+    
+    console.log("🚀 ~ updateQuestionTypeOptions ~ selectedSectionData:", selectedSectionData);
+    
+    // Extract part number from section name (e.g., "Part 1: Photographs" -> 1)
+    const partMatch = selectedSectionData.name.match(/Part (\d+)/);
+    const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+    
+    console.log("🚀 ~ updateQuestionTypeOptions ~ partNumber:", partNumber);
+    
+    switch (partNumber) {
       case 1:
         options = [
           {
@@ -186,8 +232,6 @@ const ImproveStudy = () => {
         ];
         break;
       case 7:
-      case 12:
-      case 13:
         options = [
           {
             value: "[Part 7] Câu hỏi điền câu",
@@ -222,8 +266,26 @@ const ImproveStudy = () => {
       default:
         options = [];
     }
+    
+    console.log("🚀 ~ updateQuestionTypeOptions ~ options:", options);
     setQuestionTypeOptions(options);
-  };
+  }, [sections]);
+
+  useEffect(() => {
+    if (selectedSection) {
+      updateQuestionTypeOptions(selectedSection);
+    } else {
+      setQuestionTypeOptions([]); // Clear options when no section is selected
+    }
+  }, [selectedSection, updateQuestionTypeOptions]);
+
+  // Filter all enabled sections (status === 1)
+  const enabledSections = sections.filter(section => section.status === 1);
+  console.log("🚀 ~ ImproveStudy ~ enabledSections:", enabledSections);
+  console.log("🚀 ~ ImproveStudy ~ selectedSection:", selectedSection);
+  console.log("🚀 ~ ImproveStudy ~ questionTypeOptions:", questionTypeOptions);
+  console.log("🚀 ~ ImproveStudy ~ sections length:", sections.length);
+  console.log("🚀 ~ ImproveStudy ~ enabledSections length:", enabledSections.length);
 
   const startPractice = async () => {
     if (selectedSection && selectedQuestionType) {
@@ -359,7 +421,14 @@ const ImproveStudy = () => {
   };
 
   const getOptions = (question) => {
-    if (parseInt(selectedSection) === 2) {
+    // Find the selected section to get part number
+    const selectedSectionData = sections.find(section => section._id === selectedSection);
+    if (!selectedSectionData) return [question.optionA, question.optionB, question.optionC, question.optionD];
+    
+    const partMatch = selectedSectionData.name.match(/Part (\d+)/);
+    const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+    
+    if (partNumber === 2) {
       return [question.optionA, question.optionB, question.optionC];
     } else {
       return [
@@ -415,252 +484,433 @@ const ImproveStudy = () => {
     }
   };
 
+  // Get icon for each part
+  const getPartIcon = (partNumber) => {
+    switch (partNumber) {
+      case 1: return <Eye className="w-4 h-4" />;
+      case 2: return <Headphones className="w-4 h-4" />;
+      case 3: return <Headphones className="w-4 h-4" />;
+      case 4: return <Headphones className="w-4 h-4" />;
+      case 5: return <PenTool className="w-4 h-4" />;
+      case 6: return <BookOpen className="w-4 h-4" />;
+      case 7: return <BookOpen className="w-4 h-4" />;
+      default: return <Target className="w-4 h-4" />;
+    }
+  };
+
   return (
-    <div className="container-fluid">
+    <div style={{ 
+      minHeight: "100vh", 
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      padding: "20px 0"
+    }}>
       {!showImproveTest ? (
-        <div
-          className="card border-0 rounded-5 mt-4 mb-5"
-          style={{ minHeight: "600px" }}
-        >
-          <div className="row g-0 mt-5">
-            <div className="col-sm-5 my-4 d-flex align-items-center justify-content-center">
-              <img
-                src="https://i0.wp.com/www.shoutmeloud.com/wp-content/uploads/2019/09/how-to-improve-english-writing-skills.jpg?resize=1024%2C968&ssl=1"
-                alt="Improve English Writing Skills"
-                style={{ width: "600px", height: "400px" }}
-                className="rounded-5"
-              />
-            </div>
-            <div className="col-sm-7">
-              <div className="card-body">
-                <div
-                  className="row d-flex justify-content-center align-items-center"
-                  style={{ height: "500px" }}
-                >
-                  <div className="col-sm-12 mb-3 mt-5">
-                    <h2>BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN</h2>
-                    <p>Dưới đây là một số quy định bạn cần lưu ý: </p>
-                    <p>
-                      Bài kiểm tra bao gồm những câu hỏi chia làm{" "}
-                      <strong>7 Part (1, 2, 3, 4, 5, 6, 7)</strong>
-                    </p>
-                    <p>
-                      Hướng dẫn: Chọn phần, sau đó chọn phân loại câu hỏi của
-                      phần đó và bắt đầu luyện tập ngay
-                    </p>
-                    <div className="row mt-3">
-                      <div className="col">
-                        <select
-                          className="form-select border-secondary mt-2"
-                          value={selectedSection}
-                          onChange={(e) => setSelectedSection(e.target.value)}
-                        >
-                          <option value="" disabled>
-                            Vui lòng chọn phần
-                          </option>
-                          {docngheSections.map((section) => (
-                            <option key={section.id} value={section.id}>
-                              {section.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="col">
-                        <select
-                          className="form-select border-secondary mt-2"
-                          value={selectedQuestionType}
-                          onChange={(e) =>
-                            setSelectedQuestionType(e.target.value)
-                          }
-                        >
-                          <option value="" disabled>
-                            Vui lòng chọn loại câu hỏi
-                          </option>
-                          {questionTypeOptions.map((option, index) => (
-                            <option key={index} value={option.value}>
-                              {option.text}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="col">
-                        <div className="d-flex justify-content-center">
-                          <button
-                            type="button"
-                            className="button my-2 w-75"
-                            style={{ width: "100%" }}
-                            onClick={startPractice}
-                          >
-                            BẮT ĐẦU NGAY
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        <Row justify="center" style={{ minHeight: "80vh" }}>
+          <Col xs={24} sm={22} md={20} lg={16} xl={14}>
+            <Card
+              style={{
+                borderRadius: "24px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden"
+              }}
+              bodyStyle={{ padding: "40px" }}
+            >
+              {/* Header Section */}
+              <div style={{ textAlign: "center", marginBottom: "40px" }}>
+                <div style={{ 
+                  background: "linear-gradient(135deg, #667eea, #764ba2)",
+                  borderRadius: "50%",
+                  width: "80px",
+                  height: "80px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 20px",
+                  animation: "pulse 2s infinite"
+                }}>
+                  <Target className="w-8 h-8 text-white" />
                 </div>
+                <Title level={2} style={{ 
+                  background: "linear-gradient(135deg, #667eea, #764ba2)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  marginBottom: "8px",
+                  fontWeight: "700"
+                }}>
+                  BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN
+                </Title>
+                <Text style={{ 
+                  fontSize: "16px", 
+                  color: "#666",
+                  display: "block",
+                  marginBottom: "8px"
+                }}>
+                  Nâng cao kỹ năng TOEIC của bạn với bài tập chuyên sâu
+                </Text>
+                <Tag color="blue" style={{ fontSize: "12px", padding: "4px 12px" }}>
+                  7 Parts • Listening & Reading
+                </Tag>
               </div>
-            </div>
-          </div>
-        </div>
+
+              <Divider />
+
+              {/* Instructions */}
+              <Alert
+                message="Hướng dẫn sử dụng"
+                description={
+                  <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                    <Text>• Chọn phần bạn muốn luyện tập (Part 1-7)</Text>
+                    <Text>• Chọn loại câu hỏi cụ thể để tập trung luyện tập</Text>
+                    <Text>• Bắt đầu làm bài và nhận phản hồi chi tiết</Text>
+                  </Space>
+                }
+                type="info"
+                showIcon
+                style={{ 
+                  marginBottom: "32px",
+                  borderRadius: "12px",
+                  background: "linear-gradient(135deg, rgba(24, 144, 255, 0.1), rgba(64, 169, 255, 0.05))"
+                }}
+              />
+
+              {/* Selection Form */}
+              <Row gutter={[24, 24]}>
+                <Col xs={24} md={12}>
+                  <Card
+                    size="small"
+                    style={{
+                      borderRadius: "16px",
+                      border: "2px solid #f0f0f0",
+                      transition: "all 0.3s ease",
+                      ":hover": {
+                        borderColor: "#667eea",
+                        boxShadow: "0 8px 24px rgba(102, 126, 234, 0.15)"
+                      }
+                    }}
+                  >
+                    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <Target className="w-5 h-5 text-blue-500" />
+                        <Text strong style={{ color: "#1890ff" }}>Chọn phần thi</Text>
+                      </div>
+                      <Select
+                        size="large"
+                        placeholder="Chọn phần TOEIC"
+                        value={selectedSection}
+                        onChange={(value) => {
+                          console.log("🚀 ~ Section selected:", value);
+                          setSelectedSection(value);
+                          setSelectedQuestionType(""); // Reset question type when section changes
+                        }}
+                        onDropdownVisibleChange={(open) => {
+                          console.log("🚀 ~ Dropdown visible:", open);
+                          console.log("🚀 ~ enabledSections when dropdown opens:", enabledSections);
+                        }}
+                        style={{ width: "100%" }}
+                        dropdownStyle={{
+                          borderRadius: "12px",
+                          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)"
+                        }}
+                        notFoundContent="Không có dữ liệu"
+                        showSearch={false}
+                        allowClear
+                      >
+                        {enabledSections.length > 0 ? (
+                          enabledSections.map((section) => {
+                            // Extract part number for icon
+                            const partMatch = section.name.match(/Part (\d+)/);
+                            const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+                            const skillType = partNumber <= 4 ? "Listening" : "Reading";
+                            
+                            return (
+                              <Option 
+                                key={section._id} 
+                                value={section._id}
+                                style={{ padding: "8px 12px" }}
+                              >
+                                <div style={{ 
+                                  display: "flex", 
+                                  alignItems: "center", 
+                                  justifyContent: "space-between",
+                                  width: "100%" 
+                                }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    {getPartIcon(partNumber)}
+                                    <span style={{ fontWeight: "500" }}>{section.name}</span>
+                                  </div>
+                                  <Tag 
+                                    color={skillType === "Listening" ? "blue" : "green"}
+                                    style={{ fontSize: "11px", margin: 0 }}
+                                  >
+                                    {skillType}
+                                  </Tag>
+                                </div>
+                              </Option>
+                            );
+                          })
+                        ) : (
+                          <Option disabled value="">
+                            <Text type="secondary">Đang tải dữ liệu...</Text>
+                          </Option>
+                        )}
+                      </Select>
+                    </Space>
+                  </Card>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Card
+                    size="small"
+                    style={{
+                      borderRadius: "16px",
+                      border: "2px solid #f0f0f0",
+                      transition: "all 0.3s ease",
+                      opacity: selectedSection ? 1 : 0.6
+                    }}
+                  >
+                    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <BookOpen className="w-5 h-5 text-green-500" />
+                        <Text strong style={{ color: "#52c41a" }}>Chọn loại câu hỏi</Text>
+                      </div>
+                      <Select
+                        size="large"
+                        placeholder="Chọn loại câu hỏi"
+                        value={selectedQuestionType}
+                        onChange={setSelectedQuestionType}
+                        style={{ width: "100%" }}
+                        disabled={!selectedSection}
+                        dropdownStyle={{ 
+                          borderRadius: "12px",
+                          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)"
+                        }}
+                        notFoundContent={!selectedSection ? "Vui lòng chọn phần thi trước" : "Không có dữ liệu"}
+                        showSearch={false}
+                        allowClear
+                      >
+                        {questionTypeOptions.map((option, index) => (
+                          <Option 
+                            key={index} 
+                            value={option.value}
+                            style={{ padding: "8px 12px" }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <ChevronRight className="w-3 h-3 text-gray-400" />
+                              <span style={{ fontWeight: "500" }}>{option.text}</span>
+                            </div>
+                          </Option>
+                        ))}
+                      </Select>
+                    </Space>
+                  </Card>
+                </Col>
+              </Row>
+
+              {/* Start Button */}
+              <div style={{ textAlign: "center", marginTop: "40px" }}>
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={startPractice}
+                  disabled={!selectedSection || !selectedQuestionType}
+                  style={{
+                    height: "56px",
+                    padding: "0 40px",
+                    borderRadius: "28px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    background: selectedSection && selectedQuestionType 
+                      ? "linear-gradient(135deg, #667eea, #764ba2)"
+                      : undefined,
+                    border: "none",
+                    boxShadow: selectedSection && selectedQuestionType 
+                      ? "0 8px 24px rgba(102, 126, 234, 0.3)"
+                      : undefined,
+                    transition: "all 0.3s ease"
+                  }}
+                  icon={<PlayCircle className="w-5 h-5" />}
+                >
+                  BẮT ĐẦU LUYỆN TẬP
+                </Button>
+                
+                {(!selectedSection || !selectedQuestionType) && (
+                  <div style={{ marginTop: "12px" }}>
+                    <Text type="secondary" style={{ fontSize: "14px" }}>
+                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu
+                    </Text>
+                  </div>
+                )}
+              </div>
+
+              {/* Additional Info */}
+              <div style={{ 
+                marginTop: "40px", 
+                padding: "20px",
+                background: "linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05))",
+                borderRadius: "16px"
+              }}>
+                <Row gutter={[16, 16]} align="middle">
+                  <Col xs={24} sm={8} style={{ textAlign: "center" }}>
+                    <Clock className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <Text strong style={{ display: "block" }}>Thời gian linh hoạt</Text>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>
+                      Không giới hạn thời gian
+                    </Text>
+                  </Col>
+                  <Col xs={24} sm={8} style={{ textAlign: "center" }}>
+                    <Award className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <Text strong style={{ display: "block" }}>Đánh giá chi tiết</Text>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>
+                      Phân tích kết quả ngay lập tức
+                    </Text>
+                  </Col>
+                  <Col xs={24} sm={8} style={{ textAlign: "center" }}>
+                    <Zap className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                    <Text strong style={{ display: "block" }}>Cải thiện kỹ năng</Text>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>
+                      Tập trung vào điểm yếu
+                    </Text>
+                  </Col>
+                </Row>
+              </div>
+            </Card>
+          </Col>
+        </Row>
       ) : (
-        <div className="row mt-3">
-          <div className="d-flex justify-content-start align-items-center my-2">
-            <button
-              type="button"
-              className="button"
-              style={{ width: "200px" }}
+        <div style={{ padding: "0 20px" }}>
+          <div style={{ marginBottom: "20px" }}>
+            <Button
+              type="primary"
               onClick={goBack}
+              icon={<ChevronRight className="w-4 h-4 rotate-180" />}
+              style={{
+                borderRadius: "12px",
+                height: "40px",
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                border: "none"
+              }}
             >
               Quay lại
-            </button>
+            </Button>
           </div>
 
-          {parseInt(selectedSection) === 1 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart1
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                getAudioUrl={getAudioUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
+          {/* Test Components */}
+          {(() => {
+            const selectedSectionData = sections.find(section => section._id === selectedSection);
+            if (!selectedSectionData) return null;
+            
+            const partMatch = selectedSectionData.name.match(/Part (\d+)/);
+            const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+            
+            const commonProps = {
+              questions,
+              submitAnswers,
+              refreshPage,
+              translateText,
+              getOptions,
+              getOptionClass,
+              clearSelection,
+              checkAnswer
+            };
 
-          {parseInt(selectedSection) === 2 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart2
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getAudioUrl={getAudioUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 3 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart3
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                getAudioUrl={getAudioUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 4 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart4
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                getAudioUrl={getAudioUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 5 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart5
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 6 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart6
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 7 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart7Single
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 12 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart7Double
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
-
-          {parseInt(selectedSection) === 13 &&
-            selectedQuestionType &&
-            showImproveTest && (
-              <TestPart7Triple
-                questions={questions}
-                submitAnswers={submitAnswers}
-                refreshPage={refreshPage}
-                getImageUrl={getImageUrl}
-                translateText={translateText}
-                getOptions={getOptions}
-                getOptionClass={getOptionClass}
-                clearSelection={clearSelection}
-                checkAnswer={checkAnswer}
-              />
-            )}
+            switch (partNumber) {
+              case 1:
+                return (
+                  <TestPart1
+                    {...commonProps}
+                    getImageUrl={getImageUrl}
+                    getAudioUrl={getAudioUrl}
+                  />
+                );
+              case 2:
+                return (
+                  <TestPart2
+                    {...commonProps}
+                    getAudioUrl={getAudioUrl}
+                  />
+                );
+              case 3:
+                return (
+                  <TestPart3
+                    {...commonProps}
+                    getImageUrl={getImageUrl}
+                    getAudioUrl={getAudioUrl}
+                  />
+                );
+              case 4:
+                return (
+                  <TestPart4
+                    {...commonProps}
+                    getImageUrl={getImageUrl}
+                    getAudioUrl={getAudioUrl}
+                  />
+                );
+              case 5:
+                return <TestPart5 {...commonProps} />;
+              case 6:
+                return <TestPart6 {...commonProps} />;
+              case 7:
+                return (
+                  <TestPart7Single
+                    {...commonProps}
+                    getImageUrl={getImageUrl}
+                  />
+                );
+              default:
+                return null;
+            }
+          })()}
         </div>
       )}
+      
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+        }
+        
+        .ant-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .ant-select-dropdown {
+          border-radius: 12px !important;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .ant-select-item {
+          border-radius: 8px !important;
+          margin: 2px 4px !important;
+          transition: all 0.2s ease !important;
+        }
+        
+        .ant-select-item:hover {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05)) !important;
+        }
+        
+        .ant-select-item-option-selected {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1)) !important;
+          font-weight: 600 !important;
+        }
+        
+        .ant-btn:hover {
+          transform: translateY(-1px);
+        }
+        
+        .ant-select-focused .ant-select-selector {
+          border-color: #667eea !important;
+          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+        }
+      `}</style>
     </div>
   );
 };

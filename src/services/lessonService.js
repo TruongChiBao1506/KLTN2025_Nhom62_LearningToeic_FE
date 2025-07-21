@@ -50,10 +50,11 @@ class LessonService {
 
   async getEnableLessonsBySection(sectionId) {
     const response = await axiosClient.get(
-      `${this.baseUrl}/by-section/${sectionId}/enabled`
+      `${this.baseUrl}/by-section/${sectionId}/enable`
     );
     return response;
   }
 }
 
-export default new LessonService();
+const lessonServiceInstance = new LessonService();
+export default lessonServiceInstance;

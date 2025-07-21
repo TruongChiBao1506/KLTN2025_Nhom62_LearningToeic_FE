@@ -62,7 +62,7 @@ class TestService {
 
   async getEnableTestsBySection(sectionId) {
     const response = await axiosClient.get(
-      `${this.baseUrl}/by-section/${sectionId}/enabled`
+      `${this.baseUrl}/by-section/${sectionId}/enable`
     );
     return response;
   }
