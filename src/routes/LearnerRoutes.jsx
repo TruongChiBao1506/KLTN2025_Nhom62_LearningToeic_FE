@@ -341,6 +341,7 @@ const LearnerRoutes = () => {
           path="ai-tutor"
           element={
             <ProtectedRoute>
+              {/* <AITutor /> */}
               <AITutor />
             </ProtectedRoute>
           }

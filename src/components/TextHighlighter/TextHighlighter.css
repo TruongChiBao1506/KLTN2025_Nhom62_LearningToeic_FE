@@ -1,3 +1,4 @@
+/* Main container */
 .toeic-text-highlighter-container {
   position: relative;
 }
@@ -5,28 +6,51 @@
 .toeic-highlightable-content {
   position: relative;
   z-index: 1;
+  user-select: text;
 }
 
+/* Popup overlay */
+.toeic-highlighter-overlay {
+  z-index: 9999 !important;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* Popup animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
+  }
+}
+
+/* Highlighted text */
 .toeic-text-highlight {
   border-radius: 2px;
   position: relative;
   display: inline;
   padding: 1px 0;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .toeic-text-highlight:hover {
   opacity: 0.85;
 }
 
+/* Popover content */
 .toeic-highlighter-popover {
-  width: 280px;
+  font-size: 14px;
 }
 
+/* Color selector */
 .toeic-color-selector {
+  margin-bottom: 12px;
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
 }
 
 .toeic-color-swatch {
