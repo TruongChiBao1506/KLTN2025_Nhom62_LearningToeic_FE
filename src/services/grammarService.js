@@ -40,7 +40,7 @@ class GrammarService {
 
     async updateStatus(grammarId, newStatus) {
         const response = await axiosClient.put(`${this.baseUrl}/${grammarId}/status`, {
-            status: newStatus
+            grammarStatus: newStatus
         });
         return response;
     }
