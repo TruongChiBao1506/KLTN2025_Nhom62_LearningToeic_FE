@@ -4,16 +4,18 @@ import queryString from 'query-string';
 const getToken = () => {
     // Ưu tiên admin token trước
     const adminToken = localStorage.getItem('adminToken');
+    const learnerToken = localStorage.getItem('learnerToken');
     const userToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     
-    return adminToken || userToken;
+    return adminToken || learnerToken || userToken;
 };
 
 const getRefreshToken = () => {
     const adminRefreshToken = localStorage.getItem('adminRefreshToken');
+    const learnerRefreshToken = localStorage.getItem('learnerRefreshToken');
     const userRefreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
     
-    return adminRefreshToken || userRefreshToken;
+    return adminRefreshToken || learnerRefreshToken || userRefreshToken;
 };
 
 const isRemembered = () => {
@@ -67,15 +69,23 @@ axiosClient.interceptors.response.use(
                     refreshToken,
                 });
                 
-                const newToken = response.data.accessToken;
+                const newToken = response.data.token || response.data.accessToken;
                 
                 //   Lưu token mới vào đúng storage
                 const hasAdminToken = localStorage.getItem('adminToken');
+                const hasLearnerToken = localStorage.getItem('learnerToken');
+                
                 if (hasAdminToken) {
                     // Nếu đang dùng admin token, lưu vào admin storage
                     localStorage.setItem('adminToken', newToken);
                     if (response.data.refreshToken) {
                         localStorage.setItem('adminRefreshToken', response.data.refreshToken);
+                    }
+                } else if (hasLearnerToken) {
+                    // Nếu đang dùng learner token, lưu vào learner storage
+                    localStorage.setItem('learnerToken', newToken);
+                    if (response.data.refreshToken) {
+                        localStorage.setItem('learnerRefreshToken', response.data.refreshToken);
                     }
                 } else {
                     // Nếu là user token thường
@@ -99,13 +109,24 @@ axiosClient.interceptors.response.use(
                 localStorage.removeItem('adminRefreshToken');
                 localStorage.removeItem('adminAccessTokenExpirationTime');
                 localStorage.removeItem('adminRefreshTokenExpirationTime');
+                localStorage.removeItem('learnerToken');
+                localStorage.removeItem('learnerRefreshToken');
+                localStorage.removeItem('learnerAccessTokenExpirationTime');
+                localStorage.removeItem('learnerRefreshTokenExpirationTime');
                 sessionStorage.removeItem('accessToken');
                 sessionStorage.removeItem('refreshToken');
                 sessionStorage.removeItem('user');
                 
                 // Redirect về trang phù hợp
                 const isAdminPage = window.location.pathname.includes('/admin');
-                window.location.href = isAdminPage ? '/admin/signin' : '/signin';
+                const isLearnerPage = window.location.pathname.includes('/learner');
+                if (isAdminPage) {
+                    window.location.href = '/admin/signin';
+                } else if (isLearnerPage) {
+                    window.location.href = '/auth/signin';
+                } else {
+                    window.location.href = '/auth/signin';
+                }
                 return Promise.reject(refreshError);
             }
         }

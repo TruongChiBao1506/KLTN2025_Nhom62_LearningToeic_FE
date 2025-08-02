@@ -1,0 +1,195 @@
+/* Exam List Styles */
+.exam-list-container {
+  padding: 10px 0;
+}
+
+/* Breadcrumb */
+.breadcrumb-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #17a2b8;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+/* Exam List Header */
+.exam-list-header {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-container {
+  max-width: 100%;
+}
+
+/* Filter Panel */
+.filter-panel {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-top: 15px;
+}
+
+/* Exam Cards */
+.exam-cards {
+  margin-bottom: 20px;
+}
+
+.exam-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.exam-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.exam-card.completed::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background-color: #28a745;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.exam-card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exam-card-header h5 {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+.badge {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.exam-card-body {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.exam-card-body p {
+  color: #6c757d;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.exam-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exam-detail-item {
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.status-badge {
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.exam-card-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+}
+
+/* No Exams Found */
+.no-exams-message {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.no-exams-icon {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.no-exams-message h5 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.no-exams-message p {
+  color: #6c757d;
+  margin-bottom: 20px;
+}

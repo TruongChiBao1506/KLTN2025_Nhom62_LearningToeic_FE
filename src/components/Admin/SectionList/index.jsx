@@ -131,9 +131,9 @@ const SectionList = ({ sections = [], retrieveSections }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:9004/images/${imageName}`;
+            return `http://localhost:5000/images/${imageName}`;
         }
-        return "http://localhost:9004/images/default-image.png";
+        return "http://localhost:5000/images/default-image.png";
     };
 
     const toggleStatus = async (sectionId, newStatus) => {

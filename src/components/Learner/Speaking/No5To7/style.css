@@ -1,0 +1,86 @@
+.word-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.question-card {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+}
+
+.question-text {
+  background-color: #e9f0f8;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.response-section {
+  background-color: #f0f8f3;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.audio-simulation {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: #666;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #052649;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+  background-color: #fff;
+  color: #052649;
+  border: 1px solid #052649;
+}
+
+.bg-primary {
+  background-color: #007bff !important;
+}
+
+.card {
+  position: relative;
+  transition: transform 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(11, 21, 114, 0.1);
+  border-radius: 10px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(26, 25, 128, 0.2);
+}
+
+.card.specific-card {
+  border: 2px solid #eeeff1;
+}
+
+.card.specific-card:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(72, 87, 219, 0.1);
+  border-color: #f6f9fc;
+}
+
+/* Styling for audio controls */
+audio {
+  width: 100%;
+  margin: 10px 0;
+}

@@ -56,7 +56,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:9004/images/${imageName}`;
+            return `http://localhost:5000/images/${imageName}`;
         }
         return "https://png.pngtree.com/png-vector/20190321/ourmid/pngtree-vector-users-icon-png-image_856952.jpg";
     };

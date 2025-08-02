@@ -1,0 +1,46 @@
+.blog-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.blog-card .btn {
+  background-color: #052649;
+  border-color: #052649;
+}
+
+.blog-card .btn:hover {
+  background-color: #031a33;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #052649;
+  border-color: #052649;
+}
+
+.pagination .page-link {
+  color: #052649;
+}
+
+h2 {
+  color: #052649;
+  font-weight: bold;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: #052649;
+}

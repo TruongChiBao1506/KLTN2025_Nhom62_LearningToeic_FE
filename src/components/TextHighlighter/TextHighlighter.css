@@ -1,0 +1,250 @@
+/* Main container */
+.toeic-text-highlighter-container {
+  position: relative;
+}
+
+.toeic-highlightable-content {
+  position: relative;
+  z-index: 1;
+  user-select: text;
+}
+
+/* Popup overlay */
+.toeic-highlighter-overlay {
+  z-index: 9999 !important;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* Popup animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
+  }
+}
+
+/* Highlighted text */
+.toeic-text-highlight {
+  border-radius: 2px;
+  position: relative;
+  display: inline;
+  padding: 1px 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.toeic-text-highlight:hover {
+  opacity: 0.85;
+}
+
+/* Popover content */
+.toeic-highlighter-popover {
+  font-size: 14px;
+}
+
+/* Color selector */
+.toeic-color-selector {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.toeic-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.toeic-color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.toeic-color-swatch.active {
+  border-color: #1890ff;
+  transform: scale(1.1);
+}
+
+.toeic-note-input {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.toeic-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.toeic-translation-result {
+  position: relative;
+  padding: 5px 25px 5px 5px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.toeic-translation-text {
+  max-height: 150px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.toeic-close-translation {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make sure the popover arrow stays visible */
+.ant-popover-arrow {
+  z-index: 2;
+}
+
+/* Custom styles for highlighted text areas */
+.toeic-highlight-yellow {
+  background-color: #fef08a;
+}
+.toeic-highlight-green {
+  background-color: #bbf7d0;
+}
+.toeic-highlight-blue {
+  background-color: #bae6fd;
+}
+.toeic-highlight-pink {
+  background-color: #fbcfe8;
+}
+.toeic-highlight-purple {
+  background-color: #ddd6fe;
+}
+.toeic-highlight-orange {
+  background-color: #fed7aa;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .toeic-highlighter-popover {
+    width: 250px;
+  }
+
+  .toeic-action-buttons {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}
+
+/* === PERFORMANCE OPTIMIZATIONS FOR RESIZEOBSERVER STABILITY === */
+
+/* Optimize container rendering to prevent ResizeObserver issues */
+.toeic-text-highlighter-container {
+  contain: layout style paint;
+  will-change: auto;
+}
+
+.toeic-highlightable-content {
+  contain: layout;
+  user-select: text;
+}
+
+/* Optimize Popover rendering and positioning */
+.toeic-highlighter-overlay {
+  z-index: 9999 !important;
+  contain: layout style paint;
+  will-change: transform, opacity;
+}
+
+.toeic-highlighter-overlay .ant-popover-content {
+  contain: layout style;
+  overflow: visible; /* Allow content to be visible */
+  /* Stable dimensions to prevent resize events */
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.toeic-highlighter-overlay .ant-popover-inner {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toeic-highlighter-overlay .ant-popover-arrow {
+  display: block !important;
+}
+
+.toeic-highlighter-popover {
+  contain: layout style;
+  /* Fixed dimensions to prevent resize events */
+  width: 280px;
+  padding: 8px 12px;
+}
+
+/* Improve positioning accuracy */
+.toeic-highlighter-overlay.ant-popover-placement-top .ant-popover-content {
+  margin-bottom: 12px;
+}
+
+.toeic-highlighter-overlay.ant-popover-placement-bottom .ant-popover-content {
+  margin-top: 12px;
+}
+
+/* Optimize color swatches */
+.toeic-color-swatch {
+  will-change: transform, border-color;
+  contain: layout style;
+}
+
+/* Optimize buttons */
+.toeic-action-buttons .ant-btn {
+  contain: layout style;
+  backface-visibility: hidden;
+}
+
+/* Optimize highlighted text elements */
+.toeic-text-highlight {
+  contain: layout style;
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* Prevent unnecessary repaints */
+.toeic-highlighter-overlay * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimized animations */
+@keyframes stablePopoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toeic-highlighter-overlay .ant-popover-content {
+  animation: stablePopoverIn 0.1s ease-out;
+}
+
+/* Force GPU acceleration for smooth rendering */
+.toeic-highlighter-overlay,
+.toeic-color-swatch,
+.toeic-text-highlight {
+  transform: translateZ(0);
+}

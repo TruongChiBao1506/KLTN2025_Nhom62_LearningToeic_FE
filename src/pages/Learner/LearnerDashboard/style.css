@@ -1,0 +1,296 @@
+/* Learner Dashboard Specific Styles */
+.card-with-effect {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card-with-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.custom-card-body-special {
+  height: 400px;
+  overflow: hidden;
+}
+
+.widgets-icons-2 {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* Breadcrumb styling */
+.cd-breadcrumb {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.cd-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.cd-breadcrumb.custom-separator li::after {
+  content: ">";
+  margin: 0 0.5rem;
+}
+
+.cd-breadcrumb li.current::after {
+  display: none;
+}
+
+.cd-breadcrumb li svg {
+  margin-right: 0.5rem;
+}
+
+/* Dashboard Styles */
+.learner-dashboard {
+  padding: 10px 0;
+}
+
+/* Breadcrumb */
+.breadcrumb-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 20px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-banner h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.welcome-banner p {
+  margin-bottom: 0;
+  opacity: 0.9;
+}
+
+/* Stat Cards */
+.stat-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-body {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.stat-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.bg-primary {
+  background-color: #17a2b8 !important;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.stat-card-info h5 {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.stat-card-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.stat-card-info p {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+/* Chart Container */
+.chart-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  height: 100%;
+}
+
+.chart-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.chart-header h5 {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+.chart-body {
+  padding: 20px;
+  position: relative;
+  min-height: 300px;
+}
+
+/* Recent Exams List */
+.recent-exams-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.recent-exam-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eaeaea;
+  transition: background-color 0.2s ease;
+}
+
+.recent-exam-item:last-child {
+  border-bottom: none;
+}
+
+.recent-exam-item:hover {
+  background-color: #f8f9fa;
+}
+
+.exam-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+  width: 30%;
+}
+
+.exam-name {
+  font-weight: 500;
+  width: 40%;
+}
+
+.exam-score {
+  font-weight: 600;
+  width: 30%;
+  text-align: right;
+}
+
+.text-bronze {
+  color: #cd7f32;
+}
+
+/* Recommendations */
+.recommendations-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.recommendations-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.recommendations-header h5 {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+.recommendations-body {
+  padding: 20px;
+}
+
+.recommendation-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  height: 100%;
+}
+
+.recommendation-card h6 {
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.recommendation-card p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+/* Loader */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+/* No Data Message */
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #6c757d;
+  text-align: center;
+  padding: 0 20px;
+}

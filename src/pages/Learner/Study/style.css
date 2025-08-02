@@ -1,0 +1,123 @@
+.bg-test {
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.specific-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.question-section {
+  margin-bottom: 20px;
+}
+
+.question-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.audio-container {
+  margin-bottom: 15px;
+}
+
+.image-container {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.form-check-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.form-check-label:hover {
+  background-color: #f0f7ff;
+}
+
+.highlight-row {
+  background-color: #e8f2ff;
+}
+
+.result-icon {
+  margin-left: 10px;
+}
+
+.feedback-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.transcript {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.transcript-original {
+  margin-bottom: 10px;
+}
+
+.transcript-translation {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
+
+.question-list-section {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.question-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.question-buttons button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.question-buttons button:hover {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.question-buttons button.selected {
+  background-color: orange;
+  color: white;
+}
+
+.question-buttons button.correct {
+  background-color: green;
+  color: white;
+}
+
+.question-buttons button.incorrect {
+  background-color: red;
+  color: white;
+}
+
+.question-buttons button.graded {
+  border: 2px solid #007bff;
+}

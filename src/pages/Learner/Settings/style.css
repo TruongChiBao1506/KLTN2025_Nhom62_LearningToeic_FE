@@ -1,0 +1,368 @@
+/* Settings Styles */
+.settings-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.settings-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.settings-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.settings-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.settings-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.settings-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #666;
+}
+
+.tab-btn:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.tab-btn.active {
+  background: white;
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+}
+
+.settings-body {
+  padding: 30px;
+  min-height: 400px;
+}
+
+.settings-section h3 {
+  color: #333;
+  margin-bottom: 25px;
+  font-size: 1.3rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-item label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.setting-item select,
+.setting-item input[type="time"],
+.setting-item input[type="number"] {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background: white;
+}
+
+.setting-item select:focus,
+.setting-item input[type="time"]:focus,
+.setting-item input[type="number"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.setting-item input[type="number"]:disabled,
+.setting-item input[type="time"]:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.checkbox-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e0e0e0;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.settings-actions {
+  display: flex;
+  gap: 15px;
+  padding: 20px 30px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  justify-content: flex-end;
+}
+
+.btn-reset, .btn-save {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-reset {
+  background: #f44336;
+  color: white;
+}
+
+.btn-reset:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.save-status {
+  text-align: center;
+  padding: 15px;
+  background: #e8f5e8;
+  color: #2e7d32;
+  font-weight: 500;
+  border-top: 1px solid #e0e0e0;
+}
+
+.settings-info {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.info-card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  color: white;
+}
+
+.info-card h4 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.info-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.info-card li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.info-card p {
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 15px;
+  }
+
+  .settings-header h1 {
+    font-size: 2rem;
+  }
+
+  .settings-tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 50%;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+
+  .settings-body {
+    padding: 20px;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+    padding: 15px 20px;
+  }
+
+  .btn-reset, .btn-save {
+    width: 100%;
+  }
+
+  .settings-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .info-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .tab-btn {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  .settings-body {
+    padding: 15px;
+  }
+
+  .setting-item {
+    margin-bottom: 18px;
+  }
+
+  .checkbox-label {
+    gap: 8px;
+  }
+
+  .info-card {
+    padding: 15px;
+  }
+
+  .info-card h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Dark theme support (for future implementation) */
+@media (prefers-color-scheme: dark) {
+  .settings-content {
+    background: #2d2d2d;
+    color: white;
+  }
+
+  .settings-tabs {
+    background: #3d3d3d;
+    border-bottom-color: #555;
+  }
+
+  .tab-btn {
+    color: #ccc;
+  }
+
+  .tab-btn.active {
+    background: #2d2d2d;
+    color: #667eea;
+  }
+
+  .settings-section h3 {
+    color: white;
+    border-bottom-color: #555;
+  }
+
+  .setting-item label {
+    color: #ccc;
+  }
+
+  .setting-item select,
+  .setting-item input[type="time"],
+  .setting-item input[type="number"] {
+    background: #3d3d3d;
+    border-color: #555;
+    color: white;
+  }
+
+  .settings-actions {
+    background: #3d3d3d;
+    border-top-color: #555;
+  }
+}
