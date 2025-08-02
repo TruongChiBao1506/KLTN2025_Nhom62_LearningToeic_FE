@@ -1,25 +1,29 @@
-/* Learner Dashboard Specific Styles */
-.card-with-effect {
+/* Learner Dashboard Specific Styles - Scoped trong container */
+.learner-dashboard-container {
+  padding: 10px 0;
+}
+
+.learner-dashboard-container .card-with-effect {
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.card-with-effect:hover {
+.learner-dashboard-container .card-with-effect:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.custom-card {
+.learner-dashboard-container .custom-card {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 1.5rem;
 }
 
-.custom-card-body-special {
+.learner-dashboard-container .custom-card-body-special {
   height: 400px;
   overflow: hidden;
 }
 
-.widgets-icons-2 {
+.learner-dashboard-container .widgets-icons-2 {
   width: 50px;
   height: 50px;
   display: flex;
@@ -28,8 +32,8 @@
   font-size: 24px;
 }
 
-/* Breadcrumb styling */
-.cd-breadcrumb {
+/* Breadcrumb styling - Scoped */
+.learner-dashboard-container .cd-breadcrumb {
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   list-style: none;
@@ -39,31 +43,26 @@
   align-items: center;
 }
 
-.cd-breadcrumb li {
+.learner-dashboard-container .cd-breadcrumb li {
   display: inline-flex;
   align-items: center;
 }
 
-.cd-breadcrumb.custom-separator li::after {
+.learner-dashboard-container .cd-breadcrumb.custom-separator li::after {
   content: ">";
   margin: 0 0.5rem;
 }
 
-.cd-breadcrumb li.current::after {
+.learner-dashboard-container .cd-breadcrumb li.current::after {
   display: none;
 }
 
-.cd-breadcrumb li svg {
+.learner-dashboard-container .cd-breadcrumb li svg {
   margin-right: 0.5rem;
 }
 
-/* Dashboard Styles */
-.learner-dashboard {
-  padding: 10px 0;
-}
-
 /* Breadcrumb */
-.breadcrumb-container {
+.learner-dashboard-container .breadcrumb-container {
   background-color: #fff;
   border-radius: 8px;
   padding: 10px 20px;
@@ -71,13 +70,13 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.breadcrumb {
+.learner-dashboard-container .breadcrumb {
   margin-bottom: 0;
   padding: 0;
 }
 
 /* Welcome Banner */
-.welcome-banner {
+.learner-dashboard-container .welcome-banner {
   background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
   border-radius: 8px;
   padding: 30px;
@@ -86,19 +85,19 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.welcome-banner h2 {
+.learner-dashboard-container .welcome-banner h2 {
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.welcome-banner p {
+.learner-dashboard-container .welcome-banner p {
   margin-bottom: 0;
   opacity: 0.9;
 }
 
 /* Stat Cards */
-.stat-card {
+.learner-dashboard-container .stat-card {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
@@ -106,18 +105,18 @@
   height: 100%;
 }
 
-.stat-card:hover {
+.learner-dashboard-container .stat-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.stat-card-body {
+.learner-dashboard-container .stat-card-body {
   padding: 20px;
   display: flex;
   align-items: center;
 }
 
-.stat-card-icon {
+.learner-dashboard-container .stat-card-icon {
   width: 50px;
   height: 50px;
   border-radius: 8px;
@@ -129,35 +128,35 @@
   font-size: 1.5rem;
 }
 
-.bg-primary {
+.learner-dashboard-container .bg-primary {
   background-color: #17a2b8 !important;
 }
 
-.bg-success {
+.learner-dashboard-container .bg-success {
   background-color: #28a745 !important;
 }
 
-.bg-info {
+.learner-dashboard-container .bg-info {
   background-color: #0dcaf0 !important;
 }
 
-.bg-warning {
+.learner-dashboard-container .bg-warning {
   background-color: #ffc107 !important;
 }
 
-.stat-card-info h5 {
+.learner-dashboard-container .stat-card-info h5 {
   font-size: 0.9rem;
   color: #6c757d;
   margin-bottom: 5px;
 }
 
-.stat-card-info h3 {
+.learner-dashboard-container .stat-card-info h3 {
   font-size: 1.5rem;
   margin-bottom: 0;
   font-weight: 600;
 }
 
-.stat-card-info p {
+.learner-dashboard-container .stat-card-info p {
   font-size: 0.8rem;
   color: #6c757d;
   margin-top: 5px;
@@ -165,7 +164,7 @@
 }
 
 /* Chart Container */
-.chart-container {
+.learner-dashboard-container .chart-container {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
@@ -173,31 +172,31 @@
   height: 100%;
 }
 
-.chart-header {
+.learner-dashboard-container .chart-header {
   padding: 15px 20px;
   border-bottom: 1px solid #eaeaea;
 }
 
-.chart-header h5 {
+.learner-dashboard-container .chart-header h5 {
   margin-bottom: 0;
   font-weight: 600;
   font-size: 1.1rem;
   color: #343a40;
 }
 
-.chart-body {
+.learner-dashboard-container .chart-body {
   padding: 20px;
   position: relative;
   min-height: 300px;
 }
 
 /* Recent Exams List */
-.recent-exams-list {
+.learner-dashboard-container .recent-exams-list {
   max-height: 300px;
   overflow-y: auto;
 }
 
-.recent-exam-item {
+.learner-dashboard-container .recent-exam-item {
   display: flex;
   justify-content: space-between;
   padding: 12px 15px;
@@ -205,79 +204,79 @@
   transition: background-color 0.2s ease;
 }
 
-.recent-exam-item:last-child {
+.learner-dashboard-container .recent-exam-item:last-child {
   border-bottom: none;
 }
 
-.recent-exam-item:hover {
+.learner-dashboard-container .recent-exam-item:hover {
   background-color: #f8f9fa;
 }
 
-.exam-date {
+.learner-dashboard-container .exam-date {
   font-size: 0.85rem;
   color: #6c757d;
   width: 30%;
 }
 
-.exam-name {
+.learner-dashboard-container .exam-name {
   font-weight: 500;
   width: 40%;
 }
 
-.exam-score {
+.learner-dashboard-container .exam-score {
   font-weight: 600;
   width: 30%;
   text-align: right;
 }
 
-.text-bronze {
+.learner-dashboard-container .text-bronze {
   color: #cd7f32;
 }
 
 /* Recommendations */
-.recommendations-container {
+.learner-dashboard-container .recommendations-container {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
 
-.recommendations-header {
+.learner-dashboard-container .recommendations-header {
   padding: 15px 20px;
   border-bottom: 1px solid #eaeaea;
 }
 
-.recommendations-header h5 {
+.learner-dashboard-container .recommendations-header h5 {
   margin-bottom: 0;
   font-weight: 600;
   font-size: 1.1rem;
   color: #343a40;
 }
 
-.recommendations-body {
+.learner-dashboard-container .recommendations-body {
   padding: 20px;
 }
 
-.recommendation-card {
+.learner-dashboard-container .recommendation-card {
   background-color: #f8f9fa;
   border-radius: 8px;
   padding: 20px;
   height: 100%;
 }
 
-.recommendation-card h6 {
+.learner-dashboard-container .recommendation-card h6 {
   margin-bottom: 15px;
   font-weight: 600;
 }
 
-.recommendation-card p {
+.learner-dashboard-container .recommendation-card p {
   font-size: 0.9rem;
   color: #6c757d;
   margin-bottom: 15px;
 }
 
 /* Loader */
-.loader-container {
+.learner-dashboard-container .loader-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -285,7 +284,7 @@
 }
 
 /* No Data Message */
-.no-data-message {
+.learner-dashboard-container .no-data-message {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -293,4 +292,114 @@
   color: #6c757d;
   text-align: center;
   padding: 0 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .learner-dashboard-container .welcome-banner {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .learner-dashboard-container .welcome-banner h2 {
+    font-size: 1.5rem;
+  }
+  
+  .learner-dashboard-container .stat-card-body {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .learner-dashboard-container .stat-card-icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .learner-dashboard-container .chart-body {
+    padding: 15px;
+    min-height: 250px;
+  }
+  
+  .learner-dashboard-container .recent-exam-item {
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+  }
+  
+  .learner-dashboard-container .exam-date,
+  .learner-dashboard-container .exam-name,
+  .learner-dashboard-container .exam-score {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .learner-dashboard-container .recommendation-card {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .learner-dashboard-container {
+    padding: 5px 0;
+  }
+  
+  .learner-dashboard-container .breadcrumb-container {
+    padding: 8px 15px;
+    margin-bottom: 15px;
+  }
+  
+  .learner-dashboard-container .welcome-banner {
+    padding: 15px;
+  }
+  
+  .learner-dashboard-container .welcome-banner h2 {
+    font-size: 1.3rem;
+  }
+  
+  .learner-dashboard-container .chart-container {
+    margin-bottom: 15px;
+  }
+  
+  .learner-dashboard-container .chart-header {
+    padding: 12px 15px;
+  }
+  
+  .learner-dashboard-container .chart-body {
+    padding: 12px;
+    min-height: 200px;
+  }
+}
+
+/* Additional spacing fixes */
+.learner-dashboard-container .row {
+  margin-bottom: 20px;
+}
+
+.learner-dashboard-container .col-md-3,
+.learner-dashboard-container .col-md-6,
+.learner-dashboard-container .col-md-8,
+.learner-dashboard-container .col-md-4 {
+  margin-bottom: 20px;
+}
+
+/* Button styling trong dashboard */
+.learner-dashboard-container .btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.learner-dashboard-container .btn:hover {
+  transform: translateY(-1px);
+}
+
+.learner-dashboard-container .btn-primary {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.learner-dashboard-container .btn-primary:hover {
+  background-color: #138496;
+  border-color: #138496;
 }

@@ -98,9 +98,9 @@ const Dashboard = () => {
     const countTotalFeedbacks = async () => {
         try {
             const result = await feedbackService.countTotalFeedbacks();
-            console.log('Count feedbacks result:', result);
+            console.log('Count feedbacks result:', result.data);
             const count = result || 0;
-            return count;
+            return count.data;
         } catch (error) {
             console.error('Error counting feedbacks:', error);
             return 0;

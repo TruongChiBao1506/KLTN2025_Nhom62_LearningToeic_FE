@@ -52,33 +52,36 @@ class FreeMaterialService {
         try {
             // Try different download endpoint variations
             let downloadUrl = `${this.baseUrl}/download/${fileName}`;
-            
+
             const response = await axiosClient.get(downloadUrl, {
                 responseType: 'blob'
             });
-            
+
             // Create blob and download
-            const blob = new Blob([response.data], { 
-                type: response.headers['content-type'] || 'application/pdf' 
+            const blob = new Blob([response.data], {
+                type: response.headers['content-type'] || 'application/pdf'
             });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            
+
             // Use original filename if available, otherwise use provided fileName
             const downloadFileName = fileName.includes('.') ? fileName : `${fileName}.pdf`;
             link.download = downloadFileName;
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            
+
             return response;
         } catch (error) {
             console.error('Download error:', error);
             throw error;
         }
+    }
+    async countTotalFreeMaterials() {
+        return (await axiosClient.get(`${this.baseUrl}/total`));
     }
 }
 

@@ -6,7 +6,7 @@
 }
 
 /* Header */
-.timer-header {
+.study-timer-container .timer-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,7 +17,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.timer-header h1 {
+.study-timer-container .timer-header h1 {
   margin: 0;
   color: #2c3e50;
   font-size: 28px;
@@ -27,17 +27,17 @@
   gap: 15px;
 }
 
-.header-icon {
+.study-timer-container .header-icon {
   color: #667eea;
-  animation: pulse 2s infinite;
+  animation: studyTimerPulse 2s infinite;
 }
 
-.header-actions {
+.study-timer-container .header-actions {
   display: flex;
   gap: 10px;
 }
 
-.action-btn {
+.study-timer-container .action-btn {
   width: 45px;
   height: 45px;
   border: none;
@@ -52,14 +52,14 @@
   font-size: 18px;
 }
 
-.action-btn:hover {
+.study-timer-container .action-btn:hover {
   background: #667eea;
   color: white;
   transform: translateY(-2px);
 }
 
 /* Main Content */
-.timer-content {
+.study-timer-container .timer-content {
   display: grid;
   grid-template-columns: 1fr 350px;
   gap: 30px;
@@ -68,7 +68,7 @@
 }
 
 /* Timer Main */
-.timer-main {
+.study-timer-container .timer-main {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,7 +78,7 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
-.timer-circle {
+.study-timer-container .timer-circle {
   width: 300px;
   height: 300px;
   border: 8px solid #f0f0f0;
@@ -91,7 +91,7 @@
   transition: border-color 0.3s ease;
 }
 
-.timer-progress {
+.study-timer-container .timer-progress {
   width: 280px;
   height: 280px;
   border-radius: 50%;
@@ -101,7 +101,7 @@
   position: relative;
 }
 
-.timer-inner {
+.study-timer-container .timer-inner {
   background: white;
   width: 240px;
   height: 240px;
@@ -113,7 +113,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.phase-label {
+.study-timer-container .phase-label {
   font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
@@ -121,7 +121,7 @@
   margin-bottom: 10px;
 }
 
-.timer-display {
+.study-timer-container .timer-display {
   font-size: 48px;
   font-weight: 700;
   color: #2c3e50;
@@ -129,20 +129,20 @@
   margin-bottom: 10px;
 }
 
-.cycle-counter {
+.study-timer-container .cycle-counter {
   font-size: 14px;
   color: #7f8c8d;
   font-weight: 500;
 }
 
 /* Timer Controls */
-.timer-controls {
+.study-timer-container .timer-controls {
   display: flex;
   gap: 15px;
   margin-bottom: 30px;
 }
 
-.control-btn {
+.study-timer-container .control-btn {
   padding: 15px 25px;
   border: none;
   border-radius: 12px;
@@ -157,45 +157,45 @@
   justify-content: center;
 }
 
-.control-btn.primary {
+.study-timer-container .control-btn.primary {
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   color: white;
 }
 
-.control-btn.warning {
+.study-timer-container .control-btn.warning {
   background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
   color: white;
 }
 
-.control-btn.secondary {
+.study-timer-container .control-btn.secondary {
   background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   color: white;
 }
 
-.control-btn.info {
+.study-timer-container .control-btn.info {
   background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
 }
 
-.control-btn:hover {
+.study-timer-container .control-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Current Task */
-.current-task {
+.study-timer-container .current-task {
   width: 100%;
   text-align: center;
 }
 
-.current-task label {
+.study-timer-container .current-task label {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
   color: #2c3e50;
 }
 
-.task-selector {
+.study-timer-container .task-selector {
   width: 100%;
   max-width: 400px;
   padding: 12px 20px;
@@ -207,27 +207,27 @@
   transition: border-color 0.3s ease;
 }
 
-.task-selector:focus {
+.study-timer-container .task-selector:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* Sidebar */
-.timer-sidebar {
+.study-timer-container .timer-sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 /* Quick Stats */
-.quick-stats {
+.study-timer-container .quick-stats {
   display: grid;
   grid-template-columns: 1fr;
   gap: 15px;
 }
 
-.stat-card {
+.study-timer-container .stat-card {
   background: rgba(255, 255, 255, 0.95);
   padding: 20px;
   border-radius: 15px;
@@ -236,51 +236,51 @@
   transition: transform 0.3s ease;
 }
 
-.stat-card:hover {
+.study-timer-container .stat-card:hover {
   transform: translateY(-5px);
 }
 
-.stat-icon {
+.study-timer-container .stat-icon {
   font-size: 24px;
   color: #667eea;
   margin-bottom: 10px;
 }
 
-.stat-value {
+.study-timer-container .stat-value {
   font-size: 32px;
   font-weight: 700;
   color: #2c3e50;
   margin-bottom: 5px;
 }
 
-.stat-label {
+.study-timer-container .stat-label {
   font-size: 14px;
   color: #7f8c8d;
   font-weight: 500;
 }
 
 /* Task List */
-.task-list {
+.study-timer-container .task-list {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.task-list-header {
+.study-timer-container .task-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.task-list-header h3 {
+.study-timer-container .task-list-header h3 {
   margin: 0;
   color: #2c3e50;
   font-size: 18px;
 }
 
-.add-task-btn {
+.study-timer-container .add-task-btn {
   width: 35px;
   height: 35px;
   border: none;
@@ -294,12 +294,12 @@
   transition: all 0.3s ease;
 }
 
-.add-task-btn:hover {
+.study-timer-container .add-task-btn:hover {
   background: #5a6fd8;
   transform: scale(1.1);
 }
 
-.tasks {
+.study-timer-container .tasks {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -307,7 +307,7 @@
   overflow-y: auto;
 }
 
-.task-item {
+.study-timer-container .task-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -317,23 +317,23 @@
   transition: all 0.3s ease;
 }
 
-.task-item:hover {
+.study-timer-container .task-item:hover {
   background: #e9ecef;
 }
 
-.task-item.completed {
+.study-timer-container .task-item.completed {
   opacity: 0.6;
   text-decoration: line-through;
 }
 
-.task-content {
+.study-timer-container .task-content {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
 }
 
-.task-checkbox {
+.study-timer-container .task-checkbox {
   width: 20px;
   height: 20px;
   border: 2px solid #667eea;
@@ -348,18 +348,18 @@
   transition: all 0.3s ease;
 }
 
-.task-checkbox:hover,
-.task-item.completed .task-checkbox {
+.study-timer-container .task-checkbox:hover,
+.study-timer-container .task-item.completed .task-checkbox {
   background: #667eea;
 }
 
-.task-text {
+.study-timer-container .task-text {
   flex: 1;
   font-size: 14px;
   color: #495057;
 }
 
-.task-cycles {
+.study-timer-container .task-cycles {
   font-size: 12px;
   color: #6c757d;
   background: #e9ecef;
@@ -367,7 +367,7 @@
   border-radius: 10px;
 }
 
-.delete-task {
+.study-timer-container .delete-task {
   width: 25px;
   height: 25px;
   border: none;
@@ -379,13 +379,13 @@
   transition: all 0.3s ease;
 }
 
-.delete-task:hover {
+.study-timer-container .delete-task:hover {
   background: #dc3545;
   color: white;
 }
 
-/* Modal */
-.modal-overlay {
+/* Study Timer Modal - Scoped to avoid conflicts */
+.study-timer-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -399,7 +399,7 @@
   backdrop-filter: blur(5px);
 }
 
-.modal {
+.study-timer-modal {
   background: white;
   border-radius: 15px;
   max-width: 500px;
@@ -407,14 +407,14 @@
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: modalSlideIn 0.3s ease-out;
+  animation: studyTimerModalSlideIn 0.3s ease-out;
 }
 
-.modal.large {
+.study-timer-modal.large {
   max-width: 700px;
 }
 
-@keyframes modalSlideIn {
+@keyframes studyTimerModalSlideIn {
   from {
     opacity: 0;
     transform: translateY(-50px) scale(0.9);
@@ -425,7 +425,7 @@
   }
 }
 
-.modal-header {
+.study-timer-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -433,13 +433,13 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.modal-header h3 {
+.study-timer-modal-header h3 {
   margin: 0;
   color: #2c3e50;
   font-size: 20px;
 }
 
-.close-btn {
+.study-timer-close-btn {
   width: 30px;
   height: 30px;
   border: none;
@@ -451,35 +451,35 @@
   transition: all 0.3s ease;
 }
 
-.close-btn:hover {
+.study-timer-close-btn:hover {
   background: #f8f9fa;
   color: #495057;
 }
 
-.modal-content {
+.study-timer-modal-content {
   padding: 30px;
 }
 
 /* Settings */
-.setting-group {
+.study-timer-container .setting-group {
   margin-bottom: 25px;
 }
 
-.setting-group label {
+.study-timer-container .setting-group label {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
   color: #2c3e50;
 }
 
-.time-input {
+.study-timer-container .time-input {
   display: flex;
   align-items: center;
   gap: 15px;
   justify-content: center;
 }
 
-.time-input button {
+.study-timer-container .time-input button {
   width: 40px;
   height: 40px;
   border: 2px solid #667eea;
@@ -493,12 +493,12 @@
   transition: all 0.3s ease;
 }
 
-.time-input button:hover {
+.study-timer-container .time-input button:hover {
   background: #667eea;
   color: white;
 }
 
-.time-input span {
+.study-timer-container .time-input span {
   font-size: 18px;
   font-weight: 600;
   color: #2c3e50;
@@ -506,7 +506,7 @@
   text-align: center;
 }
 
-.checkbox-label {
+.study-timer-container .checkbox-label {
   display: flex !important;
   align-items: center;
   gap: 10px;
@@ -516,23 +516,23 @@
   transition: background-color 0.3s ease;
 }
 
-.checkbox-label:hover {
+.study-timer-container .checkbox-label:hover {
   background: #f8f9fa;
 }
 
-.checkbox-label input[type="checkbox"] {
+.study-timer-container .checkbox-label input[type="checkbox"] {
   margin: 0;
 }
 
 /* Stats */
-.stats-grid {
+.study-timer-container .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 30px;
 }
 
-.stat-box {
+.study-timer-container .stat-box {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 25px;
@@ -541,36 +541,36 @@
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
-.stat-box-icon {
+.study-timer-container .stat-box-icon {
   font-size: 30px;
   margin-bottom: 15px;
   opacity: 0.9;
 }
 
-.stat-box-value {
+.study-timer-container .stat-box-value {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
-.stat-box-label {
+.study-timer-container .stat-box-label {
   font-size: 14px;
   opacity: 0.9;
 }
 
-.achievement-section h4 {
+.study-timer-container .achievement-section h4 {
   color: #2c3e50;
   margin-bottom: 15px;
   font-size: 18px;
 }
 
-.achievements {
+.study-timer-container .achievements {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.achievement {
+.study-timer-container .achievement {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   padding: 8px 15px;
@@ -581,16 +581,16 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .timer-content {
+  .study-timer-container .timer-content {
     grid-template-columns: 1fr;
     gap: 20px;
   }
   
-  .timer-sidebar {
+  .study-timer-container .timer-sidebar {
     order: -1;
   }
   
-  .quick-stats {
+  .study-timer-container .quick-stats {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -600,94 +600,94 @@
     padding: 15px;
   }
   
-  .timer-header {
+  .study-timer-container .timer-header {
     padding: 15px 20px;
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
   
-  .timer-header h1 {
+  .study-timer-container .timer-header h1 {
     font-size: 24px;
   }
   
-  .timer-main {
+  .study-timer-container .timer-main {
     padding: 30px 20px;
   }
   
-  .timer-circle {
+  .study-timer-container .timer-circle {
     width: 250px;
     height: 250px;
   }
   
-  .timer-progress {
+  .study-timer-container .timer-progress {
     width: 230px;
     height: 230px;
   }
   
-  .timer-inner {
+  .study-timer-container .timer-inner {
     width: 190px;
     height: 190px;
   }
   
-  .timer-display {
+  .study-timer-container .timer-display {
     font-size: 36px;
   }
   
-  .timer-controls {
+  .study-timer-container .timer-controls {
     flex-direction: column;
     width: 100%;
   }
   
-  .control-btn {
+  .study-timer-container .control-btn {
     width: 100%;
   }
   
-  .quick-stats {
+  .study-timer-container .quick-stats {
     grid-template-columns: 1fr;
   }
   
-  .stats-grid {
+  .study-timer-container .stats-grid {
     grid-template-columns: 1fr;
   }
   
-  .modal {
+  .study-timer-modal {
     width: 95%;
     margin: 10px;
   }
   
-  .modal-content {
+  .study-timer-modal-content {
     padding: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .timer-circle {
+  .study-timer-container .timer-circle {
     width: 200px;
     height: 200px;
   }
   
-  .timer-progress {
+  .study-timer-container .timer-progress {
     width: 180px;
     height: 180px;
   }
   
-  .timer-inner {
+  .study-timer-container .timer-inner {
     width: 160px;
     height: 160px;
   }
   
-  .timer-display {
+  .study-timer-container .timer-display {
     font-size: 28px;
   }
   
-  .phase-label {
+  .study-timer-container .phase-label {
     font-size: 14px;
   }
 }
 
 /* Animations */
-@keyframes pulse {
+@keyframes studyTimerPulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
@@ -698,33 +698,33 @@
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
 }
 
-[data-theme="dark"] .timer-header,
-[data-theme="dark"] .timer-main,
-[data-theme="dark"] .stat-card,
-[data-theme="dark"] .task-list {
+[data-theme="dark"] .study-timer-container .timer-header,
+[data-theme="dark"] .study-timer-container .timer-main,
+[data-theme="dark"] .study-timer-container .stat-card,
+[data-theme="dark"] .study-timer-container .task-list {
   background: rgba(52, 73, 94, 0.95);
   color: #ecf0f1;
 }
 
-[data-theme="dark"] .timer-inner {
+[data-theme="dark"] .study-timer-container .timer-inner {
   background: #34495e;
 }
 
-[data-theme="dark"] .timer-display,
-[data-theme="dark"] .cycle-counter {
+[data-theme="dark"] .study-timer-container .timer-display,
+[data-theme="dark"] .study-timer-container .cycle-counter {
   color: #ecf0f1;
 }
 
-[data-theme="dark"] .task-item {
+[data-theme="dark"] .study-timer-container .task-item {
   background: #2c3e50;
   color: #ecf0f1;
 }
 
-[data-theme="dark"] .task-item:hover {
+[data-theme="dark"] .study-timer-container .task-item:hover {
   background: #34495e;
 }
 
-[data-theme="dark"] .modal {
+[data-theme="dark"] .study-timer-modal {
   background: #34495e;
   color: #ecf0f1;
 }

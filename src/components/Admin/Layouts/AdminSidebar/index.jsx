@@ -166,16 +166,16 @@ const Sidebar = ({ isToggled }) => {
                 {menuItems.map((item) => (
                     <button
                         key={item.key}
-                        className={`custom-list-item rounded-5 ${isActiveRoute(item.path) ? 'active' : ''}`}
+                        className={`custom-list-item ${isActiveRoute(item.path) ? 'active' : ''}`}
                         onClick={() => handleNavigation(item.path)}
                         type="button"
                     >
-                        <div className="row align-items-center">
-                            <div className="col-10 d-flex justify-content-start align-items-center">
-                                <i className={`${item.icon} me-2`}></i>
+                        <div className="d-flex align-items-center justify-content-between w-100">
+                            <div className="d-flex align-items-center">
+                                <i className={`${item.icon} me-3`}></i>
                                 <span>{item.label}</span>
                             </div>
-                            <div className="col-2 text-end d-flex justify-content-end align-items-center">
+                            <div>
                                 {isActiveRoute(item.path) && (
                                     <FontAwesomeIcon
                                         icon={faChevronRight}

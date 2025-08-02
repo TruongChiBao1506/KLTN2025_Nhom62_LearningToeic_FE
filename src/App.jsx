@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LearnerRoutes from "./routes/LearnerRoutes";
 import AuthRoutes from "./routes/AuthRoutes";
 import NotFound from "./pages/NotFound";
+import AdminRoutes from "./routes/AdminRoutes";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="/auth/*" element={<AuthRoutes />} />
 
         {/* Admin Routes */}
-        {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
+        <Route path="/admin/*" element={<AdminRoutes />} />
 
         {/* Learner Routes */}
         <Route path="/learner/*" element={<LearnerRoutes />} />

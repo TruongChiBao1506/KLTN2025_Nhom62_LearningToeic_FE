@@ -1,92 +1,92 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
-import './App.css';
+// import './App.css';
 
-// Protected pages
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import ProtectedRoute from './components/Admin/ProtectedRoute';
+// // Protected pages
+// import AdminDashboard from './pages/Admin/AdminDashboard';
+// import ProtectedRoute from './components/Admin/ProtectedRoute';
 
-// Admin
-import AdminSignIn from './pages/Admin/AdminSignIn';
-import AdminLayout from './pages/Admin/AdminLayout';
-import AdminProfile from './pages/Admin/AdminProfile';
-import Section from './pages/Admin/Section';
-import Topic from './pages/Admin/Topic';
-import Grammar from './pages/Admin/Grammar';
-import Settings from './pages/Admin/SettingPage';
-import Learner from './pages/Admin/Learner';
-import Exam from './pages/Admin/Exam';
-import Feedback from './pages/Admin/Feedback';
-import FreeMaterial from './pages/Admin/FreeMaterial';
-import LessonBySection from './pages/Admin/LessonBySection';
-import LessonContent from './pages/Admin/LessonContent';
-import TestBySection from './pages/Admin/TestBySection';
-import VocabularyByTopic from './pages/Admin/VocabularyByTopic';
-import VocabularyQuestion from './pages/Admin/VocabularyQuestion';
-import GrammarContent from './pages/Admin/GrammarContent';
-import GrammarQuestion from './pages/Admin/GrammarQuestion';
-import ExamQuestion from './pages/Admin/ExamQuestion';
-import ScoreTable from './pages/Admin/ScoreTable';
-import QuestionBySection from './pages/Admin/QuestionBySection';
-import IndicateQuestion from './pages/Admin/IndicateQuestion';
+// // Admin
+// import AdminSignIn from './pages/Admin/AdminSignIn';
+// import AdminLayout from './pages/Admin/AdminLayout';
+// import AdminProfile from './pages/Admin/AdminProfile';
+// import Section from './pages/Admin/Section';
+// import Topic from './pages/Admin/Topic';
+// import Grammar from './pages/Admin/Grammar';
+// import Settings from './pages/Admin/SettingPage';
+// import Learner from './pages/Admin/Learner';
+// import Exam from './pages/Admin/Exam';
+// import Feedback from './pages/Admin/Feedback';
+// import FreeMaterial from './pages/Admin/FreeMaterial';
+// import LessonBySection from './pages/Admin/LessonBySection';
+// import LessonContent from './pages/Admin/LessonContent';
+// import TestBySection from './pages/Admin/TestBySection';
+// import VocabularyByTopic from './pages/Admin/VocabularyByTopic';
+// import VocabularyQuestion from './pages/Admin/VocabularyQuestion';
+// import GrammarContent from './pages/Admin/GrammarContent';
+// import GrammarQuestion from './pages/Admin/GrammarQuestion';
+// import ExamQuestion from './pages/Admin/ExamQuestion';
+// import ScoreTable from './pages/Admin/ScoreTable';
+// import QuestionBySection from './pages/Admin/QuestionBySection';
+// import IndicateQuestion from './pages/Admin/IndicateQuestion';
 
-function App() {
-  return (
-    <>
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-
-
-          {/* Admin Auth Route - nằm ngoài AdminLayout */}
-          <Route path="/admin/signin" element={<AdminSignIn />} />
-
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="profile" element={<AdminProfile />} />
-            <Route path="section" element={<Section />} />
-
-            <Route path="section/:sectionId/lesson" element={<LessonBySection />} />
-            <Route path="section/:sectionId/lesson/:lessonId/lesson-content" element={<LessonContent />} />
-            <Route path="section/:sectionId/test" element={<TestBySection />} />
-            <Route path="section/:sectionId/test/:testId/indicate-questions" element={<IndicateQuestion />} />
-            <Route path="section/:sectionId/question" element={<QuestionBySection />} />
-
-            <Route path="topic" element={<Topic />} />
-            <Route path="topic/:topicId/vocabulary" element={<VocabularyByTopic />} />
-            <Route path="topic/:topicId/vocabulary-question" element={<VocabularyQuestion />} />
+// function App() {
+//   return (
+//     <>
+//       <Router>
+//         <Routes>
+//           {/* Public Routes */}
 
 
-            {/* Protected Route */}
-            <Route path="grammar" element={<Grammar />} />
-            <Route path="grammar/:grammarId/grammar-content" element={<GrammarContent />} />
-            <Route path="grammar/:grammarId/grammar-question" element={<GrammarQuestion />} />
-            <Route path="setting" element={<Settings />} />
-            <Route path="learner" element={<Learner />} />
-            <Route path="exam" element={<Exam />} />
-            <Route path="exam/:examId/exam-question" element={<ExamQuestion />} />
+//           {/* Admin Auth Route - nằm ngoài AdminLayout */}
+//           <Route path="/admin/signin" element={<AdminSignIn />} />
 
-            {/* Protected Routes */}
-            <Route path="feedback" element={<Feedback />} />
-            <Route path="free-material" element={<FreeMaterial />} />
-            <Route path="score-table/all" element={<ScoreTable />} />
+//           <Route path="/admin" element={<AdminLayout />}>
+//             <Route index element={<Navigate to="/admin/dashboard" replace />} />
+//             <Route path="dashboard" element={<AdminDashboard />} />
+//             <Route path="profile" element={<AdminProfile />} />
+//             <Route path="section" element={<Section />} />
+
+//             <Route path="section/:sectionId/lesson" element={<LessonBySection />} />
+//             <Route path="section/:sectionId/lesson/:lessonId/lesson-content" element={<LessonContent />} />
+//             <Route path="section/:sectionId/test" element={<TestBySection />} />
+//             <Route path="section/:sectionId/test/:testId/indicate-questions" element={<IndicateQuestion />} />
+//             <Route path="section/:sectionId/question" element={<QuestionBySection />} />
+
+//             <Route path="topic" element={<Topic />} />
+//             <Route path="topic/:topicId/vocabulary" element={<VocabularyByTopic />} />
+//             <Route path="topic/:topicId/vocabulary-question" element={<VocabularyQuestion />} />
 
 
-            {/* Thêm các route con khác ở đây */}
-          </Route>
+//             {/* Protected Route */}
+//             <Route path="grammar" element={<Grammar />} />
+//             <Route path="grammar/:grammarId/grammar-content" element={<GrammarContent />} />
+//             <Route path="grammar/:grammarId/grammar-question" element={<GrammarQuestion />} />
+//             <Route path="setting" element={<Settings />} />
+//             <Route path="learner" element={<Learner />} />
+//             <Route path="exam" element={<Exam />} />
+//             <Route path="exam/:examId/exam-question" element={<ExamQuestion />} />
 
-          {/* Fallback Route */}
-          <Route path="*" element={<Navigate to="/admin/signin" replace />} />
-        </Routes>
-      </Router>
-      <ToastContainer />
-    </>
-  );
-}
+//             {/* Protected Routes */}
+//             <Route path="feedback" element={<Feedback />} />
+//             <Route path="free-material" element={<FreeMaterial />} />
+//             <Route path="score-table/all" element={<ScoreTable />} />
 
-export default App;
+
+//             {/* Thêm các route con khác ở đây */}
+//           </Route>
+
+//           {/* Fallback Route */}
+//           <Route path="*" element={<Navigate to="/admin/signin" replace />} />
+//         </Routes>
+//       </Router>
+//       <ToastContainer />
+//     </>
+//   );
+// }
+
+// export default App;

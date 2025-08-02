@@ -69,7 +69,7 @@ class ExamService {
 
   // Count total exams
   async countTotalExams() {
-    const response = await axiosClient.get(`${this.baseUrl}/count/total`);
+    const response = await axiosClient.get(`${this.baseUrl}/total`);
     return response;
   }
 

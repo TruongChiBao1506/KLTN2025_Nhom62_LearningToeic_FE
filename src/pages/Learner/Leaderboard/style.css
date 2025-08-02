@@ -1,42 +1,42 @@
-/* Leaderboard Styles */
+/* Leaderboard Styles - Scoped trong container */
 .leaderboard-container {
   padding: 24px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
 }
 
-.leaderboard-header {
+.leaderboard-container .leaderboard-header {
   text-align: center;
   margin-bottom: 32px;
   color: white;
 }
 
-.page-title {
+.leaderboard-container .page-title {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 16px;
   color: white !important;
 }
 
-.title-icon {
+.leaderboard-container .title-icon {
   margin-right: 16px;
   color: #FFD700;
 }
 
-.page-description {
+.leaderboard-container .page-description {
   font-size: 1.1rem;
   opacity: 0.9;
   max-width: 600px;
   margin: 0 auto;
 }
 
-.leaderboard-main {
+.leaderboard-container .leaderboard-main {
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
-.leaderboard-controls {
+.leaderboard-container .leaderboard-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,21 +45,21 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.leaderboard-tabs .ant-tabs-tab {
+.leaderboard-container .leaderboard-tabs .ant-tabs-tab {
   font-weight: 600;
   font-size: 16px;
 }
 
-.time-range-select {
+.leaderboard-container .time-range-select {
   min-width: 150px;
 }
 
-.leaderboard-list {
+.leaderboard-container .leaderboard-list {
   max-height: 600px;
   overflow-y: auto;
 }
 
-.leaderboard-item {
+.leaderboard-container .leaderboard-item {
   display: flex;
   align-items: center;
   padding: 16px 20px;
@@ -71,82 +71,82 @@
   border: 2px solid transparent;
 }
 
-.leaderboard-item:hover {
+.leaderboard-container .leaderboard-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.leaderboard-item.top-three {
+.leaderboard-container .leaderboard-item.top-three {
   background: linear-gradient(135deg, #fff9e6 0%, #fff1b8 100%);
   border: 2px solid #FFD700;
 }
 
-.rank-section {
+.leaderboard-container .rank-section {
   width: 60px;
   text-align: center;
 }
 
-.rank-number {
+.leaderboard-container .rank-number {
   font-size: 20px;
   font-weight: 700;
   color: #666;
 }
 
-.user-info {
+.leaderboard-container .user-info {
   display: flex;
   align-items: center;
   flex: 1;
   margin-left: 20px;
 }
 
-.user-details {
+.leaderboard-container .user-details {
   margin-left: 16px;
 }
 
-.user-details h4 {
+.leaderboard-container .user-details h4 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: #333;
 }
 
-.stats-section {
+.leaderboard-container .stats-section {
   display: flex;
   gap: 24px;
   margin-left: auto;
   margin-right: 20px;
 }
 
-.stat-item {
+.leaderboard-container .stat-item {
   text-align: center;
   min-width: 60px;
 }
 
-.stat-value {
+.leaderboard-container .stat-value {
   display: block;
   font-size: 16px;
   font-weight: 700;
   color: #1890ff;
 }
 
-.stat-label {
+.leaderboard-container .stat-label {
   display: block;
   font-size: 12px;
   color: #666;
   margin-top: 4px;
 }
 
-.badge-section {
+.leaderboard-container .badge-section {
   width: 40px;
   text-align: center;
 }
 
-.user-badge {
+.leaderboard-container .user-badge {
   font-size: 24px;
 }
 
-/* Current User Rank */
-.current-user-rank {
+/* Current User Rank - Scoped */
+.leaderboard-container .current-user-rank {
   border-radius: 16px;
   margin-bottom: 24px;
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -154,98 +154,98 @@
   color: white;
 }
 
-.current-user-rank .ant-card-body {
+.leaderboard-container .current-user-rank .ant-card-body {
   padding: 24px;
 }
 
-.current-rank-header h3 {
+.leaderboard-container .current-rank-header h3 {
   color: white;
   text-align: center;
   margin-bottom: 20px;
   font-size: 18px;
 }
 
-.current-rank-content {
+.leaderboard-container .current-rank-content {
   display: flex;
   align-items: center;
   gap: 24px;
 }
 
-.rank-position {
+.leaderboard-container .rank-position {
   text-align: center;
 }
 
-.big-rank {
+.leaderboard-container .big-rank {
   font-size: 3rem;
   font-weight: 900;
   color: #FFD700;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.rank-stats {
+.leaderboard-container .rank-stats {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
 }
 
-.rank-stat {
+.leaderboard-container .rank-stat {
   text-align: center;
 }
 
-.stat-number {
+.leaderboard-container .stat-number {
   display: block;
   font-size: 20px;
   font-weight: 700;
   color: #FFD700;
 }
 
-.stat-text {
+.leaderboard-container .stat-text {
   display: block;
   font-size: 12px;
   opacity: 0.8;
   margin-top: 4px;
 }
 
-.progress-to-next {
+.leaderboard-container .progress-to-next {
   margin: 20px 0 8px 0;
 }
 
-.progress-text {
+.leaderboard-container .progress-text {
   text-align: center;
   margin: 0;
   opacity: 0.8;
   font-size: 14px;
 }
 
-/* Sidebar */
-.sidebar {
+/* Sidebar - Scoped */
+.leaderboard-container .sidebar {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.achievements-preview,
-.leaderboard-stats {
+.leaderboard-container .achievements-preview,
+.leaderboard-container .leaderboard-stats {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.achievements-preview h3,
-.leaderboard-stats h3 {
+.leaderboard-container .achievements-preview h3,
+.leaderboard-container .leaderboard-stats h3 {
   margin-bottom: 20px;
   font-size: 18px;
   font-weight: 600;
   color: #333;
 }
 
-.recent-achievements {
+.leaderboard-container .recent-achievements {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.achievement-item {
+.leaderboard-container .achievement-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -255,30 +255,30 @@
   border-left: 4px solid #1890ff;
 }
 
-.achievement-icon {
+.leaderboard-container .achievement-icon {
   font-size: 24px;
 }
 
-.achievement-name {
+.leaderboard-container .achievement-name {
   margin: 0;
   font-weight: 600;
   color: #333;
   font-size: 14px;
 }
 
-.achievement-desc {
+.leaderboard-container .achievement-desc {
   margin: 0;
   color: #666;
   font-size: 12px;
 }
 
-.stats-grid {
+.leaderboard-container .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.stat-box {
+.leaderboard-container .stat-box {
   text-align: center;
   padding: 16px;
   background: #f8faff;
@@ -286,7 +286,7 @@
   border: 1px solid #e6f7ff;
 }
 
-.stat-box .stat-value {
+.leaderboard-container .stat-box .stat-value {
   display: block;
   font-size: 24px;
   font-weight: 700;
@@ -294,58 +294,105 @@
   margin-bottom: 4px;
 }
 
-.stat-box .stat-label {
+.leaderboard-container .stat-box .stat-label {
   font-size: 12px;
   color: #666;
 }
 
-/* Loading */
-.loading-container {
+/* Loading - Scoped */
+.leaderboard-container .loading-container {
   text-align: center;
   padding: 60px 20px;
 }
 
-.loading-container p {
+.leaderboard-container .loading-container p {
   margin-top: 16px;
   color: #666;
   font-size: 16px;
 }
 
-/* Responsive */
+/* Responsive - Scoped */
 @media (max-width: 768px) {
   .leaderboard-container {
     padding: 16px;
   }
   
-  .page-title {
+  .leaderboard-container .page-title {
     font-size: 2rem;
   }
   
-  .leaderboard-controls {
+  .leaderboard-container .leaderboard-controls {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
   }
   
-  .leaderboard-item {
+  .leaderboard-container .leaderboard-item {
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
   
-  .stats-section {
+  .leaderboard-container .stats-section {
     margin: 0;
     justify-content: space-around;
     width: 100%;
   }
   
-  .current-rank-content {
+  .leaderboard-container .current-rank-content {
     flex-direction: column;
     text-align: center;
   }
   
-  .rank-stats {
+  .leaderboard-container .rank-stats {
     grid-template-columns: 1fr;
     gap: 8px;
   }
+}
+
+/* Ant Design overrides - Scoped */
+.leaderboard-container .ant-tabs-tab {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.leaderboard-container .ant-card {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.leaderboard-container .ant-card-body {
+  padding: 24px !important;
+}
+
+.leaderboard-container .ant-select {
+  min-width: 150px !important;
+}
+
+.leaderboard-container .ant-progress {
+  margin: 20px 0 8px 0 !important;
+}
+
+.leaderboard-container .ant-avatar {
+  border: 3px solid white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Scrollbar styling cho leaderboard list */
+.leaderboard-container .leaderboard-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leaderboard-container .leaderboard-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.leaderboard-container .leaderboard-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.leaderboard-container .leaderboard-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }

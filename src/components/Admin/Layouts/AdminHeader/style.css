@@ -2,6 +2,7 @@
     position: absolute;
     left: -100px;
     top: 50px;
+    z-index: 9999 !important;
 }
 
 .dropdown-menu {
@@ -10,6 +11,7 @@
 
 .navbar .navbar-nav .dropdown {
     position: relative;
+    z-index: 9999 !important;
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu {
@@ -20,9 +22,9 @@
     position: absolute;
     top: 100%;
     left: -150px;
-    z-index: 1000;
+    z-index: 9999 !important;
     background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
     margin-top: 0;
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -40,6 +42,7 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    z-index: 9999 !important; /* Đảm bảo khi show vẫn có z-index cao */
 }
 
 /* Giới hạn hover area chỉ trong avatar */
@@ -63,6 +66,7 @@
     width: calc(100% - 4px);
     box-sizing: border-box;
     position: relative;
+    z-index: 9999 !important; /* Z-index cho dropdown items */
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
@@ -72,12 +76,14 @@
     transform: translateX(2px);
     margin-left: 2px;
     width: calc(100% - 6px);
+    z-index: 9999 !important;
 }
 
 /* Đảm bảo Link wrapper không ảnh hưởng */
 .navbar .navbar-nav .dropdown .dropdown-menu li {
     margin: 0;
     padding: 0;
+    z-index: 9999 !important;
 }
 
 .navbar .navbar-nav .dropdown .dropdown-menu li a {
@@ -85,6 +91,7 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    z-index: 9999 !important;
 }
 
 /* Dropdown divider styling */
@@ -128,11 +135,27 @@
     transform: translateY(-1px);
 }
 
+/* QUAN TRỌNG: Đảm bảo navbar có z-index cao */
+.navbar {
+    z-index: 1030 !important; /* Bootstrap navbar z-index */
+    position: relative !important;
+}
+
+/* QUAN TRỌNG: Override bất kỳ z-index nào có thể che dropdown */
+.navbar .navbar-nav .dropdown .dropdown-menu.show {
+    z-index: 9999 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .navbar .navbar-nav .dropdown .dropdown-menu {
         left: -80px;
         min-width: 180px;
+        z-index: 9999 !important;
     }
     
     .navbar .navbar-nav .nav-item {
@@ -154,11 +177,7 @@
 
 .navbar .navbar-nav .dropdown:hover .dropdown-menu {
     animation: dropdownFadeIn 0.2s ease-out;
-}
-
-/* Z-index để dropdown không bị che */
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    z-index: 1050 !important;
+    z-index: 9999 !important;
 }
 
 .dropdown-toggle::after {
@@ -206,4 +225,29 @@
 .navbar .navbar-nav .dropdown:hover .dropdown-menu,
 .navbar .navbar-nav .dropdown .dropdown-menu:hover {
     pointer-events: auto;
+    z-index: 9999 !important;
+}
+
+/* THÊM: Đảm bảo dropdown không bị che bởi sidebar hoặc content */
+.navbar .navbar-nav .dropdown {
+    position: static; /* Thay đổi từ relative */
+}
+
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    position: fixed !important; /* Thay đổi từ absolute thành fixed */
+    top: auto !important;
+    right: 20px !important; /* Định vị từ bên phải */
+    left: auto !important;
+    margin-top: 15px !important; /* Khoảng cách từ navbar */
+}
+
+/* Hoặc nếu muốn giữ absolute, thêm z-index cao hơn */
+.container-fluid {
+    position: relative;
+    z-index: 1030;
+}
+
+/* Override StudyTimer CSS conflicts */
+.navbar .navbar-nav .dropdown .dropdown-menu {
+    z-index: 10000 !important; /* Cao hơn StudyTimer modal (1000) */
 }

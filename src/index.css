@@ -127,3 +127,77 @@ code {
 .ant-tag:hover {
   @apply transform scale-105 shadow-md;
 }
+.modal:not(.study-timer-modal-overlay) .modal-dialog {
+  margin: 0.5rem auto !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: calc(100vh - 1rem) !important;
+  max-width: 90% !important; /* Tăng chiều rộng từ default lên 90% */
+}
+
+.modal:not(.study-timer-modal-overlay) .modal-content {
+  width: 100% !important;
+  margin: auto !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+/* Tăng kích thước cho modal size lg */
+.modal:not(.study-timer-modal-overlay) .modal-lg {
+  max-width: 95% !important; /* Tăng từ 800px mặc định lên 95% */
+}
+
+/* Tăng kích thước cho modal size xl */
+.modal:not(.study-timer-modal-overlay) .modal-xl {
+  max-width: 98% !important;
+}
+
+/* Z-index cho modal admin */
+.modal {
+  z-index: 1050 !important;
+}
+
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-dialog-centered {
+    margin: 0.5rem !important;
+    width: calc(100% - 1rem) !important;
+    max-width: none !important;
+  }
+  
+  .modal:not(.study-timer-modal-overlay) .modal-dialog {
+    max-width: 95% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .modal:not(.study-timer-modal-overlay) .modal-dialog {
+    max-width: 85% !important; /* Desktop: 85% chiều rộng màn hình */
+  }
+  
+  .modal:not(.study-timer-modal-overlay) .modal-lg {
+    max-width: 90% !important; /* Modal lg: 90% */
+  }
+  
+  .modal:not(.study-timer-modal-overlay) .modal-xl {
+    max-width: 95% !important; /* Modal xl: 95% */
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal:not(.study-timer-modal-overlay) .modal-dialog {
+    max-width: 80% !important; /* Large screen: 80% */
+  }
+  
+  .modal:not(.study-timer-modal-overlay) .modal-lg {
+    max-width: 85% !important;
+  }
+  
+  .modal:not(.study-timer-modal-overlay) .modal-xl {
+    max-width: 90% !important;
+  }
+}
