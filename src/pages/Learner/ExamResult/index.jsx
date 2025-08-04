@@ -167,7 +167,11 @@ const ExamResult = () => {
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `${process.env.REACT_APP_API_URL}/audios/${audioName}`;
+      // Extract filename from full path (e.g., "/audio/toeic/part2/q001.mp3" -> "q001.mp3")
+      const fileName = audioName.includes("/")
+        ? audioName.split("/").pop()
+        : audioName;
+      return `${process.env.REACT_APP_API_URL}/audios/${fileName}`;
     }
     return "";
   };

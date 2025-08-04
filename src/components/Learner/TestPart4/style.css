@@ -1,54 +1,276 @@
-.question-section {
-  margin-bottom: 20px;
+/* TestPart4 Component Styles - Ant Design & Lucide */
+
+/* Question Card Hover Effects */
+.ant-card {
+  transition: all 0.3s ease;
 }
 
-.audio-container {
-  margin-bottom: 15px;
+.ant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
 }
 
-.image-container {
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.question-image {
-  max-width: 100%;
+/* Audio Player Styling */
+audio {
+  outline: none;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.scrollable-container {
-  max-height: 600px;
-  overflow-y: auto;
-  padding-right: 10px;
+audio::-webkit-media-controls-panel {
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
 
-.form-check-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+/* Image Container */
+.ant-image {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ant-image-mask {
+  border-radius: 8px;
+}
+
+/* Radio Group Custom Styling */
+.ant-radio-group {
   width: 100%;
 }
 
-.form-check-label:hover {
-  background-color: #f0f7ff;
+.ant-radio-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 
-.highlight-row {
-  background-color: #e8f2ff;
+.ant-radio {
+  vertical-align: top;
+  margin-right: 12px;
 }
 
-.result-icon {
-  margin-left: 10px;
+/* Question Button Grid Styling */
+.question-grid-button {
+  transition: all 0.2s ease;
+  font-weight: 600;
+  border-radius: 8px;
 }
 
-.feedback-section {
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
+.question-grid-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Scrollable Content */
+.scrollable-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar */
+.scrollable-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}
+
+/* Group Card Styling */
+.group-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Audio Container Styling */
+.audio-container {
+  background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Question Layout */
+.question-with-image {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .question-with-image {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Question Cards in Group */
+.group-question-card {
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+}
+
+.group-question-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Explanation Alert Custom Styling */
+.ant-alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.ant-alert-info {
+  background: linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%);
+  border-left: 4px solid #1890ff;
+}
+
+.ant-alert-success {
+  background: linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%);
+  border-left: 4px solid #52c41a;
+}
+
+/* Affix Sidebar Styling */
+.ant-affix {
+  z-index: 100;
+}
+
+/* Custom spacing for mobile */
+@media (max-width: 768px) {
+  .ant-row {
+    margin: 0 !important;
+  }
+
+  .ant-col {
+    padding: 8px !important;
+  }
+
+  .question-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .audio-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  audio {
+    width: 100% !important;
+    max-width: 300px;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Question option hover effects */
+.question-option {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.question-option:hover {
+  background-color: #f5f5f5 !important;
+  border-color: #1890ff !important;
+}
+
+/* Loading animation for explanations */
+.explanation-loading {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button animations */
+.ant-btn {
+  transition: all 0.3s ease;
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ant-btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+/* Custom radio button styling */
+.ant-radio-input:focus + .ant-radio-inner {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+}
+
+/* Badge styling */
+.ant-badge {
+  font-weight: 500;
+}
+
+/* Divider styling */
+.ant-divider {
+  border-color: #f0f0f0;
+  margin: 16px 0;
+}
+
+/* Typography enhancements */
+.ant-typography {
+  color: #262626;
+}
+
+/* Card title styling */
+.ant-card-head-title {
+  color: #262626;
+  font-weight: 600;
+}
+
+/* Image preview mask */
+.ant-image-preview-mask {
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+}
+
+/* Volume icon animation */
+.volume-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .transcript {

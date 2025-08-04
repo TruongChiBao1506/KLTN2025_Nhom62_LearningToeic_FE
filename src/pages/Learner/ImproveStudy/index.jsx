@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
-  Select,
   Button,
   Typography,
   Row,
@@ -13,6 +12,7 @@ import {
   Divider,
   Alert,
 } from "antd";
+
 import {
   BookOpen,
   Headphones,
@@ -39,8 +39,7 @@ import TestPart6 from "../../../components/Learner/TestPart6/index";
 import TestPart7Single from "../../../components/Learner/TestPart7Single/index";
 import "./style.css";
 
-const { Title, Text, Paragraph } = Typography;
-const { Option } = Select;
+const { Title, Text } = Typography;
 
 const ImproveStudy = () => {
   const [sections, setSections] = useState([]);
@@ -77,6 +76,41 @@ const ImproveStudy = () => {
         console.log("🚀 ~ fetchSections ~ setSections called");
       } catch (error) {
         console.error("Lỗi khi tải danh sách phần:", error);
+        // Fallback data
+        const fallbackSections = [
+          {
+            _id: "686ce171b614dda1fc08f1d0",
+            name: "Part 1: Photographs",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d1",
+            name: "Part 2: Question-Response",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d2",
+            name: "Part 3: Conversations",
+            status: 1,
+          },
+          { _id: "686ce171b614dda1fc08f1d3", name: "Part 4: Talks", status: 1 },
+          {
+            _id: "686ce171b614dda1fc08f1d4",
+            name: "Part 5: Incomplete Sentences",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d5",
+            name: "Part 6: Text Completion",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d6",
+            name: "Part 7: Reading Comprehension",
+            status: 1,
+          },
+        ];
+        setSections(fallbackSections);
       }
     };
 
@@ -340,17 +374,68 @@ const ImproveStudy = () => {
 
   const startPractice = async () => {
     if (selectedSection && selectedQuestionType) {
+      // Log section details for debugging
+      const selectedSectionData = sections.find(
+        (section) => section._id === selectedSection
+      );
+      console.log(
+        "🚀 ~ startPractice ~ selectedSectionData:",
+        selectedSectionData
+      );
+
+      // Map questionType to the format expected by backend
+      let mappedQuestionType;
+      if (selectedSectionData) {
+        const partMatch = selectedSectionData.name.match(/Part (\d+)/);
+        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+        // Parts 1-4 are listening, Parts 5-7 are reading
+        if (partNumber >= 1 && partNumber <= 4) {
+          mappedQuestionType = "listening";
+        } else if (partNumber >= 5 && partNumber <= 7) {
+          mappedQuestionType = "reading";
+        } else {
+          mappedQuestionType = selectedQuestionType; // fallback
+        }
+      } else {
+        mappedQuestionType = selectedQuestionType; // fallback
+      }
+
       const requestData = {
         sectionId: selectedSection,
-        questionType: selectedQuestionType,
+        questionType: mappedQuestionType,
       };
+
+      console.log("🚀 ~ startPractice ~ Request Data:", requestData);
+      console.log("🚀 ~ startPractice ~ selectedSection:", selectedSection);
+      console.log(
+        "🚀 ~ startPractice ~ selectedQuestionType:",
+        selectedQuestionType
+      );
+      console.log(
+        "🚀 ~ startPractice ~ mappedQuestionType:",
+        mappedQuestionType
+      );
+
       try {
+        console.log("🚀 ~ startPractice ~ Making API call...");
         const fetchedQuestions =
           await questionService.getQuestionsBySectionIdAndType(requestData);
+        console.log("🚀 ~ startPractice ~ fetchedQuestions:", fetchedQuestions);
+        console.log(
+          "🚀 ~ startPractice ~ fetchedQuestions type:",
+          typeof fetchedQuestions
+        );
+        console.log(
+          "🚀 ~ startPractice ~ fetchedQuestions length:",
+          fetchedQuestions?.length
+        );
+
         if (fetchedQuestions && fetchedQuestions.length > 0) {
           setQuestions(fetchedQuestions);
           setShowImproveTest(true);
         } else {
+          console.log("🚀 ~ startPractice ~ No questions returned from API");
           Swal.fire({
             icon: "info",
             title: "Thông báo",
@@ -358,14 +443,33 @@ const ImproveStudy = () => {
           });
         }
       } catch (error) {
-        console.error("Lỗi khi tải câu hỏi:", error);
+        console.error("🚀 ~ startPractice ~ Full error object:", error);
+        console.error("🚀 ~ startPractice ~ Error message:", error.message);
+        console.error("🚀 ~ startPractice ~ Error response:", error.response);
+        console.error(
+          "🚀 ~ startPractice ~ Error response data:",
+          error.response?.data
+        );
+        console.error(
+          "🚀 ~ startPractice ~ Error status:",
+          error.response?.status
+        );
+
         Swal.fire({
           icon: "error",
           title: "Lỗi!",
-          text: "Đã xảy ra lỗi khi tải câu hỏi. Vui lòng thử lại sau!",
+          text: `Đã xảy ra lỗi khi tải câu hỏi: ${
+            error.response?.data?.message || error.message
+          }`,
         });
       }
     } else {
+      console.log(
+        "🚀 ~ startPractice ~ Missing selection - selectedSection:",
+        selectedSection,
+        "selectedQuestionType:",
+        selectedQuestionType
+      );
       Swal.fire({
         icon: "warning",
         title: "Lưu ý",
@@ -466,7 +570,24 @@ const ImproveStudy = () => {
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `http://localhost:5000/audios/${audioName}`;
+      // Extract filename from full path (e.g., "/audio/toeic/part2/q001.mp3" -> "q001.mp3")
+      let fileName = audioName.includes("/")
+        ? audioName.split("/").pop()
+        : audioName;
+
+      // TEMPORARY: Force to use test0101.mp3 for testing (we know this file works)
+      fileName = "test0101.mp3";
+
+      const finalUrl = `http://localhost:5000/audios/${fileName}`;
+      console.log("Audio URL mapping (TEMP TEST):", {
+        original: audioName,
+        extracted: audioName.includes("/")
+          ? audioName.split("/").pop()
+          : audioName,
+        forced: fileName,
+        finalUrl,
+      });
+      return finalUrl;
     }
     return "";
   };
@@ -553,6 +674,7 @@ const ImproveStudy = () => {
 
   return (
     <div
+      className="improve-study-container"
       style={{
         minHeight: "100vh",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -568,8 +690,8 @@ const ImproveStudy = () => {
                 background: "rgba(255, 255, 255, 0.95)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
+                overflow: "visible",
                 boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
-                overflow: "hidden",
               }}
               bodyStyle={{ padding: "40px" }}
             >
@@ -650,6 +772,17 @@ const ImproveStudy = () => {
 
               {/* Selection Form */}
               <Row gutter={[24, 24]}>
+                {/* Debug info */}
+                {process.env.NODE_ENV === "development" && (
+                  <Col xs={24}>
+                    <Alert
+                      message={`Debug: Sections loaded: ${sections.length}, Enabled: ${enabledSections.length}`}
+                      type="info"
+                      style={{ marginBottom: "16px" }}
+                    />
+                  </Col>
+                )}
+
                 <Col xs={24} md={12}>
                   <Card
                     size="small"
@@ -657,6 +790,7 @@ const ImproveStudy = () => {
                       borderRadius: "16px",
                       border: "2px solid #f0f0f0",
                       transition: "all 0.3s ease",
+                      overflow: "visible",
                       ":hover": {
                         borderColor: "#667eea",
                         boxShadow: "0 8px 24px rgba(102, 126, 234, 0.15)",
@@ -680,40 +814,36 @@ const ImproveStudy = () => {
                           Chọn phần thi
                         </Text>
                       </div>
-                      <Select
-                        size="large"
-                        placeholder="Chọn phần TOEIC"
-                        value={selectedSection}
-                        onChange={(value) => {
-                          console.log("🚀 ~ Section selected:", value);
-                          setSelectedSection(value);
-                          setSelectedQuestionType("");
-                        }}
-                        style={{ width: "100%" }}
-                        allowClear
-                      >
-                        <Option value="686ce171b614dda1fc08f1d0">
-                          Part 1: Photographs
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d1">
-                          Part 2: Question-Response
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d2">
-                          Part 3: Conversations
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d3">
-                          Part 4: Talks
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d4">
-                          Part 5: Incomplete Sentences
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d5">
-                          Part 6: Text Completion
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d6">
-                          Part 7: Reading Comprehension
-                        </Option>
-                      </Select>
+                      <div style={{ width: "100%" }}>
+                        <select
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #d9d9d9",
+                            fontSize: "14px",
+                          }}
+                          value={selectedSection}
+                          onChange={(e) => {
+                            console.log(
+                              "🚀 ~ Section selected:",
+                              e.target.value
+                            );
+                            setSelectedSection(e.target.value);
+                            setSelectedQuestionType("");
+                          }}
+                        >
+                          <option value="">Chọn phần TOEIC</option>
+                          {enabledSections.map((section) => {
+                            return (
+                              <option key={section._id} value={section._id}>
+                                {section.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
                     </Space>
                   </Card>
                 </Col>
@@ -725,6 +855,7 @@ const ImproveStudy = () => {
                       borderRadius: "16px",
                       border: "2px solid #f0f0f0",
                       transition: "all 0.3s ease",
+                      overflow: "visible",
                       opacity: selectedSection ? 1 : 0.6,
                     }}
                   >
@@ -745,46 +876,35 @@ const ImproveStudy = () => {
                           Chọn loại câu hỏi
                         </Text>
                       </div>
-                      <Select
-                        size="large"
-                        placeholder="Chọn loại câu hỏi"
-                        value={selectedQuestionType}
-                        onChange={setSelectedQuestionType}
-                        style={{ width: "100%" }}
-                        disabled={!selectedSection}
-                        dropdownStyle={{
-                          borderRadius: "12px",
-                          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-                        }}
-                        notFoundContent={
-                          !selectedSection
-                            ? "Vui lòng chọn phần thi trước"
-                            : "Không có dữ liệu"
-                        }
-                        showSearch={false}
-                        allowClear
-                      >
-                        {questionTypeOptions.map((option, index) => (
-                          <Option
-                            key={index}
-                            value={option.value}
-                            style={{ padding: "8px 12px" }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <ChevronRight className="w-3 h-3 text-gray-400" />
-                              <span style={{ fontWeight: "500" }}>
-                                {option.text}
-                              </span>
-                            </div>
-                          </Option>
-                        ))}
-                      </Select>
+                      <div style={{ width: "100%" }}>
+                        <select
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #d9d9d9",
+                            fontSize: "14px",
+                            opacity: selectedSection ? 1 : 0.6,
+                          }}
+                          value={selectedQuestionType}
+                          onChange={(e) =>
+                            setSelectedQuestionType(e.target.value)
+                          }
+                          disabled={!selectedSection}
+                        >
+                          <option value="">
+                            {!selectedSection
+                              ? "Vui lòng chọn phần thi trước"
+                              : "Chọn loại câu hỏi"}
+                          </option>
+                          {questionTypeOptions.map((option, index) => (
+                            <option key={index} value={option.value}>
+                              {option.text}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </Space>
                   </Card>
                 </Col>

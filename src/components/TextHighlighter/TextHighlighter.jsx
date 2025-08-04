@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button, Space, Input, Tooltip, message } from "antd";
-import { Palette, Languages, X, MessageSquare } from "lucide-react";
+import {
+  Palette,
+  Languages,
+  X,
+  MessageSquare,
+} from "lucide-react";
 import "./TextHighlighter.css";
 
 const HIGHLIGHT_COLORS = [
@@ -57,18 +62,9 @@ const TextHighlighter = ({ children, containerId }) => {
 
       try {
         const selection = window.getSelection();
-        console.log(
-          "Selection detected:",
-          selection?.toString(),
-          "Range count:",
-          selection?.rangeCount
-        );
+        console.log("Selection detected:", selection?.toString(), "Range count:", selection?.rangeCount);
 
-        if (
-          selection &&
-          selection.toString().trim().length > 0 &&
-          selection.rangeCount > 0
-        ) {
+        if (selection && selection.toString().trim().length > 0 && selection.rangeCount > 0) {
           const range = selection.getRangeAt(0);
           const rect = range.getBoundingClientRect();
           console.log("Selection rect:", rect);
@@ -110,7 +106,7 @@ const TextHighlighter = ({ children, containerId }) => {
 
   useEffect(() => {
     if (!mounted) return;
-
+    
     console.log("Adding mouseup event listener");
     document.addEventListener("mouseup", handleTextSelection);
     return () => {
@@ -125,8 +121,8 @@ const TextHighlighter = ({ children, containerId }) => {
 
     const handleClickOutside = (e) => {
       // Check if click is outside the popup
-      const popup = document.querySelector(".toeic-highlighter-overlay");
-
+      const popup = document.querySelector('.toeic-highlighter-overlay');
+      
       if (popup && !popup.contains(e.target)) {
         console.log("Clicked outside popup, closing");
         setIsOpen(false);
@@ -135,12 +131,12 @@ const TextHighlighter = ({ children, containerId }) => {
 
     // Add slight delay to prevent immediate closing when popup first opens
     const timer = setTimeout(() => {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     }, 200);
 
     return () => {
       clearTimeout(timer);
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
 
@@ -150,7 +146,7 @@ const TextHighlighter = ({ children, containerId }) => {
 
     try {
       const selection = window.getSelection();
-
+      
       // Check if there's still a valid selection
       if (!selection || selection.rangeCount === 0) {
         message.error("Please select text again to highlight");
@@ -223,16 +219,13 @@ const TextHighlighter = ({ children, containerId }) => {
     <div className="toeic-highlighter-popover">
       {translation ? (
         <div className="toeic-translation-result">
-          <div
-            className="toeic-translation-text"
-            style={{
-              padding: "8px 12px",
-              backgroundColor: "#f6f8fa",
-              borderRadius: "4px",
-              marginBottom: "8px",
-              fontSize: "14px",
-            }}
-          >
+          <div className="toeic-translation-text" style={{ 
+            padding: "8px 12px", 
+            backgroundColor: "#f6f8fa", 
+            borderRadius: "4px",
+            marginBottom: "8px",
+            fontSize: "14px"
+          }}>
             {translation}
           </div>
           <Button
@@ -246,15 +239,8 @@ const TextHighlighter = ({ children, containerId }) => {
         </div>
       ) : (
         <>
-          <div
-            className="toeic-color-selector"
-            style={{ marginBottom: "12px" }}
-          >
-            <div
-              style={{ marginBottom: "8px", fontSize: "12px", color: "#666" }}
-            >
-              Choose highlight color:
-            </div>
+          <div className="toeic-color-selector" style={{ marginBottom: "12px" }}>
+            <div style={{ marginBottom: "8px", fontSize: "12px", color: "#666" }}>Choose highlight color:</div>
             <Space wrap>
               {HIGHLIGHT_COLORS.map((color) => (
                 <Tooltip title={color.name} key={color.value}>
@@ -262,17 +248,14 @@ const TextHighlighter = ({ children, containerId }) => {
                     className={`toeic-color-swatch ${
                       currentColor === color.value ? "active" : ""
                     }`}
-                    style={{
+                    style={{ 
                       backgroundColor: color.value,
                       width: "24px",
                       height: "24px",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      border:
-                        currentColor === color.value
-                          ? "2px solid #1890ff"
-                          : "2px solid transparent",
-                      transition: "all 0.2s",
+                      border: currentColor === color.value ? "2px solid #1890ff" : "2px solid transparent",
+                      transition: "all 0.2s"
                     }}
                     onClick={() => setCurrentColor(color.value)}
                   />
@@ -327,37 +310,28 @@ const TextHighlighter = ({ children, containerId }) => {
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="toeic-text-highlighter-container"
-      style={{ position: "relative" }}
-    >
+    <div ref={containerRef} className="toeic-text-highlighter-container" style={{ position: "relative" }}>
       {/* Debug info */}
-      {process.env.NODE_ENV === "development" && (
-        <div
-          style={{
-            position: "fixed",
-            top: 10,
-            right: 10,
-            background: "yellow",
-            padding: "5px",
-            zIndex: 10000,
-            fontSize: "12px",
-          }}
-        >
-          isOpen: {isOpen ? "true" : "false"}
-          <br />
-          selectedText: {selectedText}
-          <br />
-          position: {position.left},{position.top}
-          <br />
-          mounted: {mounted ? "true" : "false"}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{ 
+          position: 'fixed', 
+          top: 10, 
+          right: 10, 
+          background: 'yellow', 
+          padding: '5px', 
+          zIndex: 10000,
+          fontSize: '12px'
+        }}>
+          isOpen: {isOpen ? 'true' : 'false'}<br />
+          selectedText: {selectedText}<br />
+          position: {position.left},{position.top}<br />
+          mounted: {mounted ? 'true' : 'false'}
         </div>
       )}
-
+      
       {/* Main content */}
       <div className="toeic-highlightable-content">{children}</div>
-
+      
       {/* Popup - hiển thị khi có text được chọn */}
       {isOpen && selectedText && (
         <div
@@ -374,7 +348,7 @@ const TextHighlighter = ({ children, containerId }) => {
             padding: "16px",
             minWidth: "320px",
             maxWidth: "400px",
-            animation: "fadeIn 0.2s ease-out",
+            animation: "fadeIn 0.2s ease-out"
           }}
           className="toeic-highlighter-overlay"
           onClick={(e) => e.stopPropagation()}
@@ -391,26 +365,22 @@ const TextHighlighter = ({ children, containerId }) => {
               borderLeft: "8px solid transparent",
               borderRight: "8px solid transparent",
               borderTop: "8px solid white",
-              filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+              filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
             }}
           />
-
+          
           {/* Popup header */}
-          <div
-            style={{
-              marginBottom: "12px",
-              paddingBottom: "8px",
-              borderBottom: "1px solid #f0f0f0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+          <div style={{ 
+            marginBottom: "12px", 
+            paddingBottom: "8px", 
+            borderBottom: "1px solid #f0f0f0",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
             <div>
               <strong>Selected Text: </strong>
-              <span style={{ color: "#1890ff", fontSize: "14px" }}>
-                {selectedText}
-              </span>
+              <span style={{ color: "#1890ff", fontSize: "14px" }}>{selectedText}</span>
             </div>
             <Button
               type="text"
@@ -420,12 +390,12 @@ const TextHighlighter = ({ children, containerId }) => {
               style={{ marginLeft: "8px" }}
             />
           </div>
-
+          
           {/* Popup content */}
           {popoverContent}
         </div>
       )}
-
+      
       {/* CSS for animation */}
       <style jsx>{`
         @keyframes fadeIn {

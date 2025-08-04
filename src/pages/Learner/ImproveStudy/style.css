@@ -36,3 +36,82 @@ h2 {
   border-color: #052649;
   box-shadow: 0 0 0 0.25rem rgba(5, 38, 73, 0.25);
 }
+
+/* CRITICAL: Reset any potential interference */
+* {
+  pointer-events: auto !important;
+}
+
+/* Force Ant Design Select to work */
+.ant-select {
+  pointer-events: auto !important;
+}
+
+.ant-select-selector {
+  pointer-events: auto !important;
+}
+
+.ant-select-arrow {
+  pointer-events: auto !important;
+}
+
+/* Fix for Select dropdown */
+.ant-select-dropdown {
+  z-index: 9999 !important;
+  position: absolute !important;
+  pointer-events: auto !important;
+}
+
+.ant-card {
+  overflow: visible !important;
+}
+
+.ant-row {
+  overflow: visible !important;
+}
+
+.ant-col {
+  overflow: visible !important;
+}
+
+/* Main container */
+.improve-study-container {
+  overflow: visible !important;
+}
+
+.improve-study-container .ant-card {
+  overflow: visible !important;
+}
+
+.improve-study-container .ant-space {
+  overflow: visible !important;
+}
+
+/* Ensure select container doesn't clip dropdown */
+.ant-select {
+  position: relative;
+}
+
+.ant-select-open .ant-select-dropdown {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Additional z-index fixes */
+.ant-select-dropdown-placement-bottomLeft,
+.ant-select-dropdown-placement-bottomRight,
+.ant-select-dropdown-placement-topLeft,
+.ant-select-dropdown-placement-topRight {
+  z-index: 10000 !important;
+}
+
+/* Force dropdown to be visible */
+.ant-select-dropdown-hidden {
+  display: block !important;
+}
+
+/* Override any potential overflow hidden */
+body .ant-select-dropdown {
+  z-index: 99999 !important;
+}

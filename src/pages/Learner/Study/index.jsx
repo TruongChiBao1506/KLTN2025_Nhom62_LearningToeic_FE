@@ -125,7 +125,11 @@ const Study = () => {
   // Lấy đường dẫn âm thanh
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `http://localhost:5000/audios/${audioName}`;
+      // Extract filename from full path (e.g., "/audio/toeic/part2/q001.mp3" -> "q001.mp3")
+      const fileName = audioName.includes("/")
+        ? audioName.split("/").pop()
+        : audioName;
+      return `http://localhost:5000/audios/${fileName}`;
     }
     return "";
   };
