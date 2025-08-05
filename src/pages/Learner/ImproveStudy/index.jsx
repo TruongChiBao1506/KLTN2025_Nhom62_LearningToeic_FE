@@ -524,22 +524,40 @@ const ImproveStudy = () => {
   const continueSubmit = () => {
     const updatedQuestions = [...questions].map((question) => {
       if (question.selectedOption) {
-        return { ...question, answered: true, isGraded: true };
+        // Convert selected option content to letter for comparison
+        let selectedLetter = null;
+        
+        if (question.selectedOption === question.optionA) {
+          selectedLetter = 'A';
+        } else if (question.selectedOption === question.optionB) {
+          selectedLetter = 'B';
+        } else if (question.selectedOption === question.optionC) {
+          selectedLetter = 'C';
+        } else if (question.selectedOption === question.optionD) {
+          selectedLetter = 'D';
+        }
+
+        return { 
+          ...question, 
+          answered: true, 
+          isGraded: true,
+          selectedLetter: selectedLetter  // Store both content and letter
+        };
       }
       return { ...question, isGraded: true };
     });
 
     setQuestions(updatedQuestions);
 
-    // Tính điểm
+    // Tính điểm - sử dụng selectedLetter để so sánh với correctOption
     const correctCount = updatedQuestions.filter(
       (question) =>
-        question.answered && question.selectedOption === question.correctOption
+        question.answered && question.selectedLetter === question.correctOption
     ).length;
 
     const incorrectCount = updatedQuestions.filter(
       (question) =>
-        question.answered && question.selectedOption !== question.correctOption
+        question.answered && question.selectedLetter !== question.correctOption
     ).length;
 
     // Hiển thị kết quả
@@ -555,15 +573,42 @@ const ImproveStudy = () => {
     const resetQuestions = [...questions].map((question) => ({
       ...question,
       selectedOption: null,
+      selectedLetter: null,
       answered: false,
       isGraded: false,
     }));
     setQuestions(resetQuestions);
   };
 
-  const getImageUrl = (imageName) => {
+    const getImageUrl = (imageName) => {
     if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
+      // Check if imageName already includes full path
+      if (imageName.startsWith('http')) {
+        return imageName;
+      }
+      
+      // Handle different path formats
+      let fileName = imageName;
+      
+      // If it's a full path like "/images/toeic/part1/office_meeting.jpg", extract filename
+      if (imageName.startsWith('/images/')) {
+        fileName = imageName.split('/').pop();
+        
+        // Try to map old path structure to new filenames
+        if (fileName === 'office_meeting.jpg') {
+          fileName = 'fulltest01_number1.png'; // Map to actual file
+        }
+        // Add more mappings as needed for other images
+      }
+      
+      console.log("🖼️ Image URL Debug:", {
+        originalImageName: imageName,
+        finalFileName: fileName,
+        fullUrl: `http://localhost:5000/images/${fileName}`
+      });
+      
+      // Use the backend server on port 5000
+      return `http://localhost:5000/images/${fileName}`;
     }
     return "";
   };
@@ -675,8 +720,20 @@ const ImproveStudy = () => {
   };
 
   const checkAnswer = (question, selectedOption) => {
+    // Just store the selected option content for display, don't convert to letter yet
+    console.log("🎯 checkAnswer Debug:", {
+      questionId: question._id,
+      selectedOption,
+      correctOption: question.correctOption,
+      optionA: question.optionA,
+      optionB: question.optionB,
+      optionC: question.optionC,
+      optionD: question.optionD
+    });
+
+    // Store the content string for radio display, conversion happens during scoring
     const updatedQuestions = [...questions].map((q) =>
-      q._id === question._id ? { ...q, selectedOption, answered: true } : q
+      q._id === question._id ? { ...q, selectedOption: selectedOption, answered: true } : q
     );
     setQuestions(updatedQuestions);
   };

@@ -31,7 +31,6 @@ const TestPart4 = ({
   questions,
   submitAnswers,
   refreshPage,
-  isSubmited,
   getImageUrl,
   getAudioUrl,
   translateText,
@@ -148,14 +147,14 @@ const TestPart4 = ({
     checkAnswer(question, selectedValue);
   };
 
-  // Tính số câu đúng
+  // Tính số câu đúng - chỉ sau khi isGraded = true
   const getCorrectCount = questions.filter(
-    (q) => q.answered && q.selectedOption === q.correctOption
+    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
   ).length;
 
-  // Tính số câu sai
+  // Tính số câu sai - chỉ sau khi isGraded = true
   const getIncorrectCount = questions.filter(
-    (q) => q.answered && q.selectedOption !== q.correctOption
+    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
   ).length;
 
   // Get button style based on question state
@@ -169,7 +168,7 @@ const TestPart4 = ({
     }
 
     if (question.isGraded) {
-      if (question.selectedOption === question.correctOption) {
+      if (question.selectedLetter === question.correctOption) {
         return {
           backgroundColor: "#52c41a",
           color: "white",
@@ -414,15 +413,22 @@ const TestPart4 = ({
                                         const optionLabel = String.fromCharCode(
                                           65 + optionIndex
                                         );
+
+                                        // Check if this option is correct by comparing option letter with correctOption
                                         const isCorrect =
                                           question.isGraded &&
-                                          option === question.correctOption;
+                                          optionLabel ===
+                                            question.correctOption;
+
                                         const isSelected =
                                           question.selectedOption === option;
+
+                                        // Check if this selected option is wrong
                                         const isWrong =
                                           question.isGraded &&
                                           isSelected &&
-                                          option !== question.correctOption;
+                                          question.selectedLetter !==
+                                            question.correctOption;
 
                                         return (
                                           <div
@@ -591,15 +597,21 @@ const TestPart4 = ({
                                     const optionLabel = String.fromCharCode(
                                       65 + optionIndex
                                     );
+
+                                    // Check if this option is correct by comparing option letter with correctOption
                                     const isCorrect =
                                       question.isGraded &&
-                                      option === question.correctOption;
+                                      optionLabel === question.correctOption;
+
                                     const isSelected =
                                       question.selectedOption === option;
+
+                                    // Check if this selected option is wrong
                                     const isWrong =
                                       question.isGraded &&
                                       isSelected &&
-                                      option !== question.correctOption;
+                                      question.selectedLetter !==
+                                        question.correctOption;
 
                                     return (
                                       <div
@@ -859,10 +871,18 @@ const TestPart4 = ({
 
               {/* Action Button */}
               <Button
-                type={isSubmited ? "default" : "primary"}
+                type={questions.some((q) => q.isGraded) ? "default" : "primary"}
                 size="large"
-                icon={isSubmited ? <RotateCcw size={18} /> : null}
-                onClick={isSubmited ? refreshPage : submitAnswers}
+                icon={
+                  questions.some((q) => q.isGraded) ? (
+                    <RotateCcw size={18} />
+                  ) : null
+                }
+                onClick={
+                  questions.some((q) => q.isGraded)
+                    ? refreshPage
+                    : submitAnswers
+                }
                 block
                 style={{
                   height: "48px",
@@ -870,7 +890,7 @@ const TestPart4 = ({
                   fontWeight: "600",
                 }}
               >
-                {isSubmited ? "Làm lại" : "Chấm điểm"}
+                {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
               </Button>
             </Space>
           </Card>
