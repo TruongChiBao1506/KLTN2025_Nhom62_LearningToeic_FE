@@ -42,11 +42,32 @@ const TestPart4 = ({
 }) => {
   const [showGroupScript, setShowGroupScript] = useState({});
 
+  // Debug logs for component props
+  console.log("🎯 TestPart4 Component Debug:", {
+    questionsCount: questions?.length || 0,
+    hasGetAudioUrl: typeof getAudioUrl === "function",
+    firstQuestion: questions?.[0] || null,
+    timestamp: new Date().toISOString(),
+  });
+
   // Nhóm các câu hỏi theo groupId
   const groupQuestionsByGroupId = (questions) => {
     const grouped = {};
     for (const question of questions) {
-      const groupKey = question.questionGroup.groupId || "default";
+      // Debug question structure
+      console.log("🔍 Question structure:", {
+        questionId: question._id,
+        questionGroup: question.questionGroup,
+        questionGroupType: typeof question.questionGroup,
+        hasGroupAudio:
+          question.questionGroup?.groupAudio || "No groupAudio found",
+      });
+
+      const groupKey =
+        question.questionGroup?.groupId ||
+        question.questionGroup?._id ||
+        question.questionGroup ||
+        "default";
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
       }
@@ -69,15 +90,21 @@ const TestPart4 = ({
     // Dịch đoạn văn khi hiển thị
     if (!showGroupScript[groupId]) {
       const groupQuestions = groupedQuestions[groupId];
-      const groupScript = groupQuestions[0].questionGroup.groupScript;
+      // Use questionScript from first question since questionGroup is just an ID
+      const groupScript =
+        groupQuestions[0].questionScript ||
+        groupQuestions[0].questionGroup?.groupScript ||
+        "";
       const targetLanguage = "vi"; // Tiếng Việt
       try {
-        const translatedGroupScript = await translateText(
-          groupScript,
-          targetLanguage
-        );
-        groupQuestions[0].questionGroup.translatedGroupScript =
-          translatedGroupScript;
+        if (groupScript) {
+          const translatedGroupScript = await translateText(
+            groupScript,
+            targetLanguage
+          );
+          // Store translation in the question object
+          groupQuestions[0].translatedQuestionScript = translatedGroupScript;
+        }
       } catch (error) {
         console.error("Lỗi khi dịch:", error);
       }
@@ -197,6 +224,24 @@ const TestPart4 = ({
                 >
                   <Volume2 size={20} color="#1890ff" />
                   <div style={{ flex: 1 }}>
+                    {/* Debug logs before audio element */}
+                    {(() => {
+                      const groupAudio =
+                        groupQuestions[0].questionGroup?.groupAudio ||
+                        groupQuestions[0].questionAudio ||
+                        "No audio";
+                      const audioUrl = getAudioUrl(groupAudio);
+                      console.log("🎵 TestPart4 Audio Debug:", {
+                        groupId,
+                        questionGroup: groupQuestions[0].questionGroup,
+                        groupAudio,
+                        questionAudio: groupQuestions[0].questionAudio,
+                        audioUrl,
+                        hasAudio: !!audioUrl,
+                      });
+                      return null;
+                    })()}
+
                     <audio
                       controls
                       preload="metadata"
@@ -206,59 +251,63 @@ const TestPart4 = ({
                         height: "40px",
                       }}
                       onError={(e) => {
-                        console.error("Audio load error:", e);
-                        console.error(
-                          "Audio src:",
-                          getAudioUrl(
-                            groupQuestions[0].questionGroup.groupAudio
-                          )
-                        );
+                        console.error("❌ Audio load error:", e);
+                        const audioSrc =
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                          groupQuestions[0].questionAudio;
+                        console.error("❌ Audio src:", getAudioUrl(audioSrc));
                       }}
                       onLoadStart={() => {
+                        const audioSrc =
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                          groupQuestions[0].questionAudio;
                         console.log(
-                          "Audio loading started:",
-                          getAudioUrl(
-                            groupQuestions[0].questionGroup.groupAudio
-                          )
+                          "✅ Audio loading started:",
+                          getAudioUrl(audioSrc)
+                        );
+                      }}
+                      onCanPlay={() => {
+                        const audioSrc =
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                          groupQuestions[0].questionAudio;
+                        console.log(
+                          "✅ Audio can play:",
+                          getAudioUrl(audioSrc)
+                        );
+                      }}
+                      onLoadedData={() => {
+                        const audioSrc =
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                          groupQuestions[0].questionAudio;
+                        console.log(
+                          "✅ Audio data loaded:",
+                          getAudioUrl(audioSrc)
                         );
                       }}
                     >
                       <source
                         src={getAudioUrl(
-                          groupQuestions[0].questionGroup.groupAudio
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                            groupQuestions[0].questionAudio
                         )}
                         type="audio/mpeg"
                       />
                       <source
                         src={getAudioUrl(
-                          groupQuestions[0].questionGroup.groupAudio
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                            groupQuestions[0].questionAudio
                         )}
                         type="audio/mp3"
                       />
                       <source
                         src={getAudioUrl(
-                          groupQuestions[0].questionGroup.groupAudio
+                          groupQuestions[0].questionGroup?.groupAudio ||
+                            groupQuestions[0].questionAudio
                         )}
                         type="audio/wav"
                       />
                       Trình duyệt của bạn không hỗ trợ phát âm thanh.
                     </audio>
-
-                    {/* Debug info - remove in production */}
-                    {process.env.NODE_ENV === "development" && (
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          color: "#666",
-                          marginTop: "4px",
-                        }}
-                      >
-                        Audio URL:{" "}
-                        {getAudioUrl(
-                          groupQuestions[0].questionGroup.groupAudio
-                        )}
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -333,7 +382,7 @@ const TestPart4 = ({
                                 <Badge
                                   color="blue"
                                   text={
-                                    question.questionType || "Part 4: Talks"
+                                    "Part 4: Talks" || question.questionType
                                   }
                                 />
                               </Space>
@@ -654,8 +703,8 @@ const TestPart4 = ({
                       style={{ padding: 0, marginBottom: "12px" }}
                     >
                       {showGroupScript[groupId]
-                        ? "Ẩn đoạn văn"
-                        : "Hiển thị đoạn văn"}
+                        ? "Ẩn transcript & giải thích"
+                        : "Hiển thị transcript & giải thích"}
                     </Button>
 
                     {showGroupScript[groupId] && (
@@ -664,41 +713,79 @@ const TestPart4 = ({
                         size="medium"
                         style={{ width: "100%" }}
                       >
-                        <Alert
-                          message="Transcript"
-                          description={
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html:
-                                  groupQuestions[0].questionGroup.groupScript,
-                              }}
-                            />
-                          }
-                          type="info"
-                          showIcon
-                        />
+                        {/* Transcript */}
+                        {groupQuestions[0].questionScript && (
+                          <Alert
+                            message="📄 Transcript"
+                            description={
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: groupQuestions[0].questionScript,
+                                }}
+                              />
+                            }
+                            type="info"
+                            showIcon
+                          />
+                        )}
 
-                        {groupQuestions[0].questionGroup
-                          .translatedGroupScript && (
+                        {/* Translated Transcript */}
+                        {groupQuestions[0].translatedQuestionScript && (
                           <Alert
                             message={
                               <Space>
                                 <Languages size={16} />
-                                <span>Bản dịch</span>
+                                <span>🇻🇳 Bản dịch Transcript</span>
                               </Space>
                             }
                             description={
                               <div
                                 dangerouslySetInnerHTML={{
                                   __html:
-                                    groupQuestions[0].questionGroup
-                                      .translatedGroupScript,
+                                    groupQuestions[0].translatedQuestionScript,
                                 }}
                               />
                             }
                             type="success"
                             showIcon={false}
                           />
+                        )}
+
+                        {/* Explanations for each question */}
+                        {groupQuestions.map(
+                          (question, index) =>
+                            question.questionExplanation && (
+                              <Alert
+                                key={index}
+                                message={`💡 Giải thích câu ${
+                                  calculateQuestionNumber(
+                                    parseInt(groupId),
+                                    index
+                                  ) + 1
+                                }`}
+                                description={
+                                  <div>
+                                    <strong>Câu hỏi:</strong>{" "}
+                                    {question.questionContent}
+                                    <br />
+                                    <strong>Đáp án:</strong>{" "}
+                                    {question.correctOption}
+                                    <br />
+                                    <strong>Giải thích:</strong>{" "}
+                                    {question.questionExplanation}
+                                    {question.suggestedAnswer && (
+                                      <>
+                                        <br />
+                                        <strong>Gợi ý:</strong>{" "}
+                                        {question.suggestedAnswer}
+                                      </>
+                                    )}
+                                  </div>
+                                }
+                                type="warning"
+                                showIcon
+                              />
+                            )
                         )}
                       </Space>
                     )}

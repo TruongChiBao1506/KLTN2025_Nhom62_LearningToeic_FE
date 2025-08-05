@@ -570,21 +570,56 @@ const ImproveStudy = () => {
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      // Extract filename from full path (e.g., "/audio/toeic/part2/q001.mp3" -> "q001.mp3")
+      // Extract filename from full path (e.g., "/audio/toeic/part4/announcement_01.mp3" -> "announcement_01.mp3")
       let fileName = audioName.includes("/")
         ? audioName.split("/").pop()
         : audioName;
 
-      // TEMPORARY: Force to use test0101.mp3 for testing (we know this file works)
-      fileName = "test0101.mp3";
+      // Comprehensive mapping logic based on TOEIC structure
+      // Part 1: Questions 1-6 (Individual pictures)
+      if (fileName.includes('part1') || fileName.includes('001.mp3')) {
+        fileName = 'fulltest01_number1.mp3'; // Single audio for Part 1
+      }
+      
+      // Part 2: Questions 7-31 (Question-Response)
+      else if (fileName.includes('part2') || fileName.includes('q001') || fileName.includes('q002') || fileName.includes('questions_01-05')) {
+        fileName = 'fulltest01_number7.mp3'; // Single audio for Part 2 questions
+      }
+      
+      // Part 3: Questions 32-70 (Conversations)
+      else if (fileName.includes('part3') || fileName.includes('conversation_01')) {
+        fileName = 'fulltest01_number32to34.mp3'; // First conversation group
+      }
+      
+      // Part 4: Questions 71-100 (Talks/Announcements)
+      else if (fileName.includes('part4') || fileName.includes('announcement_01')) {
+        fileName = 'fulltest01_number71to73.mp3'; // First announcement group
+      }
+      
+      // Additional specific mappings for other conversations/announcements
+      else if (fileName.includes('conversation_02')) {
+        fileName = 'fulltest01_number35to37.mp3';
+      } else if (fileName.includes('conversation_03')) {
+        fileName = 'fulltest01_number38to40.mp3';
+      } else if (fileName.includes('announcement_02')) {
+        fileName = 'fulltest01_number74to76.mp3';
+      } else if (fileName.includes('announcement_03')) {
+        fileName = 'fulltest01_number77to79.mp3';
+      }
+      
+      // Fallback for unknown patterns
+      else {
+        console.warn('No mapping found for audio:', fileName, 'using Part 1 fallback');
+        fileName = 'fulltest01_number1.mp3';
+      }
 
       const finalUrl = `http://localhost:5000/audios/${fileName}`;
-      console.log("Audio URL mapping (TEMP TEST):", {
+      console.log("Audio URL mapping:", {
         original: audioName,
         extracted: audioName.includes("/")
           ? audioName.split("/").pop()
           : audioName,
-        forced: fileName,
+        mapped: fileName,
         finalUrl,
       });
       return finalUrl;
