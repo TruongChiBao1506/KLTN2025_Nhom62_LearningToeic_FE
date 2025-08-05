@@ -44,9 +44,9 @@ const TestPart1 = ({
   // Debug logs for component props
   console.log("🎯 TestPart1 Component Debug:", {
     questionsCount: questions?.length || 0,
-    hasGetAudioUrl: typeof getAudioUrl === 'function',
+    hasGetAudioUrl: typeof getAudioUrl === "function",
     firstQuestion: questions?.[0] || null,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   const toggleTranscript = async (index) => {
@@ -76,7 +76,7 @@ const TestPart1 = ({
     }
   };
 
-    const handleOptionChange = (e, question) => {
+  const handleOptionChange = (e, question) => {
     const selectedValue = e.target.value;
     checkAnswer(question, selectedValue);
 
@@ -85,7 +85,7 @@ const TestPart1 = ({
       questionId: question._id,
       selectedValue,
       correctOption: question.correctOption,
-      eventTarget: e.target.value
+      eventTarget: e.target.value,
     });
   };
 
@@ -199,10 +199,16 @@ const TestPart1 = ({
                           }}
                           onError={(e) => {
                             console.error("❌ Audio load error:", e);
-                            console.error("❌ Audio src:", getAudioUrl(question.questionAudio));
+                            console.error(
+                              "❌ Audio src:",
+                              getAudioUrl(question.questionAudio)
+                            );
                           }}
                           onLoadStart={() => {
-                            console.log("✅ Audio loading started:", getAudioUrl(question.questionAudio));
+                            console.log(
+                              "✅ Audio loading started:",
+                              getAudioUrl(question.questionAudio)
+                            );
                           }}
                         >
                           <source
@@ -276,15 +282,17 @@ const TestPart1 = ({
                       style={{ width: "100%" }}
                     >
                       {getOptions(question).map((option, optionIndex) => {
-                        const optionLabel = String.fromCharCode(65 + optionIndex);
-                        
+                        const optionLabel = String.fromCharCode(
+                          65 + optionIndex
+                        );
+
                         // Check if this option is correct by comparing option letter with correctOption
                         const isCorrect =
                           question.isGraded &&
                           optionLabel === question.correctOption;
-                        
+
                         const isSelected = question.selectedOption === option;
-                        
+
                         // Check if this selected option is wrong
                         const isWrong =
                           question.isGraded &&
@@ -317,10 +325,7 @@ const TestPart1 = ({
                               transition: "all 0.3s ease",
                             }}
                           >
-                            <Radio
-                              value={option}
-                              style={{ width: "100%" }}
-                            >
+                            <Radio value={option} style={{ width: "100%" }}>
                               <Space align="start">
                                 <Text strong style={{ fontSize: "16px" }}>
                                   {optionLabel}.
@@ -445,13 +450,16 @@ const TestPart1 = ({
                             message={`💡 Giải thích câu ${index + 1}`}
                             description={
                               <div>
-                                <strong>Đáp án:</strong> {question.correctOption}
+                                <strong>Đáp án:</strong>{" "}
+                                {question.correctOption}
                                 <br />
-                                <strong>Giải thích:</strong> {question.questionExplanation}
+                                <strong>Giải thích:</strong>{" "}
+                                {question.questionExplanation}
                                 {question.suggestedAnswer && (
                                   <>
                                     <br />
-                                    <strong>Gợi ý:</strong> {question.suggestedAnswer}
+                                    <strong>Gợi ý:</strong>{" "}
+                                    {question.suggestedAnswer}
                                   </>
                                 )}
                               </div>
@@ -528,7 +536,11 @@ const TestPart1 = ({
               </div>
 
               {/* Action Buttons */}
-              <Space direction="vertical" size="medium" style={{ width: "100%" }}>
+              <Space
+                direction="vertical"
+                size="medium"
+                style={{ width: "100%" }}
+              >
                 <Button
                   type={isSubmited ? "default" : "primary"}
                   size="large"

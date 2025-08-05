@@ -1,7 +1,26 @@
 import React, { useState, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes, faSync } from "@fortawesome/free-solid-svg-icons";
-import "./style.css";
+import {
+  Row,
+  Col,
+  Card,
+  Radio,
+  Button,
+  Badge,
+  Space,
+  Typography,
+  Affix,
+  Divider,
+} from "antd";
+import {
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+  FileText,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+
+const { Title, Text } = Typography;
 
 const TestPart7Single = ({
   questions,
@@ -59,11 +78,6 @@ const TestPart7Single = ({
     }
   };
 
-  // Kiểm tra xem nhóm câu hỏi đã được trả lời hết chưa
-  const isGroupAnswered = (groupQuestions) => {
-    return groupQuestions.every((question) => question.answered);
-  };
-
   // Tính số thứ tự câu hỏi
   const calculateQuestionNumber = (groupId, questionIndex) => {
     let questionNumber = questionIndex;
@@ -78,9 +92,37 @@ const TestPart7Single = ({
   // Kiểm tra xem có nên hiển thị nội dung nhóm không
   const shouldDisplayGroupContent = (groupQuestions) => {
     return (
-      groupQuestions[0].questionGroup.groupImage ||
-      groupQuestions[0].questionGroup.groupPassage
+      groupQuestions[0].questionGroup?.groupImage ||
+      groupQuestions[0].questionGroup?.groupPassage ||
+      groupQuestions[0].questionPassage ||
+      groupQuestions[0].questionImage
     );
+  };
+
+  // Lấy passage content từ questionGroup hoặc question
+  const getPassageContent = (groupQuestions) => {
+    // Ưu tiên questionPassage từ question individual
+    if (groupQuestions[0].questionPassage) {
+      return groupQuestions[0].questionPassage;
+    }
+    // Fallback về groupPassage
+    if (groupQuestions[0].questionGroup?.groupPassage) {
+      return groupQuestions[0].questionGroup.groupPassage;
+    }
+    return null;
+  };
+
+  // Lấy image từ questionGroup hoặc question
+  const getImageContent = (groupQuestions) => {
+    // Ưu tiên questionImage từ question individual
+    if (groupQuestions[0].questionImage) {
+      return groupQuestions[0].questionImage;
+    }
+    // Fallback về groupImage
+    if (groupQuestions[0].questionGroup?.groupImage) {
+      return groupQuestions[0].questionGroup.groupImage;
+    }
+    return null;
   };
 
   // Cuộn đến câu hỏi được chọn
@@ -96,308 +138,503 @@ const TestPart7Single = ({
     checkAnswer(question);
   };
 
-  // Tính số câu đúng
-  const getCorrectCount = questions.filter(
-    (q) => q.answered && q.selectedOption === q.correctOption
-  ).length;
+  // Lấy màu cho radio option
+  const getOptionStyle = (question, option) => {
+    if (!question.isGraded) return {};
 
-  // Tính số câu sai
-  const getIncorrectCount = questions.filter(
-    (q) => q.answered && q.selectedOption !== q.correctOption
-  ).length;
+    if (option === question.correctOption) {
+      return { borderColor: "#52c41a", backgroundColor: "#f6ffed" };
+    }
+
+    if (
+      option === question.selectedOption &&
+      question.selectedLetter !== question.correctOption
+    ) {
+      return { borderColor: "#ff4d4f", backgroundColor: "#fff2f0" };
+    }
+
+    return {};
+  };
 
   return (
-    <>
-      <div className="col-lg col-md col-sm">
-        <div className="card specific-card border-0 shadow-lg">
-          <div className="card-body">
-            <div className="row">
-              {Object.entries(groupedQuestions).map(
-                ([groupId, groupQuestions]) => (
-                  <div className="col-sm-12 mt-3" key={groupId}>
-                    <div className="row">
-                      <div className="col-md-6 bg-light rounded">
+    <Row gutter={[24, 24]}>
+      <Col xs={24} lg={16}>
+        <Card
+          className="shadow-lg"
+          style={{
+            borderRadius: "12px",
+            border: "none",
+          }}
+        >
+          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            {Object.entries(groupedQuestions).map(
+              ([groupId, groupQuestions]) => (
+                <div key={groupId}>
+                  <Row gutter={[24, 24]}>
+                    {/* Passage/Image Section */}
+                    <Col xs={24} md={12}>
+                      <Card
+                        size="small"
+                        style={{
+                          backgroundColor: "#f8f9fa",
+                          borderRadius: "8px",
+                        }}
+                      >
                         {shouldDisplayGroupContent(groupQuestions) &&
-                          groupQuestions[0].questionGroup.groupImage && (
-                            <div className="image-container">
+                          getImageContent(groupQuestions) && (
+                            <div style={{ marginBottom: 16 }}>
                               <img
                                 src={getImageUrl(
-                                  groupQuestions[0].questionGroup.groupImage
+                                  getImageContent(groupQuestions)
                                 )}
-                                style={{ width: "100%" }}
+                                style={{
+                                  width: "100%",
+                                  borderRadius: "8px",
+                                }}
                                 alt="Luyện thi Reading TOEIC"
-                                className="question-image"
                                 loading="lazy"
                               />
                             </div>
                           )}
 
-                        <div className="audio-image-container mt-5">
-                          {shouldDisplayGroupContent(groupQuestions) && (
-                            <div className="audio-container mb-2">
+                        {shouldDisplayGroupContent(groupQuestions) &&
+                          getPassageContent(groupQuestions) && (
+                            <div style={{ marginTop: 16 }}>
+                              {/* Question Text nếu có */}
+                              {groupQuestions[0].questionText && (
+                                <div
+                                  style={{
+                                    marginBottom: 12,
+                                    padding: "8px 12px",
+                                    backgroundColor: "#e6f7ff",
+                                    borderRadius: "6px",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                    color: "#1890ff",
+                                  }}
+                                >
+                                  {groupQuestions[0].questionText}
+                                </div>
+                              )}
+
                               <div
                                 dangerouslySetInnerHTML={{
-                                  __html:
-                                    groupQuestions[0].questionGroup
-                                      .groupPassage,
+                                  __html: getPassageContent(groupQuestions),
                                 }}
-                              ></div>
+                                style={{
+                                  lineHeight: "1.6",
+                                  fontSize: "15px",
+                                  whiteSpace: "pre-line",
+                                }}
+                              />
                             </div>
                           )}
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="scrollable-container">
+                      </Card>
+                    </Col>
+
+                    {/* Questions Section */}
+                    <Col xs={24} md={12}>
+                      <div
+                        style={{
+                          maxHeight: "600px",
+                          overflowY: "auto",
+                          paddingRight: "8px",
+                        }}
+                      >
+                        <Space
+                          direction="vertical"
+                          size="large"
+                          style={{ width: "100%" }}
+                        >
                           {groupQuestions.map((question, index) => (
-                            <div key={index} className="ms-3">
-                              <div
-                                id={`question-${groupId}-${index}`}
-                                className="question"
+                            <Card
+                              key={index}
+                              id={`question-${groupId}-${index}`}
+                              size="small"
+                              style={{
+                                borderRadius: "8px",
+                                border: "1px solid #f0f0f0",
+                              }}
+                            >
+                              <Space
+                                direction="vertical"
+                                size="middle"
+                                style={{ width: "100%" }}
                               >
-                                <span
-                                  className="badge bg-secondary mb-2"
-                                  style={{ fontSize: "14px" }}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 12,
+                                  }}
                                 >
-                                  {question.questionType}
-                                </span>
-                                <div className="row">
-                                  <ul className="mt-5">
-                                    <button
-                                      className="btn mb-2"
-                                      style={{
-                                        backgroundColor: "#e8f2ff",
-                                        color: "#35509a",
-                                        width: "60px",
-                                      }}
-                                    >
-                                      {calculateQuestionNumber(
+                                  <Badge
+                                    count={
+                                      calculateQuestionNumber(
                                         parseInt(groupId),
                                         index
-                                      ) + 1}
-                                    </button>
+                                      ) + 1
+                                    }
+                                    style={{
+                                      backgroundColor: "#1890ff",
+                                      color: "white",
+                                      fontSize: "12px",
+                                      fontWeight: "bold",
+                                    }}
+                                  />
+                                  <Badge
+                                    text={question.questionType}
+                                    style={{
+                                      backgroundColor: "#f0f0f0",
+                                      color: "#666",
+                                      fontSize: "11px",
+                                    }}
+                                  />
+                                </div>
 
-                                    <span className="ms-1">
-                                      {question.questionContent}
-                                    </span>
+                                <Text
+                                  style={{
+                                    fontSize: "15px",
+                                    lineHeight: "1.5",
+                                  }}
+                                >
+                                  {question.questionContent}
+                                </Text>
 
-                                    {getOptions(question).map(
-                                      (option, optionIndex) => (
-                                        <li
-                                          key={optionIndex}
-                                          className={
-                                            Array.isArray(
-                                              getOptionClass(question, option)
-                                            )
-                                              ? getOptionClass(
-                                                  question,
-                                                  option
-                                                ).join(" ")
-                                              : getOptionClass(question, option)
-                                          }
+                                <Radio.Group
+                                  value={question.selectedOption}
+                                  onChange={(e) =>
+                                    handleOptionChange(question, e.target.value)
+                                  }
+                                  disabled={question.isGraded}
+                                  style={{ width: "100%" }}
+                                >
+                                  <Space
+                                    direction="vertical"
+                                    size="small"
+                                    style={{ width: "100%" }}
+                                  >
+                                    {getOptions(question).map((option) => (
+                                      <Radio
+                                        key={option}
+                                        value={option}
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          padding: "8px 12px",
+                                          borderRadius: "6px",
+                                          border: "1px solid #d9d9d9",
+                                          margin: "4px 0",
+                                          ...getOptionStyle(question, option),
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            width: "100%",
+                                          }}
                                         >
-                                          <label className="form-check-label">
-                                            <input
-                                              className="form-check-input"
-                                              type="radio"
-                                              value={option}
-                                              checked={
-                                                question.selectedOption ===
-                                                option
-                                              }
-                                              onChange={() =>
-                                                handleOptionChange(
-                                                  question,
-                                                  option
-                                                )
-                                              }
-                                              disabled={question.isGraded}
-                                              name={`flexRadioDefault-${question.questionId}`}
-                                            />
+                                          <Text style={{ marginLeft: 8 }}>
                                             {option}
+                                          </Text>
 
-                                            {question.isGraded &&
-                                              option ===
-                                                question.correctOption && (
-                                                <div className="result-icon">
-                                                  <FontAwesomeIcon
-                                                    icon={faCheck}
-                                                    style={{ color: "green" }}
-                                                  />
-                                                </div>
-                                              )}
-                                            {question.isGraded &&
-                                              option ===
-                                                question.selectedOption &&
-                                              option !==
-                                                question.correctOption && (
-                                                <div className="result-icon">
-                                                  <FontAwesomeIcon
-                                                    icon={faTimes}
-                                                    style={{ color: "red" }}
-                                                  />
-                                                </div>
-                                              )}
-                                          </label>
-                                        </li>
-                                      )
-                                    )}
-                                    {!question.isGraded && (
-                                      <button
-                                        onClick={() => clearSelection(question)}
-                                        className="btn btn-link text-decoration-none"
-                                      >
-                                        Xóa lựa chọn
-                                      </button>
-                                    )}
-                                  </ul>
+                                          {question.isGraded &&
+                                            option ===
+                                              question.correctOption && (
+                                              <CheckCircle
+                                                size={16}
+                                                style={{ color: "#52c41a" }}
+                                              />
+                                            )}
 
-                                  {question.isGraded && (
-                                    <div className="feedback-section">
-                                      <button
-                                        onClick={() =>
-                                          toggleExplanation(
-                                            calculateQuestionNumber(
-                                              parseInt(groupId),
-                                              index
-                                            )
-                                          )
-                                        }
-                                        className="btn btn-link btn-sm mt-2 link-offset-3"
-                                      >
-                                        {showExplanation[
+                                          {question.isGraded &&
+                                            option ===
+                                              question.selectedOption &&
+                                            question.selectedLetter !==
+                                              question.correctOption && (
+                                              <XCircle
+                                                size={16}
+                                                style={{ color: "#ff4d4f" }}
+                                              />
+                                            )}
+                                        </div>
+                                      </Radio>
+                                    ))}
+                                  </Space>
+                                </Radio.Group>
+
+                                {!question.isGraded &&
+                                  question.selectedOption && (
+                                    <Button
+                                      type="link"
+                                      size="small"
+                                      onClick={() => clearSelection(question)}
+                                      style={{ padding: 0, height: "auto" }}
+                                    >
+                                      Xóa lựa chọn
+                                    </Button>
+                                  )}
+
+                                {question.isGraded && (
+                                  <div>
+                                    <Button
+                                      type="link"
+                                      size="small"
+                                      icon={
+                                        showExplanation[
                                           calculateQuestionNumber(
                                             parseInt(groupId),
                                             index
                                           )
-                                        ]
-                                          ? "Ẩn giải thích"
-                                          : "Hiển thị giải thích"}
-                                      </button>
-
+                                        ] ? (
+                                          <EyeOff size={14} />
+                                        ) : (
+                                          <Eye size={14} />
+                                        )
+                                      }
+                                      onClick={() =>
+                                        toggleExplanation(
+                                          calculateQuestionNumber(
+                                            parseInt(groupId),
+                                            index
+                                          )
+                                        )
+                                      }
+                                      style={{ padding: 0, height: "auto" }}
+                                    >
                                       {showExplanation[
                                         calculateQuestionNumber(
                                           parseInt(groupId),
                                           index
                                         )
-                                      ] && (
-                                        <div className="transcript">
-                                          <div className="explanation-original">
+                                      ]
+                                        ? "Ẩn giải thích"
+                                        : "Hiển thị giải thích"}
+                                    </Button>
+
+                                    {showExplanation[
+                                      calculateQuestionNumber(
+                                        parseInt(groupId),
+                                        index
+                                      )
+                                    ] && (
+                                      <Card
+                                        size="small"
+                                        style={{
+                                          marginTop: 12,
+                                          backgroundColor: "#fafafa",
+                                          border: "1px solid #e8e8e8",
+                                        }}
+                                      >
+                                        <div
+                                          dangerouslySetInnerHTML={{
+                                            __html:
+                                              question.questionExplanation,
+                                          }}
+                                          style={{ marginBottom: 8 }}
+                                        />
+
+                                        {question.translatedExplanation && (
+                                          <div>
+                                            <Badge
+                                              text="Bản dịch"
+                                              style={{
+                                                backgroundColor: "#52c41a",
+                                                color: "white",
+                                                fontSize: "10px",
+                                                marginBottom: 8,
+                                              }}
+                                            />
                                             <div
                                               dangerouslySetInnerHTML={{
                                                 __html:
-                                                  question.questionExplanation,
+                                                  question.translatedExplanation,
                                               }}
-                                            ></div>
+                                            />
                                           </div>
-                                          {question.translatedExplanation && (
-                                            <div className="transcript-translation">
-                                              <span className="badge bg-success">
-                                                Bản dịch
-                                              </span>
-                                              <div
-                                                dangerouslySetInnerHTML={{
-                                                  __html:
-                                                    question.translatedExplanation,
-                                                }}
-                                              ></div>
-                                            </div>
-                                          )}
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
+                                        )}
+                                      </Card>
+                                    )}
+                                  </div>
+                                )}
+                              </Space>
+                            </Card>
                           ))}
-                        </div>
+                        </Space>
                       </div>
-                      <hr className="mt-3" />
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+                    </Col>
+                  </Row>
 
-      <div className="col-lg-4 col-md-4 col-sm-4 text-decoration-none border-0">
-        <div
-          className="card specific-card border-0"
-          style={{ position: "sticky", top: "95px", zIndex: 1 }}
-        >
-          <div className="card-body border-0">
-            <div className="question-list-section">
-              <h5 className="fw-normal fs-5 text-center">Bảng câu hỏi</h5>
+                  {Object.keys(groupedQuestions).length > 1 && (
+                    <Divider style={{ margin: "24px 0" }} />
+                  )}
+                </div>
+              )
+            )}
+          </Space>
+        </Card>
+      </Col>
+
+      {/* Sidebar */}
+      <Col xs={24} lg={8}>
+        <Affix offsetTop={95}>
+          <Card
+            title={
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <FileText size={20} />
+                <Title level={5} style={{ margin: 0 }}>
+                  Bảng câu hỏi
+                </Title>
+              </div>
+            }
+            style={{
+              borderRadius: "12px",
+              border: "none",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Space direction="vertical" size="large" style={{ width: "100%" }}>
+              {/* Question Grid */}
               <div
-                className="question-buttons mb-5 mx-2 lesson-content"
-                style={{ display: "flex", flexWrap: "wrap" }}
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                  justifyContent: "center",
+                }}
               >
                 {Object.entries(groupedQuestions).map(
                   ([groupId, groupQuestions]) =>
-                    groupQuestions.map((question, index) => (
-                      <button
-                        key={`${groupId}-${index}`}
-                        onClick={() => scrollToQuestion(groupId, index)}
-                        className={`question-button ${
-                          question.answered &&
-                          question.selectedOption === question.correctOption
-                            ? "correct"
-                            : ""
-                        } ${
-                          question.answered &&
-                          question.selectedOption !== question.correctOption
-                            ? "incorrect"
-                            : ""
-                        } ${
-                          question.selectedOption !== null ? "selected" : ""
-                        } ${question.isGraded ? "graded" : ""}`}
-                        style={{
-                          backgroundColor: question.selectedOption
-                            ? question.isGraded
-                              ? question.selectedOption ===
-                                question.correctOption
-                                ? "green"
-                                : "red"
-                              : "orange"
-                            : "",
-                          color: question.selectedOption ? "white" : "#052649",
-                        }}
-                      >
-                        {calculateQuestionNumber(parseInt(groupId), index) + 1}
-                      </button>
-                    ))
+                    groupQuestions.map((question, index) => {
+                      const questionNumber =
+                        calculateQuestionNumber(parseInt(groupId), index) + 1;
+                      let backgroundColor = "#f0f0f0";
+                      let color = "#666";
+
+                      if (question.selectedOption) {
+                        if (question.isGraded) {
+                          backgroundColor =
+                            question.selectedLetter === question.correctOption
+                              ? "#52c41a"
+                              : "#ff4d4f";
+                          color = "white";
+                        } else {
+                          backgroundColor = "#fa8c16";
+                          color = "white";
+                        }
+                      }
+
+                      return (
+                        <Button
+                          key={`${groupId}-${index}`}
+                          size="small"
+                          onClick={() => scrollToQuestion(groupId, index)}
+                          style={{
+                            backgroundColor,
+                            color,
+                            border: "none",
+                            borderRadius: "6px",
+                            width: "36px",
+                            height: "36px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: "bold",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {questionNumber}
+                        </Button>
+                      );
+                    })
                 )}
               </div>
 
-              <div className="score mb-3">
-                <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />{" "}
-                {getCorrectCount}/{questions.length}
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  style={{ color: "red", marginLeft: "8px" }}
-                />{" "}
-                {getIncorrectCount}/{questions.length}
+              {/* Score Display */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 16,
+                  padding: "16px",
+                  backgroundColor: "#fafafa",
+                  borderRadius: "8px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <CheckCircle size={16} style={{ color: "#52c41a" }} />
+                  <Text strong style={{ color: "#52c41a" }}>
+                    {
+                      questions.filter(
+                        (q) =>
+                          q.isGraded &&
+                          q.answered &&
+                          q.selectedLetter === q.correctOption
+                      ).length
+                    }
+                    /{questions.length}
+                  </Text>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <XCircle size={16} style={{ color: "#ff4d4f" }} />
+                  <Text strong style={{ color: "#ff4d4f" }}>
+                    {
+                      questions.filter(
+                        (q) =>
+                          q.isGraded &&
+                          q.answered &&
+                          q.selectedLetter !== q.correctOption
+                      ).length
+                    }
+                    /{questions.length}
+                  </Text>
+                </div>
               </div>
 
-              <div className="d-grid gap-2">
-                {isSubmited ? (
-                  <button onClick={refreshPage} className="btn btn-light">
-                    <FontAwesomeIcon icon={faSync} className="text-success" />{" "}
-                    Làm lại
-                  </button>
-                ) : (
-                  <button onClick={submitAnswers} className="btn btn-primary">
-                    Chấm điểm
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+              {/* Action Button */}
+              {isSubmited ? (
+                <Button
+                  type="default"
+                  size="large"
+                  icon={<RotateCcw size={16} />}
+                  onClick={refreshPage}
+                  block
+                  style={{
+                    height: "48px",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  Làm lại
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={submitAnswers}
+                  block
+                  style={{
+                    height: "48px",
+                    borderRadius: "8px",
+                    background:
+                      "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
+                    border: "none",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Chấm điểm
+                </Button>
+              )}
+            </Space>
+          </Card>
+        </Affix>
+      </Col>
+    </Row>
   );
 };
 

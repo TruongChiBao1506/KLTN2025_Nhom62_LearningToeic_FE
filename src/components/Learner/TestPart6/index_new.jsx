@@ -41,17 +41,18 @@ const TestPart6 = ({
   console.log("🎯 TestPart6 Component Debug:", {
     questionsCount: questions?.length || 0,
     firstQuestion: questions?.[0] || null,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Nhóm các câu hỏi theo groupId
   const groupQuestionsByGroupId = (questions) => {
     const grouped = {};
     for (const question of questions) {
-      const groupKey = question.questionGroup?.groupId || 
-                      question.questionGroup?._id || 
-                      question.questionGroup || 
-                      "default";
+      const groupKey =
+        question.questionGroup?.groupId ||
+        question.questionGroup?._id ||
+        question.questionGroup ||
+        "default";
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
       }
@@ -185,7 +186,8 @@ const TestPart6 = ({
                 {groupQuestions[0].questionGroup?.groupPassage && (
                   <div
                     style={{
-                      background: "linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%)",
+                      background:
+                        "linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%)",
                       padding: "20px",
                       borderRadius: "12px",
                       border: "1px solid #e6f7ff",
@@ -193,7 +195,10 @@ const TestPart6 = ({
                   >
                     <Space align="center" style={{ marginBottom: "16px" }}>
                       <FileText size={20} color="#1890ff" />
-                      <Text strong style={{ color: "#1890ff", fontSize: "16px" }}>
+                      <Text
+                        strong
+                        style={{ color: "#1890ff", fontSize: "16px" }}
+                      >
                         Đoạn văn
                       </Text>
                     </Space>
@@ -211,7 +216,11 @@ const TestPart6 = ({
                 )}
 
                 {/* Questions */}
-                <Space direction="vertical" size="medium" style={{ width: "100%" }}>
+                <Space
+                  direction="vertical"
+                  size="medium"
+                  style={{ width: "100%" }}
+                >
                   {groupQuestions.map((question, index) => (
                     <Card
                       key={index}
@@ -238,9 +247,13 @@ const TestPart6 = ({
                               fontWeight: "bold",
                             }}
                           >
-                            {calculateQuestionNumber(parseInt(groupId), index) + 1}
+                            {calculateQuestionNumber(parseInt(groupId), index) +
+                              1}
                           </Button>
-                          <Badge color="purple" text="Part 6: Text Completion" />
+                          <Badge
+                            color="purple"
+                            text="Part 6: Text Completion"
+                          />
                         </Space>
 
                         {/* Question Content */}
@@ -263,84 +276,96 @@ const TestPart6 = ({
                               size="small"
                               style={{ width: "100%" }}
                             >
-                              {getOptions(question).map((option, optionIndex) => {
-                                const optionLabel = String.fromCharCode(65 + optionIndex);
-                                
-                                const isCorrect =
-                                  question.isGraded &&
-                                  optionLabel === question.correctOption;
-                                
-                                const isSelected = question.selectedOption === option;
-                                
-                                const isWrong =
-                                  question.isGraded &&
-                                  isSelected &&
-                                  question.selectedLetter !== question.correctOption;
+                              {getOptions(question).map(
+                                (option, optionIndex) => {
+                                  const optionLabel = String.fromCharCode(
+                                    65 + optionIndex
+                                  );
 
-                                return (
-                                  <div
-                                    key={optionIndex}
-                                    style={{
-                                      padding: "12px",
-                                      borderRadius: "8px",
-                                      border: `2px solid ${
-                                        isCorrect
-                                          ? "#52c41a"
+                                  const isCorrect =
+                                    question.isGraded &&
+                                    optionLabel === question.correctOption;
+
+                                  const isSelected =
+                                    question.selectedOption === option;
+
+                                  const isWrong =
+                                    question.isGraded &&
+                                    isSelected &&
+                                    question.selectedLetter !==
+                                      question.correctOption;
+
+                                  return (
+                                    <div
+                                      key={optionIndex}
+                                      style={{
+                                        padding: "12px",
+                                        borderRadius: "8px",
+                                        border: `2px solid ${
+                                          isCorrect
+                                            ? "#52c41a"
+                                            : isWrong
+                                            ? "#ff4d4f"
+                                            : isSelected
+                                            ? "#1890ff"
+                                            : "#f0f0f0"
+                                        }`,
+                                        backgroundColor: isCorrect
+                                          ? "#f6ffed"
                                           : isWrong
-                                          ? "#ff4d4f"
+                                          ? "#fff2f0"
                                           : isSelected
-                                          ? "#1890ff"
-                                          : "#f0f0f0"
-                                      }`,
-                                      backgroundColor: isCorrect
-                                        ? "#f6ffed"
-                                        : isWrong
-                                        ? "#fff2f0"
-                                        : isSelected
-                                        ? "#e6f7ff"
-                                        : "#fafafa",
-                                      position: "relative",
-                                      transition: "all 0.3s ease",
-                                    }}
-                                  >
-                                    <Radio value={option} style={{ width: "100%" }}>
-                                      <Space align="start">
-                                        <Text strong style={{ fontSize: "16px" }}>
-                                          {optionLabel}.
-                                        </Text>
-                                        <Text style={{ fontSize: "16px" }}>
-                                          {option}
-                                        </Text>
-                                      </Space>
-                                    </Radio>
+                                          ? "#e6f7ff"
+                                          : "#fafafa",
+                                        position: "relative",
+                                        transition: "all 0.3s ease",
+                                      }}
+                                    >
+                                      <Radio
+                                        value={option}
+                                        style={{ width: "100%" }}
+                                      >
+                                        <Space align="start">
+                                          <Text
+                                            strong
+                                            style={{ fontSize: "16px" }}
+                                          >
+                                            {optionLabel}.
+                                          </Text>
+                                          <Text style={{ fontSize: "16px" }}>
+                                            {option}
+                                          </Text>
+                                        </Space>
+                                      </Radio>
 
-                                    {isCorrect && (
-                                      <Check
-                                        size={24}
-                                        color="#52c41a"
-                                        style={{
-                                          position: "absolute",
-                                          right: "16px",
-                                          top: "50%",
-                                          transform: "translateY(-50%)",
-                                        }}
-                                      />
-                                    )}
-                                    {isWrong && (
-                                      <X
-                                        size={24}
-                                        color="#ff4d4f"
-                                        style={{
-                                          position: "absolute",
-                                          right: "16px",
-                                          top: "50%",
-                                          transform: "translateY(-50%)",
-                                        }}
-                                      />
-                                    )}
-                                  </div>
-                                );
-                              })}
+                                      {isCorrect && (
+                                        <Check
+                                          size={24}
+                                          color="#52c41a"
+                                          style={{
+                                            position: "absolute",
+                                            right: "16px",
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                          }}
+                                        />
+                                      )}
+                                      {isWrong && (
+                                        <X
+                                          size={24}
+                                          color="#ff4d4f"
+                                          style={{
+                                            position: "absolute",
+                                            right: "16px",
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                          }}
+                                        />
+                                      )}
+                                    </div>
+                                  );
+                                }
+                              )}
                             </Space>
                           </Radio.Group>
                         </div>
@@ -368,7 +393,13 @@ const TestPart6 = ({
                     <Divider />
                     <Button
                       type="link"
-                      icon={showExplanation[groupId] ? <EyeOff size={16} /> : <Eye size={16} />}
+                      icon={
+                        showExplanation[groupId] ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )
+                      }
                       onClick={() => toggleExplanation(groupId)}
                       style={{ padding: 0, marginBottom: "12px" }}
                     >
@@ -378,7 +409,11 @@ const TestPart6 = ({
                     </Button>
 
                     {showExplanation[groupId] && (
-                      <Space direction="vertical" size="medium" style={{ width: "100%" }}>
+                      <Space
+                        direction="vertical"
+                        size="medium"
+                        style={{ width: "100%" }}
+                      >
                         {/* Explanations for each question */}
                         {groupQuestions.map(
                           (question, index) =>
@@ -386,19 +421,26 @@ const TestPart6 = ({
                               <Alert
                                 key={index}
                                 message={`💡 Giải thích câu ${
-                                  calculateQuestionNumber(parseInt(groupId), index) + 1
+                                  calculateQuestionNumber(
+                                    parseInt(groupId),
+                                    index
+                                  ) + 1
                                 }`}
                                 description={
                                   <div>
-                                    <strong>Câu hỏi:</strong> {question.questionContent}
+                                    <strong>Câu hỏi:</strong>{" "}
+                                    {question.questionContent}
                                     <br />
-                                    <strong>Đáp án đúng:</strong> {question.correctOption}
+                                    <strong>Đáp án đúng:</strong>{" "}
+                                    {question.correctOption}
                                     <br />
-                                    <strong>Giải thích:</strong> {question.questionExplanation}
+                                    <strong>Giải thích:</strong>{" "}
+                                    {question.questionExplanation}
                                     {question.suggestedAnswer && (
                                       <>
                                         <br />
-                                        <strong>Gợi ý:</strong> {question.suggestedAnswer}
+                                        <strong>Gợi ý:</strong>{" "}
+                                        {question.suggestedAnswer}
                                       </>
                                     )}
                                     {question.translatedExplanation && (
@@ -452,21 +494,22 @@ const TestPart6 = ({
                   gap: "8px",
                 }}
               >
-                {Object.entries(groupedQuestions).map(([groupId, groupQuestions]) =>
-                  groupQuestions.map((question, index) => (
-                    <Button
-                      key={`${groupId}-${index}`}
-                      onClick={() => scrollToQuestion(groupId, index)}
-                      style={{
-                        ...getQuestionButtonStyle(question),
-                        aspectRatio: "1",
-                        fontWeight: "bold",
-                      }}
-                      size="large"
-                    >
-                      {calculateQuestionNumber(parseInt(groupId), index) + 1}
-                    </Button>
-                  ))
+                {Object.entries(groupedQuestions).map(
+                  ([groupId, groupQuestions]) =>
+                    groupQuestions.map((question, index) => (
+                      <Button
+                        key={`${groupId}-${index}`}
+                        onClick={() => scrollToQuestion(groupId, index)}
+                        style={{
+                          ...getQuestionButtonStyle(question),
+                          aspectRatio: "1",
+                          fontWeight: "bold",
+                        }}
+                        size="large"
+                      >
+                        {calculateQuestionNumber(parseInt(groupId), index) + 1}
+                      </Button>
+                    ))
                 )}
               </div>
 
@@ -490,10 +533,18 @@ const TestPart6 = ({
 
               {/* Action Button */}
               <Button
-                type={questions.some(q => q.isGraded) ? "default" : "primary"}
+                type={questions.some((q) => q.isGraded) ? "default" : "primary"}
                 size="large"
-                icon={questions.some(q => q.isGraded) ? <RotateCcw size={18} /> : null}
-                onClick={questions.some(q => q.isGraded) ? refreshPage : submitAnswers}
+                icon={
+                  questions.some((q) => q.isGraded) ? (
+                    <RotateCcw size={18} />
+                  ) : null
+                }
+                onClick={
+                  questions.some((q) => q.isGraded)
+                    ? refreshPage
+                    : submitAnswers
+                }
                 block
                 style={{
                   height: "48px",
@@ -501,7 +552,7 @@ const TestPart6 = ({
                   fontWeight: "600",
                 }}
               >
-                {questions.some(q => q.isGraded) ? "Làm lại" : "Chấm điểm"}
+                {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
               </Button>
             </Space>
           </Card>

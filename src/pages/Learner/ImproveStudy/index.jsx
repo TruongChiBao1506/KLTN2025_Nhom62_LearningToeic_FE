@@ -526,22 +526,22 @@ const ImproveStudy = () => {
       if (question.selectedOption) {
         // Convert selected option content to letter for comparison
         let selectedLetter = null;
-        
+
         if (question.selectedOption === question.optionA) {
-          selectedLetter = 'A';
+          selectedLetter = "A";
         } else if (question.selectedOption === question.optionB) {
-          selectedLetter = 'B';
+          selectedLetter = "B";
         } else if (question.selectedOption === question.optionC) {
-          selectedLetter = 'C';
+          selectedLetter = "C";
         } else if (question.selectedOption === question.optionD) {
-          selectedLetter = 'D';
+          selectedLetter = "D";
         }
 
-        return { 
-          ...question, 
-          answered: true, 
+        return {
+          ...question,
+          answered: true,
           isGraded: true,
-          selectedLetter: selectedLetter  // Store both content and letter
+          selectedLetter: selectedLetter, // Store both content and letter
         };
       }
       return { ...question, isGraded: true };
@@ -580,33 +580,33 @@ const ImproveStudy = () => {
     setQuestions(resetQuestions);
   };
 
-    const getImageUrl = (imageName) => {
+  const getImageUrl = (imageName) => {
     if (imageName) {
       // Check if imageName already includes full path
-      if (imageName.startsWith('http')) {
+      if (imageName.startsWith("http")) {
         return imageName;
       }
-      
+
       // Handle different path formats
       let fileName = imageName;
-      
+
       // If it's a full path like "/images/toeic/part1/office_meeting.jpg", extract filename
-      if (imageName.startsWith('/images/')) {
-        fileName = imageName.split('/').pop();
-        
+      if (imageName.startsWith("/images/")) {
+        fileName = imageName.split("/").pop();
+
         // Try to map old path structure to new filenames
-        if (fileName === 'office_meeting.jpg') {
-          fileName = 'fulltest01_number1.png'; // Map to actual file
+        if (fileName === "office_meeting.jpg") {
+          fileName = "fulltest01_number1.png"; // Map to actual file
         }
         // Add more mappings as needed for other images
       }
-      
+
       console.log("🖼️ Image URL Debug:", {
         originalImageName: imageName,
         finalFileName: fileName,
-        fullUrl: `http://localhost:5000/images/${fileName}`
+        fullUrl: `http://localhost:5000/images/${fileName}`,
       });
-      
+
       // Use the backend server on port 5000
       return `http://localhost:5000/images/${fileName}`;
     }
@@ -622,40 +622,55 @@ const ImproveStudy = () => {
 
       // Comprehensive mapping logic based on TOEIC structure
       // Part 1: Questions 1-6 (Individual pictures)
-      if (fileName.includes('part1') || fileName.includes('001.mp3')) {
-        fileName = 'fulltest01_number1.mp3'; // Single audio for Part 1
+      if (fileName.includes("part1") || fileName.includes("001.mp3")) {
+        fileName = "fulltest01_number1.mp3"; // Single audio for Part 1
       }
-      
+
       // Part 2: Questions 7-31 (Question-Response)
-      else if (fileName.includes('part2') || fileName.includes('q001') || fileName.includes('q002') || fileName.includes('questions_01-05')) {
-        fileName = 'fulltest01_number7.mp3'; // Single audio for Part 2 questions
+      else if (
+        fileName.includes("part2") ||
+        fileName.includes("q001") ||
+        fileName.includes("q002") ||
+        fileName.includes("questions_01-05")
+      ) {
+        fileName = "fulltest01_number7.mp3"; // Single audio for Part 2 questions
       }
-      
+
       // Part 3: Questions 32-70 (Conversations)
-      else if (fileName.includes('part3') || fileName.includes('conversation_01')) {
-        fileName = 'fulltest01_number32to34.mp3'; // First conversation group
+      else if (
+        fileName.includes("part3") ||
+        fileName.includes("conversation_01")
+      ) {
+        fileName = "fulltest01_number32to34.mp3"; // First conversation group
       }
-      
+
       // Part 4: Questions 71-100 (Talks/Announcements)
-      else if (fileName.includes('part4') || fileName.includes('announcement_01')) {
-        fileName = 'fulltest01_number71to73.mp3'; // First announcement group
+      else if (
+        fileName.includes("part4") ||
+        fileName.includes("announcement_01")
+      ) {
+        fileName = "fulltest01_number71to73.mp3"; // First announcement group
       }
-      
+
       // Additional specific mappings for other conversations/announcements
-      else if (fileName.includes('conversation_02')) {
-        fileName = 'fulltest01_number35to37.mp3';
-      } else if (fileName.includes('conversation_03')) {
-        fileName = 'fulltest01_number38to40.mp3';
-      } else if (fileName.includes('announcement_02')) {
-        fileName = 'fulltest01_number74to76.mp3';
-      } else if (fileName.includes('announcement_03')) {
-        fileName = 'fulltest01_number77to79.mp3';
+      else if (fileName.includes("conversation_02")) {
+        fileName = "fulltest01_number35to37.mp3";
+      } else if (fileName.includes("conversation_03")) {
+        fileName = "fulltest01_number38to40.mp3";
+      } else if (fileName.includes("announcement_02")) {
+        fileName = "fulltest01_number74to76.mp3";
+      } else if (fileName.includes("announcement_03")) {
+        fileName = "fulltest01_number77to79.mp3";
       }
-      
+
       // Fallback for unknown patterns
       else {
-        console.warn('No mapping found for audio:', fileName, 'using Part 1 fallback');
-        fileName = 'fulltest01_number1.mp3';
+        console.warn(
+          "No mapping found for audio:",
+          fileName,
+          "using Part 1 fallback"
+        );
+        fileName = "fulltest01_number1.mp3";
       }
 
       const finalUrl = `http://localhost:5000/audios/${fileName}`;
@@ -714,26 +729,32 @@ const ImproveStudy = () => {
 
   const clearSelection = (question) => {
     const updatedQuestions = [...questions].map((q) =>
-      q._id === question._id ? { ...q, selectedOption: null } : q
+      q._id === question._id
+        ? { ...q, selectedOption: null, answered: false }
+        : q
     );
     setQuestions(updatedQuestions);
   };
 
-  const checkAnswer = (question, selectedOption) => {
-    // Just store the selected option content for display, don't convert to letter yet
+  const checkAnswer = (question, selectedOption = null) => {
+    // If no selectedOption passed, use the one already set on question object
+    const optionToSet = selectedOption || question.selectedOption;
+
     console.log("🎯 checkAnswer Debug:", {
       questionId: question._id,
-      selectedOption,
+      selectedOption: optionToSet,
       correctOption: question.correctOption,
       optionA: question.optionA,
       optionB: question.optionB,
       optionC: question.optionC,
-      optionD: question.optionD
+      optionD: question.optionD,
     });
 
     // Store the content string for radio display, conversion happens during scoring
     const updatedQuestions = [...questions].map((q) =>
-      q._id === question._id ? { ...q, selectedOption: selectedOption, answered: true } : q
+      q._id === question._id
+        ? { ...q, selectedOption: optionToSet, answered: !!optionToSet }
+        : q
     );
     setQuestions(updatedQuestions);
   };
