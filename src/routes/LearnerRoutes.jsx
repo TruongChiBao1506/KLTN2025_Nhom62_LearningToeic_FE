@@ -183,6 +183,14 @@ const LearnerRoutes = () => {
           }
         />
         <Route
+          path="practice-sw"
+          element={
+            <ProtectedRoute>
+              <SectionSW />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="practice-sw/:sectionId"
           element={
             <ProtectedRoute>

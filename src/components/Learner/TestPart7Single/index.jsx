@@ -141,11 +141,10 @@ const TestPart7Single = ({
   // Lấy màu cho radio option - tham khảo từ TestPart4
   const getOptionStyle = (question, option, optionIndex) => {
     const optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D
-    
+
     // Check if this option is correct by comparing option letter with correctOption
     const isCorrect =
-      question.isGraded &&
-      optionLabel === question.correctOption;
+      question.isGraded && optionLabel === question.correctOption;
 
     const isSelected = question.selectedOption === option;
 
@@ -333,77 +332,89 @@ const TestPart7Single = ({
                                     size="small"
                                     style={{ width: "100%" }}
                                   >
-                                    {getOptions(question).map((option, optionIndex) => {
-                                      const optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D
-                                      
-                                      // Check if this option is correct by comparing option letter with correctOption  
-                                      const isCorrect =
-                                        question.isGraded &&
-                                        optionLabel === question.correctOption;
+                                    {getOptions(question).map(
+                                      (option, optionIndex) => {
+                                        const optionLabel = String.fromCharCode(
+                                          65 + optionIndex
+                                        ); // A, B, C, D
 
-                                      const isSelected = question.selectedOption === option;
+                                        // Check if this option is correct by comparing option letter with correctOption
+                                        const isCorrect =
+                                          question.isGraded &&
+                                          optionLabel ===
+                                            question.correctOption;
 
-                                      // Check if this selected option is wrong
-                                      const isWrong =
-                                        question.isGraded &&
-                                        isSelected &&
-                                        question.selectedLetter !== question.correctOption;
+                                        const isSelected =
+                                          question.selectedOption === option;
 
-                                      return (
-                                        <div
-                                          key={optionIndex}
-                                          style={{
-                                            padding: "8px",
-                                            borderRadius: "6px",
-                                            ...getOptionStyle(question, option, optionIndex),
-                                            position: "relative",
-                                          }}
-                                        >
-                                          <Radio
-                                            value={option}
-                                            style={{ width: "100%" }}
+                                        // Check if this selected option is wrong
+                                        const isWrong =
+                                          question.isGraded &&
+                                          isSelected &&
+                                          question.selectedLetter !==
+                                            question.correctOption;
+
+                                        return (
+                                          <div
+                                            key={optionIndex}
+                                            style={{
+                                              padding: "8px",
+                                              borderRadius: "6px",
+                                              ...getOptionStyle(
+                                                question,
+                                                option,
+                                                optionIndex
+                                              ),
+                                              position: "relative",
+                                            }}
                                           >
-                                            <div
-                                              style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "space-between",
-                                                width: "100%",
-                                              }}
+                                            <Radio
+                                              value={option}
+                                              style={{ width: "100%" }}
                                             >
-                                              <Text style={{ marginLeft: 8 }}>
-                                                {option}
-                                              </Text>
-                                            </div>
-                                          </Radio>
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  justifyContent:
+                                                    "space-between",
+                                                  width: "100%",
+                                                }}
+                                              >
+                                                <Text style={{ marginLeft: 8 }}>
+                                                  {option}
+                                                </Text>
+                                              </div>
+                                            </Radio>
 
-                                          {isCorrect && (
-                                            <CheckCircle
-                                              size={16}
-                                              color="#52c41a"
-                                              style={{
-                                                position: "absolute",
-                                                right: "8px",
-                                                top: "50%",
-                                                transform: "translateY(-50%)",
-                                              }}
-                                            />
-                                          )}
-                                          {isWrong && (
-                                            <XCircle
-                                              size={16}
-                                              color="#ff4d4f"
-                                              style={{
-                                                position: "absolute",
-                                                right: "8px",
-                                                top: "50%",
-                                                transform: "translateY(-50%)",
-                                              }}
-                                            />
-                                          )}
-                                        </div>
-                                      );
-                                    })}
+                                            {isCorrect && (
+                                              <CheckCircle
+                                                size={16}
+                                                color="#52c41a"
+                                                style={{
+                                                  position: "absolute",
+                                                  right: "8px",
+                                                  top: "50%",
+                                                  transform: "translateY(-50%)",
+                                                }}
+                                              />
+                                            )}
+                                            {isWrong && (
+                                              <XCircle
+                                                size={16}
+                                                color="#ff4d4f"
+                                                style={{
+                                                  position: "absolute",
+                                                  right: "8px",
+                                                  top: "50%",
+                                                  transform: "translateY(-50%)",
+                                                }}
+                                              />
+                                            )}
+                                          </div>
+                                        );
+                                      }
+                                    )}
                                   </Space>
                                 </Radio.Group>
 
@@ -606,7 +617,9 @@ const TestPart7Single = ({
                     borderRadius: "8px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 4 }}
+                  >
                     <CheckCircle size={16} style={{ color: "#52c41a" }} />
                     <Text strong style={{ color: "#52c41a" }}>
                       {
@@ -620,7 +633,9 @@ const TestPart7Single = ({
                       /{questions.length}
                     </Text>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 4 }}
+                  >
                     <XCircle size={16} style={{ color: "#ff4d4f" }} />
                     <Text strong style={{ color: "#ff4d4f" }}>
                       {

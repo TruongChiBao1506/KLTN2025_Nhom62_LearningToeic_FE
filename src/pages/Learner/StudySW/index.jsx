@@ -13,20 +13,58 @@ import "./style.css";
 
 const StudySW = () => {
   const { sectionId, testId } = useParams();
+
+  console.log("🚀 ~ StudySW ~ sectionId:", sectionId);
+  console.log("🚀 ~ StudySW ~ testId:", testId);
+
   // Render component tương ứng dựa vào sectionId
   const renderComponent = () => {
     switch (sectionId) {
-      // Speaking
+      // Speaking sections (type 3)
+      case "6894cc50892a33de30593472": // Part 8: Speaking - Read a text aloud
+        return <No1To2 testId={testId} />;
+      case "6894cc50892a33de30593473": // Part 9: Speaking - Describe a picture
+        return <No3To4 testId={testId} />;
+      case "6894cc50892a33de30593474": // Part 10: Speaking - Respond to questions
+        return <No5To7 testId={testId} />;
+
+      // Writing sections (type 4)
+      case "6894cc50892a33de30593475": // Part 11: Writing - Describe a picture
+        return <No1To5 testId={testId} />;
+      case "6894cc50892a33de30593476": // Part 12: Writing - Respond to a written request
+      case "6894cc50892a33de30593477": // Part 13: Writing - Write an opinion essay
+        return (
+          <div className="col-12 text-center py-5">
+            <div className="card">
+              <div className="card-body">
+                <h2>Đang phát triển</h2>
+                <p className="lead">
+                  Component cho phần này đang trong quá trình phát triển. Vui
+                  lòng quay lại sau.
+                </p>
+                <div className="coming-soon">
+                  <i className="fas fa-tools fa-3x mt-3"></i>
+                  <p className="mt-3">
+                    {sectionId === "6894cc50892a33de30593476" &&
+                      "Part 12: Writing - Respond to a written request"}
+                    {sectionId === "6894cc50892a33de30593477" &&
+                      "Part 13: Writing - Write an opinion essay"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      // Legacy support for old sectionIds (backwards compatibility)
       case "104":
         return <No1To2 testId={testId} />;
       case "105":
         return <No3To4 testId={testId} />;
       case "106":
         return <No5To7 testId={testId} />;
-      // Writing
       case "109":
         return <No1To5 testId={testId} />;
-      // Các phần chưa cài đặt
       case "107":
       case "108":
       case "110":

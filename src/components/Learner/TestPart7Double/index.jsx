@@ -630,7 +630,9 @@ const TestPart7Double = ({
                     borderRadius: "8px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 4 }}
+                  >
                     <CheckCircle size={16} style={{ color: "#52c41a" }} />
                     <Text strong style={{ color: "#52c41a" }}>
                       {
@@ -644,7 +646,9 @@ const TestPart7Double = ({
                       /{questions.length}
                     </Text>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 4 }}
+                  >
                     <XCircle size={16} style={{ color: "#ff4d4f" }} />
                     <Text strong style={{ color: "#ff4d4f" }}>
                       {

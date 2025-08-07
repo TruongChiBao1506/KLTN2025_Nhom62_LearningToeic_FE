@@ -1,8 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  Card,
+  Button,
+  Typography,
+  Badge,
+  Space,
+  Input,
+  Row,
+  Col,
+  Progress,
+  Divider,
+  Alert,
+  Tag,
+  Spin,
+} from "antd";
+import {
+  PenTool,
+  Clock,
+  Play,
+  RotateCcw,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  BookOpen,
+  Timer,
+} from "lucide-react";
 import "./style.css";
 import TestService from "../../../services/testService";
+
+const { Title, Text, Paragraph } = Typography;
+const { TextArea } = Input;
 
 const No1To5 = ({ testId }) => {
   const [questions, setQuestions] = useState([]);
@@ -23,6 +50,8 @@ const No1To5 = ({ testId }) => {
   const retrieveQuestions = async () => {
     try {
       const response = await TestService.getQuestionsByTestId(testId);
+      console.log("🚀 ~ retrieveQuestions ~ response:", response);
+
       setQuestions(response);
 
       // Khởi tạo các giá trị mặc định
@@ -168,150 +197,365 @@ const No1To5 = ({ testId }) => {
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12">
-          <div className="card mt-3" style={{ transform: "none" }}>
-            <div className="card-body">
-              <div className="d-flex justify-content-center">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/5307/5307013.png"
-                  alt="Writing"
-                  width="100px"
-                  height="100px"
-                />
+    <div style={{ padding: "24px", background: "#f5f5f5", minHeight: "100vh" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header Card */}
+        <Card
+          style={{
+            marginBottom: "24px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Row gutter={[24, 24]} align="middle">
+            <Col xs={24} md={4} style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #722ed1 0%, #531dab 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                }}
+              >
+                <PenTool size={32} color="white" />
               </div>
-              <h2 className="text-center my-3">
-                Writing: Viết câu trả lời ngắn
-              </h2>
-              <h5 className="card-title text-primary">Hướng dẫn:</h5>
-              <p className="card-text">
-                Trong phần kiểm tra này, bạn sẽ viết câu trả lời cho câu hỏi
-                được đưa ra. Bạn sẽ có <strong>45</strong> giây để chuẩn bị và{" "}
-                <strong>5</strong> phút để viết câu trả lời.
-              </p>
-              <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
-              <span className="badge bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                Nội dung, ngữ pháp, từ vựng và tổ chức.
-              </span>
-            </div>
-          </div>
+            </Col>
+            <Col xs={24} md={20}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Title level={2} style={{ margin: 0, color: "#722ed1" }}>
+                  Writing: Viết câu trả lời ngắn
+                </Title>
+                <Paragraph
+                  style={{ margin: 0, fontSize: "16px", color: "#666" }}
+                >
+                  Trong phần kiểm tra này, bạn sẽ viết câu trả lời cho câu hỏi
+                  được đưa ra. Bạn sẽ có <Tag color="blue">45 giây</Tag> để
+                  chuẩn bị và <Tag color="green">5 phút</Tag> để viết câu trả
+                  lời.
+                </Paragraph>
+                <Space wrap>
+                  <Tag color="success" icon={<BookOpen size={14} />}>
+                    Nội dung
+                  </Tag>
+                  <Tag color="processing" icon={<PenTool size={14} />}>
+                    Ngữ pháp
+                  </Tag>
+                  <Tag color="warning" icon={<Check size={14} />}>
+                    Từ vựng
+                  </Tag>
+                  <Tag color="purple" icon={<Timer size={14} />}>
+                    Tổ chức
+                  </Tag>
+                </Space>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
 
-          <div className="card mt-3" style={{ transform: "none" }}>
-            <div className="card-body">
-              {!isReadyToTest ? (
-                <button className="button" onClick={startTest}>
-                  Sẵn sàng luyện tập
-                </button>
-              ) : (
-                <div>
-                  <button
-                    className="button bg-primary"
+        {/* Main Test Card */}
+        <Card
+          style={{
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          {!isReadyToTest ? (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div
+                style={{
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #722ed1 0%, #531dab 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 24px",
+                }}
+              >
+                <Play size={48} color="white" />
+              </div>
+              <Title level={3} style={{ color: "#722ed1" }}>
+                Sẵn sàng bắt đầu?
+              </Title>
+              <Paragraph style={{ color: "#666", marginBottom: "32px" }}>
+                Hãy chuẩn bị tinh thần và bắt đầu bài kiểm tra Writing của bạn.
+              </Paragraph>
+              <Button
+                type="primary"
+                size="large"
+                icon={<Play size={20} />}
+                onClick={startTest}
+                style={{
+                  height: "56px",
+                  padding: "0 40px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  background:
+                    "linear-gradient(135deg, #722ed1 0%, #531dab 100%)",
+                  border: "none",
+                }}
+              >
+                Sẵn sàng luyện tập
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {/* Action Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "24px",
+                  padding: "16px",
+                  background: "#fafafa",
+                  borderRadius: "8px",
+                }}
+              >
+                <Space>
+                  <Button
+                    icon={<RotateCcw size={16} />}
                     onClick={refreshAllQuestions}
+                    style={{
+                      borderColor: "#722ed1",
+                      color: "#722ed1",
+                    }}
                   >
                     Làm lại
-                  </button>
+                  </Button>
+                </Space>
 
-                  <div className="writing-item">
-                    <div className="mb-5">
-                      <div className="text-end" style={{ fontSize: "20px" }}>
-                        {isPreparingCountDown[currentIndex] && (
-                          <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill">
-                            Thời gian chuẩn bị:{" "}
-                            {preparingCountdown[currentIndex]}s
+                <Space>
+                  {isPreparingCountDown[currentIndex] && (
+                    <Badge
+                      count={
+                        <Space>
+                          <Clock size={14} />
+                          <span>
+                            Chuẩn bị: {preparingCountdown[currentIndex]}s
                           </span>
-                        )}
-                        {isWritingCountDown[currentIndex] && (
-                          <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                            Thời gian viết:{" "}
-                            {formatTime(writingCountdown[currentIndex])}
+                        </Space>
+                      }
+                      style={{
+                        backgroundColor: "#1890ff",
+                        color: "white",
+                        fontSize: "14px",
+                        borderRadius: "16px",
+                        padding: "4px 12px",
+                      }}
+                    />
+                  )}
+                  {isWritingCountDown[currentIndex] && (
+                    <Badge
+                      count={
+                        <Space>
+                          <Timer size={14} />
+                          <span>
+                            Viết: {formatTime(writingCountdown[currentIndex])}
                           </span>
-                        )}
-                      </div>
+                        </Space>
+                      }
+                      style={{
+                        backgroundColor: "#52c41a",
+                        color: "white",
+                        fontSize: "14px",
+                        borderRadius: "16px",
+                        padding: "4px 12px",
+                      }}
+                    />
+                  )}
+                </Space>
+              </div>
 
-                      <div className="question-info mt-4">
-                        <button
-                          className="btn button5 my-2 me-3"
-                          style={{
-                            backgroundColor: "#e8f2ff",
-                            color: "#35509a",
-                            width: "40px",
-                          }}
-                        >
-                          {currentIndex + 1}
-                        </button>
-                        <br />
-                        <strong className="ms-3">Câu hỏi:</strong>
-                        <div
-                          className="ms-3 mt-2"
-                          dangerouslySetInnerHTML={{
-                            __html: questions[currentIndex]?.questionText || "",
-                          }}
-                        ></div>
-                      </div>
-
-                      <div className="answer-section mt-4">
-                        <div className="form-floating">
-                          <textarea
-                            className="form-control"
-                            placeholder="Nhập câu trả lời của bạn tại đây"
-                            style={{ height: "200px" }}
-                            value={answers[currentIndex] || ""}
-                            onChange={(e) =>
-                              handleAnswerChange(currentIndex, e.target.value)
-                            }
-                            disabled={isFinished[currentIndex]}
-                          ></textarea>
-                          <label>Nhập câu trả lời của bạn tại đây</label>
-                        </div>
-                      </div>
-
-                      <div className="writing-actions d-flex justify-content-center mt-4">
-                        {isWritingCountDown[currentIndex] && (
-                          <button
-                            className="btn btn-success"
-                            onClick={() => finishWriting(currentIndex)}
-                          >
-                            Hoàn thành
-                          </button>
-                        )}
-                        {isFinished[currentIndex] && (
-                          <button className="p-2 badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill ms-3">
-                            Đã hoàn thành{" "}
-                            <FontAwesomeIcon
-                              icon={faCheck}
-                              className="text-success"
-                            />
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="mt-5 d-flex justify-content-center">
-                        {currentIndex !== 0 && (
-                          <button
-                            className="button d-flex"
-                            onClick={showPreviousQuestion}
-                          >
-                            Câu trước
-                          </button>
-                        )}
-                        {isFinished[currentIndex] &&
-                          currentIndex < questions.length - 1 && (
-                            <button
-                              className="button ms-3"
-                              onClick={showNextQuestion}
-                            >
-                              Câu tiếp theo
-                            </button>
-                          )}
-                      </div>
+              {/* Question Card */}
+              <Card
+                style={{
+                  marginBottom: "24px",
+                  borderRadius: "8px",
+                  border: "1px solid #f0f0f0",
+                }}
+                title={
+                  <Space>
+                    <div
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                        background: "#722ed1",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {currentIndex + 1}
                     </div>
-                  </div>
+                    <span style={{ fontSize: "16px", fontWeight: "600" }}>
+                      Câu hỏi {currentIndex + 1}
+                    </span>
+                  </Space>
+                }
+              >
+                <div
+                  style={{
+                    fontSize: "16px",
+                    lineHeight: "1.6",
+                    padding: "16px",
+                    background: "#f9f9f9",
+                    borderRadius: "8px",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: questions[currentIndex]?.questionText || "",
+                  }}
+                />
+              </Card>
+
+              {/* Answer Section */}
+              <Card
+                style={{
+                  marginBottom: "24px",
+                  borderRadius: "8px",
+                  border: "1px solid #f0f0f0",
+                }}
+                title={
+                  <Space>
+                    <PenTool size={16} color="#722ed1" />
+                    <span style={{ fontSize: "16px", fontWeight: "600" }}>
+                      Câu trả lời của bạn
+                    </span>
+                  </Space>
+                }
+              >
+                <TextArea
+                  placeholder="Nhập câu trả lời của bạn tại đây..."
+                  rows={8}
+                  value={answers[currentIndex] || ""}
+                  onChange={(e) =>
+                    handleAnswerChange(currentIndex, e.target.value)
+                  }
+                  disabled={isFinished[currentIndex]}
+                  style={{
+                    fontSize: "16px",
+                    borderRadius: "8px",
+                    border: isFinished[currentIndex]
+                      ? "2px solid #52c41a"
+                      : "1px solid #d9d9d9",
+                  }}
+                />
+
+                {/* Action Buttons */}
+                <div style={{ marginTop: "16px", textAlign: "center" }}>
+                  <Space>
+                    {isWritingCountDown[currentIndex] && (
+                      <Button
+                        type="primary"
+                        icon={<Check size={16} />}
+                        onClick={() => finishWriting(currentIndex)}
+                        style={{
+                          background: "#52c41a",
+                          borderColor: "#52c41a",
+                          borderRadius: "6px",
+                        }}
+                      >
+                        Hoàn thành
+                      </Button>
+                    )}
+                    {isFinished[currentIndex] && (
+                      <Tag
+                        color="success"
+                        style={{
+                          padding: "8px 16px",
+                          fontSize: "14px",
+                          borderRadius: "16px",
+                        }}
+                      >
+                        <Check size={16} style={{ marginRight: "8px" }} />
+                        Đã hoàn thành
+                      </Tag>
+                    )}
+                  </Space>
                 </div>
-              )}
+              </Card>
+
+              <Divider />
+
+              {/* Navigation */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  {currentIndex > 0 && (
+                    <Button
+                      icon={<ChevronLeft size={16} />}
+                      onClick={showPreviousQuestion}
+                      style={{
+                        borderColor: "#722ed1",
+                        color: "#722ed1",
+                      }}
+                    >
+                      Câu trước
+                    </Button>
+                  )}
+                </div>
+
+                <div style={{ textAlign: "center" }}>
+                  <Progress
+                    percent={Math.round(
+                      ((currentIndex + 1) / questions.length) * 100
+                    )}
+                    size="small"
+                    strokeColor="#722ed1"
+                    style={{ width: "200px" }}
+                  />
+                  <Text
+                    style={{
+                      color: "#666",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {currentIndex + 1} / {questions.length} câu hỏi
+                  </Text>
+                </div>
+
+                <div>
+                  {isFinished[currentIndex] &&
+                    currentIndex < questions.length - 1 && (
+                      <Button
+                        type="primary"
+                        icon={<ChevronRight size={16} />}
+                        onClick={showNextQuestion}
+                        style={{
+                          background: "#722ed1",
+                          borderColor: "#722ed1",
+                        }}
+                      >
+                        Câu tiếp theo
+                      </Button>
+                    )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
+        </Card>
       </div>
     </div>
   );
