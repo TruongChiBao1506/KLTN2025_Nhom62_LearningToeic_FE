@@ -1,5 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import './style.css';
+import {
+  Card,
+  Row,
+  Col,
+  Tabs,
+  Progress,
+  Button,
+  Modal,
+  Statistic,
+  Tag,
+  Timeline,
+  Space,
+  Typography,
+  Badge,
+  Tooltip,
+  Divider,
+  Avatar,
+  List
+} from 'antd';
+import {
+  Trophy,
+  CheckCircle,
+  Flame,
+  TrendingUp,
+  Calendar,
+  Clock,
+  Target,
+  Gift,
+  Star,
+  Award,
+  BookOpen,
+  Headphones,
+  FileText,
+  BookMarked,
+  BarChart3,
+  Zap,
+  Crown,
+  Timer,
+  Users,
+  ChevronRight
+} from 'lucide-react';
+
+const { Title, Text, Paragraph } = Typography;
+const { TabPane } = Tabs;
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
@@ -30,7 +73,7 @@ const Challenges = () => {
         timeLimit: 24 * 60 * 60 * 1000, // 24 hours
         startDate: new Date(),
         endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        icon: '🎧',
+        icon: <Headphones size={24} />,
         requirements: [
           'Hoàn thành 10 bài nghe Part 3',
           'Đạt tối thiểu 70% điểm',
@@ -55,7 +98,7 @@ const Challenges = () => {
         timeLimit: 7 * 24 * 60 * 60 * 1000, // 7 days
         startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
         endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
-        icon: '🔥',
+        icon: <Flame size={24} />,
         requirements: [
           'Đăng nhập mỗi ngày',
           'Hoàn thành ít nhất 1 bài tập',
@@ -80,7 +123,7 @@ const Challenges = () => {
         timeLimit: 30 * 24 * 60 * 60 * 1000, // 30 days
         startDate: new Date(2024, 11, 1), // December 1, 2024
         endDate: new Date(2024, 11, 31), // December 31, 2024
-        icon: '📚',
+        icon: <BookMarked size={24} />,
         requirements: [
           'Học 100 từ vựng mới',
           'Đạt 80% trong quiz',
@@ -105,7 +148,7 @@ const Challenges = () => {
         timeLimit: 7 * 24 * 60 * 60 * 1000,
         startDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
         endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-        icon: '📝',
+        icon: <FileText size={24} />,
         requirements: [
           'Hoàn thành 50 câu hỏi ngữ pháp',
           'Đạt độ chính xác 90%',
@@ -130,7 +173,7 @@ const Challenges = () => {
         timeLimit: 24 * 60 * 60 * 1000,
         startDate: new Date(),
         endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        icon: '📖',
+        icon: <BookOpen size={24} />,
         requirements: [
           'Hoàn thành 20 bài đọc hiểu',
           'Đạt tối thiểu 75% điểm',
@@ -155,7 +198,7 @@ const Challenges = () => {
         timeLimit: null, // No time limit
         startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         endDate: null,
-        icon: '🏆',
+        icon: <Crown size={24} />,
         requirements: [
           'Đạt 100% trong 3 bài test',
           'Các bài test phải liên tiếp',
@@ -230,23 +273,23 @@ const Challenges = () => {
 
   const getDifficultyColor = (difficulty) => {
     const colors = {
-      easy: '#4CAF50',
-      medium: '#FF9800',
-      hard: '#F44336'
+      easy: 'success',
+      medium: 'warning', 
+      hard: 'error'
     };
-    return colors[difficulty] || '#666';
+    return colors[difficulty] || 'default';
   };
 
   const getCategoryIcon = (category) => {
     const icons = {
-      listening: '🎧',
-      reading: '📖',
-      grammar: '📝',
-      vocabulary: '📚',
-      test: '📊',
-      general: '🎯'
+      listening: <Headphones size={16} />,
+      reading: <BookOpen size={16} />,
+      grammar: <FileText size={16} />,
+      vocabulary: <BookMarked size={16} />,
+      test: <BarChart3 size={16} />,
+      general: <Target size={16} />
     };
-    return icons[category] || '🎯';
+    return icons[category] || <Target size={16} />;
   };
 
   const getProgress = (current, target) => {
@@ -261,275 +304,405 @@ const Challenges = () => {
     return challenge.endDate && new Date() > challenge.endDate;
   };
 
+  const getStatusColor = (challenge) => {
+    if (isCompleted(challenge)) return 'success';
+    if (isExpired(challenge)) return 'error';
+    return 'processing';
+  };
+
   return (
-    <div className="challenges-container">
-      <div className="challenges-header">
-        <h1>🎁 Thử thách TOEIC</h1>
-        <p>Hoàn thành các thử thách để nhận điểm thưởng và mở khóa thành tích đặc biệt!</p>
+    <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '32px' }}>
+        <Title level={1} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+          <Gift size={32} color="#1890ff" />
+          Thử thách TOEIC
+        </Title>
+        <Paragraph style={{ fontSize: '16px', color: '#666', marginBottom: 0 }}>
+          Hoàn thành các thử thách để nhận điểm thưởng và mở khóa thành tích đặc biệt!
+        </Paragraph>
       </div>
 
-      <div className="user-stats">
-        <div className="stats-grid">
-          <div className="stat-card">
-            <span className="stat-icon">🏆</span>
-            <div className="stat-content">
-              <span className="stat-number">{userStats.totalPoints}</span>
-              <span className="stat-label">Tổng điểm</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <span className="stat-icon">✅</span>
-            <div className="stat-content">
-              <span className="stat-number">{userStats.completedChallenges}</span>
-              <span className="stat-label">Đã hoàn thành</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <span className="stat-icon">🔥</span>
-            <div className="stat-content">
-              <span className="stat-number">{userStats.currentStreak}</span>
-              <span className="stat-label">Streak hiện tại</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <span className="stat-icon">📈</span>
-            <div className="stat-content">
-              <span className="stat-number">{userStats.longestStreak}</span>
-              <span className="stat-label">Streak tối đa</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* User Stats */}
+      <Row gutter={[16, 16]} style={{ marginBottom: '32px' }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Tổng điểm"
+              value={userStats.totalPoints}
+              prefix={<Trophy size={20} color="#faad14" />}
+              valueStyle={{ color: '#faad14' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Đã hoàn thành"
+              value={userStats.completedChallenges}
+              prefix={<CheckCircle size={20} color="#52c41a" />}
+              valueStyle={{ color: '#52c41a' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Streak hiện tại"
+              value={userStats.currentStreak}
+              prefix={<Flame size={20} color="#ff4d4f" />}
+              valueStyle={{ color: '#ff4d4f' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Streak tối đa"
+              value={userStats.longestStreak}
+              prefix={<TrendingUp size={20} color="#1890ff" />}
+              valueStyle={{ color: '#1890ff' }}
+            />
+          </Card>
+        </Col>
+      </Row>
 
-      <div className="challenges-content">
-        <div className="challenges-tabs">
-          <button 
-            className={`tab-btn ${activeTab === 'daily' ? 'active' : ''}`}
-            onClick={() => setActiveTab('daily')}
-          >
-            🌅 Hàng ngày
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'weekly' ? 'active' : ''}`}
-            onClick={() => setActiveTab('weekly')}
-          >
-            📅 Hàng tuần
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'monthly' ? 'active' : ''}`}
-            onClick={() => setActiveTab('monthly')}
-          >
-            🗓️ Hàng tháng
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'special' ? 'active' : ''}`}
-            onClick={() => setActiveTab('special')}
-          >
-            ⭐ Đặc biệt
-          </button>
-        </div>
+      {/* Challenges Content */}
+      <Card>
+        <Tabs 
+          activeKey={activeTab} 
+          onChange={setActiveTab}
+          size="large"
+        >
+          <TabPane 
+            tab={
+              <span>
+                <Calendar size={16} style={{ marginRight: '8px' }} />
+                Hàng ngày
+              </span>
+            } 
+            key="daily" 
+          />
+          <TabPane 
+            tab={
+              <span>
+                <Calendar size={16} style={{ marginRight: '8px' }} />
+                Hàng tuần
+              </span>
+            } 
+            key="weekly" 
+          />
+          <TabPane 
+            tab={
+              <span>
+                <Calendar size={16} style={{ marginRight: '8px' }} />
+                Hàng tháng
+              </span>
+            } 
+            key="monthly" 
+          />
+          <TabPane 
+            tab={
+              <span>
+                <Star size={16} style={{ marginRight: '8px' }} />
+                Đặc biệt
+              </span>
+            } 
+            key="special" 
+          />
+        </Tabs>
 
-        <div className="challenges-grid">
+        <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
           {filteredChallenges.map(challenge => (
-            <div 
-              key={challenge.id} 
-              className={`challenge-card ${isCompleted(challenge) ? 'completed' : ''} ${isExpired(challenge) ? 'expired' : ''}`}
-            >
-              <div className="challenge-header">
-                <div className="challenge-icon">{challenge.icon}</div>
-                <div className="challenge-meta">
-                  <span 
-                    className="difficulty-badge"
-                    style={{ backgroundColor: getDifficultyColor(challenge.difficulty) }}
-                  >
-                    {challenge.difficulty}
-                  </span>
-                  <span className="category-badge">
-                    {getCategoryIcon(challenge.category)} {challenge.category}
-                  </span>
-                </div>
-              </div>
-
-              <div className="challenge-content">
-                <h3>{challenge.title}</h3>
-                <p>{challenge.description}</p>
-
-                <div className="challenge-progress">
-                  <div className="progress-info">
-                    <span>Tiến độ: {challenge.current}/{challenge.target}</span>
-                    <span className="progress-percentage">
-                      {Math.round(getProgress(challenge.current, challenge.target))}%
-                    </span>
-                  </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ width: `${getProgress(challenge.current, challenge.target)}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="challenge-info">
-                  <div className="info-item">
-                    <span className="info-label">Phần thưởng:</span>
-                    <span className="info-value">{challenge.points} điểm</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Thời hạn:</span>
-                    <span className="info-value">{formatTimeRemaining(challenge.endDate)}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="challenge-actions">
-                <button 
-                  className="btn-details"
-                  onClick={() => openChallengeModal(challenge)}
-                >
-                  Chi tiết
-                </button>
-                
-                {isCompleted(challenge) ? (
-                  <button className="btn-completed" disabled>
-                    ✅ Hoàn thành
-                  </button>
-                ) : isExpired(challenge) ? (
-                  <button className="btn-expired" disabled>
-                    ❌ Đã hết hạn
-                  </button>
-                ) : userChallenges.includes(challenge.id) ? (
-                  <div className="challenge-controls">
-                    <button 
-                      className="btn-progress"
-                      onClick={() => updateChallengeProgress(challenge.id)}
-                      disabled={challenge.current >= challenge.target}
+            <Col xs={24} sm={12} lg={8} key={challenge.id}>
+              <Card
+                hoverable
+                style={{
+                  height: '100%',
+                  border: isCompleted(challenge) ? '2px solid #52c41a' : 
+                         isExpired(challenge) ? '2px solid #ff4d4f' : '1px solid #d9d9d9'
+                }}
+                bodyStyle={{ padding: '20px' }}
+              >
+                {/* Challenge Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Avatar 
+                      size={48} 
+                      style={{ 
+                        backgroundColor: isCompleted(challenge) ? '#52c41a' : '#1890ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
                     >
-                      +1 Tiến độ
-                    </button>
-                    <button 
-                      className="btn-leave"
-                      onClick={() => leaveChallenge(challenge.id)}
-                    >
-                      Rời khỏi
-                    </button>
+                      {challenge.icon}
+                    </Avatar>
+                    <div>
+                      <Tag color={getDifficultyColor(challenge.difficulty)} style={{ marginBottom: '4px' }}>
+                        {challenge.difficulty}
+                      </Tag>
+                      <br />
+                      <Tag icon={getCategoryIcon(challenge.category)} color="blue">
+                        {challenge.category}
+                      </Tag>
+                    </div>
                   </div>
-                ) : (
-                  <button 
-                    className="btn-join"
-                    onClick={() => joinChallenge(challenge.id)}
+                  <Badge 
+                    status={getStatusColor(challenge)} 
+                    text={
+                      isCompleted(challenge) ? 'Hoàn thành' :
+                      isExpired(challenge) ? 'Hết hạn' : 'Đang tiến hành'
+                    }
+                  />
+                </div>
+
+                {/* Challenge Content */}
+                <Title level={4} style={{ marginBottom: '8px' }}>
+                  {challenge.title}
+                </Title>
+                <Paragraph style={{ color: '#666', marginBottom: '16px' }}>
+                  {challenge.description}
+                </Paragraph>
+
+                {/* Progress */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <Text>Tiến độ: {challenge.current}/{challenge.target}</Text>
+                    <Text strong>{Math.round(getProgress(challenge.current, challenge.target))}%</Text>
+                  </div>
+                  <Progress 
+                    percent={getProgress(challenge.current, challenge.target)}
+                    status={isCompleted(challenge) ? 'success' : 'active'}
+                    strokeColor={isCompleted(challenge) ? '#52c41a' : '#1890ff'}
+                  />
+                </div>
+
+                {/* Challenge Info */}
+                <Space direction="vertical" style={{ width: '100%', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text><Gift size={14} style={{ marginRight: '4px' }} />Phần thưởng:</Text>
+                    <Text strong style={{ color: '#faad14' }}>{challenge.points} điểm</Text>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text><Timer size={14} style={{ marginRight: '4px' }} />Thời hạn:</Text>
+                    <Text strong style={{ color: '#ff4d4f' }}>
+                      {formatTimeRemaining(challenge.endDate)}
+                    </Text>
+                  </div>
+                </Space>
+
+                <Divider style={{ margin: '16px 0' }} />
+
+                {/* Challenge Actions */}
+                <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                  <Button 
+                    type="link" 
+                    onClick={() => openChallengeModal(challenge)}
+                    style={{ padding: 0 }}
                   >
-                    Tham gia
-                  </button>
-                )}
-              </div>
-            </div>
+                    Chi tiết <ChevronRight size={14} />
+                  </Button>
+                  
+                  {isCompleted(challenge) ? (
+                    <Button type="primary" disabled icon={<CheckCircle size={16} />}>
+                      Hoàn thành
+                    </Button>
+                  ) : isExpired(challenge) ? (
+                    <Button danger disabled>
+                      Đã hết hạn
+                    </Button>
+                  ) : userChallenges.includes(challenge.id) ? (
+                    <Space>
+                      <Button 
+                        type="primary"
+                        size="small"
+                        onClick={() => updateChallengeProgress(challenge.id)}
+                        disabled={challenge.current >= challenge.target}
+                        icon={<Zap size={14} />}
+                      >
+                        +1
+                      </Button>
+                      <Button 
+                        size="small"
+                        onClick={() => leaveChallenge(challenge.id)}
+                      >
+                        Rời khỏi
+                      </Button>
+                    </Space>
+                  ) : (
+                    <Button 
+                      type="primary"
+                      onClick={() => joinChallenge(challenge.id)}
+                      icon={<Users size={16} />}
+                    >
+                      Tham gia
+                    </Button>
+                  )}
+                </Space>
+              </Card>
+            </Col>
           ))}
-        </div>
-      </div>
+        </Row>
+      </Card>
 
       {/* Challenge Detail Modal */}
-      {showModal && selectedChallenge && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{selectedChallenge.icon} {selectedChallenge.title}</h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
-            </div>
-
-            <div className="modal-body">
-              <div className="modal-challenge-info">
-                <p className="challenge-description">{selectedChallenge.description}</p>
-                
-                <div className="challenge-details">
-                  <div className="detail-section">
-                    <h4>📋 Yêu cầu:</h4>
-                    <ul>
-                      {selectedChallenge.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="detail-section">
-                    <h4>🎁 Phần thưởng:</h4>
-                    <ul>
-                      {selectedChallenge.rewards.map((reward, index) => (
-                        <li key={index}>{reward}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="challenge-stats">
-                    <div className="stat-item">
-                      <strong>Loại:</strong> {selectedChallenge.type}
-                    </div>
-                    <div className="stat-item">
-                      <strong>Danh mục:</strong> {selectedChallenge.category}
-                    </div>
-                    <div className="stat-item">
-                      <strong>Độ khó:</strong> {selectedChallenge.difficulty}
-                    </div>
-                    <div className="stat-item">
-                      <strong>Điểm thưởng:</strong> {selectedChallenge.points}
-                    </div>
-                    <div className="stat-item">
-                      <strong>Thời hạn:</strong> {formatTimeRemaining(selectedChallenge.endDate)}
-                    </div>
-                  </div>
-
-                  <div className="progress-section">
-                    <h4>📊 Tiến độ hiện tại:</h4>
-                    <div className="modal-progress">
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill"
-                          style={{ width: `${getProgress(selectedChallenge.current, selectedChallenge.target)}%` }}
-                        />
-                      </div>
-                      <span className="progress-text">
-                        {selectedChallenge.current}/{selectedChallenge.target} 
-                        ({Math.round(getProgress(selectedChallenge.current, selectedChallenge.target))}%)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              {isCompleted(selectedChallenge) ? (
-                <button className="btn-completed" disabled>
-                  ✅ Đã hoàn thành
-                </button>
-              ) : isExpired(selectedChallenge) ? (
-                <button className="btn-expired" disabled>
-                  ❌ Đã hết hạn
-                </button>
-              ) : userChallenges.includes(selectedChallenge.id) ? (
-                <button 
-                  className="btn-leave"
-                  onClick={() => {
-                    leaveChallenge(selectedChallenge.id);
-                    setShowModal(false);
-                  }}
-                >
-                  Rời khỏi thử thách
-                </button>
-              ) : (
-                <button 
-                  className="btn-join"
-                  onClick={() => {
-                    joinChallenge(selectedChallenge.id);
-                    setShowModal(false);
-                  }}
-                >
-                  Tham gia thử thách
-                </button>
-              )}
-            </div>
+      <Modal
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {selectedChallenge?.icon}
+            <span>{selectedChallenge?.title}</span>
           </div>
-        </div>
-      )}
+        }
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        width={800}
+        footer={[
+          <Button key="close" onClick={() => setShowModal(false)}>
+            Đóng
+          </Button>,
+          selectedChallenge && (
+            isCompleted(selectedChallenge) ? (
+              <Button key="completed" type="primary" disabled icon={<CheckCircle size={16} />}>
+                Đã hoàn thành
+              </Button>
+            ) : isExpired(selectedChallenge) ? (
+              <Button key="expired" danger disabled>
+                Đã hết hạn
+              </Button>
+            ) : userChallenges.includes(selectedChallenge.id) ? (
+              <Button 
+                key="leave"
+                danger
+                onClick={() => {
+                  leaveChallenge(selectedChallenge.id);
+                  setShowModal(false);
+                }}
+              >
+                Rời khỏi thử thách
+              </Button>
+            ) : (
+              <Button 
+                key="join"
+                type="primary"
+                onClick={() => {
+                  joinChallenge(selectedChallenge.id);
+                  setShowModal(false);
+                }}
+                icon={<Users size={16} />}
+              >
+                Tham gia thử thách
+              </Button>
+            )
+          )
+        ]}
+      >
+        {selectedChallenge && (
+          <div>
+            <Paragraph style={{ fontSize: '16px', marginBottom: '24px' }}>
+              {selectedChallenge.description}
+            </Paragraph>
+
+            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+              <Col span={12}>
+                <Card size="small" title="📋 Yêu cầu">
+                  <List
+                    size="small"
+                    dataSource={selectedChallenge.requirements}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <CheckCircle size={14} style={{ marginRight: '8px', color: '#52c41a' }} />
+                        {item}
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card size="small" title="🎁 Phần thưởng">
+                  <List
+                    size="small"
+                    dataSource={selectedChallenge.rewards}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <Gift size={14} style={{ marginRight: '8px', color: '#faad14' }} />
+                        {item}
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </Col>
+            </Row>
+
+            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+              <Col span={8}>
+                <Statistic title="Loại" value={selectedChallenge.type} />
+              </Col>
+              <Col span={8}>
+                <Statistic 
+                  title="Danh mục" 
+                  value={selectedChallenge.category}
+                  prefix={getCategoryIcon(selectedChallenge.category)}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic 
+                  title="Độ khó" 
+                  value={selectedChallenge.difficulty}
+                  valueStyle={{ color: getDifficultyColor(selectedChallenge.difficulty) === 'success' ? '#52c41a' : 
+                                      getDifficultyColor(selectedChallenge.difficulty) === 'warning' ? '#faad14' : '#ff4d4f' }}
+                />
+              </Col>
+            </Row>
+
+            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+              <Col span={12}>
+                <Statistic 
+                  title="Điểm thưởng" 
+                  value={selectedChallenge.points}
+                  prefix={<Trophy size={16} color="#faad14" />}
+                  valueStyle={{ color: '#faad14' }}
+                />
+              </Col>
+              <Col span={12}>
+                <Statistic 
+                  title="Thời hạn" 
+                  value={formatTimeRemaining(selectedChallenge.endDate)}
+                  prefix={<Timer size={16} color="#ff4d4f" />}
+                  valueStyle={{ color: '#ff4d4f' }}
+                />
+              </Col>
+            </Row>
+
+            <Card title="📊 Tiến độ hiện tại" size="small">
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <Text>Hoàn thành: {selectedChallenge.current}/{selectedChallenge.target}</Text>
+                  <Text strong>{Math.round(getProgress(selectedChallenge.current, selectedChallenge.target))}%</Text>
+                </div>
+                <Progress 
+                  percent={getProgress(selectedChallenge.current, selectedChallenge.target)}
+                  status={isCompleted(selectedChallenge) ? 'success' : 'active'}
+                  strokeColor={isCompleted(selectedChallenge) ? '#52c41a' : '#1890ff'}
+                  strokeWidth={10}
+                />
+              </div>
+              
+              {userChallenges.includes(selectedChallenge.id) && !isCompleted(selectedChallenge) && !isExpired(selectedChallenge) && (
+                <Button 
+                  type="primary"
+                  onClick={() => updateChallengeProgress(selectedChallenge.id)}
+                  disabled={selectedChallenge.current >= selectedChallenge.target}
+                  icon={<Zap size={16} />}
+                  block
+                >
+                  Cập nhật tiến độ (+1)
+                </Button>
+              )}
+            </Card>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

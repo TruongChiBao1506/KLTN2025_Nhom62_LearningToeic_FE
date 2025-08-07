@@ -138,22 +138,41 @@ const TestPart7Single = ({
     checkAnswer(question);
   };
 
-  // Lấy màu cho radio option
-  const getOptionStyle = (question, option) => {
-    if (!question.isGraded) return {};
+  // Lấy màu cho radio option - tham khảo từ TestPart4
+  const getOptionStyle = (question, option, optionIndex) => {
+    const optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D
+    
+    // Check if this option is correct by comparing option letter with correctOption
+    const isCorrect =
+      question.isGraded &&
+      optionLabel === question.correctOption;
 
-    if (option === question.correctOption) {
-      return { borderColor: "#52c41a", backgroundColor: "#f6ffed" };
-    }
+    const isSelected = question.selectedOption === option;
 
-    if (
-      option === question.selectedOption &&
-      question.selectedLetter !== question.correctOption
-    ) {
-      return { borderColor: "#ff4d4f", backgroundColor: "#fff2f0" };
-    }
+    // Check if this selected option is wrong
+    const isWrong =
+      question.isGraded &&
+      isSelected &&
+      question.selectedLetter !== question.correctOption;
 
-    return {};
+    return {
+      border: `2px solid ${
+        isCorrect
+          ? "#52c41a"
+          : isWrong
+          ? "#ff4d4f"
+          : isSelected
+          ? "#1890ff"
+          : "#f0f0f0"
+      }`,
+      backgroundColor: isCorrect
+        ? "#f6ffed"
+        : isWrong
+        ? "#fff2f0"
+        : isSelected
+        ? "#e6f7ff"
+        : "#fafafa",
+    };
   };
 
   return (
@@ -314,54 +333,77 @@ const TestPart7Single = ({
                                     size="small"
                                     style={{ width: "100%" }}
                                   >
-                                    {getOptions(question).map((option) => (
-                                      <Radio
-                                        key={option}
-                                        value={option}
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          padding: "8px 12px",
-                                          borderRadius: "6px",
-                                          border: "1px solid #d9d9d9",
-                                          margin: "4px 0",
-                                          ...getOptionStyle(question, option),
-                                        }}
-                                      >
+                                    {getOptions(question).map((option, optionIndex) => {
+                                      const optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D
+                                      
+                                      // Check if this option is correct by comparing option letter with correctOption  
+                                      const isCorrect =
+                                        question.isGraded &&
+                                        optionLabel === question.correctOption;
+
+                                      const isSelected = question.selectedOption === option;
+
+                                      // Check if this selected option is wrong
+                                      const isWrong =
+                                        question.isGraded &&
+                                        isSelected &&
+                                        question.selectedLetter !== question.correctOption;
+
+                                      return (
                                         <div
+                                          key={optionIndex}
                                           style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            width: "100%",
+                                            padding: "8px",
+                                            borderRadius: "6px",
+                                            ...getOptionStyle(question, option, optionIndex),
+                                            position: "relative",
                                           }}
                                         >
-                                          <Text style={{ marginLeft: 8 }}>
-                                            {option}
-                                          </Text>
+                                          <Radio
+                                            value={option}
+                                            style={{ width: "100%" }}
+                                          >
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                                width: "100%",
+                                              }}
+                                            >
+                                              <Text style={{ marginLeft: 8 }}>
+                                                {option}
+                                              </Text>
+                                            </div>
+                                          </Radio>
 
-                                          {question.isGraded &&
-                                            option ===
-                                              question.correctOption && (
-                                              <CheckCircle
-                                                size={16}
-                                                style={{ color: "#52c41a" }}
-                                              />
-                                            )}
-
-                                          {question.isGraded &&
-                                            option ===
-                                              question.selectedOption &&
-                                            question.selectedLetter !==
-                                              question.correctOption && (
-                                              <XCircle
-                                                size={16}
-                                                style={{ color: "#ff4d4f" }}
-                                              />
-                                            )}
+                                          {isCorrect && (
+                                            <CheckCircle
+                                              size={16}
+                                              color="#52c41a"
+                                              style={{
+                                                position: "absolute",
+                                                right: "8px",
+                                                top: "50%",
+                                                transform: "translateY(-50%)",
+                                              }}
+                                            />
+                                          )}
+                                          {isWrong && (
+                                            <XCircle
+                                              size={16}
+                                              color="#ff4d4f"
+                                              style={{
+                                                position: "absolute",
+                                                right: "8px",
+                                                top: "50%",
+                                                transform: "translateY(-50%)",
+                                              }}
+                                            />
+                                          )}
                                         </div>
-                                      </Radio>
-                                    ))}
+                                      );
+                                    })}
                                   </Space>
                                 </Radio.Group>
 
@@ -553,83 +595,79 @@ const TestPart7Single = ({
               </div>
 
               {/* Score Display */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 16,
-                  padding: "16px",
-                  backgroundColor: "#fafafa",
-                  borderRadius: "8px",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <CheckCircle size={16} style={{ color: "#52c41a" }} />
-                  <Text strong style={{ color: "#52c41a" }}>
-                    {
-                      questions.filter(
-                        (q) =>
-                          q.isGraded &&
-                          q.answered &&
-                          q.selectedLetter === q.correctOption
-                      ).length
-                    }
-                    /{questions.length}
-                  </Text>
+              {questions.some((q) => q.isGraded) && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 16,
+                    padding: "16px",
+                    backgroundColor: "#fafafa",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <CheckCircle size={16} style={{ color: "#52c41a" }} />
+                    <Text strong style={{ color: "#52c41a" }}>
+                      {
+                        questions.filter(
+                          (q) =>
+                            q.isGraded &&
+                            q.answered &&
+                            q.selectedLetter === q.correctOption
+                        ).length
+                      }
+                      /{questions.length}
+                    </Text>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <XCircle size={16} style={{ color: "#ff4d4f" }} />
+                    <Text strong style={{ color: "#ff4d4f" }}>
+                      {
+                        questions.filter(
+                          (q) =>
+                            q.isGraded &&
+                            q.answered &&
+                            q.selectedLetter !== q.correctOption
+                        ).length
+                      }
+                      /{questions.length}
+                    </Text>
+                  </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <XCircle size={16} style={{ color: "#ff4d4f" }} />
-                  <Text strong style={{ color: "#ff4d4f" }}>
-                    {
-                      questions.filter(
-                        (q) =>
-                          q.isGraded &&
-                          q.answered &&
-                          q.selectedLetter !== q.correctOption
-                      ).length
-                    }
-                    /{questions.length}
-                  </Text>
-                </div>
-              </div>
+              )}
 
               {/* Action Button */}
-              {isSubmited ? (
-                <Button
-                  type="default"
-                  size="large"
-                  icon={<RotateCcw size={16} />}
-                  onClick={refreshPage}
-                  block
-                  style={{
-                    height: "48px",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  Làm lại
-                </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={submitAnswers}
-                  block
-                  style={{
-                    height: "48px",
-                    borderRadius: "8px",
-                    background:
-                      "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
-                    border: "none",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Chấm điểm
-                </Button>
-              )}
+              <Button
+                type={questions.some((q) => q.isGraded) ? "default" : "primary"}
+                size="large"
+                icon={
+                  questions.some((q) => q.isGraded) ? (
+                    <RotateCcw size={16} />
+                  ) : null
+                }
+                onClick={
+                  questions.some((q) => q.isGraded)
+                    ? refreshPage
+                    : submitAnswers
+                }
+                block
+                style={{
+                  height: "48px",
+                  borderRadius: "8px",
+                  background: questions.some((q) => q.isGraded)
+                    ? undefined
+                    : "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
+                  border: "none",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: questions.some((q) => q.isGraded) ? 8 : 0,
+                }}
+              >
+                {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
+              </Button>
             </Space>
           </Card>
         </Affix>

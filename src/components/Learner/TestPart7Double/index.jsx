@@ -34,6 +34,8 @@ const TestPart7Double = ({
   clearSelection,
   checkAnswer,
 }) => {
+  console.log("🚀 ~ TestPart7Double ~ isSubmited:", isSubmited);
+
   const [showExplanation, setShowExplanation] = useState({});
 
   // Nhóm các câu hỏi theo groupId
@@ -138,22 +140,40 @@ const TestPart7Double = ({
     checkAnswer(question);
   };
 
-  // Lấy màu cho radio option
-  const getOptionStyle = (question, option) => {
-    if (!question.isGraded) return {};
+  // Lấy màu cho radio option - tham khảo từ TestPart4
+  const getOptionStyle = (question, option, optionIndex) => {
+    const optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D
 
-    if (option === question.correctOption) {
-      return { borderColor: "#52c41a", backgroundColor: "#f6ffed" };
-    }
+    // Check if this option is correct by comparing option letter with correctOption
+    const isCorrect =
+      question.isGraded && optionLabel === question.correctOption;
 
-    if (
-      option === question.selectedOption &&
-      question.selectedLetter !== question.correctOption
-    ) {
-      return { borderColor: "#ff4d4f", backgroundColor: "#fff2f0" };
-    }
+    const isSelected = question.selectedOption === option;
 
-    return {};
+    // Check if this selected option is wrong
+    const isWrong =
+      question.isGraded &&
+      isSelected &&
+      question.selectedLetter !== question.correctOption;
+
+    return {
+      border: `2px solid ${
+        isCorrect
+          ? "#52c41a"
+          : isWrong
+          ? "#ff4d4f"
+          : isSelected
+          ? "#1890ff"
+          : "#f0f0f0"
+      }`,
+      backgroundColor: isCorrect
+        ? "#f6ffed"
+        : isWrong
+        ? "#fff2f0"
+        : isSelected
+        ? "#e6f7ff"
+        : "#fafafa",
+    };
   };
 
   return (
@@ -246,222 +266,268 @@ const TestPart7Double = ({
                           size="large"
                           style={{ width: "100%" }}
                         >
-                          {groupQuestions.map((question, index) => (
-                            <Card
-                              key={index}
-                              id={`question-${groupId}-${index}`}
-                              size="small"
-                              style={{
-                                borderRadius: "8px",
-                                border: "1px solid #f0f0f0",
-                              }}
-                            >
-                              <Space
-                                direction="vertical"
-                                size="middle"
-                                style={{ width: "100%" }}
+                          {groupQuestions.map((question, index) => {
+                            console.log("🚀 ~ question:", question);
+                            return (
+                              <Card
+                                key={index}
+                                id={`question-${groupId}-${index}`}
+                                size="small"
+                                style={{
+                                  borderRadius: "8px",
+                                  border: "1px solid #f0f0f0",
+                                }}
                               >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 12,
-                                  }}
-                                >
-                                  <Badge
-                                    count={
-                                      calculateQuestionNumber(
-                                        parseInt(groupId),
-                                        index
-                                      ) + 1
-                                    }
-                                    style={{
-                                      backgroundColor: "#1890ff",
-                                      color: "white",
-                                      fontSize: "12px",
-                                      fontWeight: "bold",
-                                    }}
-                                  />
-                                  <Badge
-                                    text={question.questionType}
-                                    style={{
-                                      backgroundColor: "#f0f0f0",
-                                      color: "#666",
-                                      fontSize: "11px",
-                                    }}
-                                  />
-                                </div>
-
-                                <Text
-                                  style={{
-                                    fontSize: "15px",
-                                    lineHeight: "1.5",
-                                  }}
-                                >
-                                  {question.questionContent}
-                                </Text>
-
-                                <Radio.Group
-                                  value={question.selectedOption}
-                                  onChange={(e) =>
-                                    handleOptionChange(question, e.target.value)
-                                  }
-                                  disabled={question.isGraded}
+                                <Space
+                                  direction="vertical"
+                                  size="middle"
                                   style={{ width: "100%" }}
                                 >
-                                  <Space
-                                    direction="vertical"
-                                    size="small"
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 12,
+                                    }}
+                                  >
+                                    <Badge
+                                      count={
+                                        calculateQuestionNumber(
+                                          parseInt(groupId),
+                                          index
+                                        ) + 1
+                                      }
+                                      style={{
+                                        backgroundColor: "#1890ff",
+                                        color: "white",
+                                        fontSize: "12px",
+                                        fontWeight: "bold",
+                                      }}
+                                    />
+                                    <Badge
+                                      text={question.questionType}
+                                      style={{
+                                        backgroundColor: "#f0f0f0",
+                                        color: "#666",
+                                        fontSize: "11px",
+                                      }}
+                                    />
+                                  </div>
+
+                                  <Text
+                                    style={{
+                                      fontSize: "15px",
+                                      lineHeight: "1.5",
+                                    }}
+                                  >
+                                    {question.questionContent}
+                                  </Text>
+
+                                  <Radio.Group
+                                    value={question.selectedOption}
+                                    onChange={(e) =>
+                                      handleOptionChange(
+                                        question,
+                                        e.target.value
+                                      )
+                                    }
+                                    disabled={question.isGraded}
                                     style={{ width: "100%" }}
                                   >
-                                    {getOptions(question).map((option) => (
-                                      <Radio
-                                        key={option}
-                                        value={option}
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          padding: "8px 12px",
-                                          borderRadius: "6px",
-                                          border: "1px solid #d9d9d9",
-                                          margin: "4px 0",
-                                          ...getOptionStyle(question, option),
-                                        }}
-                                      >
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            width: "100%",
-                                          }}
-                                        >
-                                          <Text style={{ marginLeft: 8 }}>
-                                            {option}
-                                          </Text>
-
-                                          {question.isGraded &&
-                                            option ===
-                                              question.correctOption && (
-                                              <CheckCircle
-                                                size={16}
-                                                style={{ color: "#52c41a" }}
-                                              />
-                                            )}
-
-                                          {question.isGraded &&
-                                            option ===
-                                              question.selectedOption &&
+                                    <Space
+                                      direction="vertical"
+                                      size="small"
+                                      style={{ width: "100%" }}
+                                    >
+                                      {getOptions(question).map(
+                                        (option, optionIndex) => {
+                                          const optionLabel =
+                                            String.fromCharCode(
+                                              65 + optionIndex
+                                            ); // A, B, C, D
+                                          // Check if this option is correct by comparing option letter with correctOption
+                                          const isCorrect =
+                                            question.isGraded &&
+                                            optionLabel ===
+                                              question.correctOption;
+                                          console.log(
+                                            "🚀 ~ isCorrect:",
+                                            isCorrect
+                                          );
+                                          const isSelected =
+                                            question.selectedOption === option;
+                                          // Check if this selected option is wrong
+                                          const isWrong =
+                                            question.isGraded &&
+                                            isSelected &&
                                             question.selectedLetter !==
-                                              question.correctOption && (
-                                              <XCircle
-                                                size={16}
-                                                style={{ color: "#ff4d4f" }}
-                                              />
-                                            )}
-                                        </div>
-                                      </Radio>
-                                    ))}
-                                  </Space>
-                                </Radio.Group>
+                                              question.correctOption;
+                                          return (
+                                            <div
+                                              key={optionIndex}
+                                              style={{
+                                                padding: "8px",
+                                                borderRadius: "6px",
+                                                ...getOptionStyle(
+                                                  question,
+                                                  option,
+                                                  optionIndex
+                                                ),
+                                                position: "relative",
+                                              }}
+                                            >
+                                              <Radio
+                                                value={option}
+                                                style={{ width: "100%" }}
+                                              >
+                                                <div
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent:
+                                                      "space-between",
+                                                    width: "100%",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={{ marginLeft: 8 }}
+                                                  >
+                                                    {option}
+                                                  </Text>
+                                                </div>
+                                              </Radio>
 
-                                {!question.isGraded &&
-                                  question.selectedOption && (
-                                    <Button
-                                      type="link"
-                                      size="small"
-                                      onClick={() => clearSelection(question)}
-                                      style={{ padding: 0, height: "auto" }}
-                                    >
-                                      Xóa lựa chọn
-                                    </Button>
-                                  )}
+                                              {isCorrect && (
+                                                <CheckCircle
+                                                  size={16}
+                                                  color="#52c41a"
+                                                  style={{
+                                                    position: "absolute",
+                                                    right: "8px",
+                                                    top: "50%",
+                                                    transform:
+                                                      "translateY(-50%)",
+                                                  }}
+                                                />
+                                              )}
+                                              {isWrong && (
+                                                <XCircle
+                                                  size={16}
+                                                  color="#ff4d4f"
+                                                  style={{
+                                                    position: "absolute",
+                                                    right: "8px",
+                                                    top: "50%",
+                                                    transform:
+                                                      "translateY(-50%)",
+                                                  }}
+                                                />
+                                              )}
+                                            </div>
+                                          );
+                                        }
+                                      )}
+                                    </Space>
+                                  </Radio.Group>
 
-                                {question.isGraded && (
-                                  <div>
-                                    <Button
-                                      type="link"
-                                      size="small"
-                                      icon={
-                                        showExplanation[
+                                  {!question.isGraded &&
+                                    question.selectedOption && (
+                                      <Button
+                                        type="link"
+                                        size="small"
+                                        onClick={() => clearSelection(question)}
+                                        style={{ padding: 0, height: "auto" }}
+                                      >
+                                        Xóa lựa chọn
+                                      </Button>
+                                    )}
+
+                                  {question.isGraded && (
+                                    <div>
+                                      <Button
+                                        type="link"
+                                        size="small"
+                                        icon={
+                                          showExplanation[
+                                            calculateQuestionNumber(
+                                              parseInt(groupId),
+                                              index
+                                            )
+                                          ] ? (
+                                            <EyeOff size={14} />
+                                          ) : (
+                                            <Eye size={14} />
+                                          )
+                                        }
+                                        onClick={() =>
+                                          toggleExplanation(
+                                            calculateQuestionNumber(
+                                              parseInt(groupId),
+                                              index
+                                            )
+                                          )
+                                        }
+                                        style={{ padding: 0, height: "auto" }}
+                                      >
+                                        {showExplanation[
                                           calculateQuestionNumber(
                                             parseInt(groupId),
                                             index
                                           )
-                                        ] ? (
-                                          <EyeOff size={14} />
-                                        ) : (
-                                          <Eye size={14} />
-                                        )
-                                      }
-                                      onClick={() =>
-                                        toggleExplanation(
-                                          calculateQuestionNumber(
-                                            parseInt(groupId),
-                                            index
-                                          )
-                                        )
-                                      }
-                                      style={{ padding: 0, height: "auto" }}
-                                    >
+                                        ]
+                                          ? "Ẩn giải thích"
+                                          : "Hiển thị giải thích"}
+                                      </Button>
+
                                       {showExplanation[
                                         calculateQuestionNumber(
                                           parseInt(groupId),
                                           index
                                         )
-                                      ]
-                                        ? "Ẩn giải thích"
-                                        : "Hiển thị giải thích"}
-                                    </Button>
-
-                                    {showExplanation[
-                                      calculateQuestionNumber(
-                                        parseInt(groupId),
-                                        index
-                                      )
-                                    ] && (
-                                      <Card
-                                        size="small"
-                                        style={{
-                                          marginTop: 12,
-                                          backgroundColor: "#fafafa",
-                                          border: "1px solid #e8e8e8",
-                                        }}
-                                      >
-                                        <div
-                                          dangerouslySetInnerHTML={{
-                                            __html:
-                                              question.questionExplanation,
+                                      ] && (
+                                        <Card
+                                          size="small"
+                                          style={{
+                                            marginTop: 12,
+                                            backgroundColor: "#fafafa",
+                                            border: "1px solid #e8e8e8",
                                           }}
-                                          style={{ marginBottom: 8 }}
-                                        />
+                                        >
+                                          <div
+                                            dangerouslySetInnerHTML={{
+                                              __html:
+                                                question.questionExplanation,
+                                            }}
+                                            style={{ marginBottom: 8 }}
+                                          />
 
-                                        {question.translatedExplanation && (
-                                          <div>
-                                            <Badge
-                                              text="Bản dịch"
-                                              style={{
-                                                backgroundColor: "#52c41a",
-                                                color: "white",
-                                                fontSize: "10px",
-                                                marginBottom: 8,
-                                              }}
-                                            />
-                                            <div
-                                              dangerouslySetInnerHTML={{
-                                                __html:
-                                                  question.translatedExplanation,
-                                              }}
-                                            />
-                                          </div>
-                                        )}
-                                      </Card>
-                                    )}
-                                  </div>
-                                )}
-                              </Space>
-                            </Card>
-                          ))}
+                                          {question.translatedExplanation && (
+                                            <div>
+                                              <Badge
+                                                text="Bản dịch"
+                                                style={{
+                                                  backgroundColor: "#52c41a",
+                                                  color: "white",
+                                                  fontSize: "10px",
+                                                  marginBottom: 8,
+                                                }}
+                                              />
+                                              <div
+                                                dangerouslySetInnerHTML={{
+                                                  __html:
+                                                    question.translatedExplanation,
+                                                }}
+                                              />
+                                            </div>
+                                          )}
+                                        </Card>
+                                      )}
+                                    </div>
+                                  )}
+                                </Space>
+                              </Card>
+                            );
+                          })}
                         </Space>
                       </div>
                     </Col>
@@ -553,83 +619,79 @@ const TestPart7Double = ({
               </div>
 
               {/* Score Display */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 16,
-                  padding: "16px",
-                  backgroundColor: "#fafafa",
-                  borderRadius: "8px",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <CheckCircle size={16} style={{ color: "#52c41a" }} />
-                  <Text strong style={{ color: "#52c41a" }}>
-                    {
-                      questions.filter(
-                        (q) =>
-                          q.isGraded &&
-                          q.answered &&
-                          q.selectedLetter === q.correctOption
-                      ).length
-                    }
-                    /{questions.length}
-                  </Text>
+              {questions.some((q) => q.isGraded) && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 16,
+                    padding: "16px",
+                    backgroundColor: "#fafafa",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <CheckCircle size={16} style={{ color: "#52c41a" }} />
+                    <Text strong style={{ color: "#52c41a" }}>
+                      {
+                        questions.filter(
+                          (q) =>
+                            q.isGraded &&
+                            q.answered &&
+                            q.selectedLetter === q.correctOption
+                        ).length
+                      }
+                      /{questions.length}
+                    </Text>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <XCircle size={16} style={{ color: "#ff4d4f" }} />
+                    <Text strong style={{ color: "#ff4d4f" }}>
+                      {
+                        questions.filter(
+                          (q) =>
+                            q.isGraded &&
+                            q.answered &&
+                            q.selectedLetter !== q.correctOption
+                        ).length
+                      }
+                      /{questions.length}
+                    </Text>
+                  </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <XCircle size={16} style={{ color: "#ff4d4f" }} />
-                  <Text strong style={{ color: "#ff4d4f" }}>
-                    {
-                      questions.filter(
-                        (q) =>
-                          q.isGraded &&
-                          q.answered &&
-                          q.selectedLetter !== q.correctOption
-                      ).length
-                    }
-                    /{questions.length}
-                  </Text>
-                </div>
-              </div>
+              )}
 
               {/* Action Button */}
-              {isSubmited ? (
-                <Button
-                  type="default"
-                  size="large"
-                  icon={<RotateCcw size={16} />}
-                  onClick={refreshPage}
-                  block
-                  style={{
-                    height: "48px",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  Làm lại
-                </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={submitAnswers}
-                  block
-                  style={{
-                    height: "48px",
-                    borderRadius: "8px",
-                    background:
-                      "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
-                    border: "none",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Chấm điểm
-                </Button>
-              )}
+              <Button
+                type={questions.some((q) => q.isGraded) ? "default" : "primary"}
+                size="large"
+                icon={
+                  questions.some((q) => q.isGraded) ? (
+                    <RotateCcw size={16} />
+                  ) : null
+                }
+                onClick={
+                  questions.some((q) => q.isGraded)
+                    ? refreshPage
+                    : submitAnswers
+                }
+                block
+                style={{
+                  height: "48px",
+                  borderRadius: "8px",
+                  background: questions.some((q) => q.isGraded)
+                    ? undefined
+                    : "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
+                  border: "none",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: questions.some((q) => q.isGraded) ? 8 : 0,
+                }}
+              >
+                {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
+              </Button>
             </Space>
           </Card>
         </Affix>
