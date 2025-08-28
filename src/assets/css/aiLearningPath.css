@@ -1,0 +1,361 @@
+/* AI Learning Path Styles */
+.learning-path-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+}
+
+.learning-path-page .ant-tabs {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.learning-path-page .ant-tabs-tab {
+  padding: 16px 24px !important;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.learning-path-page .ant-tabs-tab-active {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+  color: white !important;
+  border-radius: 8px 8px 0 0;
+}
+
+.learning-path-page .ant-tabs-content {
+  padding: 24px;
+  background: white;
+}
+
+/* Current Path Card */
+.current-path-card {
+  border: 2px solid #1890ff;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.current-path-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.progress-section {
+  margin: 20px 0;
+}
+
+.week-activities {
+  margin-top: 24px;
+}
+
+/* AI Insights Card */
+.ai-insights-card {
+  background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
+  border: 1px solid #e8f4fd;
+}
+
+.ai-insights-card .ant-card-head {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+  color: white;
+  border: none;
+}
+
+.ai-insights-card .ant-card-head-title {
+  color: white;
+}
+
+.insight-section {
+  padding: 16px;
+}
+
+.insight-section ul {
+  margin-top: 8px;
+  list-style: none;
+  padding-left: 0;
+}
+
+.insight-section li {
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.insight-section li:last-child {
+  border-bottom: none;
+}
+
+/* Milestone Timeline */
+.milestone-item {
+  padding: 12px 0;
+}
+
+.milestone-target {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #1890ff;
+}
+
+/* Progress Card */
+.progress-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.progress-card .ant-card-head-title,
+.progress-card .ant-card-body {
+  color: white;
+}
+
+.progress-card .ant-progress-text {
+  color: white !important;
+}
+
+/* Create Form Card */
+.create-form-card {
+  border: 2px dashed #1890ff;
+  background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
+}
+
+.create-form-card .ant-card-head {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+  color: white;
+  border: none;
+}
+
+.create-form-card .ant-card-head-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Quick Create Card */
+.quick-create-card {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border: none;
+  text-align: center;
+}
+
+.quick-create-card .ant-card-head {
+  background: transparent;
+  border: none;
+}
+
+/* Path Cards */
+.path-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+.path-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.path-card.active {
+  border: 2px solid #1890ff;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.path-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.path-description p {
+  margin: 4px 0;
+  color: #666;
+}
+
+/* Stats Cards */
+.learning-path-page .ant-statistic-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.learning-path-page .ant-statistic-content {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Activity List */
+.learning-path-page .ant-list-item {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.learning-path-page .ant-list-item:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+/* Active Path Card */
+.active-path-card {
+  border: 2px solid #1890ff;
+  box-shadow: 0 4px 20px rgba(24, 144, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Timeline Styles */
+.learning-path-page .ant-timeline-item-head {
+  border: 2px solid #1890ff;
+  background: white;
+}
+
+.learning-path-page .ant-timeline-item-content {
+  margin-left: 8px;
+}
+
+/* Button Enhancements */
+.learning-path-page .ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+  border: none;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.learning-path-page .ant-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.6);
+}
+
+/* Form Enhancements */
+.learning-path-page .ant-form-item-label > label {
+  font-weight: 600;
+  color: #333;
+}
+
+.learning-path-page .ant-select-selector {
+  border-radius: 8px;
+  border: 2px solid #e8e8e8;
+  transition: all 0.3s ease;
+}
+
+.learning-path-page .ant-select-focused .ant-select-selector {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.learning-path-page .ant-slider {
+  margin: 20px 0;
+}
+
+.learning-path-page .ant-slider-track {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+}
+
+.learning-path-page .ant-slider-handle {
+  border: 3px solid #1890ff;
+  background: white;
+}
+
+/* Progress Enhancements */
+.learning-path-page .ant-progress-circle .ant-progress-text {
+  font-weight: bold;
+  font-size: 16px !important;
+}
+
+/* Card Hover Effects */
+.learning-path-page .ant-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.learning-path-page .ant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge Styles */
+.learning-path-page .ant-badge {
+  color: #1890ff;
+}
+
+/* Tag Enhancements */
+.learning-path-page .ant-tag {
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-weight: 500;
+  border: none;
+}
+
+/* Loading Overlay */
+.learning-path-page .ant-spin-container {
+  backdrop-filter: blur(4px);
+}
+
+.learning-path-page .ant-spin-tip {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1890ff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .learning-path-page {
+    padding: 12px !important;
+  }
+  
+  .learning-path-page .ant-tabs-content {
+    padding: 16px;
+  }
+  
+  .learning-path-page .ant-col {
+    margin-bottom: 16px;
+  }
+  
+  .current-path-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .insight-section {
+    padding: 8px;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.learning-path-page .ant-card,
+.learning-path-page .ant-tabs {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* AI Theme Colors */
+.ai-primary { color: #1890ff; }
+.ai-secondary { color: #36cfc9; }
+.ai-success { color: #52c41a; }
+.ai-warning { color: #faad14; }
+.ai-danger { color: #ff4d4f; }
+
+/* Gradient Backgrounds */
+.gradient-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}

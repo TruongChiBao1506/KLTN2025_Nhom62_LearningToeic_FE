@@ -97,6 +97,9 @@ const SignIn = () => {
             (Date.now() + refreshTokenExpirationTime).toString()
           );
           localStorage.setItem("learnerAuthenticated", "true");
+          
+          // Lưu thông tin user
+          localStorage.setItem("learnerUser", JSON.stringify(user));
 
           // Remember me
           if (rememberMe) {
@@ -138,6 +141,7 @@ const SignIn = () => {
             localStorage.removeItem("learnerAccessTokenExpirationTime");
             localStorage.removeItem("learnerRefreshTokenExpirationTime");
             localStorage.removeItem("learnerAuthenticated");
+            localStorage.removeItem("learnerUser");
           }
         }
       } catch (error) {

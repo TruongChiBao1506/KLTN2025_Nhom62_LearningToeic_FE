@@ -8,6 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'antd/dist/reset.css';
 
 // Suppress ResizeObserver console errors
 const originalError = console.error;

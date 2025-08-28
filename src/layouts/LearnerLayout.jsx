@@ -28,8 +28,6 @@ import {
   CreditCard,
   Heart,
   Search,
-  Gamepad2,
-  HelpCircle,
   PenTool,
   StickyNote,
   Newspaper,
@@ -77,7 +75,6 @@ const LearnerLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
@@ -170,15 +167,6 @@ const LearnerLayout = () => {
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       toast.error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
-    }
-  };
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    // Mark all as read if opening
-    if (!showNotifications && notifications.some((n) => !n.read)) {
-      // API call to mark notifications as read would go here
-      setNotifications(notifications.map((n) => ({ ...n, read: true })));
     }
   };
 
@@ -277,6 +265,11 @@ const LearnerLayout = () => {
       key: "/learner/dashboard",
       icon: <Home size={18} />,
       label: <Link to="/learner/dashboard">Trang chủ</Link>,
+    },
+    {
+      key: "/learner/learning-path",
+      icon: <TrendingUp size={18} />,
+      label: <Link to="/learner/learning-path">Lộ trình học tập</Link>,
     },
     {
       key: "exams",
@@ -917,7 +910,6 @@ const LearnerLayout = () => {
               menu={{ items: notificationMenuItems }}
               trigger={["click"]}
               placement="bottomRight"
-              onOpenChange={setShowNotifications}
             >
               <div style={{ position: "relative" }}>
                 <Button
