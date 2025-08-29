@@ -21,10 +21,10 @@ import {
     Alert,
     Tabs,
     Badge,
-    Timeline
+    Timeline,
+    Select,
+    DatePicker as AntdDatePicker
 } from 'antd';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { 
     BookOutlined, 
     PlusOutlined, 
@@ -173,15 +173,12 @@ const LearningPathPage = () => {
             console.error('No userId found for custom path creation');
             return;
         }
-        
         try {
             console.log('Creating custom path for userId:', userId, 'with values:', values);
-            
-            // Chuyển đổi startDate từ react-datepicker (kiểu Date) sang string YYYY-MM-DD
-            if (values.startDate instanceof Date) {
+            // Chuyển đổi startDate từ dayjs sang string YYYY-MM-DD nếu có
+            if (values.startDate) {
                 values.startDate = dayjs(values.startDate).format('YYYY-MM-DD');
             }
-            
             await createLearningPath(values);
             setShowCreateModal(false);
             createForm.resetFields();
@@ -309,7 +306,7 @@ const LearningPathPage = () => {
             onOk: async () => {
                 try {
                     await deleteLearningPath(pathId);
-                    message.success('Đã xóa lộ trình học tập');
+                    // Đã có message.success trong hook, không cần thông báo ở đây nữa
                 } catch (error) {
                     console.error('Error deleting path:', error);
                 }
@@ -320,30 +317,29 @@ const LearningPathPage = () => {
     // Handle Progress Analysis
     const handleAnalyzeProgress = async () => {
         if (!currentPath) return;
-        
         try {
             const analysis = await analyzeProgress(currentPath._id);
-            Modal.info({
-                title: '🧠 Phân tích AI về tiến độ học tập',
-                content: (
-                    <div>
-                        <p><strong>Điểm mạnh:</strong></p>
-                        <ul>
-                            {analysis.strengths?.map((strength, index) => (
-                                <li key={index}>{strength}</li>
-                            ))}
-                        </ul>
-                        <p><strong>Cần cải thiện:</strong></p>
-                        <ul>
-                            {analysis.improvements?.map((improvement, index) => (
-                                <li key={index}>{improvement}</li>
-                            ))}
-                        </ul>
-                        <p><strong>Gợi ý:</strong></p>
-                        <p>{analysis.recommendation}</p>
-                    </div>
-                ),
-                width: 600
+            console.log('AI analysis response from backend:', analysis);
+            // Ưu tiên lấy analysis.analysis hoặc analysis.insights nếu có
+            const aiData =
+                analysis?.analysis ||
+                analysis?.insights ||
+                analysis?.data?.analysis ||
+                analysis?.data?.insights ||
+                analysis;
+            console.log('AI analysis data used for aiInsights:', aiData);
+            setCurrentPath(prev => ({ ...(prev || {}), aiInsights: { ...aiData } }));
+            Modal.success({
+                title: 'Phân tích AI thành công',
+                content: 'AI đã phân tích tiến độ học tập của bạn. Kéo xuống để xem chi tiết phân tích.',
+                okText: 'Xem phân tích',
+                onOk: () => {
+                    // Scroll đến dashboard phân tích AI
+                    const dashboard = document.getElementById('ai-learning-path-dashboard');
+                    if (dashboard) {
+                        dashboard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                },
             });
         } catch (error) {
             console.error('Error analyzing progress:', error);
@@ -415,7 +411,7 @@ const LearningPathPage = () => {
         const disableAllCheckbox = pathStartDate && today.isBefore(pathStartDate, 'day');
 
         return (
-            <div className="ai-learning-path-dashboard">
+            <div className="ai-learning-path-dashboard" id="ai-learning-path-dashboard">
                 <Row gutter={[24, 24]}>
                     {/* Current Path Overview */}
                     {currentPath && (
@@ -477,25 +473,118 @@ const LearningPathPage = () => {
                                                     break;
                                                 }
                                             }
-                                            // Hiển thị ngày hiện tại hoặc ngày bắt đầu đầu tiên
-                                            const daysToShow = showAllDays ? weekData.days : weekData.days.slice(0, currentDayIdx === -1 ? 1 : currentDayIdx + 1);
+                                            // Đưa ngày đang hoạt động (ngày hôm nay hoặc ngày đầu tiên có thể thao tác) lên đầu danh sách
+                                            const todayDate = dayjs().format('YYYY-MM-DD');
+                                            let daysToShow = [];
+                                            if (showAllDays) {
+                                                // Hiển thị toàn bộ, nhưng ngày hôm nay lên đầu nếu có
+                                                daysToShow = [...weekData.days];
+                                                const todayIdx = daysToShow.findIndex(day => day.date === todayDate);
+                                                if (todayIdx > -1) {
+                                                    const todayDay = daysToShow[todayIdx];
+                                                    daysToShow = [todayDay, ...daysToShow.slice(0, todayIdx), ...daysToShow.slice(todayIdx + 1)];
+                                                }
+                                            } else {
+                                                // Chỉ hiển thị đúng ngày hoạt động (ngày hôm nay hoặc ngày đầu tiên có thể thao tác)
+                                                let activeDay = null;
+                                                // Ưu tiên ngày hôm nay nếu có trong tuần
+                                                const todayInWeek = weekData.days.find(day => day.date === todayDate);
+                                                if (todayInWeek) {
+                                                    activeDay = todayInWeek;
+                                                } else if (currentDayIdx !== -1) {
+                                                    activeDay = weekData.days[currentDayIdx];
+                                                } else {
+                                                    activeDay = weekData.days[0];
+                                                }
+                                                daysToShow = [activeDay];
+                                            }
+                                            // Kiểm tra nếu ngày trước đó chưa hoàn thành hết thì cảnh báo
+                                            let showAlert = false;
+                                            let prevDay = null;
+                                            if (daysToShow.length === 1) {
+                                                const activeDayIdx = weekData.days.findIndex(d => d.date === daysToShow[0]?.date);
+                                                if (activeDayIdx > 0) {
+                                                    prevDay = weekData.days[activeDayIdx - 1];
+                                                    if (prevDay && prevDay.activities.some(a => !a.isCompleted)) {
+                                                        showAlert = true;
+                                                    }
+                                                }
+                                            }
                                             return <>
+                                                {showAlert && (
+                                                    <Alert
+                                                        type="warning"
+                                                        showIcon
+                                                        style={{ marginBottom: 16 }}
+                                                        message="Bạn cần hoàn thành tất cả hoạt động của ngày trước để tiếp tục!"
+                                                    />
+                                                )}
                                                 {daysToShow.map((day, dayIdx) => {
-                                                    const isCurrentDay = dayIdx === currentDayIdx || (currentDayIdx === -1 && dayIdx === 0);
+                                                    const isWeekend = dayjs(day.date).day() === 0 || dayjs(day.date).day() === 6;
+                                                    if (showAllDays && isWeekend) {
+                                                        return (
+                                                            <div key={day.date} style={{
+                                                                marginBottom: 16,
+                                                                padding: 12,
+                                                                border: '1px solid #f0f0f0',
+                                                                borderRadius: 8,
+                                                                background: '#fffbe6',
+                                                                textAlign: 'center',
+                                                            }}>
+                                                                <div style={{ fontWeight: 600, marginBottom: 8, color: '#faad14', fontSize: 16 }}>
+                                                                    {day.dayName} ({day.date}) <span style={{ marginLeft: 8, color: '#faad14', fontWeight: 500 }}>[Ngày nghỉ]</span>
+                                                                </div>
+                                                                <div style={{ color: '#bfbfbf', fontSize: 18, margin: '16px 0' }}>
+                                                                    <CalendarOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+                                                                    <div>Thư giãn và nạp năng lượng!</div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+                                                    // Xác định ngày hôm nay, hôm qua, ngày sau hôm nay
+                                                    const todayDate = dayjs().format('YYYY-MM-DD');
+                                                    const yesterdayDate = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+                                                    const isToday = day.date === todayDate;
+                                                    const isYesterday = day.date === yesterdayDate;
+                                                    const isFuture = dayjs(day.date).isAfter(todayDate, 'day');
+                                                    const allActivitiesDone = day.activities.every(a => a.isCompleted);
+                                                    // Logic disable checkbox
+                                                    let checkboxDisabled = true;
+                                                    if (isToday && !disableAllCheckbox) {
+                                                        checkboxDisabled = false;
+                                                    } else if (isYesterday && allActivitiesDone) {
+                                                        checkboxDisabled = true;
+                                                    } else {
+                                                        checkboxDisabled = true;
+                                                    }
+                                                    // Logic background
+                                                    let backgroundColor = '#fafafa';
+                                                    if (isToday && !disableAllCheckbox) {
+                                                        backgroundColor = '#f6ffed';
+                                                    }
+                                                    // Logic thông báo phụ
+                                                    let subLabel = '';
+                                                    if (disableAllCheckbox && isFuture) {
+                                                        subLabel = 'Chưa đến ngày này';
+                                                    } else if (isYesterday && allActivitiesDone) {
+                                                        subLabel = 'Đã hoàn thành - Đã khóa';
+                                                    } else if (isFuture) {
+                                                        subLabel = 'Chưa đến ngày này';
+                                                    } else if (!isToday && !isYesterday) {
+                                                        subLabel = '(Không thể chỉnh sửa)';
+                                                    }
                                                     return (
                                                         <div key={day.date} style={{
                                                             marginBottom: 16,
                                                             padding: 12,
                                                             border: '1px solid #f0f0f0',
                                                             borderRadius: 8,
-                                                            background: (isCurrentDay && !disableAllCheckbox) ? '#f6ffed' : '#fafafa'
+                                                            background: backgroundColor
                                                         }}>
-                                                            <div style={{ fontWeight: 600, marginBottom: 8, color: isCurrentDay ? '#389e0d' : '#aaa' }}>
+                                                            <div style={{ fontWeight: 600, marginBottom: 8, color: isToday ? '#389e0d' : '#aaa' }}>
                                                                 {day.dayName} ({day.date})
-                                                                {!isCurrentDay && (
-                                                                    <span style={{ marginLeft: 8, color: '#faad14', fontWeight: 400 }}>
-                                                                        {disableAllCheckbox ? 'Chưa đến ngày này' : '(Không thể chỉnh sửa)'}
-                                                                    </span>
+                                                                {subLabel && (
+                                                                    <span style={{ marginLeft: 8, color: '#faad14', fontWeight: 400 }}>{subLabel}</span>
                                                                 )}
                                                             </div>
                                                             <List
@@ -506,7 +595,7 @@ const LearningPathPage = () => {
                                                                             <Checkbox
                                                                                 key="complete"
                                                                                 checked={activity.isCompleted}
-                                                                                disabled={!isCurrentDay || disableAllCheckbox}
+                                                                                disabled={checkboxDisabled}
                                                                                 onChange={(e) => handleActivityComplete(
                                                                                     activity._id, 
                                                                                     e.target.checked
@@ -606,9 +695,11 @@ const LearningPathPage = () => {
                                                 <TrophyOutlined style={{ color: '#52c41a' }} /> Điểm mạnh
                                             </Title>
                                             <ul>
-                                                {currentPath.aiInsights.strengths?.map((strength, index) => (
-                                                    <li key={index}>{strength}</li>
-                                                ))}
+                                                {Array.isArray(currentPath.aiInsights.strengths) && currentPath.aiInsights.strengths.length > 0
+                                                    ? currentPath.aiInsights.strengths.map((strength, index) => (
+                                                        <li key={index}>{strength}</li>
+                                                    ))
+                                                    : <li>Không có dữ liệu</li>}
                                             </ul>
                                         </div>
                                     </Col>
@@ -618,9 +709,11 @@ const LearningPathPage = () => {
                                                 <ExclamationCircleOutlined style={{ color: '#faad14' }} /> Cần cải thiện
                                             </Title>
                                             <ul>
-                                                {currentPath.aiInsights.weaknesses?.map((weakness, index) => (
-                                                    <li key={index}>{weakness}</li>
-                                                ))}
+                                                {Array.isArray(currentPath.aiInsights.weaknesses) && currentPath.aiInsights.weaknesses.length > 0
+                                                    ? currentPath.aiInsights.weaknesses.map((weakness, index) => (
+                                                        <li key={index}>{weakness}</li>
+                                                    ))
+                                                    : <li>Không có dữ liệu</li>}
                                             </ul>
                                         </div>
                                     </Col>
@@ -629,19 +722,62 @@ const LearningPathPage = () => {
                                             <Title level={5}>
                                                 <BookOutlined style={{ color: '#1890ff' }} /> Tập trung tiếp theo
                                             </Title>
-                                            <Text strong>{currentPath.aiInsights.nextFocus}</Text>
+                                            <Text strong>{currentPath.aiInsights.nextFocus || 'Không có dữ liệu'}</Text>
                                         </div>
                                     </Col>
                                 </Row>
-                                
+                                {currentPath.aiInsights.progressAssessment && (
+                                    <div style={{ marginTop: 12 }}>
+                                        <Text strong>Đánh giá tiến độ: </Text>
+                                        <span>{currentPath.aiInsights.progressAssessment}</span>
+                                    </div>
+                                )}
+                                {currentPath.aiInsights.motivationalMessage && (
+                                    <div style={{ marginTop: 12 }}>
+                                        <Text strong>Động lực: </Text>
+                                        <span>{currentPath.aiInsights.motivationalMessage}</span>
+                                    </div>
+                                )}
+                                {Array.isArray(currentPath.aiInsights.adjustments) && currentPath.aiInsights.adjustments.length > 0 && (
+                                    <div style={{ marginTop: 12 }}>
+                                        <Text strong>Điều chỉnh đề xuất:</Text>
+                                        <ul>
+                                            {currentPath.aiInsights.adjustments.map((adj, idx) => (
+                                                <li key={idx}>{adj}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                {Array.isArray(currentPath.aiInsights.riskFactors) && currentPath.aiInsights.riskFactors.length > 0 && (
+                                    <div style={{ marginTop: 12 }}>
+                                        <Text strong>Rủi ro:</Text>
+                                        <ul>
+                                            {currentPath.aiInsights.riskFactors.map((risk, idx) => (
+                                                <li key={idx}>{risk}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                {Array.isArray(currentPath.aiInsights.successIndicators) && currentPath.aiInsights.successIndicators.length > 0 && (
+                                    <div style={{ marginTop: 12 }}>
+                                        <Text strong>Chỉ số thành công:</Text>
+                                        <ul>
+                                            {currentPath.aiInsights.successIndicators.map((succ, idx) => (
+                                                <li key={idx}>{succ}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                                 <div style={{ marginTop: 16 }}>
                                     <Title level={5}>
                                         <CheckCircleOutlined style={{ color: '#722ed1' }} /> Gợi ý từ AI
                                     </Title>
                                     <ul>
-                                        {currentPath.aiInsights.recommendations?.map((rec, index) => (
-                                            <li key={index}>{rec}</li>
-                                        ))}
+                                        {Array.isArray(currentPath.aiInsights.recommendations) && currentPath.aiInsights.recommendations.length > 0
+                                            ? currentPath.aiInsights.recommendations.map((rec, index) => (
+                                                <li key={index}>{rec}</li>
+                                            ))
+                                            : <li>Không có dữ liệu</li>}
                                     </ul>
                                 </div>
                             </Card>
@@ -926,22 +1062,18 @@ const LearningPathPage = () => {
                         rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
                         style={{ marginBottom: 20 }}
                     >
-                        <div style={{ width: '100%' }}>
-                            <DatePicker
-                                selected={startDate}
-                                onChange={date => {
-                                    setStartDate(date);
-                                    createForm.setFieldsValue({ startDate: date });
-                                }}
-                                dateFormat="dd/MM/yyyy"
-                                minDate={new Date()}
-                                placeholderText="Chọn ngày bắt đầu lộ trình"
-                                className="ant-input"
-                                wrapperClassName="w-100"
-                                popperPlacement="bottom-start"
-                                style={inputStyle}
-                            />
-                        </div>
+                        <AntdDatePicker
+                            style={{ width: '100%', borderRadius: 8, padding: '10px 14px' }}
+                            size="large"
+                            format="DD/MM/YYYY"
+                            placeholder="Chọn ngày bắt đầu lộ trình"
+                            disabledDate={current => current && current < dayjs().startOf('day')}
+                            onChange={date => {
+                                setStartDate(date);
+                                createForm.setFieldsValue({ startDate: date });
+                            }}
+                            value={startDate}
+                        />
                     </Form.Item>
 
                     <Row gutter={16}>
@@ -951,13 +1083,18 @@ const LearningPathPage = () => {
                                 label="Trình độ hiện tại"
                                 rules={[{ required: true, message: 'Vui lòng chọn trình độ!' }]}
                             >
-                                <select>
-                                    <option value="">Chọn trình độ</option>
-                                    <option value="beginner">Beginner (0-400)</option>
-                                    <option value="intermediate">Intermediate (400-600)</option>
-                                    <option value="upper-intermediate">Upper-Intermediate (600-750)</option>
-                                    <option value="advanced">Advanced (750+)</option>
-                                </select>
+                                <Select
+                                    placeholder="Chọn trình độ"
+                                    showSearch
+                                    optionFilterProp="children"
+                                    style={{ width: '100%' }}
+                                    size="large"
+                                >
+                                    <Select.Option value="beginner">Beginner (0-400)</Select.Option>
+                                    <Select.Option value="intermediate">Intermediate (400-600)</Select.Option>
+                                    <Select.Option value="upper-intermediate">Upper-Intermediate (600-750)</Select.Option>
+                                    <Select.Option value="advanced">Advanced (750+)</Select.Option>
+                                </Select>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -989,13 +1126,16 @@ const LearningPathPage = () => {
                                 rules={[{ required: true, message: 'Vui lòng chọn thời gian!' }]}
                                 initialValue={8}
                             >
-                                <select>
-                                    <option value="">Chọn thời gian</option>
-                                    <option value={4}>4 tuần (Cấp tốc)</option>
-                                    <option value={8}>8 tuần (Tiêu chuẩn)</option>
-                                    <option value={12}>12 tuần (Từ từ)</option>
-                                    <option value={16}>16 tuần (Dài hạn)</option>
-                                </select>
+                                <Select
+                                    placeholder="Chọn thời gian"
+                                    style={{ width: '100%' }}
+                                    size="large"
+                                >
+                                    <Select.Option value={4}>4 tuần (Cấp tốc)</Select.Option>
+                                    <Select.Option value={8}>8 tuần (Tiêu chuẩn)</Select.Option>
+                                    <Select.Option value={12}>12 tuần (Từ từ)</Select.Option>
+                                    <Select.Option value={16}>16 tuần (Dài hạn)</Select.Option>
+                                </Select>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -1038,12 +1178,16 @@ const LearningPathPage = () => {
                         name="learningStyle"
                         label="Phong cách học tập"
                     >
-                        <select>
-                            <option value="balanced">Cân bằng (Lý thuyết + Thực hành)</option>
-                            <option value="practice-focused">Tập trung thực hành</option>
-                            <option value="theory-focused">Tập trung lý thuyết</option>
-                            <option value="exam-focused">Tập trung luyện thi</option>
-                        </select>
+                        <Select
+                            placeholder="Chọn phong cách học tập"
+                            style={{ width: '100%' }}
+                            size="large"
+                        >
+                            <Select.Option value="balanced">Cân bằng (Lý thuyết + Thực hành)</Select.Option>
+                            <Select.Option value="practice-focused">Tập trung thực hành</Select.Option>
+                            <Select.Option value="theory-focused">Tập trung lý thuyết</Select.Option>
+                            <Select.Option value="exam-focused">Tập trung luyện thi</Select.Option>
+                        </Select>
                     </Form.Item>
 
                     <Form.Item className="form-actions">
@@ -1061,7 +1205,7 @@ const LearningPathPage = () => {
                                 loading={loading}
                                 icon={<BulbOutlined />}
                             >
-                                Tạo bằng AI
+                                Tạo lộ trình học
                             </Button>
                         </Space>
                     </Form.Item>
