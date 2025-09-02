@@ -1,43 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
-  Layout,
-  Menu,
-  Avatar,
-  Badge,
-  Dropdown,
-  Input,
-  Button,
-  Space,
-  Card,
-  Drawer,
-  Typography,
-  Divider,
-  Row,
-  Col,
-  FloatButton,
-} from "antd";
-import {
-  Home,
-  FileText,
-  Book,
-  BookOpen,
-  Languages,
-  ArrowRight,
-  Layers,
-  CreditCard,
-  Heart,
-  Search,
-  PenTool,
-  StickyNote,
-  Newspaper,
-  Beaker,
-  TrendingUp,
-  Trophy,
-  Star,
-  Clock,
-  Headphones,
-  Globe,
   Calendar,
   Video,
   Gift,
@@ -55,6 +18,26 @@ import {
   GraduationCap,
   Rocket,
   Target,
+  Home,
+  TrendingUp,
+  FileText,
+  Book,
+  BookOpen,
+  Languages,
+  ArrowRight,
+  Layers,
+  CreditCard,
+  Heart,
+  Search,
+  PenTool,
+  StickyNote,
+  Newspaper,
+  Beaker,
+  Trophy,
+  Star,
+  Clock,
+  Headphones,
+  Globe,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -63,6 +46,8 @@ import authService from "../services/authService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
 
 import "./LearnerLayout.css";
+
+import { Layout, Typography, Button, Drawer, Space, Card, Input, Dropdown, Badge, Avatar, Row, Col, Divider, FloatButton, Menu } from "antd";
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -733,7 +718,7 @@ const LearnerLayout = () => {
         <Header
           style={{
             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            padding: "0 24px",
+            padding: "0 32px 0 32px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
             zIndex: 100,
             display: "flex",
@@ -741,7 +726,8 @@ const LearnerLayout = () => {
             justifyContent: "space-between",
             position: "relative",
             overflow: "hidden",
-            height: "64px",
+            height: "70px",
+            minHeight: 64,
           }}
         >
           {/* Background decoration */}
@@ -758,7 +744,7 @@ const LearnerLayout = () => {
             }}
           />
 
-          <Space size="medium" style={{ position: "relative", zIndex: 1 }}>
+          <Space size={24} style={{ position: "relative", zIndex: 1, height: '100%', alignItems: 'center' }}>
             {/* Mobile menu button */}
             <Button
               type="text"
@@ -775,21 +761,20 @@ const LearnerLayout = () => {
             />
 
             {/* Search */}
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", display: windowWidth > 768 ? 'flex' : 'none', height: '40px', alignItems: 'center' }}>
               <Input
                 placeholder="Tìm kiếm..."
                 prefix={<Search size={14} style={{ color: "#8c8c8c" }} />}
                 style={{
-                  width:
-                    windowWidth > 1200 ? 200 : windowWidth > 992 ? 180 : 160,
-                  borderRadius: "14px",
+                  width: windowWidth > 1200 ? 220 : windowWidth > 992 ? 180 : 140,
+                  borderRadius: "18px",
                   border: "none",
-                  background: "rgba(255,255,255,0.92)",
+                  background: "rgba(255,255,255,0.96)",
                   backdropFilter: "blur(10px)",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  display: windowWidth > 768 ? "block" : "none",
-                  fontSize: "13px",
-                  height: "32px",
+                  fontSize: "15px",
+                  height: "38px",
+                  paddingLeft: 32,
                 }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -798,11 +783,11 @@ const LearnerLayout = () => {
             </div>
           </Space>
 
-          <Space size={16} style={{ position: "relative", zIndex: 1 }}>
+          <Space size={20} style={{ position: "relative", zIndex: 1, height: '100%', alignItems: 'center' }}>
             {/* Study Stats */}
             <Space
-              size="small"
-              style={{ display: windowWidth > 576 ? "flex" : "none" }}
+              size={12}
+              style={{ display: windowWidth > 576 ? "flex" : "none", alignItems: 'center', height: '100%' }}
             >
               <Card
                 size="small"
@@ -810,12 +795,17 @@ const LearnerLayout = () => {
                   background: "linear-gradient(135deg, #ff6b6b, #ee5a52)",
                   border: "none",
                   cursor: "pointer",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
                   boxShadow: "0 2px 8px rgba(238, 90, 82, 0.2)",
                   transition: "all 0.3s ease",
+                  minWidth: 60,
+                  minHeight: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
                 onClick={updateStudyProgress}
-                bodyStyle={{ padding: "6px 10px" }}
+                bodyStyle={{ padding: "6px 10px", display: 'flex', alignItems: 'center', minHeight: 32 }}
                 hoverable
               >
                 <Space size="small">
@@ -851,10 +841,15 @@ const LearnerLayout = () => {
                 style={{
                   background: "linear-gradient(135deg, #4facfe, #00f2fe)",
                   border: "none",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
                   boxShadow: "0 2px 8px rgba(79, 172, 254, 0.2)",
+                  minWidth: 60,
+                  minHeight: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-                bodyStyle={{ padding: "6px 10px" }}
+                bodyStyle={{ padding: "6px 10px", display: 'flex', alignItems: 'center', minHeight: 32 }}
               >
                 <Space size="small">
                   <div
@@ -911,7 +906,7 @@ const LearnerLayout = () => {
               trigger={["click"]}
               placement="bottomRight"
             >
-              <div style={{ position: "relative" }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', position: 'relative' }}>
                 <Button
                   type="text"
                   icon={<Bell size={18} />}
@@ -941,10 +936,17 @@ const LearnerLayout = () => {
                     size="small"
                     style={{
                       position: "absolute",
-                      top: "-5px",
-                      right: "-5px",
+                      top: 8,
+                      right: 2,
                       background: "#ff4d4f",
                       boxShadow: "0 2px 8px rgba(255, 77, 79, 0.3)",
+                      minWidth: 16,
+                      height: 16,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 11,
+                      padding: 0,
                     }}
                   />
                 )}
@@ -962,10 +964,12 @@ const LearnerLayout = () => {
                   cursor: "pointer",
                   background: "rgba(255,255,255,0.15)",
                   borderRadius: "18px",
-                  padding: "4px 10px",
+                  padding: "4px 12px 4px 8px",
                   backdropFilter: "blur(10px)",
                   border: "1px solid rgba(255,255,255,0.1)",
                   transition: "all 0.3s ease",
+                  height: 40,
+                  alignItems: 'center',
                 }}
                 className="user-profile-hover"
               >
@@ -976,6 +980,9 @@ const LearnerLayout = () => {
                     background: "linear-gradient(135deg, #667eea, #764ba2)",
                     color: "#fff",
                     border: "2px solid rgba(255,255,255,0.3)",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   {user?.fullName?.charAt(0) || "U"}
@@ -985,7 +992,8 @@ const LearnerLayout = () => {
                     display: windowWidth > 768 ? "block" : "none",
                     color: "#fff",
                     fontWeight: "500",
-                    fontSize: "14px",
+                    fontSize: "15px",
+                    marginLeft: 6,
                   }}
                 >
                   {user?.fullName || "User"}

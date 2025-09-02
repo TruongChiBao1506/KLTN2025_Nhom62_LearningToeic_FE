@@ -428,10 +428,21 @@ const LearningPathPage = () => {
                                         </Text>
                                     </div>
                                     <Space>
-                                        <Button 
-                                            icon={<BulbOutlined />} 
+                                        <Button
+                                            type="primary"
+                                            size="large"
+                                            icon={<BulbOutlined />}
                                             onClick={handleAnalyzeProgress}
                                             loading={loading}
+                                            style={{
+                                                background: 'linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)',
+                                                border: 'none',
+                                                color: '#fff',
+                                                fontWeight: 700,
+                                                boxShadow: '0 4px 16px rgba(24,144,255,0.18)',
+                                                letterSpacing: 0.5,
+                                                transition: 'all 0.2s',
+                                            }}
                                         >
                                             Phân tích AI
                                         </Button>
@@ -463,60 +474,81 @@ const LearningPathPage = () => {
                                             if (!weekData || !weekData.days) {
                                                 return <Text type="secondary">Không có hoạt động nào cho tuần này</Text>;
                                             }
-                                            // Tìm ngày hiện tại: là ngày đầu tiên có isAccessible=true và tất cả các ngày trước đã hoàn thành hết hoạt động
-                                            let currentDayIdx = -1;
+                                            // Tìm ngày đầu tiên chưa hoàn thành (ưu tiên hiển thị)
+                                            const todayDate = dayjs().format('YYYY-MM-DD');
+                                            
+                                            // Tìm ngày đầu tiên chưa hoàn thành tất cả hoạt động (bỏ qua weekend)
+                                            let firstIncompleteDay = null;
+                                            let firstIncompleteDayIdx = -1;
+                                            
                                             for (let i = 0; i < weekData.days.length; i++) {
                                                 const day = weekData.days[i];
-                                                const allPrevDone = weekData.days.slice(0, i).every(d => d.activities.every(a => a.isCompleted));
-                                                if (day.isAccessible && allPrevDone) {
-                                                    currentDayIdx = i;
+                                                const isWeekend = dayjs(day.date).day() === 0 || dayjs(day.date).day() === 6;
+                                                
+                                                if (!isWeekend && day.activities.some(a => !a.isCompleted)) {
+                                                    firstIncompleteDay = day;
+                                                    firstIncompleteDayIdx = i;
                                                     break;
                                                 }
                                             }
-                                            // Đưa ngày đang hoạt động (ngày hôm nay hoặc ngày đầu tiên có thể thao tác) lên đầu danh sách
-                                            const todayDate = dayjs().format('YYYY-MM-DD');
-                                            let daysToShow = [];
-                                            if (showAllDays) {
-                                                // Hiển thị toàn bộ, nhưng ngày hôm nay lên đầu nếu có
-                                                daysToShow = [...weekData.days];
-                                                const todayIdx = daysToShow.findIndex(day => day.date === todayDate);
-                                                if (todayIdx > -1) {
-                                                    const todayDay = daysToShow[todayIdx];
-                                                    daysToShow = [todayDay, ...daysToShow.slice(0, todayIdx), ...daysToShow.slice(todayIdx + 1)];
+                                            
+                                            // Xác định ngày nào được ưu tiên hiển thị lên đầu
+                                            let priorityDay = null;
+                                            let shouldShowAlert = false;
+                                            
+                                            if (firstIncompleteDay) {
+                                                // Có ngày chưa hoàn thành
+                                                const dayIndex = firstIncompleteDayIdx;
+                                                
+                                                // Kiểm tra tất cả ngày trước đã hoàn thành chưa
+                                                const allPreviousDaysCompleted = weekData.days.slice(0, dayIndex).every(prevDay => {
+                                                    const isPrevWeekend = dayjs(prevDay.date).day() === 0 || dayjs(prevDay.date).day() === 6;
+                                                    return isPrevWeekend || prevDay.activities.every(a => a.isCompleted);
+                                                });
+                                                
+                                                if (!allPreviousDaysCompleted) {
+                                                    // Có ngày trước chưa hoàn thành -> ưu tiên ngày trước đó
+                                                    for (let i = 0; i < dayIndex; i++) {
+                                                        const prevDay = weekData.days[i];
+                                                        const isPrevWeekend = dayjs(prevDay.date).day() === 0 || dayjs(prevDay.date).day() === 6;
+                                                        if (!isPrevWeekend && prevDay.activities.some(a => !a.isCompleted)) {
+                                                            priorityDay = prevDay;
+                                                            shouldShowAlert = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Tất cả ngày trước đã hoàn thành -> ưu tiên ngày chưa hoàn thành này
+                                                    priorityDay = firstIncompleteDay;
                                                 }
                                             } else {
-                                                // Chỉ hiển thị đúng ngày hoạt động (ngày hôm nay hoặc ngày đầu tiên có thể thao tác)
-                                                let activeDay = null;
-                                                // Ưu tiên ngày hôm nay nếu có trong tuần
+                                                // Tất cả ngày đã hoàn thành -> ưu tiên ngày hôm nay hoặc ngày gần nhất
                                                 const todayInWeek = weekData.days.find(day => day.date === todayDate);
-                                                if (todayInWeek) {
-                                                    activeDay = todayInWeek;
-                                                } else if (currentDayIdx !== -1) {
-                                                    activeDay = weekData.days[currentDayIdx];
-                                                } else {
-                                                    activeDay = weekData.days[0];
-                                                }
-                                                daysToShow = [activeDay];
+                                                priorityDay = todayInWeek || weekData.days[weekData.days.length - 1];
                                             }
-                                            // Kiểm tra nếu ngày trước đó chưa hoàn thành hết thì cảnh báo
-                                            let showAlert = false;
-                                            let prevDay = null;
-                                            if (daysToShow.length === 1) {
-                                                const activeDayIdx = weekData.days.findIndex(d => d.date === daysToShow[0]?.date);
-                                                if (activeDayIdx > 0) {
-                                                    prevDay = weekData.days[activeDayIdx - 1];
-                                                    if (prevDay && prevDay.activities.some(a => !a.isCompleted)) {
-                                                        showAlert = true;
+                                            
+                                            let daysToShow = [];
+                                            if (showAllDays) {
+                                                // Hiển thị toàn bộ, đưa ngày ưu tiên lên đầu
+                                                daysToShow = [...weekData.days];
+                                                if (priorityDay) {
+                                                    const priorityIdx = daysToShow.findIndex(day => day.date === priorityDay.date);
+                                                    if (priorityIdx > -1) {
+                                                        const priorityDayObj = daysToShow[priorityIdx];
+                                                        daysToShow = [priorityDayObj, ...daysToShow.slice(0, priorityIdx), ...daysToShow.slice(priorityIdx + 1)];
                                                     }
                                                 }
+                                            } else {
+                                                // Chỉ hiển thị ngày ưu tiên
+                                                daysToShow = priorityDay ? [priorityDay] : [];
                                             }
                                             return <>
-                                                {showAlert && (
+                                                {shouldShowAlert && (
                                                     <Alert
                                                         type="warning"
                                                         showIcon
                                                         style={{ marginBottom: 16 }}
-                                                        message="Bạn cần hoàn thành tất cả hoạt động của ngày trước để tiếp tục!"
+                                                        message="Bạn cần hoàn thành tất cả hoạt động của các ngày trước để tiếp tục!"
                                                     />
                                                 )}
                                                 {daysToShow.map((day, dayIdx) => {
@@ -541,50 +573,97 @@ const LearningPathPage = () => {
                                                             </div>
                                                         );
                                                     }
-                                                    // Xác định ngày hôm nay, hôm qua, ngày sau hôm nay
+                                                    
+                                                    // Xác định trạng thái của ngày
                                                     const todayDate = dayjs().format('YYYY-MM-DD');
-                                                    const yesterdayDate = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
                                                     const isToday = day.date === todayDate;
-                                                    const isYesterday = day.date === yesterdayDate;
-                                                    const isFuture = dayjs(day.date).isAfter(todayDate, 'day');
+                                                    const dayIndex = weekData.days.findIndex(d => d.date === day.date);
                                                     const allActivitiesDone = day.activities.every(a => a.isCompleted);
-                                                    // Logic disable checkbox
+                                                    const isFuture = dayjs(day.date).isAfter(todayDate, 'day');
+                                                    
+                                                    // Kiểm tra tất cả ngày trước đã hoàn thành chưa (bỏ qua weekend)
+                                                    const allPreviousDaysCompleted = weekData.days.slice(0, dayIndex).every(prevDay => {
+                                                        const isPrevWeekend = dayjs(prevDay.date).day() === 0 || dayjs(prevDay.date).day() === 6;
+                                                        return isPrevWeekend || prevDay.activities.every(a => a.isCompleted);
+                                                    });
+                                                    
+                                                    // Logic disable checkbox và styling
                                                     let checkboxDisabled = true;
-                                                    if (isToday && !disableAllCheckbox) {
-                                                        checkboxDisabled = false;
-                                                    } else if (isYesterday && allActivitiesDone) {
-                                                        checkboxDisabled = true;
-                                                    } else {
-                                                        checkboxDisabled = true;
-                                                    }
-                                                    // Logic background
                                                     let backgroundColor = '#fafafa';
-                                                    if (isToday && !disableAllCheckbox) {
-                                                        backgroundColor = '#f6ffed';
-                                                    }
-                                                    // Logic thông báo phụ
                                                     let subLabel = '';
-                                                    if (disableAllCheckbox && isFuture) {
-                                                        subLabel = 'Chưa đến ngày này';
-                                                    } else if (isYesterday && allActivitiesDone) {
+                                                    let dayColor = '#aaa';
+                                                    let borderStyle = '1px solid #f0f0f0';
+                                                    let boxShadow = 'none';
+                                                    
+                                                    if (disableAllCheckbox) {
+                                                        // Chưa đến ngày bắt đầu lộ trình
+                                                        checkboxDisabled = true;
+                                                        subLabel = 'Chưa đến ngày bắt đầu lộ trình';
+                                                    } else if (allActivitiesDone) {
+                                                        // Ngày đã hoàn thành tất cả hoạt động -> disable và màu xanh
+                                                        checkboxDisabled = true;
+                                                        backgroundColor = '#f6ffed';
                                                         subLabel = 'Đã hoàn thành - Đã khóa';
+                                                        dayColor = '#52c41a';
+                                                        borderStyle = '1px solid #b7eb8f';
+                                                    } else if (!allPreviousDaysCompleted) {
+                                                        // Các ngày trước chưa hoàn thành -> cho phép hoàn thành ngày này nếu không phải tương lai
+                                                        if (isFuture) {
+                                                            checkboxDisabled = true;
+                                                            subLabel = 'Chưa đến ngày này';
+                                                        } else {
+                                                            checkboxDisabled = false;
+                                                            backgroundColor = '#fff2e8';
+                                                            subLabel = 'Cần hoàn thành để mở khóa ngày tiếp theo';
+                                                            dayColor = '#fa8c16';
+                                                            borderStyle = '2px solid #ffa940';
+                                                            boxShadow = '0 2px 8px rgba(250,140,22,0.15)';
+                                                        }
+                                                    } else if (allPreviousDaysCompleted && !isFuture) {
+                                                        // Các ngày trước đã hoàn thành và không phải ngày tương lai -> cho phép
+                                                        checkboxDisabled = false;
+                                                        backgroundColor = '#e6f7ff';
+                                                        dayColor = '#1890ff';
+                                                        borderStyle = '2px solid #1890ff';
+                                                        boxShadow = '0 2px 8px rgba(24,144,255,0.15)';
+                                                        if (isToday) {
+                                                            subLabel = 'Ngày hoạt động hôm nay';
+                                                            backgroundColor = '#f0f9ff';
+                                                        } else {
+                                                            subLabel = 'Sẵn sàng hoàn thành';
+                                                        }
                                                     } else if (isFuture) {
+                                                        // Ngày tương lai -> disable
+                                                        checkboxDisabled = true;
                                                         subLabel = 'Chưa đến ngày này';
-                                                    } else if (!isToday && !isYesterday) {
-                                                        subLabel = '(Không thể chỉnh sửa)';
                                                     }
+                                                    
                                                     return (
                                                         <div key={day.date} style={{
                                                             marginBottom: 16,
                                                             padding: 12,
-                                                            border: '1px solid #f0f0f0',
+                                                            border: borderStyle,
                                                             borderRadius: 8,
-                                                            background: backgroundColor
+                                                            background: backgroundColor,
+                                                            boxShadow: boxShadow,
+                                                            transition: 'all 0.3s ease'
                                                         }}>
-                                                            <div style={{ fontWeight: 600, marginBottom: 8, color: isToday ? '#389e0d' : '#aaa' }}>
+                                                            <div style={{ 
+                                                                fontWeight: 600, 
+                                                                marginBottom: 8, 
+                                                                color: dayColor,
+                                                                fontSize: !checkboxDisabled ? 16 : 14
+                                                            }}>
                                                                 {day.dayName} ({day.date})
                                                                 {subLabel && (
-                                                                    <span style={{ marginLeft: 8, color: '#faad14', fontWeight: 400 }}>{subLabel}</span>
+                                                                    <span style={{ 
+                                                                        marginLeft: 8, 
+                                                                        color: allActivitiesDone ? '#52c41a' : (!checkboxDisabled ? '#1890ff' : '#faad14'), 
+                                                                        fontWeight: 400,
+                                                                        fontSize: 12
+                                                                    }}>
+                                                                        [{subLabel}]
+                                                                    </span>
                                                                 )}
                                                             </div>
                                                             <List

@@ -289,7 +289,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Search input */}
-                        <div className="col-6">
+                        <div className="col-5">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
@@ -307,7 +307,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Action buttons */}
-                        <div className="col-3 d-flex justify-content-end">
+                        <div className="col-4 d-flex justify-content-end">
                             {/* Add button */}
                             <button
                                 type="button"

@@ -59,7 +59,7 @@ const LearnerDashboard = () => {
       setTotalExams(statsData.examsCompleted || 0);
       setAverageScore(Math.round(statsData.averageScore || 0));
       setStudyHours(statsData.totalStudyTime || 0);
-      
+
       // Tạo mock data cho next exam (có thể implement endpoint riêng sau)
       setNextExam({
         date: "2025-07-15",
@@ -94,7 +94,7 @@ const LearnerDashboard = () => {
 
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      
+
       // Fallback với mock data nếu API fails
       setTotalExams(5);
       setAverageScore(650);
@@ -108,7 +108,7 @@ const LearnerDashboard = () => {
         { date: "2025-06-20", name: "Practice Test 2", score: 680 },
         { date: "2025-06-15", name: "Practice Test 3", score: 650 }
       ]);
-      
+
       const fallbackPerformance = {
         listening: 75,
         reading: 70,
@@ -116,14 +116,14 @@ const LearnerDashboard = () => {
         writing: 68
       };
       setPerformanceData(fallbackPerformance);
-      
+
       createScoreProgressChart([
         { date: "2025-06-25", name: "Practice Test 1", score: 720 },
         { date: "2025-06-20", name: "Practice Test 2", score: 680 },
         { date: "2025-06-15", name: "Practice Test 3", score: 650 }
       ]);
       createSkillPerformanceChart(fallbackPerformance);
-      
+
     } finally {
       setIsLoading(false);
     }
@@ -267,239 +267,240 @@ const LearnerDashboard = () => {
         </nav>
       </div>{" "}
       {/* Welcome Banner */}
-      <div className="welcome-banner" data-aos="fade-up">
-        <div className="banner-content">
-          <h2>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
-          <p>
-            Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi
-            TOEIC tiếp theo của bạn.
-          </p>
-        </div>
-      </div>
-      {/* Statistics Cards */}
-      <div className="row mt-4">
-        {/* Completed Exams Card */}
-        <div className="col-md-3" data-aos="fade-up" data-aos-delay="100">
-          <div className="stat-card">
-            <div className="stat-card-body">
-              <div className="stat-card-icon bg-primary">
-                <FontAwesomeIcon icon={faFileAlt} />
-              </div>{" "}
-              <div className="stat-card-info">
-                <h5>Bài thi đã hoàn thành</h5>
-                <h3>{isLoading ? "-" : totalExams}</h3>
-              </div>
-            </div>
+      <div style={{padding:"24px"}}>
+        <div className="welcome-banner" data-aos="fade-up">
+          <div className="banner-content">
+            <h2>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
+            <p>
+              Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi
+              TOEIC tiếp theo của bạn.
+            </p>
           </div>
         </div>
-
-        {/* Average Score Card */}
-        <div className="col-md-3" data-aos="fade-up" data-aos-delay="200">
-          <div className="stat-card">
-            <div className="stat-card-body">
-              <div className="stat-card-icon bg-success">
-                <FontAwesomeIcon icon={faChartLine} />
-              </div>{" "}
-              <div className="stat-card-info">
-                <h5>Điểm trung bình</h5>
-                <h3>{isLoading ? "-" : averageScore}</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Study Hours Card */}
-        <div className="col-md-3" data-aos="fade-up" data-aos-delay="300">
-          <div className="stat-card">
-            <div className="stat-card-body">
-              <div className="stat-card-icon bg-info">
-                <FontAwesomeIcon icon={faClock} />
-              </div>{" "}
-              <div className="stat-card-info">
-                <h5>Giờ học tập</h5>
-                <h3>{isLoading ? "-" : studyHours}</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Next Exam Card */}
-        <div className="col-md-3" data-aos="fade-up" data-aos-delay="400">
-          <div className="stat-card">
-            <div className="stat-card-body">
-              <div className="stat-card-icon bg-warning">
-                <FontAwesomeIcon icon={faCalendarCheck} />
-              </div>{" "}
-              <div className="stat-card-info">
-                <h5>Kỳ thi tiếp theo</h5>
-                <h3>
-                  {isLoading
-                    ? "-"
-                    : nextExam
-                    ? formatDate(nextExam.date)
-                    : "Chưa có lịch"}
-                </h3>
-                {nextExam && <p>{getTimeRemaining(nextExam.date)}</p>}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Charts and Tables */}
-      <div className="row mt-4">
-        {/* Score Progress Chart */}
-        <div className="col-md-8" data-aos="fade-up" data-aos-delay="100">
-          <div className="chart-container">
-            {" "}
-            <div className="chart-header">
-              <h5>Tiến độ điểm TOEIC của bạn</h5>
-            </div>
-            <div className="chart-body">
-              {isLoading ? (
-                <div className="loader-container">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
+        {/* Statistics Cards */}
+        <div className="row mt-4">
+          {/* Completed Exams Card */}
+          <div className="col-md-3" data-aos="fade-up" data-aos-delay="100">
+            <div className="stat-card">
+              <div className="stat-card-body">
+                <div className="stat-card-icon bg-primary">
+                  <FontAwesomeIcon icon={faFileAlt} />
+                </div>{" "}
+                <div className="stat-card-info">
+                  <h5>Bài thi đã hoàn thành</h5>
+                  <h3>{isLoading ? "-" : totalExams}</h3>
                 </div>
-              ) : (
-                <div id="scoreProgressChart" style={{ height: "300px" }}></div>
-              )}
+              </div>
+            </div>
+          </div>
+
+          {/* Average Score Card */}
+          <div className="col-md-3" data-aos="fade-up" data-aos-delay="200">
+            <div className="stat-card">
+              <div className="stat-card-body">
+                <div className="stat-card-icon bg-success">
+                  <FontAwesomeIcon icon={faChartLine} />
+                </div>{" "}
+                <div className="stat-card-info">
+                  <h5>Điểm trung bình</h5>
+                  <h3>{isLoading ? "-" : averageScore}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Study Hours Card */}
+          <div className="col-md-3" data-aos="fade-up" data-aos-delay="300">
+            <div className="stat-card">
+              <div className="stat-card-body">
+                <div className="stat-card-icon bg-info">
+                  <FontAwesomeIcon icon={faClock} />
+                </div>{" "}
+                <div className="stat-card-info">
+                  <h5>Giờ học tập</h5>
+                  <h3>{isLoading ? "-" : studyHours}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Next Exam Card */}
+          <div className="col-md-3" data-aos="fade-up" data-aos-delay="400">
+            <div className="stat-card">
+              <div className="stat-card-body">
+                <div className="stat-card-icon bg-warning">
+                  <FontAwesomeIcon icon={faCalendarCheck} />
+                </div>{" "}
+                <div className="stat-card-info">
+                  <h5>Kỳ thi tiếp theo</h5>
+                  <h3>
+                    {isLoading
+                      ? "-"
+                      : nextExam
+                        ? formatDate(nextExam.date)
+                        : "Chưa có lịch"}
+                  </h3>
+                  {nextExam && <p>{getTimeRemaining(nextExam.date)}</p>}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Recent Exam Results */}
-        <div className="col-md-4" data-aos="fade-up" data-aos-delay="200">
-          <div className="chart-container">
-            {" "}
-            <div className="chart-header">
-              <h5>Kết quả thi gần đây</h5>
-            </div>
-            <div className="chart-body">
-              {isLoading ? (
-                <div className="loader-container">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              ) : recentExams.length > 0 ? (
-                <div className="recent-exams-list">
-                  {recentExams.map((exam, index) => (
-                    <div className="recent-exam-item" key={index}>
-                      <div className="exam-date">{formatDate(exam.date)}</div>
-                      <div className="exam-name">{exam.name}</div>
-                      <div className="exam-score">
-                        {exam.score}
-                        <FontAwesomeIcon
-                          icon={faMedal}
-                          className={`ms-2 ${
-                            exam.score >= 800
-                              ? "text-warning"
-                              : exam.score >= 700
-                              ? "text-secondary"
-                              : exam.score >= 600
-                              ? "text-bronze"
-                              : ""
-                          }`}
-                        />
-                      </div>
+        {/* Charts and Tables */}
+        <div className="row mt-4">
+          {/* Score Progress Chart */}
+          <div className="col-md-8" data-aos="fade-up" data-aos-delay="100">
+            <div className="chart-container">
+              {" "}
+              <div className="chart-header">
+                <h5>Tiến độ điểm TOEIC của bạn</h5>
+              </div>
+              <div className="chart-body">
+                {isLoading ? (
+                  <div className="loader-container">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="no-data-message">
-                  Không tìm thấy bài thi nào gần đây. Hãy làm bài thi thực hành
-                  đầu tiên của bạn để xem kết quả ở đây.
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <div id="scoreProgressChart" style={{ height: "300px" }}></div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* Skill Performance Chart */}
-      <div className="row mt-4">
-        <div className="col-12" data-aos="fade-up" data-aos-delay="300">
-          <div className="chart-container">
-            <div className="chart-header">
-              <h5>Performance by Skill</h5>
-            </div>
-            <div className="chart-body">
-              {isLoading ? (
-                <div className="loader-container">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
+
+          {/* Recent Exam Results */}
+          <div className="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div className="chart-container">
+              {" "}
+              <div className="chart-header">
+                <h5>Kết quả thi gần đây</h5>
+              </div>
+              <div className="chart-body">
+                {isLoading ? (
+                  <div className="loader-container">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  id="skillPerformanceChart"
-                  style={{ height: "300px" }}
-                ></div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Study Recommendations */}
-      <div className="row mt-4" data-aos="fade-up" data-aos-delay="400">
-        <div className="col-12">
-          <div className="recommendations-container">
-            <div className="recommendations-header">
-              <h5>Recommended Study Focus</h5>
-            </div>
-            <div className="recommendations-body">
-              {isLoading ? (
-                <div className="loader-container">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="row">
-                  {performanceData &&
-                    Object.entries({
-                      listening: performanceData.listening || 0,
-                      reading: performanceData.reading || 0,
-                      speaking: performanceData.speaking || 0,
-                      writing: performanceData.writing || 0,
-                    })
-                      .sort(([_, a], [__, b]) => a - b)
-                      .slice(0, 2)
-                      .map(([skill, score], index) => (
-                        <div className="col-md-6" key={index}>
-                          <div className="recommendation-card">
-                            <h6>
-                              Improve your{" "}
-                              {skill.charAt(0).toUpperCase() + skill.slice(1)}{" "}
-                              Skills
-                            </h6>
-                            <div className="progress mb-3">
-                              <div
-                                className="progress-bar"
-                                role="progressbar"
-                                style={{ width: `${score}%` }}
-                                aria-valuenow={score}
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                              >
-                                {score}%
-                              </div>
-                            </div>
-                            <p>
-                              Your performance in this area is below average.
-                              Focus on practicing more {skill} exercises.
-                            </p>
-                            <a
-                              href={`/learner/materials?skill=${skill}`}
-                              className="btn btn-sm btn-outline-primary"
-                            >
-                              View Study Materials
-                            </a>
-                          </div>
+                ) : recentExams.length > 0 ? (
+                  <div className="recent-exams-list">
+                    {recentExams.map((exam, index) => (
+                      <div className="recent-exam-item" key={index}>
+                        <div className="exam-date">{formatDate(exam.date)}</div>
+                        <div className="exam-name">{exam.name}</div>
+                        <div className="exam-score">
+                          {exam.score}
+                          <FontAwesomeIcon
+                            icon={faMedal}
+                            className={`ms-2 ${exam.score >= 800
+                                ? "text-warning"
+                                : exam.score >= 700
+                                  ? "text-secondary"
+                                  : exam.score >= 600
+                                    ? "text-bronze"
+                                    : ""
+                              }`}
+                          />
                         </div>
-                      ))}
-                </div>
-              )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="no-data-message">
+                    Không tìm thấy bài thi nào gần đây. Hãy làm bài thi thực hành
+                    đầu tiên của bạn để xem kết quả ở đây.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Skill Performance Chart */}
+        <div className="row mt-4">
+          <div className="col-12" data-aos="fade-up" data-aos-delay="300">
+            <div className="chart-container">
+              <div className="chart-header">
+                <h5>Performance by Skill</h5>
+              </div>
+              <div className="chart-body">
+                {isLoading ? (
+                  <div className="loader-container">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    id="skillPerformanceChart"
+                    style={{ height: "300px" }}
+                  ></div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Study Recommendations */}
+        <div className="row mt-4" data-aos="fade-up" data-aos-delay="400">
+          <div className="col-12">
+            <div className="recommendations-container">
+              <div className="recommendations-header">
+                <h5>Recommended Study Focus</h5>
+              </div>
+              <div className="recommendations-body">
+                {isLoading ? (
+                  <div className="loader-container">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row">
+                    {performanceData &&
+                      Object.entries({
+                        listening: performanceData.listening || 0,
+                        reading: performanceData.reading || 0,
+                        speaking: performanceData.speaking || 0,
+                        writing: performanceData.writing || 0,
+                      })
+                        .sort(([_, a], [__, b]) => a - b)
+                        .slice(0, 2)
+                        .map(([skill, score], index) => (
+                          <div className="col-md-6" key={index}>
+                            <div className="recommendation-card">
+                              <h6>
+                                Improve your{" "}
+                                {skill.charAt(0).toUpperCase() + skill.slice(1)}{" "}
+                                Skills
+                              </h6>
+                              <div className="progress mb-3">
+                                <div
+                                  className="progress-bar"
+                                  role="progressbar"
+                                  style={{ width: `${score}%` }}
+                                  aria-valuenow={score}
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                >
+                                  {score}%
+                                </div>
+                              </div>
+                              <p>
+                                Your performance in this area is below average.
+                                Focus on practicing more {skill} exercises.
+                              </p>
+                              <a
+                                href={`/learner/materials?skill=${skill}`}
+                                className="btn btn-sm btn-outline-primary"
+                              >
+                                View Study Materials
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

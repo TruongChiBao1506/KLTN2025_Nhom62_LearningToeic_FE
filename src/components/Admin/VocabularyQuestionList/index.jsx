@@ -1,12 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faCirclePlus,
-    faEdit,
-    faTrash,
-    faSearch,
-    faQuestion
-} from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faQuestion, faEdit, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';

@@ -67,7 +67,7 @@ const IndicateQuestion = ({
     // Table render by sectionId
     const renderTable = () => {
         switch (sectionId) {
-            case "686007e22278739d2ceea77a":
+            case "686ce171b614dda1fc08f1d0":
                 return (
                     <TableSection1
                         paginatedQuestions={paginatedQuestions}
@@ -80,7 +80,7 @@ const IndicateQuestion = ({
                         retrieveQuestions={retrieveQuestions}
                     />
                 );
-            case "686007e22278739d2ceea77b":
+            case "686ce171b614dda1fc08f1d1":
                 return (
                     <TableSection2
                         paginatedQuestions={paginatedQuestions}
@@ -92,7 +92,7 @@ const IndicateQuestion = ({
                         retrieveQuestions={retrieveQuestions}
                     />
                 );
-            case "686007e22278739d2ceea77c":
+            case "686ce171b614dda1fc08f1d2":
                 return (
                     <TableSection3
                         paginatedQuestions={paginatedQuestions}
@@ -105,7 +105,7 @@ const IndicateQuestion = ({
                         retrieveQuestions={retrieveQuestions}
                     />
                 );
-            case "686007e22278739d2ceea77d":
+            case "686ce171b614dda1fc08f1d3":
                 return (
                     <TableSection4
                         paginatedQuestions={paginatedQuestions}
@@ -118,7 +118,7 @@ const IndicateQuestion = ({
                         retrieveQuestions={retrieveQuestions}
                     />
                 );
-            case "686007e22278739d2ceea77e":
+            case "686ce171b614dda1fc08f1d4":
                 return (
                     <TableSection5
                         paginatedQuestions={paginatedQuestions}
@@ -129,7 +129,7 @@ const IndicateQuestion = ({
                         retrieveQuestions={retrieveQuestions}
                     />
                 );
-            case "686007e22278739d2ceea77f":
+            case "686ce171b614dda1fc08f1d5":
                 return (
                     <TableSection6
                         paginatedQuestions={paginatedQuestions}

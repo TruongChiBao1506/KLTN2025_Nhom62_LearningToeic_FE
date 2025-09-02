@@ -228,21 +228,6 @@ const VocabularyQuestion = () => {
                             Đang tải dữ liệu vocabulary questions cho topic {topicId}...
                         </p>
                     </div>
-                ) : vocabularyQuestions.length === 0 ? (
-                    <div
-                        className="alert alert-info mt-3"
-                        role="alert"
-                        data-aos="zoom-in"
-                        data-aos-duration="600"
-                    >
-                        <h4 className="alert-heading">
-                            <FontAwesomeIcon icon={faBook} className="me-2" />
-                            Chưa có vocabulary questions
-                        </h4>
-                        <p className="mb-0">
-                            Topic này chưa có vocabulary questions nào. Hãy thêm vocabulary questions mới.
-                        </p>
-                    </div>
                 ) : (
                     <VocabularyQuestionList
                         vocabularyQuestions={vocabularyQuestions}

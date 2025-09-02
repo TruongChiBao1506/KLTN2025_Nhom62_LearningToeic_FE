@@ -164,6 +164,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredSections.length);
 
+    console.log(("Sections: ", sections));
     return (
         <div className="page-heading">
             <div className="section">

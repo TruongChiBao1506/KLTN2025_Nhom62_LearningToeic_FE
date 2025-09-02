@@ -21,42 +21,42 @@ const Sidebar = ({ isToggled }) => {
         {
             key: 'section',
             icon: 'fa-solid fa-section',
-            label: 'Quản lý Section',
+            label: 'Xem danh sách phần thi',
             path: '/admin/section',
             routeName: 'admin.section.all'
         },
         {
             key: 'topic',
             icon: 'fas fa-file-alt',
-            label: 'Quản lý Topic',
+            label: 'Quản lý chủ đề',
             path: '/admin/topic',
             routeName: 'admin.topic.all'
         },
         {
             key: 'grammar',
             icon: 'fa-solid fa-spell-check',
-            label: 'Quản lý Grammar',
+            label: 'Quản lý ngữ pháp',
             path: '/admin/grammar',
             routeName: 'admin.grammar.all'
         },
         {
             key: 'learner',
             icon: 'fas fa-users',
-            label: 'Quản lý Learner',
+            label: 'Quản lý học viên',
             path: '/admin/learner',
             routeName: 'admin.learner.all'
         },
         {
             key: 'exam',
             icon: 'fa-solid fa-file',
-            label: 'Quản lý Exam',
+            label: 'Quản lý đề thi',
             path: '/admin/exam',
             routeName: 'admin.exam.all'
         },
         {
             key: 'feedback',
             icon: 'fa-solid fa-comment',
-            label: 'Quản lý Feedback',
+            label: 'Quản lý phản hồi',
             path: '/admin/feedback',
             routeName: 'admin.feedback.all'
         },
