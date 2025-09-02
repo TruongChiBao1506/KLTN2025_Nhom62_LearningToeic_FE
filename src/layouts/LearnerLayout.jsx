@@ -316,11 +316,6 @@ const LearnerLayout = () => {
           label: <Link to="/learner/topics">Chủ đề từ vựng</Link>,
         },
         {
-          key: "/learner/vocabulary",
-          icon: <Heart size={16} />,
-          label: <Link to="/learner/vocabulary">Từ vựng đã lưu</Link>,
-        },
-        {
           key: "/learner/dictionary",
           icon: <Search size={16} />,
           label: <Link to="/learner/dictionary">Từ điển</Link>,
@@ -332,11 +327,6 @@ const LearnerLayout = () => {
       icon: <PenTool size={18} />,
       label: "Luyện tập",
       children: [
-        {
-          key: "/learner/notes",
-          icon: <StickyNote size={16} />,
-          label: <Link to="/learner/notes">Ghi chú cá nhân</Link>,
-        },
         {
           key: "/learner/blog",
           icon: <Newspaper size={16} />,
@@ -367,11 +357,6 @@ const LearnerLayout = () => {
           label: <Link to="/learner/leaderboard">Bảng xếp hạng</Link>,
         },
         {
-          key: "/learner/achievements",
-          icon: <Star size={16} />,
-          label: <Link to="/learner/achievements">Thành tích</Link>,
-        },
-        {
           key: "/learner/study-timer",
           icon: <Clock size={16} />,
           label: <Link to="/learner/study-timer">Đồng hồ học tập</Link>,
@@ -388,38 +373,33 @@ const LearnerLayout = () => {
         },
       ],
     },
-    {
-      key: "community",
-      icon: <Globe size={18} />,
-      label: "Cộng đồng",
-      children: [
-        {
-          key: "/learner/events",
-          icon: <Calendar size={16} />,
-          label: <Link to="/learner/events">Sự kiện</Link>,
-        },
-        {
-          key: "/learner/study-groups",
-          icon: <Video size={16} />,
-          label: <Link to="/learner/study-groups">Nhóm học tập</Link>,
-        },
-        {
-          key: "/learner/challenges",
-          icon: <Gift size={16} />,
-          label: <Link to="/learner/challenges">Thử thách</Link>,
-        },
-        {
-          key: "/learner/ai-tutor",
-          icon: <Lightbulb size={16} />,
-          label: <Link to="/learner/ai-tutor">AI Gia sư</Link>,
-        },
-      ],
-    },
-    {
-      key: "/learner/profile",
-      icon: <User size={18} />,
-      label: <Link to="/learner/profile">Hồ sơ cá nhân</Link>,
-    },
+    // {
+    //   key: "community",
+    //   icon: <Globe size={18} />,
+    //   label: "Cộng đồng",
+    //   children: [
+    //     {
+    //       key: "/learner/events",
+    //       icon: <Calendar size={16} />,
+    //       label: <Link to="/learner/events">Sự kiện</Link>,
+    //     },
+    //     {
+    //       key: "/learner/study-groups",
+    //       icon: <Video size={16} />,
+    //       label: <Link to="/learner/study-groups">Nhóm học tập</Link>,
+    //     },
+    //     {
+    //       key: "/learner/challenges",
+    //       icon: <Gift size={16} />,
+    //       label: <Link to="/learner/challenges">Thử thách</Link>,
+    //     },
+    //     {
+    //       key: "/learner/ai-tutor",
+    //       icon: <Lightbulb size={16} />,
+    //       label: <Link to="/learner/ai-tutor">AI Gia sư</Link>,
+    //     },
+    //   ],
+    // },
     {
       key: "/learner/settings",
       icon: <Settings size={18} />,
@@ -463,6 +443,26 @@ const LearnerLayout = () => {
       label: <Link to="/learner/profile">Hồ sơ cá nhân</Link>,
     },
     {
+      key: "/learner/progress",
+      icon: <TrendingUp size={16} />,
+      label: <Link to="/learner/progress">Tiến độ học tập</Link>,
+    },
+    {
+      key: "/learner/notes",
+      icon: <StickyNote size={16} />,
+      label: <Link to="/learner/notes">Ghi chú cá nhân</Link>,
+    },
+    {
+      key: "/learner/vocabulary",
+      icon: <Heart size={16} />,
+      label: <Link to="/learner/vocabulary">Từ vựng đã lưu</Link>,
+    },
+    {
+      key: "/learner/achievements",
+      icon: <Star size={16} />,
+      label: <Link to="/learner/achievements">Thành tích</Link>,
+    },
+    {
       key: "settings",
       icon: <Settings size={16} />,
       label: <Link to="/learner/settings">Cài đặt</Link>,
@@ -498,40 +498,40 @@ const LearnerLayout = () => {
     },
     ...(notifications.length > 0
       ? notifications.map((notification) => ({
-          key: notification.id,
+        key: notification.id,
+        label: (
+          <div style={{ padding: "8px 0" }}>
+            <div
+              style={{ fontWeight: !notification.read ? "bold" : "normal" }}
+            >
+              {notification.title}
+            </div>
+            <div
+              style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}
+            >
+              {notification.message}
+            </div>
+            <div
+              style={{ fontSize: "11px", color: "#999", marginTop: "4px" }}
+            >
+              {notification.time}
+            </div>
+          </div>
+        ),
+      }))
+      : [
+        {
+          key: "empty",
           label: (
-            <div style={{ padding: "8px 0" }}>
-              <div
-                style={{ fontWeight: !notification.read ? "bold" : "normal" }}
-              >
-                {notification.title}
-              </div>
-              <div
-                style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}
-              >
-                {notification.message}
-              </div>
-              <div
-                style={{ fontSize: "11px", color: "#999", marginTop: "4px" }}
-              >
-                {notification.time}
-              </div>
+            <div
+              style={{ padding: "20px", textAlign: "center", color: "#999" }}
+            >
+              Không có thông báo nào
             </div>
           ),
-        }))
-      : [
-          {
-            key: "empty",
-            label: (
-              <div
-                style={{ padding: "20px", textAlign: "center", color: "#999" }}
-              >
-                Không có thông báo nào
-              </div>
-            ),
-            disabled: true,
-          },
-        ]),
+          disabled: true,
+        },
+      ]),
     {
       type: "divider",
     },

@@ -762,6 +762,27 @@
   color: #95a5a6;
 }
 
+.ant-dropdown-menu .ant-dropdown-menu-item a,
+.ant-dropdown-menu .ant-dropdown-menu-submenu-title a {
+  text-decoration: none !important;
+}
+
+/* Loại bỏ gạch chân cho tất cả Link components trong dropdown */
+.ant-dropdown a,
+.ant-dropdown-menu a,
+.ant-menu-item a,
+.ant-menu-submenu-title a {
+  text-decoration: none !important;
+}
+
+/* Đảm bảo hover states vẫn hoạt động */
+.ant-dropdown a:hover,
+.ant-dropdown-menu a:hover,
+.ant-menu-item a:hover,
+.ant-menu-submenu-title a:hover {
+  text-decoration: none !important;
+}
+
 /* User Profile Menu */
 .user-profile-menu {
   position: relative;
