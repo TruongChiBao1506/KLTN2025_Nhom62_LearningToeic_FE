@@ -43,6 +43,16 @@ import Challenges from "../pages/Learner/Challenges";
 import Settings from "../pages/Learner/Settings";
 import SectionList from "../pages/Learner/SectionList";
 
+// Import Part components
+import Part1 from "../pages/Learner/Part1";
+import Part2 from "../pages/Learner/Part2";
+import Part3 from "../pages/Learner/Part3";
+import Part4 from "../pages/Learner/Part4";
+import Part5 from "../pages/Learner/Part5";
+import Part6 from "../pages/Learner/Part6";
+import Part7 from "../pages/Learner/Part7";
+import Practice from "../pages/Learner/Practice";
+
 const LearnerRoutes = () => {
   return (
     <Routes>
@@ -360,6 +370,74 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <LearningPath />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* TOEIC Parts Routes */}
+        <Route
+          path="part-1"
+          element={
+            <ProtectedRoute>
+              <Part1 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-2"
+          element={
+            <ProtectedRoute>
+              <Part2 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-3"
+          element={
+            <ProtectedRoute>
+              <Part3 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-4"
+          element={
+            <ProtectedRoute>
+              <Part4 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-5"
+          element={
+            <ProtectedRoute>
+              <Part5 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-6"
+          element={
+            <ProtectedRoute>
+              <Part6 />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="part-7"
+          element={
+            <ProtectedRoute>
+              <Part7 />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Generic Practice Route */}
+        <Route
+          path="practice/:sectionId"
+          element={
+            <ProtectedRoute>
+              <Practice />
             </ProtectedRoute>
           }
         />

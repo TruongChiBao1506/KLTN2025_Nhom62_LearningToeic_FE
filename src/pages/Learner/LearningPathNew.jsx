@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import 'dayjs/locale/vi';
 import { 
     Card, 
     Button, 
@@ -42,10 +41,6 @@ import {
 } from '@ant-design/icons';
 import '../../assets/css/aiLearningPath.css';
 import useAILearningPath from '../../hooks/useAILearningPath';
-
-
-// Cấu hình dayjs sử dụng locale tiếng Việt
-dayjs.locale('vi');
 
 // Style constants
 const loadingBoxStyle = {
@@ -122,6 +117,14 @@ const LearningPathPage = () => {
 
     const userData = getUserData();
     const userId = userData.id;
+    
+    // Set page title
+    useEffect(() => {
+        document.title = 'Lộ trình học tập AI - TOEIC Learning Path';
+        return () => {
+            document.title = 'TOEIC Admin'; // Reset title khi rời khỏi trang
+        };
+    }, []);
     
     console.log('User data:', userData, 'User ID:', userId);
     
@@ -468,14 +471,77 @@ const LearningPathPage = () => {
                                             <CalendarOutlined /> Hoạt động tuần hiện tại
                                         </Title>
                                         {(() => {
-                                            const completedActivities = currentPath.progress?.completedActivities || 0;
-                                            const currentWeek = Math.floor(completedActivities / 15) + 1;
-                                            const weekData = currentPath.weeklySchedule.find(w => w.week === Math.min(currentWeek, currentPath.weeklySchedule.length));
+                                            const todayDate = dayjs().format('YYYY-MM-DD');
+                                            
+                                            // Tìm tuần chứa ngày hôm nay trước, nếu không có thì dùng logic cũ
+                                            let weekData = null;
+                                            
+                                            // Ưu tiên tìm tuần có chứa ngày hôm nay
+                                            weekData = currentPath.weeklySchedule.find(week => 
+                                                week.days && week.days.some(day => day.date === todayDate)
+                                            );
+                                            
+                                            // Nếu không tìm thấy tuần chứa ngày hôm nay, dùng logic dựa trên ngày thực tế
+                                            if (!weekData) {
+                                                // Tính tuần hiện tại dựa trên ngày bắt đầu lộ trình và ngày hôm nay
+                                                const pathStartDate = currentPath.startDate ? dayjs(currentPath.startDate) : null;
+                                                const today = dayjs();
+                                                
+                                                let currentWeek = 1; // Mặc định tuần 1
+                                                
+                                                if (pathStartDate) {
+                                                    // Tính số ngày đã trải qua từ ngày bắt đầu
+                                                    const daysPassed = today.diff(pathStartDate, 'day');
+                                                    
+                                                    // Xác định startDate là thứ mấy trong tuần (0 = Chủ nhật, 1 = Thứ 2, ..., 6 = Thứ 7)
+                                                    const startDayOfWeek = pathStartDate.day();
+                                                    
+                                                    console.log('=== WEEK CALCULATION DEBUG ===');
+                                                    console.log('Path start date:', pathStartDate.format('YYYY-MM-DD dddd'));
+                                                    console.log('Start day of week:', startDayOfWeek, '(0=CN, 1=T2, 2=T3, 3=T4, 4=T5, 5=T6, 6=T7)');
+                                                    console.log('Today:', today.format('YYYY-MM-DD dddd'));
+                                                    console.log('Days passed:', daysPassed);
+                                                    
+                                                    if (daysPassed >= 0) {
+                                                        // Tính tuần hiện tại: mỗi 7 ngày = 1 tuần
+                                                        currentWeek = Math.floor(daysPassed / 7) + 1;
+                                                    }
+                                                    
+                                                    console.log('Calculated current week:', currentWeek);
+                                                    console.log('Logic: Tuần 1 bắt đầu từ', pathStartDate.format('DD/MM (dddd)'), 'và kéo dài 7 ngày');
+                                                }
+                                                
+                                                // Đảm bảo currentWeek không vượt quá số tuần có trong lộ trình
+                                                currentWeek = Math.min(currentWeek, currentPath.weeklySchedule.length);
+                                                
+                                                // Tìm tuần dựa trên currentWeek đã tính
+                                                weekData = currentPath.weeklySchedule.find(w => w.week === currentWeek);
+                                                
+                                                // Nếu tìm thấy tuần và còn hoạt động chưa hoàn thành trong tuần đó
+                                                if (weekData && weekData.days) {
+                                                    const hasIncompleteActivities = weekData.days.some(day => 
+                                                        day.activities && day.activities.some(activity => !activity.isCompleted)
+                                                    );
+                                                    
+                                                    // Nếu tuần hiện tại vẫn có hoạt động chưa hoàn thành, giữ nguyên
+                                                    // Nếu tuần hiện tại đã hoàn thành hết, chuyển sang tuần tiếp theo (nếu có)
+                                                    if (!hasIncompleteActivities && currentWeek < currentPath.weeklySchedule.length) {
+                                                        const nextWeekData = currentPath.weeklySchedule.find(w => w.week === currentWeek + 1);
+                                                        if (nextWeekData) {
+                                                            weekData = nextWeekData;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            
+                                            // Nếu vẫn không tìm thấy, lấy tuần đầu tiên
+                                            if (!weekData && currentPath.weeklySchedule.length > 0) {
+                                                weekData = currentPath.weeklySchedule[0];
+                                            }
+                                            
                                             if (!weekData || !weekData.days) {
                                                 return <Text type="secondary">Không có hoạt động nào cho tuần này</Text>;
                                             }
-                                            // Tìm ngày đầu tiên chưa hoàn thành (ưu tiên hiển thị)
-                                            const todayDate = dayjs().format('YYYY-MM-DD');
                                             
                                             // Tìm ngày đầu tiên chưa hoàn thành tất cả hoạt động (bỏ qua weekend)
                                             let firstIncompleteDay = null;
@@ -496,8 +562,14 @@ const LearningPathPage = () => {
                                             let priorityDay = null;
                                             let shouldShowAlert = false;
                                             
-                                            if (firstIncompleteDay) {
-                                                // Có ngày chưa hoàn thành
+                                            // Ưu tiên 1: Luôn ưu tiên ngày hôm nay nếu có trong tuần
+                                            const todayInWeek = weekData.days.find(day => day.date === todayDate);
+                                            
+                                            if (todayInWeek) {
+                                                // Có ngày hôm nay trong tuần -> luôn ưu tiên ngày hôm nay
+                                                priorityDay = todayInWeek;
+                                            } else if (firstIncompleteDay) {
+                                                // Không có ngày hôm nay và có ngày chưa hoàn thành
                                                 const dayIndex = firstIncompleteDayIdx;
                                                 
                                                 // Kiểm tra tất cả ngày trước đã hoàn thành chưa
@@ -522,9 +594,8 @@ const LearningPathPage = () => {
                                                     priorityDay = firstIncompleteDay;
                                                 }
                                             } else {
-                                                // Tất cả ngày đã hoàn thành -> ưu tiên ngày hôm nay hoặc ngày gần nhất
-                                                const todayInWeek = weekData.days.find(day => day.date === todayDate);
-                                                priorityDay = todayInWeek || weekData.days[weekData.days.length - 1];
+                                                // Tất cả ngày đã hoàn thành và không có ngày hôm nay -> hiển thị ngày gần nhất
+                                                priorityDay = weekData.days[weekData.days.length - 1];
                                             }
                                             
                                             let daysToShow = [];

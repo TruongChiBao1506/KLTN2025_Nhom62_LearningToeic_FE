@@ -17,27 +17,19 @@ import {
   ClipboardList,
   GraduationCap,
   Rocket,
-  Target,
   Home,
   TrendingUp,
   FileText,
-  Book,
   BookOpen,
   Languages,
   ArrowRight,
-  Layers,
-  CreditCard,
   Heart,
   Search,
   PenTool,
   StickyNote,
-  Newspaper,
-  Beaker,
-  Trophy,
-  Star,
   Clock,
   Headphones,
-  Globe,
+  Star,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -253,157 +245,111 @@ const LearnerLayout = () => {
     },
     {
       key: "/learner/learning-path",
-      icon: <TrendingUp size={18} />,
-      label: <Link to="/learner/learning-path">Lộ trình học tập</Link>,
+      icon: <BookOpen size={18} />,
+      label: <Link to="/learner/learning-path">Quản lý lộ trình học tập</Link>,
     },
     {
-      key: "exams",
-      icon: <FileText size={18} />,
-      label: "Bài thi & Luyện tập",
+      key: "learning",
+      icon: <GraduationCap size={18} />,
+      label: "Học tập",
       children: [
         {
-          key: "/learner/exams",
-          icon: <ClipboardList size={16} />,
-          label: <Link to="/learner/exams">Danh sách bài thi</Link>,
+          key: "/learner/dictionary",
+          icon: <Search size={16} />,
+          label: <Link to="/learner/dictionary">Tra cứu từ điển</Link>,
         },
         {
-          key: "/learner/full-test",
-          icon: <GraduationCap size={16} />,
-          label: <Link to="/learner/full-test">Thi thử Full Test</Link>,
+          key: "/learner/grammar",
+          icon: <Languages size={16} />,
+          label: <Link to="/learner/grammar">Học ngữ pháp</Link>,
         },
+        {
+          key: "/learner/vocabulary",
+          icon: <BookOpen size={16} />,
+          label: <Link to="/learner/vocabulary">Học từ vựng</Link>,
+        },
+      ],
+    },
+    {
+      key: "/learner/speaking-writing",
+      icon: <PenTool size={18} />,
+      label: <Link to="/learner/speaking-writing">Luyện S&W</Link>,
+    },
+    {
+      key: "listening-reading",
+      icon: <Headphones size={18} />,
+      label: "Luyện L&R",
+      children: [
+        {
+          key: "/learner/part-1",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-1">Part 1: Photographs</Link>,
+        },
+        {
+          key: "/learner/part-2",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-2">Part 2: Question-Response</Link>,
+        },
+        {
+          key: "/learner/part-3",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-3">Part 3: Conversations</Link>,
+        },
+        {
+          key: "/learner/part-4",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-4">Part 4: Short Talks</Link>,
+        },
+        {
+          key: "/learner/part-5",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-5">Part 5: Incomplete Sentences</Link>,
+        },
+        {
+          key: "/learner/part-6",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-6">Part 6: Text Completion</Link>,
+        },
+        {
+          key: "/learner/part-7",
+          icon: <FileText size={16} />,
+          label: <Link to="/learner/part-7">Part 7: Reading Comprehension</Link>,
+        },
+      ],
+    },
+    {
+      key: "practice-tests",
+      icon: <ClipboardList size={18} />,
+      label: "Làm đề thi thử",
+      children: [
         {
           key: "/learner/mini-test",
           icon: <Rocket size={16} />,
           label: <Link to="/learner/mini-test">Mini Test</Link>,
         },
-      ],
-    },
-    {
-      key: "learning",
-      icon: <Book size={18} />,
-      label: "Học tập",
-      children: [
         {
-          key: "/learner/materials",
-          icon: <BookOpen size={16} />,
-          label: <Link to="/learner/materials">Tài liệu học tập</Link>,
-        },
-        {
-          key: "/learner/grammar",
-          icon: <Languages size={16} />,
-          label: <Link to="/learner/grammar">Ngữ pháp</Link>,
-        },
-        {
-          key: "/learner/improve",
-          icon: <ArrowRight size={16} />,
-          label: <Link to="/learner/improve">Cải thiện kỹ năng</Link>,
-        },
-        {
-          key: "/learner/section",
-          icon: <Layers size={16} />,
-          label: <Link to="/learner/section">Phần thi</Link>,
+          key: "/learner/full-test",
+          icon: <GraduationCap size={16} />,
+          label: <Link to="/learner/full-test">Full Test</Link>,
         },
       ],
     },
     {
-      key: "vocabulary",
-      icon: <CreditCard size={18} />,
-      label: "Từ vựng",
-      children: [
-        {
-          key: "/learner/topics",
-          icon: <BookOpen size={16} />,
-          label: <Link to="/learner/topics">Chủ đề từ vựng</Link>,
-        },
-        {
-          key: "/learner/dictionary",
-          icon: <Search size={16} />,
-          label: <Link to="/learner/dictionary">Từ điển</Link>,
-        },
-      ],
-    },
-    {
-      key: "practice",
-      icon: <PenTool size={18} />,
-      label: "Luyện tập",
-      children: [
-        {
-          key: "/learner/blog",
-          icon: <Newspaper size={16} />,
-          label: <Link to="/learner/blog">Blog & Tin tức</Link>,
-        },
-        {
-          key: "/learner/practice-sw",
-          icon: <PenTool size={16} />,
-          label: (
-            <Link to="/learner/practice-sw">Luyện Speaking & Writing</Link>
-          ),
-        },
-      ],
-    },
-    {
-      key: "tools",
-      icon: <Beaker size={18} />,
-      label: "Công cụ & Tính năng",
-      children: [
-        {
-          key: "/learner/progress",
-          icon: <TrendingUp size={16} />,
-          label: <Link to="/learner/progress">Tiến độ học tập</Link>,
-        },
-        {
-          key: "/learner/leaderboard",
-          icon: <Trophy size={16} />,
-          label: <Link to="/learner/leaderboard">Bảng xếp hạng</Link>,
-        },
-        {
-          key: "/learner/study-timer",
-          icon: <Clock size={16} />,
-          label: <Link to="/learner/study-timer">Đồng hồ học tập</Link>,
-        },
-        {
-          key: "/learner/focus-mode",
-          icon: <Target size={16} />,
-          label: <Link to="/learner/focus-mode">Chế độ tập trung</Link>,
-        },
-        {
-          key: "/learner/audio-trainer",
-          icon: <Headphones size={16} />,
-          label: <Link to="/learner/audio-trainer">Luyện nghe</Link>,
-        },
-      ],
-    },
-    // {
-    //   key: "community",
-    //   icon: <Globe size={18} />,
-    //   label: "Cộng đồng",
-    //   children: [
-    //     {
-    //       key: "/learner/events",
-    //       icon: <Calendar size={16} />,
-    //       label: <Link to="/learner/events">Sự kiện</Link>,
-    //     },
-    //     {
-    //       key: "/learner/study-groups",
-    //       icon: <Video size={16} />,
-    //       label: <Link to="/learner/study-groups">Nhóm học tập</Link>,
-    //     },
-    //     {
-    //       key: "/learner/challenges",
-    //       icon: <Gift size={16} />,
-    //       label: <Link to="/learner/challenges">Thử thách</Link>,
-    //     },
-    //     {
-    //       key: "/learner/ai-tutor",
-    //       icon: <Lightbulb size={16} />,
-    //       label: <Link to="/learner/ai-tutor">AI Gia sư</Link>,
-    //     },
-    //   ],
-    // },
-    {
-      key: "/learner/settings",
+      key: "others",
       icon: <Settings size={18} />,
-      label: <Link to="/learner/settings">Cài đặt</Link>,
+      label: "Khác",
+      children: [
+        {
+          key: "/learner/feedback",
+          icon: <Star size={16} />,
+          label: <Link to="/learner/feedback">Góp ý</Link>,
+        },
+        {
+          key: "/learner/settings",
+          icon: <Settings size={16} />,
+          label: <Link to="/learner/settings">Cài đặt</Link>,
+        },
+      ],
     },
   ];
 
@@ -1194,6 +1140,24 @@ const LearnerLayout = () => {
           .ant-layout-header {
             padding: 0 16px !important;
           }
+        }
+
+        /* ✅ LOẠI BỎ GẠCH CHÂN TRONG DROPDOWN MENU */
+        .ant-dropdown-menu .ant-dropdown-menu-item a,
+        .ant-dropdown-menu .ant-dropdown-menu-submenu-title a,
+        .ant-dropdown a,
+        .ant-dropdown-menu a,
+        .ant-menu-item a,
+        .ant-menu-submenu-title a {
+          text-decoration: none !important;
+        }
+
+        /* Đảm bảo hover states vẫn hoạt động */
+        .ant-dropdown a:hover,
+        .ant-dropdown-menu a:hover,
+        .ant-menu-item a:hover,
+        .ant-menu-submenu-title a:hover {
+          text-decoration: none !important;
         }
 
         /* Menu Styling */
