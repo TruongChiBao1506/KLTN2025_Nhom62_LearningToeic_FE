@@ -45,6 +45,10 @@ const UserVocabulary = () => {
   });
 
   useEffect(() => {
+
+    // Đặt tiêu đề cho tab trình duyệt
+    document.title = "Từ vựng đã lưu | TOEIC Learning Platform";
+
     const loadUserVocabularies = async () => {
       try {
         setLoading(true);
@@ -170,7 +174,7 @@ const UserVocabulary = () => {
       (voice) =>
         voice.name === "Google US English" ||
         voice.name ===
-          "Microsoft Aria Online (Natural) - English (United States)" ||
+        "Microsoft Aria Online (Natural) - English (United States)" ||
         voice.lang === "en-US"
     );
 
@@ -351,8 +355,8 @@ const UserVocabulary = () => {
               record.isCorrect === null
                 ? "#262626"
                 : record.isCorrect
-                ? "#52c41a"
-                : "#ff4d4f",
+                  ? "#52c41a"
+                  : "#ff4d4f",
             fontSize: "16px",
           }}
         >

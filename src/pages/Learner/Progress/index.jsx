@@ -10,6 +10,8 @@ import {
   faListAlt,
   faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
+import { Card, Row, Col, Statistic, Table, Typography, Space, Button, Tag } from "antd";
+import { TrendingUp, Clock, BookOpen, Award, Target, CheckCircle } from "lucide-react";
 import Highcharts from "highcharts";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -18,6 +20,8 @@ import "./style.css";
 // Import services
 import learnerProgressService from "../../../services/learnerProgressService";
 import learnerExamService from "../../../services/learnerExamService";
+
+const { Title, Text } = Typography;
 
 const Progress = () => {
   // States
@@ -47,6 +51,9 @@ const Progress = () => {
   const skillsChartRef = useRef(null);
 
   useEffect(() => {
+    // Đặt tiêu đề cho tab trình duyệt
+    document.title = "Tiến Độ Học Tập | TOEIC Learning Platform";
+    
     // Initialize AOS animation library
     AOS.init({
       duration: 800,
@@ -452,21 +459,6 @@ const Progress = () => {
     }
   }, [loading, progressData.skillBreakdown, renderSkillsChart, chartType]);
 
-  const getBadgeClass = (type) => {
-    switch (type.toLowerCase()) {
-      case "listening":
-        return "badge-listening";
-      case "reading":
-        return "badge-reading";
-      case "grammar":
-        return "badge-grammar";
-      case "vocabulary":
-        return "badge-vocabulary";
-      default:
-        return "";
-    }
-  };
-
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
@@ -489,7 +481,7 @@ const Progress = () => {
 
   if (loading) {
     return (
-      <div className="progress-loading">
+      <div className="progress-loading" style={{ minHeight: "50vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Đang tải...</span>
         </div>
@@ -497,107 +489,168 @@ const Progress = () => {
     );
   }
 
-  return (
-    <div className="container py-4">
-      <h2 className="progress-title mb-4">
-        <FontAwesomeIcon icon={faChartLine} className="me-2" />
-        Tiến độ học tập của tôi
-      </h2>
+  // Định nghĩa columns cho bảng lịch sử thi
+  const examHistoryColumns = [
+    {
+      title: "Bài thi",
+      dataIndex: "examName",
+      key: "examName",
+      width: 250,
+      render: (text, record) => (
+        <Text strong style={{ color: "#1890ff" }}>
+          {text || record.name || `Bài thi ${record.id || "Unknown"}`}
+        </Text>
+      ),
+    },
+    {
+      title: "Ngày hoàn thành",
+      dataIndex: "completedAt",
+      key: "completedAt",
+      width: 150,
+      render: (date) => formatDate(date),
+    },
+    {
+      title: "Loại",
+      dataIndex: "type",
+      key: "type",
+      width: 120,
+      render: (type) => (
+        <Tag color={
+          type === "Listening" ? "blue" : 
+          type === "Reading" ? "green" : 
+          type === "Grammar" ? "purple" : 
+          type === "Vocabulary" ? "orange" : "default"
+        }>
+          {type || "Mixed"}
+        </Tag>
+      ),
+    },
+    {
+      title: "Điểm số",
+      key: "score",
+      width: 120,
+      render: (_, record) => (
+        <Space>
+          <Text strong style={{ color: "#52c41a", fontSize: "16px" }}>
+            {record.score || 0}
+          </Text>
+          <Text type="secondary">
+            / {record.totalPossibleScore || record.maxScore || 990}
+          </Text>
+        </Space>
+      ),
+    },
+  ];
 
-      {/* Overview Stats */}
-      <div className="row mb-4" data-aos="fade-up">
-        <div className="col-md-3 col-sm-6 mb-3">
-          <div className="progress-card bg-white">
-            <div className="progress-stat">
-              <div
-                className="progress-stat-icon"
-                style={{ backgroundColor: "#3498db" }}
-              >
-                <FontAwesomeIcon icon={faListAlt} />
-              </div>
-              <div>
-                <div className="progress-stat-label">Tổng số bài thi</div>
-                <div className="progress-stat-value">
-                  {progressData.totalExams}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 col-sm-6 mb-3">
-          <div className="progress-card bg-white">
-            <div className="progress-stat">
-              <div
-                className="progress-stat-icon"
-                style={{ backgroundColor: "#2ecc71" }}
-              >
-                <FontAwesomeIcon icon={faCheckCircle} />
-              </div>
-              <div>
-                <div className="progress-stat-label">Điểm trung bình</div>
-                <div className="progress-stat-value">
-                  {progressData.averageScore}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 col-sm-6 mb-3">
-          <div className="progress-card bg-white">
-            <div className="progress-stat">
-              <div
-                className="progress-stat-icon"
-                style={{ backgroundColor: "#9b59b6" }}
-              >
-                <FontAwesomeIcon icon={faClock} />
-              </div>
-              <div>
-                <div className="progress-stat-label">Giờ học tập</div>
-                <div className="progress-stat-value">
-                  {progressData.studyHours}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 col-sm-6 mb-3">
-          <div className="progress-card bg-white">
-            <div className="progress-stat">
-              <div
-                className="progress-stat-icon"
-                style={{ backgroundColor: "#f39c12" }}
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-              </div>
-              <div>
-                <div className="progress-stat-label">Bài học đã hoàn thành</div>
-                <div className="progress-stat-value">
-                  {progressData.completedLessons}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  return (
+    <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ marginBottom: "24px" }}>
+        <Title
+          level={2}
+          style={{
+            marginBottom: "8px",
+            background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          <TrendingUp
+            size={28}
+            style={{ marginRight: "12px", color: "#1890ff" }}
+          />
+          Tiến độ học tập của tôi
+        </Title>
+        <Text type="secondary" style={{ fontSize: "16px" }}>
+          Theo dõi tiến độ học tập và phân tích kết quả • Cải thiện điểm số TOEIC của bạn
+        </Text>
       </div>
 
-      {/* Charts */}
-      <div className="row mb-4" data-aos="fade-up" data-aos-delay="100">
-        <div className="col-lg-8 mb-4">
-          <div className="progress-container">
-            <h5 className="progress-title">Phân tích tiến độ</h5>
-            <div className="chart-selector">
-              <button
-                className={chartType === "progress" ? "active" : ""}
+      {/* Statistics Cards */}
+      <Row gutter={16} style={{ marginBottom: "24px" }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card style={{ borderRadius: "12px", border: "1px solid #d6e4ff" }}>
+            <Statistic
+              title="Tổng số bài thi"
+              value={progressData.totalExams}
+              prefix={<BookOpen size={20} style={{ color: "#1890ff" }} />}
+              valueStyle={{ color: "#1890ff" }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card style={{ borderRadius: "12px", border: "1px solid #d9f7be" }}>
+            <Statistic
+              title="Điểm trung bình"
+              value={progressData.averageScore}
+              prefix={<CheckCircle size={20} style={{ color: "#52c41a" }} />}
+              valueStyle={{ color: "#52c41a" }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card style={{ borderRadius: "12px", border: "1px solid #fff7e6" }}>
+            <Statistic
+              title="Giờ học tập"
+              value={progressData.studyHours}
+              prefix={<Clock size={20} style={{ color: "#fa8c16" }} />}
+              valueStyle={{ color: "#fa8c16" }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card style={{ borderRadius: "12px", border: "1px solid #fff0f6" }}>
+            <Statistic
+              title="Bài học hoàn thành"
+              value={progressData.completedLessons}
+              prefix={<Award size={20} style={{ color: "#eb2f96" }} />}
+              valueStyle={{ color: "#eb2f96" }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Charts Section */}
+      <Row gutter={16} style={{ marginBottom: "24px" }}>
+        <Col xs={24} lg={16}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              border: "none",
+            }}
+          >
+            <Title level={4} style={{ marginBottom: "16px" }}>
+              Phân tích tiến độ
+            </Title>
+            <div className="chart-selector" style={{ marginBottom: "20px" }}>
+              <Button
+                type={chartType === "progress" ? "primary" : "default"}
                 onClick={() => setChartType("progress")}
+                style={{ marginRight: "8px" }}
               >
                 Tiến độ theo thời gian
-              </button>
-              <button
-                className={chartType === "skills" ? "active" : ""}
+              </Button>
+              <Button
+                type={chartType === "skills" ? "primary" : "default"}
                 onClick={() => setChartType("skills")}
               >
                 Phân tích kỹ năng
-              </button>
+              </Button>
             </div>
             <div className="chart-wrapper" style={{ minHeight: "400px", position: "relative" }}>
               {chartType === "progress" && (
@@ -607,182 +660,209 @@ const Progress = () => {
                 <div className="chart-container" ref={skillsChartRef} style={{ width: "100%", height: "400px" }}></div>
               )}
             </div>
-          </div>
-        </div>
-        <div className="col-lg-4 mb-4">
-          <div className="progress-container">
-            <h5 className="progress-title">Điểm mạnh và điểm yếu</h5>
+          </Card>
+        </Col>
+        <Col xs={24} lg={8}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              border: "none",
+            }}
+          >
+            <Title level={4} style={{ marginBottom: "16px" }}>
+              Điểm mạnh và điểm yếu
+            </Title>
 
-            <div className="mb-4">
-              <h6 className="mb-2">
-                <FontAwesomeIcon
-                  icon={faChartLine}
-                  className="me-2 text-success"
-                />
+            <div style={{ marginBottom: "20px" }}>
+              <Text strong style={{ color: "#52c41a", fontSize: "16px" }}>
+                <Target size={16} style={{ marginRight: "8px" }} />
                 Điểm mạnh
-              </h6>
-              <div className="tag-cloud">
+              </Text>
+              <div className="tag-cloud" style={{ marginTop: "8px" }}>
                 {progressData.strengths.map((strength, index) => (
-                  <span key={index} className="tag strength">
+                  <Tag key={index} color="success" style={{ marginBottom: "8px" }}>
                     {strength}
-                  </span>
+                  </Tag>
                 ))}
               </div>
             </div>
 
             <div>
-              <h6 className="mb-2">
-                <FontAwesomeIcon
-                  icon={faChartLine}
-                  className="me-2 text-danger"
-                />
+              <Text strong style={{ color: "#ff4d4f", fontSize: "16px" }}>
+                <Target size={16} style={{ marginRight: "8px" }} />
                 Cần cải thiện
-              </h6>
-              <div className="tag-cloud">
+              </Text>
+              <div className="tag-cloud" style={{ marginTop: "8px" }}>
                 {progressData.weaknesses.map((weakness, index) => (
-                  <span key={index} className="tag weakness">
+                  <Tag key={index} color="error" style={{ marginBottom: "8px" }}>
                     {weakness}
-                  </span>
+                  </Tag>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>
 
-      {/* Exam History */}
-      <div className="row mb-4" data-aos="fade-up" data-aos-delay="200">
-        <div className="col-lg-8 mb-4">
-          <div className="progress-container">
-            <h5 className="progress-title">Lịch sử làm bài</h5>
-            <div className="table-responsive">
-              <table className="progress-table">
-                <thead>
-                  <tr>
-                    <th>Bài thi</th>
-                    <th>Ngày hoàn thành</th>
-                    <th>Loại</th>
-                    <th>Điểm</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {progressData.examHistory.length > 0 ? (
-                    progressData.examHistory.map((exam, index) => (
-                      <tr key={index}>
-                        <td>{exam.examName || exam.name || `Bài thi ${index + 1}`}</td>
-                        <td>{formatDate(exam.completedAt || exam.createdAt || new Date())}</td>
-                        <td>
-                          <span
-                            className={`progress-badge ${getBadgeClass(
-                              exam.type || "listening"
-                            )}`}
-                          >
-                            {exam.type || "Mixed"}
-                          </span>
-                        </td>
-                        <td>
-                          <strong>{exam.score || 0}</strong> /{" "}
-                          {exam.totalPossibleScore || exam.maxScore || 990}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="text-center text-muted">
-                        Chưa có lịch sử làm bài
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="progress-container">
-            <h5 className="progress-title">Hoạt động gần đây</h5>
-            <div className="activity-list">
+      {/* Exam History and Recent Activity */}
+      <Row gutter={16} style={{ marginBottom: "24px" }}>
+        <Col xs={24} lg={16}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              border: "none",
+            }}
+          >
+            <Title level={4} style={{ marginBottom: "16px" }}>
+              Lịch sử làm bài
+            </Title>
+            <Table
+              columns={examHistoryColumns}
+              dataSource={progressData.examHistory}
+              pagination={{
+                pageSize: 5,
+                showSizeChanger: false,
+                showQuickJumper: false,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} của ${total} bài thi`,
+              }}
+              scroll={{ x: 600 }}
+              size="middle"
+              locale={{
+                emptyText: "Chưa có lịch sử làm bài"
+              }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} lg={8}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              border: "none",
+            }}
+          >
+            <Title level={4} style={{ marginBottom: "16px" }}>
+              Hoạt động gần đây
+            </Title>
+            <div style={{ maxHeight: "400px", overflowY: "auto" }}>
               {progressData.recentActivity.length > 0 ? (
                 progressData.recentActivity.map((activity, index) => {
                   const { icon, color } = getActivityIcon(activity);
                   return (
-                    <div className="activity-item" key={index}>
+                    <div key={index} style={{ 
+                      padding: "12px 0", 
+                      borderBottom: index < progressData.recentActivity.length - 1 ? "1px solid #f0f0f0" : "none",
+                      display: "flex",
+                      alignItems: "center"
+                    }}>
                       <div
-                        className="activity-icon"
-                        style={{ backgroundColor: color }}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                          backgroundColor: color,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: "12px",
+                          color: "white"
+                        }}
                       >
                         <FontAwesomeIcon icon={icon} />
                       </div>
-                      <div className="activity-content">
-                        <div className="activity-title">{activity.title}</div>
-                        <div className="activity-meta">
+                      <div style={{ flex: 1 }}>
+                        <Text strong style={{ display: "block", color: "#262626" }}>
+                          {activity.title}
+                        </Text>
+                        <Text type="secondary" style={{ fontSize: "12px" }}>
                           {formatDate(activity.date)} • {activity.duration} phút
-                        </div>
+                        </Text>
                       </div>
                       {activity.score !== undefined && (
-                        <div className="activity-score">
+                        <Tag color="blue" style={{ margin: 0 }}>
                           {activity.score} điểm
-                        </div>
+                        </Tag>
                       )}
                     </div>
                   );
                 })
               ) : (
-                <div className="text-center text-muted py-3">
-                  <p>Chưa có hoạt động gần đây</p>
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <Text type="secondary">Chưa có hoạt động gần đây</Text>
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>
 
       {/* Learning Tips */}
-      <div className="row" data-aos="fade-up" data-aos-delay="300">
-        <div className="col-12">
-          <div className="progress-container">
-            <h5 className="progress-title">Gợi ý học tập</h5>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">
-                      <FontAwesomeIcon
-                        icon={faHeadphones}
-                        className="me-2 text-primary"
-                      />
-                      Cải thiện Listening
-                    </h6>
-                    <p className="card-text">
-                      Dựa trên kết quả gần đây, bạn nên tập trung vào phần
-                      Listening Part 3 và 4. Hãy luyện tập nghe các đoạn hội
-                      thoại và bài giảng dài với tốc độ nói nhanh.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 mb-3">
-                <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">
-                      <FontAwesomeIcon
-                        icon={faBook}
-                        className="me-2 text-success"
-                      />
-                      Cải thiện Reading
-                    </h6>
-                    <p className="card-text">
-                      Phần Reading của bạn đang tiến bộ tốt! Để đạt điểm cao
-                      hơn, hãy luyện tập đọc nhanh với các bài đọc dài trong
-                      Part 7 và cải thiện kỹ năng đọc lướt.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Row gutter={16}>
+        <Col span={24}>
+          <Card
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              border: "none",
+            }}
+          >
+            <Title level={4} style={{ marginBottom: "16px" }}>
+              Gợi ý học tập
+            </Title>
+            <Row gutter={16}>
+              <Col xs={24} md={12}>
+                <Card
+                  style={{
+                    border: "1px solid #d6e4ff",
+                    borderRadius: "8px",
+                    marginBottom: "16px",
+                  }}
+                  bodyStyle={{ padding: "16px" }}
+                >
+                  <Title level={5} style={{ color: "#1890ff", marginBottom: "8px" }}>
+                    <FontAwesomeIcon
+                      icon={faHeadphones}
+                      style={{ marginRight: "8px" }}
+                    />
+                    Cải thiện Listening
+                  </Title>
+                  <Text style={{ fontSize: "14px", lineHeight: "1.6" }}>
+                    Dựa trên kết quả gần đây, bạn nên tập trung vào phần
+                    Listening Part 3 và 4. Hãy luyện tập nghe các đoạn hội
+                    thoại và bài giảng dài với tốc độ nói nhanh.
+                  </Text>
+                </Card>
+              </Col>
+              <Col xs={24} md={12}>
+                <Card
+                  style={{
+                    border: "1px solid #d9f7be",
+                    borderRadius: "8px",
+                    marginBottom: "16px",
+                  }}
+                  bodyStyle={{ padding: "16px" }}
+                >
+                  <Title level={5} style={{ color: "#52c41a", marginBottom: "8px" }}>
+                    <FontAwesomeIcon
+                      icon={faBook}
+                      style={{ marginRight: "8px" }}
+                    />
+                    Cải thiện Reading
+                  </Title>
+                  <Text style={{ fontSize: "14px", lineHeight: "1.6" }}>
+                    Phần Reading của bạn đang tiến bộ tốt! Để đạt điểm cao
+                    hơn, hãy luyện tập đọc nhanh với các bài đọc dài trong
+                    Part 7 và cải thiện kỹ năng đọc lướt.
+                  </Text>
+                </Card>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

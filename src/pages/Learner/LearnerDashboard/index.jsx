@@ -254,7 +254,7 @@ const LearnerDashboard = () => {
   };
 
   return (
-    <div className="learner-dashboard">
+    <div className="learner-dashboard-container learner-dashboard">
       {/* Breadcrumb */}
       <div className="breadcrumb-container" data-aos="fade-down">
         <nav aria-label="breadcrumb">
@@ -277,12 +277,12 @@ const LearnerDashboard = () => {
             </p>
           </div>
         </div>
-        {/* Statistics Cards */}
-        <div className="row mt-4">
+  {/* Statistics Cards */}
+  <div className="row mt-4 d-flex align-items-stretch">
           {/* Completed Exams Card */}
-          <div className="col-md-3" data-aos="fade-up" data-aos-delay="100">
-            <div className="stat-card">
-              <div className="stat-card-body">
+          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div className="stat-card w-100 d-flex flex-column justify-content-between">
+              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
                 <div className="stat-card-icon bg-primary">
                   <FontAwesomeIcon icon={faFileAlt} />
                 </div>{" "}
@@ -295,9 +295,9 @@ const LearnerDashboard = () => {
           </div>
 
           {/* Average Score Card */}
-          <div className="col-md-3" data-aos="fade-up" data-aos-delay="200">
-            <div className="stat-card">
-              <div className="stat-card-body">
+          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="200">
+            <div className="stat-card w-100 d-flex flex-column justify-content-between">
+              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
                 <div className="stat-card-icon bg-success">
                   <FontAwesomeIcon icon={faChartLine} />
                 </div>{" "}
@@ -310,9 +310,9 @@ const LearnerDashboard = () => {
           </div>
 
           {/* Study Hours Card */}
-          <div className="col-md-3" data-aos="fade-up" data-aos-delay="300">
-            <div className="stat-card">
-              <div className="stat-card-body">
+          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="300">
+            <div className="stat-card w-100 d-flex flex-column justify-content-between">
+              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
                 <div className="stat-card-icon bg-info">
                   <FontAwesomeIcon icon={faClock} />
                 </div>{" "}
@@ -325,9 +325,9 @@ const LearnerDashboard = () => {
           </div>
 
           {/* Next Exam Card */}
-          <div className="col-md-3" data-aos="fade-up" data-aos-delay="400">
-            <div className="stat-card">
-              <div className="stat-card-body">
+          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="400">
+            <div className="stat-card w-100 d-flex flex-column justify-content-between">
+              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
                 <div className="stat-card-icon bg-warning">
                   <FontAwesomeIcon icon={faCalendarCheck} />
                 </div>{" "}

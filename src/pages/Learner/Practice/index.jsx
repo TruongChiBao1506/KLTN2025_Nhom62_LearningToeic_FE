@@ -11,6 +11,7 @@ import {
   Badge,
   Space
 } from "antd";
+import "./style.css";
 import { 
   PlayCircleOutlined, 
   FileTextOutlined,
@@ -388,14 +389,7 @@ const Practice = ({ sectionId: propSectionId }) => {
                       size="large"
                       icon={<PlayCircleOutlined />}
                       onClick={() => handleStartTest(test._id)}
-                      style={{
-                        borderRadius: "12px",
-                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        border: "none",
-                        fontWeight: "600",
-                        height: "48px",
-                        boxShadow: "0 4px 16px rgba(102, 126, 234, 0.3)"
-                      }}
+                      className="practice-btn"
                       block
                     >
                       Bắt đầu luyện tập

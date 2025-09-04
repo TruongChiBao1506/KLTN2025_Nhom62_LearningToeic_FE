@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  Card, Row, Col, Typography, Switch, Select, InputNumber, 
+  Slider, Tabs, Button, message, Space, TimePicker 
+} from 'antd';
+import { 
+  SettingOutlined, GlobalOutlined, BookOutlined, 
+  SoundOutlined, SaveOutlined, 
+  ReloadOutlined, BulbOutlined, SafetyOutlined 
+} from '@ant-design/icons';
+import moment from 'moment';
 import './style.css';
+
+const { Title, Text } = Typography;
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -8,32 +20,27 @@ const Settings = () => {
     theme: 'light',
     notifications: true,
     soundEffects: true,
+    fontSize: 'medium',
+    animationsEnabled: true,
     
     // Study Settings
     studyReminder: true,
     reminderTime: '19:00',
     dailyGoal: 30,
     weeklyGoal: 200,
-    
-    // Interface Settings
-    fontSize: 'medium',
-    autoplay: true,
+    autoplay: false,
     showHints: true,
-    animationsEnabled: true,
+    
+    // Audio Settings
+    volume: 70,
+    playbackSpeed: 1,
+    subtitles: true,
     
     // Privacy Settings
     profileVisibility: 'public',
     showProgress: true,
-    allowFriendRequests: true,
-    
-    // Audio Settings
-    volume: 80,
-    playbackSpeed: 1,
-    subtitles: true
+    allowFriendRequests: true
   });
-
-  const [activeTab, setActiveTab] = useState('general');
-  const [saveStatus, setSaveStatus] = useState('');
 
   useEffect(() => {
     // Load settings from localStorage
@@ -51,342 +58,457 @@ const Settings = () => {
   };
 
   const saveSettings = () => {
-    localStorage.setItem('toeicSettings', JSON.stringify(settings));
-    setSaveStatus('✅ Đã lưu thành công!');
-    setTimeout(() => setSaveStatus(''), 3000);
-  };
-
-  const resetSettings = () => {
-    if (window.confirm('Bạn có chắc muốn khôi phục cài đặt mặc định?')) {
-      const defaultSettings = {
-        language: 'vi',
-        theme: 'light',
-        notifications: true,
-        soundEffects: true,
-        studyReminder: true,
-        reminderTime: '19:00',
-        dailyGoal: 30,
-        weeklyGoal: 200,
-        fontSize: 'medium',
-        autoplay: true,
-        showHints: true,
-        animationsEnabled: true,
-        profileVisibility: 'public',
-        showProgress: true,
-        allowFriendRequests: true,
-        volume: 80,
-        playbackSpeed: 1,
-        subtitles: true
-      };
-      setSettings(defaultSettings);
+    try {
+      localStorage.setItem('toeicSettings', JSON.stringify(settings));
+      message.success('Cài đặt đã được lưu thành công!');
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi lưu cài đặt');
     }
   };
 
+  const resetSettings = () => {
+    const defaultSettings = {
+      language: 'vi',
+      theme: 'light',
+      notifications: true,
+      soundEffects: true,
+      studyReminder: true,
+      reminderTime: '19:00',
+      dailyGoal: 30,
+      weeklyGoal: 200,
+      fontSize: 'medium',
+      autoplay: true,
+      showHints: true,
+      animationsEnabled: true,
+      profileVisibility: 'public',
+      showProgress: true,
+      allowFriendRequests: true,
+      volume: 80,
+      playbackSpeed: 1,
+      subtitles: true
+    };
+    setSettings(defaultSettings);
+    message.info('Cài đặt đã được khôi phục về mặc định');
+  };
+
+  // Thêm document title
+  useEffect(() => {
+    document.title = "Cài Đặt | TOEIC Learning Platform";
+  }, []);
+
   const renderGeneralSettings = () => (
-    <div className="settings-section">
-      <h3>🌐 Cài đặt chung</h3>
+    <Card style={{ marginBottom: 16 }}>
+      <Title level={4}>
+        <GlobalOutlined style={{ marginRight: 8, color: "#1890ff" }} />
+        Cài đặt chung
+      </Title>
       
-      <div className="setting-item">
-        <label>Ngôn ngữ giao diện:</label>
-        <select 
-          value={settings.language} 
-          onChange={(e) => updateSetting('language', e.target.value)}
-        >
-          <option value="vi">Tiếng Việt</option>
-          <option value="en">English</option>
-        </select>
-      </div>
-
-      <div className="setting-item">
-        <label>Giao diện:</label>
-        <select 
-          value={settings.theme} 
-          onChange={(e) => updateSetting('theme', e.target.value)}
-        >
-          <option value="light">Sáng</option>
-          <option value="dark">Tối</option>
-          <option value="auto">Tự động</option>
-        </select>
-      </div>
-
-      <div className="setting-item">
-        <label>Cỡ chữ:</label>
-        <select 
-          value={settings.fontSize} 
-          onChange={(e) => updateSetting('fontSize', e.target.value)}
-        >
-          <option value="small">Nhỏ</option>
-          <option value="medium">Vừa</option>
-          <option value="large">Lớn</option>
-        </select>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.notifications}
-            onChange={(e) => updateSetting('notifications', e.target.checked)}
-          />
-          Bật thông báo
-        </label>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.soundEffects}
-            onChange={(e) => updateSetting('soundEffects', e.target.checked)}
-          />
-          Hiệu ứng âm thanh
-        </label>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.animationsEnabled}
-            onChange={(e) => updateSetting('animationsEnabled', e.target.checked)}
-          />
-          Hiệu ứng chuyển động
-        </label>
-      </div>
-    </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Ngôn ngữ giao diện:
+            </Text>
+            <Select
+              style={{ width: "100%" }}
+              value={settings.language}
+              onChange={(value) => updateSetting('language', value)}
+            >
+              <Select.Option value="vi">Tiếng Việt</Select.Option>
+              <Select.Option value="en">English</Select.Option>
+            </Select>
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Giao diện:
+            </Text>
+            <Select
+              style={{ width: "100%" }}
+              value={settings.theme}
+              onChange={(value) => updateSetting('theme', value)}
+            >
+              <Select.Option value="light">Sáng</Select.Option>
+              <Select.Option value="dark">Tối</Select.Option>
+              <Select.Option value="auto">Tự động</Select.Option>
+            </Select>
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Cỡ chữ:
+            </Text>
+            <Select
+              style={{ width: "100%" }}
+              value={settings.fontSize}
+              onChange={(value) => updateSetting('fontSize', value)}
+            >
+              <Select.Option value="small">Nhỏ</Select.Option>
+              <Select.Option value="medium">Vừa</Select.Option>
+              <Select.Option value="large">Lớn</Select.Option>
+            </Select>
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Bật thông báo:
+            </Text>
+            <Switch
+              checked={settings.notifications}
+              onChange={(checked) => updateSetting('notifications', checked)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Hiệu ứng âm thanh:
+            </Text>
+            <Switch
+              checked={settings.soundEffects}
+              onChange={(checked) => updateSetting('soundEffects', checked)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Hiệu ứng chuyển động:
+            </Text>
+            <Switch
+              checked={settings.animationsEnabled}
+              onChange={(checked) => updateSetting('animationsEnabled', checked)}
+            />
+          </div>
+        </Col>
+      </Row>
+    </Card>
   );
 
   const renderStudySettings = () => (
-    <div className="settings-section">
-      <h3>📚 Cài đặt học tập</h3>
+    <Card style={{ marginBottom: 16 }}>
+      <Title level={4}>
+        <BookOutlined style={{ marginRight: 8, color: "#52c41a" }} />
+        Cài đặt học tập
+      </Title>
       
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.studyReminder}
-            onChange={(e) => updateSetting('studyReminder', e.target.checked)}
-          />
-          Nhắc nhở học tập hàng ngày
-        </label>
-      </div>
-
-      <div className="setting-item">
-        <label>Thời gian nhắc nhở:</label>
-        <input
-          type="time"
-          value={settings.reminderTime}
-          onChange={(e) => updateSetting('reminderTime', e.target.value)}
-          disabled={!settings.studyReminder}
-        />
-      </div>
-
-      <div className="setting-item">
-        <label>Mục tiêu học tập hàng ngày (phút):</label>
-        <input
-          type="number"
-          min="5"
-          max="300"
-          value={settings.dailyGoal}
-          onChange={(e) => updateSetting('dailyGoal', parseInt(e.target.value))}
-        />
-      </div>
-
-      <div className="setting-item">
-        <label>Mục tiêu học tập hàng tuần (phút):</label>
-        <input
-          type="number"
-          min="30"
-          max="2000"
-          value={settings.weeklyGoal}
-          onChange={(e) => updateSetting('weeklyGoal', parseInt(e.target.value))}
-        />
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.autoplay}
-            onChange={(e) => updateSetting('autoplay', e.target.checked)}
-          />
-          Tự động phát bài tiếp theo
-        </label>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.showHints}
-            onChange={(e) => updateSetting('showHints', e.target.checked)}
-          />
-          Hiển thị gợi ý trong bài tập
-        </label>
-      </div>
-    </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Nhắc nhở học tập hàng ngày:
+            </Text>
+            <Switch
+              checked={settings.studyReminder}
+              onChange={(checked) => updateSetting('studyReminder', checked)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Thời gian nhắc nhở:
+            </Text>
+            <TimePicker
+              style={{ width: "100%" }}
+              format="HH:mm"
+              value={settings.reminderTime ? moment(settings.reminderTime, 'HH:mm') : null}
+              onChange={(time) => updateSetting('reminderTime', time ? time.format('HH:mm') : '')}
+              disabled={!settings.studyReminder}
+              placeholder="Chọn thời gian"
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Mục tiêu hàng ngày (phút):
+            </Text>
+            <InputNumber
+              min={5}
+              max={300}
+              value={settings.dailyGoal}
+              onChange={(value) => updateSetting('dailyGoal', value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Mục tiêu hàng tuần (phút):
+            </Text>
+            <InputNumber
+              min={30}
+              max={2000}
+              value={settings.weeklyGoal}
+              onChange={(value) => updateSetting('weeklyGoal', value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Tự động phát bài tiếp theo:
+            </Text>
+            <Switch
+              checked={settings.autoplay}
+              onChange={(checked) => updateSetting('autoplay', checked)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Hiển thị gợi ý trong bài tập:
+            </Text>
+            <Switch
+              checked={settings.showHints}
+              onChange={(checked) => updateSetting('showHints', checked)}
+            />
+          </div>
+        </Col>
+      </Row>
+    </Card>
   );
 
   const renderAudioSettings = () => (
-    <div className="settings-section">
-      <h3>🎧 Cài đặt âm thanh</h3>
+    <Card style={{ marginBottom: 16 }}>
+      <Title level={4}>
+        <SoundOutlined style={{ marginRight: 8, color: "#fa8c16" }} />
+        Cài đặt âm thanh
+      </Title>
       
-      <div className="setting-item">
-        <label>Âm lượng: {settings.volume}%</label>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={settings.volume}
-          onChange={(e) => updateSetting('volume', parseInt(e.target.value))}
-          className="slider"
-        />
-      </div>
-
-      <div className="setting-item">
-        <label>Tốc độ phát mặc định:</label>
-        <select 
-          value={settings.playbackSpeed} 
-          onChange={(e) => updateSetting('playbackSpeed', parseFloat(e.target.value))}
-        >
-          <option value={0.5}>0.5x</option>
-          <option value={0.75}>0.75x</option>
-          <option value={1}>1x (Bình thường)</option>
-          <option value={1.25}>1.25x</option>
-          <option value={1.5}>1.5x</option>
-        </select>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.subtitles}
-            onChange={(e) => updateSetting('subtitles', e.target.checked)}
-          />
-          Hiển thị phụ đề mặc định
-        </label>
-      </div>
-    </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Âm lượng: {settings.volume}%
+            </Text>
+            <Slider
+              min={0}
+              max={100}
+              value={settings.volume}
+              onChange={(value) => updateSetting('volume', value)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Tốc độ phát mặc định:
+            </Text>
+            <Select
+              style={{ width: "100%" }}
+              value={settings.playbackSpeed}
+              onChange={(value) => updateSetting('playbackSpeed', value)}
+            >
+              <Select.Option value={0.5}>0.5x</Select.Option>
+              <Select.Option value={0.75}>0.75x</Select.Option>
+              <Select.Option value={1}>1x (Bình thường)</Select.Option>
+              <Select.Option value={1.25}>1.25x</Select.Option>
+              <Select.Option value={1.5}>1.5x</Select.Option>
+            </Select>
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Hiển thị phụ đề mặc định:
+            </Text>
+            <Switch
+              checked={settings.subtitles}
+              onChange={(checked) => updateSetting('subtitles', checked)}
+            />
+          </div>
+        </Col>
+      </Row>
+    </Card>
   );
 
   const renderPrivacySettings = () => (
-    <div className="settings-section">
-      <h3>🔒 Cài đặt riêng tư</h3>
+    <Card style={{ marginBottom: 16 }}>
+      <Title level={4}>
+        <SafetyOutlined style={{ marginRight: 8, color: "#722ed1" }} />
+        Cài đặt riêng tư
+      </Title>
       
-      <div className="setting-item">
-        <label>Hiển thị hồ sơ:</label>
-        <select 
-          value={settings.profileVisibility} 
-          onChange={(e) => updateSetting('profileVisibility', e.target.value)}
-        >
-          <option value="public">Công khai</option>
-          <option value="friends">Chỉ bạn bè</option>
-          <option value="private">Riêng tư</option>
-        </select>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.showProgress}
-            onChange={(e) => updateSetting('showProgress', e.target.checked)}
-          />
-          Hiển thị tiến độ học tập
-        </label>
-      </div>
-
-      <div className="setting-item">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={settings.allowFriendRequests}
-            onChange={(e) => updateSetting('allowFriendRequests', e.target.checked)}
-          />
-          Cho phép lời mời kết bạn
-        </label>
-      </div>
-    </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} md={8}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ display: "block", marginBottom: 8 }}>
+              Hiển thị hồ sơ:
+            </Text>
+            <Select
+              style={{ width: "100%" }}
+              value={settings.profileVisibility}
+              onChange={(value) => updateSetting('profileVisibility', value)}
+            >
+              <Select.Option value="public">Công khai</Select.Option>
+              <Select.Option value="friends">Chỉ bạn bè</Select.Option>
+              <Select.Option value="private">Riêng tư</Select.Option>
+            </Select>
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Hiển thị tiến độ học tập:
+            </Text>
+            <Switch
+              checked={settings.showProgress}
+              onChange={(checked) => updateSetting('showProgress', checked)}
+            />
+          </div>
+        </Col>
+        
+        <Col xs={24} sm={12}>
+          <div style={{ marginBottom: 16 }}>
+            <Text strong style={{ marginRight: 12 }}>
+              Cho phép lời mời kết bạn:
+            </Text>
+            <Switch
+              checked={settings.allowFriendRequests}
+              onChange={(checked) => updateSetting('allowFriendRequests', checked)}
+            />
+          </div>
+        </Col>
+      </Row>
+    </Card>
   );
 
   return (
-    <div className="settings-container">
-      <div className="settings-header">
-        <h1>⚙️ Cài đặt</h1>
-        <p>Tùy chỉnh trải nghiệm học tập theo sở thích cá nhân của bạn</p>
+    <div className="settings-container" style={{ padding: 24 }}>
+      <div style={{ marginBottom: 24 }}>
+        <Title level={2} style={{
+          background: 'linear-gradient(45deg, #1890ff, #52c41a)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textAlign: 'center',
+          margin: 0
+        }}>
+          <SettingOutlined style={{ marginRight: 12, color: '#1890ff' }} />
+          Cài đặt
+        </Title>
+        <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>
+          Tùy chỉnh trải nghiệm học tập theo sở thích cá nhân của bạn
+        </Text>
       </div>
 
-      <div className="settings-content">
-        <div className="settings-tabs">
-          <button 
-            className={`tab-btn ${activeTab === 'general' ? 'active' : ''}`}
-            onClick={() => setActiveTab('general')}
+      <Tabs
+        defaultActiveKey="general"
+        centered
+        size="large"
+        items={[
+          {
+            key: 'general',
+            label: (
+              <span>
+                <GlobalOutlined />
+                Chung
+              </span>
+            ),
+            children: renderGeneralSettings(),
+          },
+          {
+            key: 'study',
+            label: (
+              <span>
+                <BookOutlined />
+                Học tập
+              </span>
+            ),
+            children: renderStudySettings(),
+          },
+          {
+            key: 'audio',
+            label: (
+              <span>
+                <SoundOutlined />
+                Âm thanh
+              </span>
+            ),
+            children: renderAudioSettings(),
+          },
+          {
+            key: 'privacy',
+            label: (
+              <span>
+                <SafetyOutlined />
+                Riêng tư
+              </span>
+            ),
+            children: renderPrivacySettings(),
+          },
+        ]}
+      />
+
+      <Row justify="center" style={{ marginTop: 24 }}>
+        <Space size="middle">
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={resetSettings}
+            size="large"
           >
-            🌐 Chung
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'study' ? 'active' : ''}`}
-            onClick={() => setActiveTab('study')}
+            Khôi phục mặc định
+          </Button>
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
+            onClick={saveSettings}
+            size="large"
           >
-            📚 Học tập
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'audio' ? 'active' : ''}`}
-            onClick={() => setActiveTab('audio')}
-          >
-            🎧 Âm thanh
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
-            onClick={() => setActiveTab('privacy')}
-          >
-            🔒 Riêng tư
-          </button>
-        </div>
+            Lưu cài đặt
+          </Button>
+        </Space>
+      </Row>
 
-        <div className="settings-body">
-          {activeTab === 'general' && renderGeneralSettings()}
-          {activeTab === 'study' && renderStudySettings()}
-          {activeTab === 'audio' && renderAudioSettings()}
-          {activeTab === 'privacy' && renderPrivacySettings()}
-        </div>
-
-        <div className="settings-actions">
-          <button className="btn-reset" onClick={resetSettings}>
-            🔄 Khôi phục mặc định
-          </button>
-          <button className="btn-save" onClick={saveSettings}>
-            💾 Lưu cài đặt
-          </button>
-        </div>
-
-        {saveStatus && (
-          <div className="save-status">
-            {saveStatus}
-          </div>
-        )}
-      </div>
-
-      <div className="settings-info">
-        <div className="info-card">
-          <h4>💡 Mẹo</h4>
-          <ul>
-            <li>Bật nhắc nhở để duy trì thói quen học tập</li>
-            <li>Điều chỉnh âm lượng phù hợp với môi trường học</li>
-            <li>Thay đổi cỡ chữ để đọc dễ dàng hơn</li>
-            <li>Tắt hiệu ứng nếu thiết bị chạy chậm</li>
-          </ul>
-        </div>
-
-        <div className="info-card">
-          <h4>🔐 Bảo mật</h4>
-          <p>
-            Tất cả cài đặt được lưu trữ cục bộ trên thiết bị của bạn. 
-            Chúng tôi không thu thập hay chia sẻ thông tin cá nhân.
-          </p>
-        </div>
-      </div>
+      <Row gutter={[16, 16]} style={{ marginTop: 32 }}>
+        <Col xs={24} md={12}>
+          <Card>
+            <Title level={4}>
+              <BulbOutlined style={{ marginRight: 8, color: '#faad14' }} />
+              Mẹo
+            </Title>
+            <ul style={{ paddingLeft: 20, margin: 0 }}>
+              <li style={{ marginBottom: 8 }}>Bật nhắc nhở để duy trì thói quen học tập</li>
+              <li style={{ marginBottom: 8 }}>Điều chỉnh âm lượng phù hợp với môi trường học</li>
+              <li style={{ marginBottom: 8 }}>Thay đổi cỡ chữ để đọc dễ dàng hơn</li>
+              <li>Tắt hiệu ứng nếu thiết bị chạy chậm</li>
+            </ul>
+          </Card>
+        </Col>
+        
+        <Col xs={24} md={12}>
+          <Card>
+            <Title level={4}>
+              <SafetyOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+              Bảo mật
+            </Title>
+            <Text>
+              Tất cả cài đặt được lưu trữ cục bộ trên thiết bị của bạn. 
+              Chúng tôi không thu thập hay chia sẻ thông tin cá nhân.
+            </Text>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

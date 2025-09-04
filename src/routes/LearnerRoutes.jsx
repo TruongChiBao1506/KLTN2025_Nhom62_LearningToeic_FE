@@ -12,6 +12,7 @@ import ExamResult from "../pages/Learner/ExamResult";
 import UserVocabulary from "../pages/Learner/UserVocabulary";
 import Dictionary from "../pages/Learner/Dictionary";
 import LearningMaterials from "../pages/Learner/LearningMaterials";
+import Feedback from "../pages/Learner/Feedback";
 import MaterialDetail from "../pages/Learner/MaterialDetail";
 import Progress from "../pages/Learner/Progress";
 import Profile from "../pages/Learner/Profile";
@@ -53,15 +54,16 @@ import Part6 from "../pages/Learner/Part6";
 import Part7 from "../pages/Learner/Part7";
 import Practice from "../pages/Learner/Practice";
 
+
 const LearnerRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<LearnerLayout />}>
         <Route
-          index
+          path="feedback"
           element={
             <ProtectedRoute>
-              <LearnerDashboard />
+              <Feedback />
             </ProtectedRoute>
           }
         />
@@ -373,7 +375,6 @@ const LearnerRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
         {/* TOEIC Parts Routes */}
         <Route
           path="part-1"
@@ -431,7 +432,6 @@ const LearnerRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
         {/* Generic Practice Route */}
         <Route
           path="practice/:sectionId"
