@@ -9,6 +9,17 @@ const Achievements = () => {
   const [userLevel, setUserLevel] = useState({});
   const [stats, setStats] = useState({});
 
+  // Set page title
+  useEffect(() => {
+    const originalTitle = document.title;
+    document.title = "Thành tích | TOEIC Learning Platform";
+    
+    // Cleanup: restore original title when component unmounts
+    return () => {
+      document.title = originalTitle;
+    };
+  }, []);
+
   // Mock data for achievements
   useEffect(() => {
     const mockAchievements = [
@@ -184,7 +195,7 @@ const Achievements = () => {
     <div className="achievements-container">
       <div className="achievements-header">
         <h1>⭐ Thành tích</h1>
-        <p>Theo dõi tiến độ và mở khóa các thành tích đặc biệt trong hành trình học TOEIC!</p>
+        <p>Theo dõi tiến độ và mở khóa các thành tích đặc biệt trong hành trình học TOEIC của bạn!</p>
       </div>
 
       <div className="achievements-content">
