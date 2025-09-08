@@ -121,12 +121,9 @@ const SignIn = () => {
               }
             );
 
-            message.success(
-              "🎉 Đăng nhập thành công! Chào mừng bạn đến với TOEIC Learning!"
-            );
 
             setTimeout(() => {
-              navigate("/learner", { replace: true });
+              navigate("/learner/", { replace: true });
             }, 1500);
           } else {
             toast.error("❌ Bạn không có quyền truy cập vào trang học viên!", {
@@ -227,14 +224,14 @@ const SignIn = () => {
     >
       <div
         style={{
-          padding: "20px",
+          padding: "16px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "100vh",
         }}
       >
-        <Row gutter={[24, 24]} style={{ width: "100%", maxWidth: "1200px" }}>
+        <Row gutter={[16, 16]} style={{ width: "100%", maxWidth: "1100px" }}>
           {/* Left Side - Login Form */}
           <Col xs={24} lg={12}>
             <Card
@@ -247,21 +244,21 @@ const SignIn = () => {
                 flexDirection: "column",
                 justifyContent: "center",
               }}
-              bodyStyle={{ padding: "48px" }}
+              bodyStyle={{ padding: "32px" }}
             >
-              <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
                 <Avatar
-                  size={64}
+                  size={56}
                   style={{
                     backgroundColor: "#1890ff",
-                    marginBottom: "16px",
+                    marginBottom: "12px",
                   }}
-                  icon={<BookOpen size={32} />}
+                  icon={<BookOpen size={28} />}
                 />
-                <Title level={2} style={{ margin: 0, color: "#1890ff" }}>
+                <Title level={2} style={{ margin: 0, color: "#1890ff", marginBottom: "8px" }}>
                   TOEIC Learning
                 </Title>
-                <Text type="secondary" style={{ fontSize: "16px" }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
                   Đăng nhập để bắt đầu hành trình học TOEIC
                 </Text>
               </div>
@@ -293,9 +290,9 @@ const SignIn = () => {
                     formik.values.username && (
                       <div
                         style={{
-                          marginTop: "4px",
+                          marginTop: "2px",
                           color: "#52c41a",
-                          fontSize: "12px",
+                          fontSize: "11px",
                         }}
                       >
                         ✓ Tên đăng nhập hợp lệ
@@ -332,9 +329,9 @@ const SignIn = () => {
                     formik.values.password && (
                       <div
                         style={{
-                          marginTop: "4px",
+                          marginTop: "2px",
                           color: "#52c41a",
-                          fontSize: "12px",
+                          fontSize: "11px",
                         }}
                       >
                         ✓ Mật khẩu hợp lệ
@@ -373,9 +370,9 @@ const SignIn = () => {
                     loading={loading}
                     block
                     style={{
-                      height: "48px",
+                      height: "44px",
                       borderRadius: "8px",
-                      fontSize: "16px",
+                      fontSize: "15px",
                       fontWeight: "600",
                     }}
                   >
@@ -392,24 +389,24 @@ const SignIn = () => {
                     block
                     onClick={signInWithGoogle}
                     style={{
-                      height: "48px",
+                      height: "44px",
                       borderRadius: "8px",
-                      fontSize: "16px",
+                      fontSize: "15px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       gap: "8px",
                     }}
                   >
-                    <Globe size={20} />
+                    <Globe size={18} />
                     Đăng nhập bằng Google
                   </Button>
                 </Form.Item>
               </Form>
 
-              <div style={{ textAlign: "center", marginTop: "24px" }}>
+              <div style={{ textAlign: "center", marginTop: "16px" }}>
                 <Space direction="vertical" size="small">
-                  <Text>
+                  <Text style={{ fontSize: "14px" }}>
                     Thành viên mới?{" "}
                     <Link
                       to="/auth/signup"
@@ -418,7 +415,7 @@ const SignIn = () => {
                       Đăng ký ngay
                     </Link>
                   </Text>
-                  <Text>
+                  <Text style={{ fontSize: "13px" }}>
                     <Link
                       to="/"
                       style={{
@@ -429,7 +426,7 @@ const SignIn = () => {
                         gap: "4px",
                       }}
                     >
-                      <Home size={16} />
+                      <Home size={14} />
                       Trở về trang chủ
                     </Link>
                   </Text>
@@ -448,7 +445,7 @@ const SignIn = () => {
                 height: "100%",
                 background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
               }}
-              bodyStyle={{ padding: "48px", height: "100%" }}
+              bodyStyle={{ padding: "32px", height: "100%" }}
             >
               <div
                 style={{
@@ -465,8 +462,8 @@ const SignIn = () => {
                         style={{
                           textAlign: "center",
                           color: "white",
-                          padding: "40px 20px",
-                          height: "400px",
+                          padding: "24px 16px",
+                          height: "320px",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
@@ -475,8 +472,8 @@ const SignIn = () => {
                       >
                         <div
                           style={{
-                            marginBottom: "24px",
-                            padding: "20px",
+                            marginBottom: "20px",
+                            padding: "16px",
                             borderRadius: "50%",
                             background: "rgba(255,255,255,0.2)",
                             backdropFilter: "blur(10px)",
@@ -486,26 +483,27 @@ const SignIn = () => {
                         </div>
                         <Title
                           level={2}
-                          style={{ color: "white", marginBottom: "16px" }}
+                          style={{ color: "white", marginBottom: "12px" }}
                         >
                           {item.title}
                         </Title>
                         <Paragraph
                           style={{
                             color: "rgba(255,255,255,0.9)",
-                            fontSize: "18px",
-                            lineHeight: "1.6",
-                            maxWidth: "300px",
+                            fontSize: "16px",
+                            lineHeight: "1.5",
+                            maxWidth: "280px",
+                            marginBottom: "16px",
                           }}
                         >
                           {item.description}
                         </Paragraph>
-                        <div style={{ marginTop: "24px" }}>
+                        <div style={{ marginTop: "16px" }}>
                           <Space>
                             {[...Array(5)].map((_, i) => (
                               <Star
                                 key={i}
-                                size={20}
+                                size={18}
                                 fill="rgba(255,255,255,0.8)"
                                 color="rgba(255,255,255,0.8)"
                               />

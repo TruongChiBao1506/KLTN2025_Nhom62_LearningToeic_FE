@@ -1,11 +1,12 @@
 import React from "react";
-import Practice from "../Practice";
+import PartPractice from "../PartPractice";
+import withSectionAccess from "../../../components/Learner/withSectionAccess";
 
 const Part5 = () => {
   // Part 5: Incomplete Sentences - ID từ log của bạn
   const sectionId = "686ce171b614dda1fc08f1d4";
   
-  return <Practice sectionId={sectionId} />;
+  return <PartPractice sectionId={sectionId} />;
 };
 
-export default Part5;
+export default withSectionAccess(Part5, "686ce171b614dda1fc08f1d4");

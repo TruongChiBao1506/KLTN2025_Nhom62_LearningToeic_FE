@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import LearnerLayout from "../layouts/LearnerLayout";
 import LearnerDashboard from "../pages/Learner/LearnerDashboard";
 import LearningPath from '../pages/Learner/LearningPathNew';
@@ -10,6 +10,8 @@ import ExamMiniTest from "../pages/Learner/ExamMiniTest";
 import ExamQuestion from "../pages/Learner/ExamQuestion";
 import ExamResult from "../pages/Learner/ExamResult";
 import UserVocabulary from "../pages/Learner/UserVocabulary";
+import VocabularyLearning from "../pages/Learner/VocabularyLearning";
+import VocabularyTopics from "../pages/Learner/VocabularyTopics";
 import Dictionary from "../pages/Learner/Dictionary";
 import LearningMaterials from "../pages/Learner/LearningMaterials";
 import Feedback from "../pages/Learner/Feedback";
@@ -31,7 +33,7 @@ import StudySW from "../pages/Learner/StudySW";
 import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
 import Notification from "../pages/Learner/Notification";
-import ProtectedRoute from "../components/Learner/ProtectedRoute";
+import ProtectedRoute from "../components/Learner/ProtectedRoute/index";
 import AITutor from "../pages/Learner/AITutor";
 import StudyTimer from "../pages/Learner/StudyTimer";
 import Leaderboard from "../pages/Learner/Leaderboard";
@@ -52,18 +54,18 @@ import Part4 from "../pages/Learner/Part4";
 import Part5 from "../pages/Learner/Part5";
 import Part6 from "../pages/Learner/Part6";
 import Part7 from "../pages/Learner/Part7";
-import Practice from "../pages/Learner/Practice";
+import SpeakingWriting from "../components/Learner/SpeakingWriting";
 
 
 const LearnerRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<LearnerLayout />}>
-        <Route
-          path="feedback"
+        <Route 
+          index 
           element={
             <ProtectedRoute>
-              <Feedback />
+              <LearnerDashboard />
             </ProtectedRoute>
           }
         />
@@ -72,6 +74,14 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <LearnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="feedback"
+          element={
+            <ProtectedRoute>
+              <Feedback />
             </ProtectedRoute>
           }
         />
@@ -196,6 +206,29 @@ const LearnerRoutes = () => {
           }
         />
         <Route
+          path="speaking-writing"
+          element={
+            <ProtectedRoute>
+              <div className="container-fluid py-4">
+                <div className="row justify-content-center">
+                  <div className="col-12">
+                    <div className="mb-4 text-center">
+                      <h1 className="display-5 mb-2">
+                        <span className="text-primary">Luyện thi TOEIC</span>{" "}
+                        <span className="text-info">Speaking & Writing</span>
+                      </h1>
+                      <p className="text-muted mb-4">
+                        Nâng cao kỹ năng nói và viết tiếng Anh với các bài luyện tập chuyên sâu
+                      </p>
+                    </div>
+                    <SpeakingWriting />
+                  </div>
+                </div>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="practice-sw/:sectionId"
           element={
             <ProtectedRoute>
@@ -264,6 +297,22 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <UserVocabulary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vocabulary-topics"
+          element={
+            <ProtectedRoute>
+              <VocabularyTopics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vocabulary-learning/:topicId"
+          element={
+            <ProtectedRoute>
+              <VocabularyLearning />
             </ProtectedRoute>
           }
         />
@@ -429,15 +478,6 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Part7 />
-            </ProtectedRoute>
-          }
-        />
-        {/* Generic Practice Route */}
-        <Route
-          path="practice/:sectionId"
-          element={
-            <ProtectedRoute>
-              <Practice />
             </ProtectedRoute>
           }
         />

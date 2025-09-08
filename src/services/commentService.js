@@ -4,10 +4,13 @@ const commentService = {
   // Tạo một bình luận mới
   createComment: async (commentData) => {
     try {
+      console.log("Sending comment data to API:", commentData); // Debug
       const response = await axiosClient.post("/comments", commentData);
+      console.log("API response:", response); // Debug
       return response;
     } catch (error) {
       console.error("Lỗi khi tạo bình luận:", error);
+      console.error("Error response:", error.response); // Debug error response
       throw error;
     }
   },

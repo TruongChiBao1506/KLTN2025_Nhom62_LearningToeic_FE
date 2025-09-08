@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./SpeakingWriting.css";
 
 // Import services
-import sectionService from "../../../services/sectionsService";
+import sectionService from "../../services/sectionsService";
 
 const SpeakingWriting = () => {
   const [sections, setSections] = useState([]);
@@ -12,8 +11,8 @@ const SpeakingWriting = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const response = await sectionService.getAllEnabled();
-        setSections(response.data);
+        const response = await sectionService.allEnable();
+        setSections(response);
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu các phần học:", error);
@@ -47,7 +46,7 @@ const SpeakingWriting = () => {
 
   return (
     <div>
-      <h2 className="section-heading">NÓI</h2>
+      <h2 className="text-center mb-4" style={{ color: '#2c3e50', fontWeight: '700' }}>NÓI</h2>
       <div className="row">
         {noiSections.map((section) => (
           <div
@@ -56,20 +55,50 @@ const SpeakingWriting = () => {
           >
             <Link
               to={`/learner/practice-sw/${section.id}`}
-              className="card text-decoration-none section-card w-100"
+              className="card text-decoration-none w-100 shadow-sm"
+              style={{ 
+                border: 'none', 
+                borderRadius: '16px', 
+                overflow: 'hidden',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+              }}
             >
-              <div className="card-image">
+              <div style={{ height: '200px', overflow: 'hidden' }}>
                 <img
                   src={getImageUrl(section.image)}
                   className="card-img-top"
                   alt={section.name}
                   loading="lazy"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    transition: 'transform 0.3s ease'
+                  }}
                 />
               </div>
-              <div className="card-body">
-                <p className="fw-bolder underline-hover">{section.name}</p>
+              <div className="card-body" style={{ padding: '1.5rem' }}>
+                <p className="fw-bold mb-2" style={{ color: '#1e293b', fontSize: '1.1rem' }}>
+                  {section.name}
+                </p>
                 <p
-                  className="card-text overflow-ellipsis"
+                  className="card-text text-muted"
+                  style={{ 
+                    fontSize: '0.9rem',
+                    lineHeight: '1.5',
+                    display: '-webkit-box',
+                    WebkitLineClamp: '3',
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}
                   title={section.description}
                 >
                   {section.description}
@@ -80,7 +109,7 @@ const SpeakingWriting = () => {
         ))}
       </div>
 
-      <h2 className="section-heading">VIẾT</h2>
+      <h2 className="text-center mb-4 mt-5" style={{ color: '#2c3e50', fontWeight: '700' }}>VIẾT</h2>
       <div className="row">
         {vietSections.map((section) => (
           <div
@@ -89,20 +118,50 @@ const SpeakingWriting = () => {
           >
             <Link
               to={`/learner/practice-sw/${section.id}`}
-              className="card text-decoration-none section-card w-100"
+              className="card text-decoration-none w-100 shadow-sm"
+              style={{ 
+                border: 'none', 
+                borderRadius: '16px', 
+                overflow: 'hidden',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+              }}
             >
-              <div className="card-image">
+              <div style={{ height: '200px', overflow: 'hidden' }}>
                 <img
                   src={getImageUrl(section.image)}
                   className="card-img-top"
                   alt={section.name}
                   loading="lazy"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    transition: 'transform 0.3s ease'
+                  }}
                 />
               </div>
-              <div className="card-body">
-                <p className="fw-bolder underline-hover">{section.name}</p>
+              <div className="card-body" style={{ padding: '1.5rem' }}>
+                <p className="fw-bold mb-2" style={{ color: '#1e293b', fontSize: '1.1rem' }}>
+                  {section.name}
+                </p>
                 <p
-                  className="card-text overflow-ellipsis"
+                  className="card-text text-muted"
+                  style={{ 
+                    fontSize: '0.9rem',
+                    lineHeight: '1.5',
+                    display: '-webkit-box',
+                    WebkitLineClamp: '3',
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}
                   title={section.description}
                 >
                   {section.description}

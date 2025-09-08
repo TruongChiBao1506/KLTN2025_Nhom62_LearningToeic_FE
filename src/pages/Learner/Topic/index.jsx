@@ -467,16 +467,42 @@ const Topic = () => {
                                   />
                                   Kích hoạt
                                 </Tag>
-                                <ChevronRight
-                                  style={{
-                                    width: "14px",
-                                    height: "14px",
-                                    color: "#999",
-                                  }}
-                                />
                               </Space>
                             </div>
                           </Link>
+                          
+                          {/* Action Buttons */}
+                          <div style={{ 
+                            padding: "12px 16px", 
+                            borderTop: "1px solid #f0f0f0",
+                            background: "#fafafa"
+                          }}>
+                            <Space size="small" style={{ width: "100%" }}>
+                              <Button 
+                                type="primary"
+                                size="small"
+                                icon={<BookOpen size={14} />}
+                                style={{ borderRadius: "6px", flex: 1 }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  window.location.href = `/learner/vocabulary-learning/${topic._id}`;
+                                }}
+                              >
+                                Học từ vựng
+                              </Button>
+                              <Button 
+                                size="small"
+                                icon={<ChevronRight size={14} />}
+                                style={{ borderRadius: "6px" }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  window.location.href = `/learner/topic/${topic._id}`;
+                                }}
+                              >
+                                Chi tiết
+                              </Button>
+                            </Space>
+                          </div>
                         </Card>
                       </Col>
                     ))}

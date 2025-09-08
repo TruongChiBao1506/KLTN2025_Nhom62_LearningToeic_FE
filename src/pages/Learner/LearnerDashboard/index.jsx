@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -17,6 +17,8 @@ import userService from "../../../services/userService";
 import "./style.css";
 
 const LearnerDashboard = () => {
+  console.log("🚀 LearnerDashboard component rendered");
+  
   // State for statistics
   const [totalExams, setTotalExams] = useState(0);
   const [averageScore, setAverageScore] = useState(0);
@@ -26,7 +28,7 @@ const LearnerDashboard = () => {
   const [performanceData, setPerformanceData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchDashboardData = useCallback(async () => {
+  const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
 
@@ -127,7 +129,7 @@ const LearnerDashboard = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     document.title = "Trang Chủ | Nền Tảng Học TOEIC";
@@ -138,8 +140,12 @@ const LearnerDashboard = () => {
       once: true,
     });
 
+    // Call fetchDashboardData directly
     fetchDashboardData();
-  }, [fetchDashboardData]);
+    
+    // Disable exhaustive-deps warning for this specific case
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const createScoreProgressChart = (examData) => {
     const dates = examData.map((exam) => exam.date);

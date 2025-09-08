@@ -1,11 +1,12 @@
 import React from "react";
-import Practice from "../Practice";
+import PartPractice from "../PartPractice";
+import withSectionAccess from "../../../components/Learner/withSectionAccess";
 
 const Part4 = () => {
   // Part 4: Talks - ID từ log của bạn
   const sectionId = "686ce171b614dda1fc08f1d3";
   
-  return <Practice sectionId={sectionId} />;
+  return <PartPractice sectionId={sectionId} />;
 };
 
-export default Part4;
+export default withSectionAccess(Part4, "686ce171b614dda1fc08f1d3");

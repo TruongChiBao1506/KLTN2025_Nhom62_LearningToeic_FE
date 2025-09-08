@@ -45,7 +45,6 @@ const ExamFullTest = () => {
       try {
         setLoading(true);
         const response = await examService.getEnableFullTest();
-        console.log("🚀 ~ retrieveExams ~ response:", response);
 
         // Handle both direct array response and nested data response
         const examData = Array.isArray(response)

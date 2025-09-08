@@ -44,7 +44,7 @@ const No1To2 = ({ testId }) => {
       setRecordedAudios(response.map(() => null));
       setRecordedText(response.map(() => ""));
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching questions:", error);
     }
   };
 

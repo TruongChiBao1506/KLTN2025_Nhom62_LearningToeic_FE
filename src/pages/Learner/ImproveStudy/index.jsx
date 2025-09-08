@@ -344,6 +344,7 @@ const ImproveStudy = () => {
         sectionId: selectedSection,
         questionType: selectedQuestionType,
       };
+      console.log("🚀 ~ startPractice ~ requestData:", requestData);
       try {
         const fetchedQuestions =
           await questionService.getQuestionsBySectionIdAndType(requestData);
@@ -600,7 +601,7 @@ const ImproveStudy = () => {
                     fontWeight: "700",
                   }}
                 >
-                  BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN
+                  🎯 LUYỆN TẬP THEO CHUYÊN ĐỀ
                 </Title>
                 <Text
                   style={{
@@ -610,13 +611,13 @@ const ImproveStudy = () => {
                     marginBottom: "8px",
                   }}
                 >
-                  Nâng cao kỹ năng TOEIC của bạn với bài tập chuyên sâu
+                  Tập trung luyện tập từng loại câu hỏi cụ thể để khắc phục điểm yếu
                 </Text>
                 <Tag
-                  color="blue"
+                  color="orange"
                   style={{ fontSize: "12px", padding: "4px 12px" }}
                 >
-                  7 Parts • Listening & Reading
+                  Advanced Practice • Focused Training
                 </Tag>
               </div>
 
@@ -624,27 +625,25 @@ const ImproveStudy = () => {
 
               {/* Instructions */}
               <Alert
-                message="Hướng dẫn sử dụng"
+                message="Điểm khác biệt với luyện tập cơ bản"
                 description={
                   <Space
                     direction="vertical"
                     size="small"
                     style={{ width: "100%" }}
                   >
-                    <Text>• Chọn phần bạn muốn luyện tập (Part 1-7)</Text>
-                    <Text>
-                      • Chọn loại câu hỏi cụ thể để tập trung luyện tập
-                    </Text>
-                    <Text>• Bắt đầu làm bài và nhận phản hồi chi tiết</Text>
+                    <Text>• <strong>Luyện cơ bản:</strong> Làm bài theo Part, câu hỏi ngẫu nhiên</Text>
+                    <Text>• <strong>Luyện chuyên đề:</strong> Tập trung vào loại câu hỏi cụ thể</Text>
+                    <Text>• <strong>Mục tiêu:</strong> Khắc phục điểm yếu, nâng cao kỹ năng từng phần</Text>
                   </Space>
                 }
-                type="info"
+                type="success"
                 showIcon
                 style={{
                   marginBottom: "32px",
                   borderRadius: "12px",
                   background:
-                    "linear-gradient(135deg, rgba(24, 144, 255, 0.1), rgba(64, 169, 255, 0.05))",
+                    "linear-gradient(135deg, rgba(82, 196, 26, 0.1), rgba(135, 208, 104, 0.05))",
                 }}
               />
 
@@ -816,13 +815,13 @@ const ImproveStudy = () => {
                   }}
                   icon={<PlayCircle className="w-5 h-5" />}
                 >
-                  BẮT ĐẦU LUYỆN TẬP
+                  BẮT ĐẦU LUYỆN CHUYÊN ĐỀ
                 </Button>
 
                 {(!selectedSection || !selectedQuestionType) && (
                   <div style={{ marginTop: "12px" }}>
                     <Text type="secondary" style={{ fontSize: "14px" }}>
-                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu
+                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu luyện chuyên đề
                     </Text>
                   </div>
                 )}
@@ -860,10 +859,10 @@ const ImproveStudy = () => {
                   <Col xs={24} sm={8} style={{ textAlign: "center" }}>
                     <Zap className="w-8 h-8 mx-auto mb-2 text-orange-500" />
                     <Text strong style={{ display: "block" }}>
-                      Cải thiện kỹ năng
+                      Luyện tập chuyên sâu
                     </Text>
                     <Text type="secondary" style={{ fontSize: "12px" }}>
-                      Tập trung vào điểm yếu
+                      Tập trung khắc phục điểm yếu
                     </Text>
                   </Col>
                 </Row>

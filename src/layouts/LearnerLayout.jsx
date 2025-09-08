@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Calendar,
@@ -30,11 +30,13 @@ import {
   Clock,
   Headphones,
   Star,
+  Target,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
 import authService from "../services/authService";
+import sectionService from "../services/sectionsService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
 
 import "./LearnerLayout.css";
@@ -61,14 +63,53 @@ const LearnerLayout = () => {
   );
   const [todayStudyTime, setTodayStudyTime] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [sections, setSections] = useState([]);
+  const [sectionsLoading, setSectionsLoading] = useState(false);
+  const [lastSectionsUpdate, setLastSectionsUpdate] = useState(Date.now());
+  const sectionsRef = useRef([]);
   const user = useSelector((state) => state?.auth?.user);
+
+  // Load sections for dynamic menu
+  const fetchSections = useCallback(async () => {
+    try {
+      setSectionsLoading(true);
+      const response = await sectionService.getAllEnabled();
+      // Handle both response formats for consistency
+      const sectionsData = response.data || response;
+      
+      // Only update if data actually changed
+      const sectionsString = JSON.stringify(sectionsData);
+      const currentSectionsString = JSON.stringify(sectionsRef.current);
+      
+      if (sectionsString !== currentSectionsString) {
+        setSections(sectionsData);
+        sectionsRef.current = sectionsData;
+        setLastSectionsUpdate(Date.now());
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải sections:", error);
+    } finally {
+      setSectionsLoading(false);
+    }
+  }, []);
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
+    
+    // Refresh sections when window gets focus (user comes back to app)
+    const handleFocus = () => {
+      fetchSections();
+    };
+    
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    window.addEventListener("focus", handleFocus);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [fetchSections]);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -140,7 +181,7 @@ const LearnerLayout = () => {
       toast.success("Đăng xuất thành công!");
 
       // Chuyển hướng về trang đăng nhập
-      window.location.href = "/signin";
+      window.location.href = "/auth/signin";
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       toast.error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
@@ -236,6 +277,79 @@ const LearnerLayout = () => {
 
     fetchNotifications();
   }, [isActive, darkMode]);
+
+  useEffect(() => {
+    fetchSections();
+
+    // Poll for section changes every 30 seconds
+    const pollInterval = setInterval(fetchSections, 30000);
+
+    // Listen for page visibility changes (when user switches tabs)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchSections();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(pollInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [fetchSections]);
+
+  // Function to manually refresh sections
+  const refreshSections = async () => {
+    await fetchSections();
+  };
+
+  // Generate dynamic menu items for L&R sections
+  const generateListeningReadingMenuItems = () => {
+    const listeningReadingSections = sections.filter(section => 
+      section.type === 1 || section.type === 2 // Listening and Reading
+    );
+    
+    // If sections are loading, show loading indicator
+    if (sectionsLoading && listeningReadingSections.length === 0) {
+      return [{
+        key: "loading",
+        icon: <FileText size={16} />,
+        label: <span style={{ color: '#999' }}>Đang tải...</span>,
+        disabled: true,
+      }];
+    }
+    
+    // Map sections to menu items
+    const sectionMenuItems = listeningReadingSections.map(section => {
+      // Generate route based on section name for backward compatibility
+      let routePath = '';
+      if (section.name.includes('Part 1')) routePath = '/learner/part-1';
+      else if (section.name.includes('Part 2')) routePath = '/learner/part-2';
+      else if (section.name.includes('Part 3')) routePath = '/learner/part-3';
+      else if (section.name.includes('Part 4')) routePath = '/learner/part-4';
+      else if (section.name.includes('Part 5')) routePath = '/learner/part-5';
+      else if (section.name.includes('Part 6')) routePath = '/learner/part-6';
+      else if (section.name.includes('Part 7')) routePath = '/learner/part-7';
+      else routePath = `/learner/section/${section._id}`;
+
+      return {
+        key: routePath,
+        icon: <FileText size={16} />,
+        label: <Link to={routePath}>{section.name}</Link>,
+      };
+    });
+
+    // Add the "Luyện theo chuyên đề" item at the end
+    sectionMenuItems.push({
+      key: "/learner/improve",
+      icon: <Target size={16} />,
+      label: <Link to="/learner/improve">Luyện theo chuyên đề</Link>,
+    });
+
+    return sectionMenuItems;
+  };
+
   // Menu items configuration
   const menuItems = [
     {
@@ -264,9 +378,9 @@ const LearnerLayout = () => {
           label: <Link to="/learner/grammar">Học ngữ pháp</Link>,
         },
         {
-          key: "/learner/vocabulary",
+          key: "/learner/vocabulary-topics",
           icon: <BookOpen size={16} />,
-          label: <Link to="/learner/vocabulary">Học từ vựng</Link>,
+          label: <Link to="/learner/vocabulary-topics">Học từ vựng</Link>,
         },
       ],
     },
@@ -279,43 +393,7 @@ const LearnerLayout = () => {
       key: "listening-reading",
       icon: <Headphones size={18} />,
       label: "Luyện L&R",
-      children: [
-        {
-          key: "/learner/part-1",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-1">Part 1: Photographs</Link>,
-        },
-        {
-          key: "/learner/part-2",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-2">Part 2: Question-Response</Link>,
-        },
-        {
-          key: "/learner/part-3",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-3">Part 3: Conversations</Link>,
-        },
-        {
-          key: "/learner/part-4",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-4">Part 4: Short Talks</Link>,
-        },
-        {
-          key: "/learner/part-5",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-5">Part 5: Incomplete Sentences</Link>,
-        },
-        {
-          key: "/learner/part-6",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-6">Part 6: Text Completion</Link>,
-        },
-        {
-          key: "/learner/part-7",
-          icon: <FileText size={16} />,
-          label: <Link to="/learner/part-7">Part 7: Reading Comprehension</Link>,
-        },
-      ],
+      children: generateListeningReadingMenuItems(),
     },
     {
       key: "practice-tests",
@@ -350,7 +428,7 @@ const LearnerLayout = () => {
           label: <Link to="/learner/settings">Cài đặt</Link>,
         },
       ],
-    },
+    }
   ];
 
   // Get current menu key based on location

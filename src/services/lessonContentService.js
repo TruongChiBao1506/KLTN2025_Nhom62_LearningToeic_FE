@@ -57,7 +57,7 @@ class LessonContentService {
 
   async getEnableLessonContentsByLesson(lessonId) {
     const response = await axiosClient.get(
-      `${this.baseUrl}/by-lesson/${lessonId}/enabled`
+      `${this.baseUrl}/by-lesson/${lessonId}/enable`
     );
     return response;
   }

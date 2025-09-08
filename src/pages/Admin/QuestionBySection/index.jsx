@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
@@ -26,11 +26,11 @@ const QuestionBySection = () => {
         });
     }, []);
 
-    const retrieveQuestions = async () => {
+    const retrieveQuestions = useCallback(async () => {
         try {
             setIsLoading(true);
             const data = await QuestionService.getQuestionsBySection(sectionId);
-            setQuestions(data || []);
+            setQuestions(data);
             console.log("Retrieved questions:", data);
         } catch (error) {
             console.log(error);
@@ -38,13 +38,13 @@ const QuestionBySection = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [sectionId]);
 
     useEffect(() => {
         if (sectionId) {
             retrieveQuestions();
         }
-    }, [sectionId]);
+    }, [sectionId, retrieveQuestions]);
 
     useEffect(() => {
         document.title = "Admin - Questions";

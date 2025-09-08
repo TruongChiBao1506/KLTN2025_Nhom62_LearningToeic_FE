@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 import authService from "../../../../services/authService";
 
 const CheckAccessToken = () => {
@@ -15,7 +16,7 @@ const CheckAccessToken = () => {
 
         // Nếu token không hợp lệ và có trang xác thực, chuyển hướng về trang đăng nhập
         if (!isLearnerTokenValid) {
-          console.log("Phiên học viên đã hết hạn. Vui lòng đăng nhập lại.");
+          toast.warning("Phiên học viên đã hết hạn. Vui lòng đăng nhập lại.");
           localStorage.removeItem("LearnerAuthenticated");
           localStorage.removeItem("learnerToken");
           localStorage.removeItem("learnerRefreshToken");
@@ -45,7 +46,7 @@ const CheckAccessToken = () => {
     return () => {
       clearInterval(tokenInterval);
     };
-  }, []);
+  }, [checkTokenInterval]);
 
   return null; // Component này không render gì, chỉ chạy logic kiểm tra
 };

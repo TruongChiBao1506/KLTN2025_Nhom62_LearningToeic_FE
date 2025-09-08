@@ -1,18 +1,76 @@
 import React, { useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import commentService from "../../../services/commentService";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import vi from "date-fns/locale/vi";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 import { toast } from "react-toastify";
+import commentService from "../../../services/commentService";
+import { 
+  Card, 
+  Avatar, 
+  Typography, 
+  Button, 
+  Input, 
+  Space, 
+  Dropdown
+} from "antd";
+import { 
+  UserOutlined, 
+  MessageOutlined, 
+  DeleteOutlined, 
+  MoreOutlined,
+  SendOutlined 
+} from "@ant-design/icons";
 import "./style.css";
+
+const { Text, Paragraph } = Typography;
+const { TextArea } = Input;
 
 const CommentComponent = ({ comment, parentId, retrieveComments }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState("");
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return formatDistanceToNow(date, { addSuffix: true, locale: vi });
+    try {
+      if (!dateString) {
+        return "Vừa xong";
+      }
+      
+      // Xử lý các định dạng ngày khác nhau
+      let date;
+      if (typeof dateString === 'string') {
+        // Xử lý ISO string từ MongoDB (2025-09-08T08:03:57.086+00:00)
+        date = new Date(dateString);
+      } else if (typeof dateString === 'number') {
+        // Nếu là timestamp
+        date = new Date(dateString);
+      } else {
+        // Nếu đã là Date object
+        date = dateString;
+      }
+      
+      // Kiểm tra xem date có hợp lệ không
+      if (!date || isNaN(date.getTime())) {
+        console.warn("Invalid date value:", dateString);
+        return "Vừa xong";
+      }
+      
+      // Tính khoảng cách thời gian với hiện tại
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      // Nếu comment được tạo trong vòng 1 phút (60 giây), hiển thị "Vừa xong"
+      if (diffInSeconds < 60) {
+        return "Vừa xong";
+      }
+      
+      // Debug log để kiểm tra
+      console.log("Formatting date:", dateString, "Parsed:", date, "Diff in seconds:", diffInSeconds);
+      
+      return formatDistanceToNow(date, { addSuffix: true, locale: vi });
+    } catch (error) {
+      console.error("Lỗi khi format ngày:", error, "Input:", dateString);
+      return "Vừa xong";
+    }
   };
 
   const addReply = async () => {
@@ -28,13 +86,20 @@ const CommentComponent = ({ comment, parentId, retrieveComments }) => {
       const decoded = jwtDecode(learnerToken);
       const userId = decoded.id;
 
+      console.log("Current comment:", comment); // Debug: comment hiện tại
+      console.log("Parent comment ID should be:", comment.commentId); // Debug: ID của comment cha
+      console.log("Comment._id:", comment._id); // Debug: MongoDB _id
+
       const data = {
         text: replyText,
         userId: userId,
-        parentCommentId: parentId,
+        parentId: comment._id || comment.commentId, // Backend mong đợi field 'parentId'
       };
 
-      await commentService.createComment(data);
+      console.log("Creating reply with data:", data); // Debug log
+      const response = await commentService.createComment(data);
+      console.log("Create reply response:", response); // Debug log
+      
       setReplyText("");
       setShowReplyForm(false);
       retrieveComments();
@@ -69,63 +134,168 @@ const CommentComponent = ({ comment, parentId, retrieveComments }) => {
   };
 
   return (
-    <div className="comment-container ms-3 mt-3">
-      <div className="comment-header d-flex justify-content-between">
-        <div className="user-info">
-          <h6 className="mb-0">{comment.userName || "Người dùng"}</h6>
-          <small className="text-muted">{formatDate(comment.createdAt)}</small>
-        </div>
-        {isOwner() && (
-          <div className="comment-actions">
-            <button
-              onClick={deleteComment}
-              className="btn btn-sm btn-link text-danger"
-            >
-              <i className="fas fa-trash-alt"></i>
-            </button>
+    <Card 
+      className="modern-comment-card"
+      style={{
+        background: "#fff",
+        borderRadius: "12px",
+        border: "1px solid #f0f0f0",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+        marginBottom: comment.replies?.length > 0 ? "16px" : "8px"
+      }}
+      bodyStyle={{ padding: "16px" }}
+    >
+      {/* Comment Header */}
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "flex-start",
+        marginBottom: "12px" 
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <Avatar 
+            icon={<UserOutlined />}
+            style={{ 
+              backgroundColor: "#1890ff",
+              color: "#fff"
+            }}
+            size={40}
+          />
+          <div>
+            <Text strong style={{ fontSize: "14px", color: "#262626" }}>
+              {comment.userName || "Người dùng"}
+            </Text>
+            <br />
+            <Text type="secondary" style={{ fontSize: "12px" }}>
+              {comment.date ? formatDate(comment.date) : (comment.createdAt ? formatDate(comment.createdAt) : "Vừa xong")}
+            </Text>
           </div>
+        </div>
+
+        {isOwner() && (
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'delete',
+                  label: 'Xóa bình luận',
+                  icon: <DeleteOutlined />,
+                  danger: true,
+                  onClick: deleteComment
+                }
+              ]
+            }}
+            trigger={['click']}
+          >
+            <Button
+              type="text"
+              icon={<MoreOutlined />}
+              style={{ color: "#8c8c8c" }}
+            />
+          </Dropdown>
         )}
       </div>
 
-      <div className="comment-content mt-1">{comment.text}</div>
-
-      <div className="comment-footer mt-2">
-        <button
-          onClick={() => setShowReplyForm(!showReplyForm)}
-          className="btn btn-sm btn-link text-decoration-none"
+      {/* Comment Content */}
+      <div style={{ marginBottom: "12px", marginLeft: "52px" }}>
+        <Paragraph 
+          style={{ 
+            margin: 0, 
+            fontSize: "14px", 
+            lineHeight: "1.6",
+            color: "#262626"
+          }}
         >
-          {showReplyForm ? "Hủy" : "Trả lời"}
-        </button>
+          {comment.text}
+        </Paragraph>
       </div>
 
-      {showReplyForm && (
-        <div className="reply-form mt-2 d-flex">
-          <input
+      {/* Comment Actions */}
+      <div style={{ marginLeft: "52px" }}>
+        <Space size="small">
+          <Button
             type="text"
-            className="form-control"
-            placeholder="Viết phản hồi..."
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-          />
-          <button onClick={addReply} className="btn btn-primary ms-2">
-            Gửi
-          </button>
+            size="small"
+            icon={<MessageOutlined />}
+            onClick={() => setShowReplyForm(!showReplyForm)}
+            style={{ 
+              color: showReplyForm ? "#1890ff" : "#8c8c8c",
+              padding: "0 8px",
+              height: "28px"
+            }}
+          >
+            {showReplyForm ? "Hủy" : "Trả lời"}
+          </Button>
+        </Space>
+      </div>
+
+      {/* Reply Form */}
+      {showReplyForm && (
+        <div style={{ 
+          marginTop: "16px", 
+          marginLeft: "52px",
+          background: "#fafafa",
+          padding: "16px",
+          borderRadius: "8px",
+          border: "1px solid #f0f0f0"
+        }}>
+          <Space direction="vertical" style={{ width: "100%" }} size="middle">
+            <TextArea
+              placeholder="Viết phản hồi..."
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              autoSize={{ minRows: 2, maxRows: 4 }}
+              style={{ borderRadius: "6px" }}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+              <Button 
+                size="small"
+                onClick={() => setShowReplyForm(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="primary"
+                size="small"
+                icon={<SendOutlined />}
+                onClick={addReply}
+                disabled={!replyText.trim()}
+                style={{ 
+                  background: "linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)",
+                  border: "none"
+                }}
+              >
+                Gửi
+              </Button>
+            </div>
+          </Space>
         </div>
       )}
 
+      {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="replies-container ms-4 mt-2">
-          {comment.replies.map((reply) => (
-            <CommentComponent
-              key={reply.commentId}
-              comment={reply}
-              parentId={parentId}
-              retrieveComments={retrieveComments}
-            />
-          ))}
+        <div style={{ 
+          marginTop: "16px", 
+          marginLeft: "52px",
+          borderLeft: "2px solid #f0f0f0",
+          paddingLeft: "16px"
+        }}>
+          <Text type="secondary" style={{ fontSize: "12px", marginBottom: "12px", display: "block" }}>
+            {comment.replies.length} phản hồi
+          </Text>
+          <Space direction="vertical" style={{ width: "100%" }} size="middle">
+            {comment.replies.map((reply) => (
+              <CommentComponent
+                key={reply.commentId || reply._id}
+                comment={reply}
+                parentId={comment._id || comment.commentId} // Sử dụng _id của comment cha
+                retrieveComments={retrieveComments}
+              />
+            ))}
+          </Space>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

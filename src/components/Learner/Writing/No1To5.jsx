@@ -33,7 +33,7 @@ const No1To5 = ({ testId }) => {
       setIsWritingCountDown(response.map(() => false));
       setIsFinished(response.map(() => false));
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching questions:", error);
     }
   };
 

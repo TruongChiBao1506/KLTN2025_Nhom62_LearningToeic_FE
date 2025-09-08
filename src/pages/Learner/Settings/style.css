@@ -4,8 +4,8 @@
   background: linear-gradient(135deg, #f0f2f5 0%, #fafafa 100%);
 }
 
-/* Card Glass Morphism Effect */
-.ant-card {
+/* Card Glass Morphism Effect - Scoped to Settings component */
+.settings-container .ant-card {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -13,22 +13,22 @@
   transition: all 0.3s ease;
 }
 
-.ant-card:hover {
+.settings-container .ant-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
 }
 
-/* Tab Enhancement */
-.ant-tabs-tab {
+/* Tab Enhancement - Scoped to Settings component */
+.settings-container .ant-tabs-tab {
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
-.ant-tabs-tab:hover {
+.settings-container .ant-tabs-tab:hover {
   transform: translateY(-1px);
 }
 
-.ant-tabs-tab.ant-tabs-tab-active {
+.settings-container .ant-tabs-tab.ant-tabs-tab-active {
   background: linear-gradient(45deg, #1890ff, #52c41a);
   background-clip: text;
   -webkit-background-clip: text;
@@ -36,122 +36,122 @@
   font-weight: 600;
 }
 
-.ant-tabs-ink-bar {
+.settings-container .ant-tabs-ink-bar {
   background: linear-gradient(45deg, #1890ff, #52c41a);
   height: 3px;
 }
 
-/* Switch Enhancement */
-.ant-switch-checked {
+/* Switch Enhancement - Scoped to Settings component */
+.settings-container .ant-switch-checked {
   background-color: #52c41a;
 }
 
-.ant-switch-checked:focus {
+.settings-container .ant-switch-checked:focus {
   box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.2);
 }
 
-/* Select Enhancement */
-.ant-select-selector {
+/* Select Enhancement - Scoped to Settings component */
+.settings-container .ant-select-selector {
   border: 1px solid #d9d9d9;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
-.ant-select:hover .ant-select-selector {
+.settings-container .ant-select:hover .ant-select-selector {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
 }
 
-.ant-select-focused .ant-select-selector {
+.settings-container .ant-select-focused .ant-select-selector {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
-/* Button Enhancement */
-.ant-btn {
+/* Button Enhancement - Scoped to Settings component */
+.settings-container .ant-btn {
   border-radius: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
-.ant-btn-primary {
+.settings-container .ant-btn-primary {
   background: linear-gradient(45deg, #1890ff, #52c41a);
   border: none;
 }
 
-.ant-btn-primary:hover {
+.settings-container .ant-btn-primary:hover {
   background: linear-gradient(45deg, #40a9ff, #73d13d);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
 }
 
-.ant-btn:hover {
+.settings-container .ant-btn:hover {
   transform: translateY(-1px);
 }
 
-/* InputNumber Enhancement */
-.ant-input-number {
+/* InputNumber Enhancement - Scoped to Settings component */
+.settings-container .ant-input-number {
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
-.ant-input-number:hover {
+.settings-container .ant-input-number:hover {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
 }
 
-.ant-input-number:focus {
+.settings-container .ant-input-number:focus {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
-/* Slider Enhancement */
-.ant-slider-rail {
+/* Slider Enhancement - Scoped to Settings component */
+.settings-container .ant-slider-rail {
   background: #f5f5f5;
 }
 
-.ant-slider-track {
+.settings-container .ant-slider-track {
   background: linear-gradient(45deg, #1890ff, #52c41a);
 }
 
-.ant-slider-handle {
+.settings-container .ant-slider-handle {
   border: solid 2px #1890ff;
 }
 
-.ant-slider-handle:focus {
+.settings-container .ant-slider-handle:focus {
   box-shadow: 0 0 0 5px rgba(24, 144, 255, 0.2);
 }
 
-/* Typography Enhancement */
-.ant-typography h2 {
+/* Typography Enhancement - Scoped to Settings component */
+.settings-container .ant-typography h2 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-.ant-typography h4 {
+.settings-container .ant-typography h4 {
   color: #262626;
   font-weight: 600;
 }
 
-/* Responsive Design */
+/* Responsive Design - Scoped to Settings component */
 @media (max-width: 768px) {
   .settings-container {
     padding: 12px;
   }
   
-  .ant-tabs-tab {
+  .settings-container .ant-tabs-tab {
     padding: 8px 12px;
     font-size: 14px;
   }
   
-  .ant-card {
+  .settings-container .ant-card {
     margin-bottom: 12px;
   }
   
-  .ant-row {
+  .settings-container .ant-row {
     margin-bottom: 0;
   }
   
-  .ant-col {
+  .settings-container .ant-col {
     margin-bottom: 16px;
   }
 }
@@ -161,17 +161,17 @@
     padding: 8px;
   }
   
-  .ant-tabs-tab {
+  .settings-container .ant-tabs-tab {
     padding: 6px 8px;
     font-size: 12px;
   }
   
-  .ant-card .ant-card-body {
+  .settings-container .ant-card .ant-card-body {
     padding: 16px;
   }
 }
 
-/* Animation Enhancement */
+/* Animation Enhancement - Scoped to Settings component */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -183,49 +183,49 @@
   }
 }
 
-.ant-card {
+.settings-container .ant-card {
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Loading States */
-.ant-spin-nested-loading > div > .ant-spin {
+/* Loading States - Scoped to Settings component */
+.settings-container .ant-spin-nested-loading > div > .ant-spin {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(4px);
 }
 
-/* Custom scroll bar */
-::-webkit-scrollbar {
+/* Custom scroll bar - Scoped to Settings component */
+.settings-container ::-webkit-scrollbar {
   width: 6px;
 }
 
-::-webkit-scrollbar-track {
+.settings-container ::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb {
+.settings-container ::-webkit-scrollbar-thumb {
   background: linear-gradient(45deg, #1890ff, #52c41a);
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.settings-container ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #40a9ff, #73d13d);
 }
 
-/* Dark mode support */
+/* Dark mode support - Scoped to Settings component */
 [data-theme='dark'] .settings-container {
   background: linear-gradient(135deg, #141414 0%, #1f1f1f 100%);
 }
 
-[data-theme='dark'] .ant-card {
+[data-theme='dark'] .settings-container .ant-card {
   background: rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme='dark'] .ant-typography h4 {
+[data-theme='dark'] .settings-container .ant-typography h4 {
   color: #f0f0f0;
 }
 
-[data-theme='dark'] .ant-typography {
+[data-theme='dark'] .settings-container .ant-typography {
   color: #f0f0f0;
 }

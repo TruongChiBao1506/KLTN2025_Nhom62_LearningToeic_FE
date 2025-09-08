@@ -66,6 +66,24 @@ class QuestionService {
     );
     return response;
   }
+
+  // Lấy câu hỏi theo section
+  async getQuestionsBySection(sectionId) {
+    const response = await axiosClient.get(`${this.baseUrl}/by-section/${sectionId}`);
+    return response;
+  }
+
+  // Lấy câu hỏi theo question group  
+  async getQuestionsByQuestionGroup(groupId) {
+    const response = await axiosClient.get(`${this.baseUrl}/by-question-group/${groupId}`);
+    return response;
+  }
+
+  // Lấy chi tiết câu hỏi theo ID (alias cho getById)
+  async get(id) {
+    return this.getById(id);
+  }
 }
 
-export default new QuestionService();
+const questionService = new QuestionService();
+export default questionService;

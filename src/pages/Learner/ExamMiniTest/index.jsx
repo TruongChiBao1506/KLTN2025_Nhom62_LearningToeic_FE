@@ -46,7 +46,6 @@ const ExamMiniTest = () => {
       try {
         setLoading(true);
         const response = await examService.getMiniTest();
-        console.log("🚀 ~ retrieveExams ~ response:", response);
 
         setExams(response || []);
       } catch (error) {

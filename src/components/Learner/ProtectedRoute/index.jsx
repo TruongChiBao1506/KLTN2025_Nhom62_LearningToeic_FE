@@ -16,13 +16,7 @@ const ProtectedRoute = ({ children }) => {
           "learnerAuthenticated"
         );
 
-        console.log("🔍 Checking learner auth:", {
-          learnerToken: !!learnerToken,
-          learnerAuthenticated,
-        });
-
         if (!learnerToken || learnerAuthenticated !== "true") {
-          console.log("❌ No learner token or not authenticated");
           setIsAuthenticated(false);
           setIsLoading(false);
           return;
@@ -30,7 +24,6 @@ const ProtectedRoute = ({ children }) => {
 
         // Kiểm tra token của learner chi tiết
         const isValid = await authService.checkLearnerTokenValidity();
-        console.log("🚀 ~ checkAuth ~ isValid:", isValid);
 
         setIsAuthenticated(isValid);
         setIsLoading(false);

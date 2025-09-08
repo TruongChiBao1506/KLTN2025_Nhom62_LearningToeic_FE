@@ -1,0 +1,221 @@
+/* PartPractice Styles */
+
+.lesson-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.6s;
+}
+
+.lesson-card:hover::before {
+  left: 100%;
+}
+
+.lesson-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2) !important;
+}
+
+.test-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.test-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+  transition: left 0.6s;
+}
+
+.test-card:hover::before {
+  left: 100%;
+}
+
+.test-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Grid spacing improvements - Scoped to PartPractice component */
+.part-practice-container .ant-row {
+  margin-left: -12px !important;
+  margin-right: -12px !important;
+}
+
+.part-practice-container .ant-col {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  margin-bottom: 24px !important;
+}
+
+/* Tab styling - Scoped to PartPractice component */
+.part-practice-container .ant-tabs {
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 16px;
+  padding: 8px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.part-practice-container .ant-tabs-nav {
+  margin-bottom: 0 !important;
+}
+
+.part-practice-container .ant-tabs-tab {
+  border-radius: 12px !important;
+  margin: 4px 8px !important;
+  padding: 12px 24px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  font-size: 16px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.6);
+  color: #64748b;
+}
+
+.part-practice-container .ant-tabs-tab:hover {
+  background: rgba(102, 126, 234, 0.08) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.part-practice-container .ant-tabs-tab-active {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #667eea !important;
+  border: 2px solid #667eea !important;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.25) !important;
+  font-weight: 600;
+  transform: translateY(-2px);
+  position: relative;
+  z-index: 2;
+}
+
+.part-practice-container .ant-tabs-tab-active::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.part-practice-container .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #667eea !important;
+  font-weight: 600;
+}
+
+.part-practice-container .ant-tabs-content-holder {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 0 0 16px 16px;
+  padding: 24px 0 0 0;
+  backdrop-filter: blur(5px);
+}
+
+/* Button enhancements - Scoped to PartPractice component */
+.part-practice-container .ant-btn-primary {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.part-practice-container .ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Responsive design - Scoped to PartPractice component */
+@media (max-width: 1200px) {
+  .part-practice-container .ant-col-lg-6 {
+    flex: 0 0 33.333333% !important;
+    max-width: 33.333333% !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .part-practice-container .ant-col-md-8 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  
+  .part-practice-container .ant-tabs-tab {
+    padding: 10px 16px !important;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .part-practice-container .ant-col {
+    margin-bottom: 16px !important;
+  }
+  
+  .lesson-card:hover,
+  .test-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+  
+  .part-practice-container .ant-tabs-tab {
+    padding: 8px 12px !important;
+    font-size: 13px;
+    margin: 2px 4px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .part-practice-container .ant-col {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  .part-practice-container .ant-row {
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+  }
+}
+
+/* Loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Enhanced empty state - Scoped to PartPractice component */
+.part-practice-container .ant-empty {
+  padding: 40px 20px;
+}
+
+.part-practice-container .ant-empty-description {
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* Focus states for accessibility */
+.lesson-card:focus,
+.test-card:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.part-practice-container .ant-tabs-tab:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}

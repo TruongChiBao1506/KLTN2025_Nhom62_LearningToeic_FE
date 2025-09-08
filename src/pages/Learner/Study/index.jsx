@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, Spin, Result } from "antd";
+import { ReloadOutlined, ArrowLeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import TestService from "../../../services/testService";
 
@@ -18,18 +20,47 @@ import "./style.css";
 
 const Study = () => {
   const { sectionId, testId } = useParams();
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [isSubmited, setIsSubmited] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [noQuestions, setNoQuestions] = useState(false);
 
   // Lấy danh sách câu hỏi từ bài kiểm tra
-  const retrieveQuestions = async () => {
+  const retrieveQuestions = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+      setNoQuestions(false);
+      
       const response = await TestService.getQuestionsByTestId(testId);
-      setQuestions(response);
+      
+      if (response && response.length > 0) {
+        setQuestions(response);
+      } else {
+        // Không có câu hỏi nào cho bài test này
+        setNoQuestions(true);
+        setQuestions([]);
+      }
     } catch (error) {
       console.log(error);
+      
+      // Kiểm tra loại lỗi để hiển thị thông báo phù hợp
+      if (error.response?.status === 404 || 
+          error.response?.data?.message === "No questions found for this test") {
+        setNoQuestions(true);
+        setQuestions([]);
+      } else {
+        setError({
+          status: error.response?.status || 500,
+          message: error.response?.data?.message || "Có lỗi xảy ra khi tải câu hỏi"
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [testId]);
 
   // Xử lý việc nộp bài
   const submitAnswers = async () => {
@@ -206,7 +237,7 @@ const Study = () => {
 
   useEffect(() => {
     retrieveQuestions();
-  }, [testId]);
+  }, [testId, retrieveQuestions]);
 
   // Render component tương ứng dựa vào sectionId
   const renderTestComponent = () => {
@@ -248,10 +279,93 @@ const Study = () => {
     }
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  const handleRetry = () => {
+    retrieveQuestions();
+  };
+
   return (
     <div className="bg-test">
       <div className="container-fluid">
-        <div className="row mt-3">{renderTestComponent()}</div>
+        <div className="row mt-3">
+          {loading ? (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              minHeight: '60vh',
+              flexDirection: 'column'
+            }}>
+              <Spin size="large" />
+              <p style={{ marginTop: 16, color: '#666' }}>Đang tải câu hỏi...</p>
+            </div>
+          ) : noQuestions ? (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              minHeight: '60vh'
+            }}>
+              <Result
+                icon={<ExclamationCircleOutlined style={{ color: '#faad14' }} />}
+                title="Chưa có câu hỏi cho bài test này"
+                subTitle="Bài test này hiện tại chưa có câu hỏi nào. Vui lòng thử lại sau hoặc chọn bài test khác."
+                extra={[
+                  <Button 
+                    key="back" 
+                    icon={<ArrowLeftOutlined />} 
+                    onClick={handleGoBack}
+                  >
+                    Quay lại
+                  </Button>,
+                  <Button 
+                    key="retry" 
+                    type="primary" 
+                    icon={<ReloadOutlined />} 
+                    onClick={handleRetry}
+                  >
+                    Thử lại
+                  </Button>
+                ]}
+              />
+            </div>
+          ) : error ? (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              minHeight: '60vh'
+            }}>
+              <Result
+                status="error"
+                title={`Lỗi ${error.status}`}
+                subTitle={error.message}
+                extra={[
+                  <Button 
+                    key="back" 
+                    icon={<ArrowLeftOutlined />} 
+                    onClick={handleGoBack}
+                  >
+                    Quay lại
+                  </Button>,
+                  <Button 
+                    key="retry" 
+                    type="primary" 
+                    icon={<ReloadOutlined />} 
+                    onClick={handleRetry}
+                  >
+                    Thử lại
+                  </Button>
+                ]}
+              />
+            </div>
+          ) : (
+            renderTestComponent()
+          )}
+        </div>
       </div>
     </div>
   );
