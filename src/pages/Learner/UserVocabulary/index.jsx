@@ -13,6 +13,7 @@ import {
   Col,
   Progress,
   message,
+  Pagination,
 } from "antd";
 import {
   Volume2,
@@ -36,6 +37,8 @@ const UserVocabulary = () => {
   const [error, setError] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [statistics, setStatistics] = useState({
     total: 0,
     learned: 0,
@@ -185,9 +188,12 @@ const UserVocabulary = () => {
     message.success(`Đang phát âm: ${vocabulary.word}`);
   };
 
-  const practicePronunciation = (record, index) => {
+  const practicePronunciation = (record, displayIndex) => {
+    // Tính toán index thực trong danh sách tổng
+    const actualIndex = (currentPage - 1) * pageSize + displayIndex;
+    
     // Nếu đang thu âm, dừng lại
-    if (isSpeaking && activeIndex === index) {
+    if (isSpeaking && activeIndex === actualIndex) {
       if (window.currentRecognition) {
         window.currentRecognition.stop();
       }
@@ -210,7 +216,7 @@ const UserVocabulary = () => {
     recognition.interimResults = true;
 
     setIsSpeaking(true);
-    setActiveIndex(index);
+    setActiveIndex(actualIndex);
     message.info("Đang thu âm... Hãy nói từ: " + record.vocabulary.word);
 
     recognition.onresult = (event) => {
@@ -265,7 +271,7 @@ const UserVocabulary = () => {
         );
       }
 
-      updatedVocabularies[index] = currentRecord;
+      updatedVocabularies[actualIndex] = currentRecord;
       setUserVocabularies(updatedVocabularies);
 
       // Cập nhật lại thống kê
@@ -357,6 +363,12 @@ const UserVocabulary = () => {
         ).length,
       };
       setStatistics(stats);
+      
+      // Reset về trang 1 nếu trang hiện tại không còn dữ liệu
+      const totalPages = Math.ceil(updatedVocabularies.length / pageSize);
+      if (currentPage > totalPages && totalPages > 0) {
+        setCurrentPage(1);
+      }
       
       message.success(`Đã xóa "${record.vocabulary.word}" khỏi danh sách yêu thích`);
     } catch (error) {
@@ -626,7 +638,9 @@ const UserVocabulary = () => {
       title: "Phát âm của bạn",
       key: "pronunciation",
       width: 180,
-      render: (_, record, index) => (
+      render: (_, record, index) => {
+        const actualIndex = (currentPage - 1) * pageSize + index;
+        return (
         <Space size="middle" direction="vertical" style={{ width: "100%" }}>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <Button
@@ -645,10 +659,10 @@ const UserVocabulary = () => {
               Nghe
             </Button>
             <Button
-              type={isSpeaking && activeIndex === index ? "danger" : "default"}
+              type={isSpeaking && activeIndex === actualIndex ? "danger" : "default"}
               size="small"
               icon={
-                isSpeaking && activeIndex === index ? (
+                isSpeaking && activeIndex === actualIndex ? (
                   <MicOff size={14} />
                 ) : (
                   <Mic size={14} />
@@ -657,19 +671,19 @@ const UserVocabulary = () => {
               onClick={() => practicePronunciation(record, index)}
               style={{ 
                 borderRadius: "8px",
-                background: isSpeaking && activeIndex === index 
+                background: isSpeaking && activeIndex === actualIndex 
                   ? "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)"
                   : "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
                 border: "none",
                 color: "white",
-                boxShadow: isSpeaking && activeIndex === index
+                boxShadow: isSpeaking && activeIndex === actualIndex
                   ? "0 2px 8px rgba(255, 77, 79, 0.3)"
                   : "0 2px 8px rgba(82, 196, 26, 0.3)",
               }}
-              loading={isSpeaking && activeIndex === index}
+              loading={isSpeaking && activeIndex === actualIndex}
               className="pronunciation-btn"
             >
-              {isSpeaking && activeIndex === index ? "Đang nghe" : "Thử"}
+              {isSpeaking && activeIndex === actualIndex ? "Đang nghe" : "Thử"}
             </Button>
           </div>
           
@@ -695,7 +709,8 @@ const UserVocabulary = () => {
             </div>
           )}
         </Space>
-      ),
+        );
+      },
     },
     {
       title: "Thao tác",
@@ -859,6 +874,149 @@ const UserVocabulary = () => {
         .success-sparkle {
           animation: sparkle 0.8s ease-in-out;
         }
+
+        /* Custom Pagination Styles */
+        .custom-pagination {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        .custom-pagination .ant-pagination-item {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 32px !important;
+          height: 32px !important;
+          min-width: 32px !important;
+          margin-inline-end: 8px !important;
+          border-radius: 6px !important;
+          border: 1px solid #d9d9d9 !important;
+          background: white !important;
+          transition: all 0.3s ease !important;
+          line-height: 30px !important;
+        }
+
+        .custom-pagination .ant-pagination-item a {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          height: 100% !important;
+          color: #262626 !important;
+          font-weight: 500 !important;
+          font-size: 14px !important;
+          text-decoration: none !important;
+        }
+
+        .custom-pagination .ant-pagination-item-active {
+          background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important;
+          border-color: #1890ff !important;
+          box-shadow: 0 2px 4px rgba(24, 144, 255, 0.3) !important;
+        }
+
+        .custom-pagination .ant-pagination-item-active a {
+          color: white !important;
+        }
+
+        .custom-pagination .ant-pagination-prev,
+        .custom-pagination .ant-pagination-next {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 32px !important;
+          height: 32px !important;
+          margin-inline-end: 8px !important;
+          border-radius: 6px !important;
+          border: 1px solid #d9d9d9 !important;
+          background: white !important;
+          transition: all 0.3s ease !important;
+          line-height: 30px !important;
+        }
+
+        .custom-pagination .ant-pagination-prev .ant-pagination-item-link,
+        .custom-pagination .ant-pagination-next .ant-pagination-item-link {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          height: 100% !important;
+          border: none !important;
+          background: transparent !important;
+          color: #8c8c8c !important;
+          font-size: 14px !important;
+        }
+
+        .custom-pagination .ant-pagination-jump-prev,
+        .custom-pagination .ant-pagination-jump-next {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 32px !important;
+          height: 32px !important;
+          margin-inline-end: 8px !important;
+          border-radius: 6px !important;
+          border: 1px solid #d9d9d9 !important;
+          background: white !important;
+          transition: all 0.3s ease !important;
+          line-height: 30px !important;
+        }
+
+        .custom-pagination .ant-pagination-jump-prev .ant-pagination-item-link,
+        .custom-pagination .ant-pagination-jump-next .ant-pagination-item-link {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          height: 100% !important;
+          border: none !important;
+          background: transparent !important;
+          color: #8c8c8c !important;
+          font-size: 12px !important;
+        }
+
+        .custom-pagination .ant-pagination-prev:hover,
+        .custom-pagination .ant-pagination-next:hover,
+        .custom-pagination .ant-pagination-jump-prev:hover,
+        .custom-pagination .ant-pagination-jump-next:hover,
+        .custom-pagination .ant-pagination-item:hover {
+          border-color: #1890ff !important;
+          background: #f0f8ff !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 2px 6px rgba(24, 144, 255, 0.2) !important;
+        }
+
+        .custom-pagination .ant-pagination-item:hover a {
+          color: #1890ff !important;
+        }
+
+        .custom-pagination .ant-pagination-options {
+          margin-left: 16px !important;
+        }
+
+        .custom-pagination .ant-pagination-simple-pager {
+          margin-left: 8px !important;
+        }
+
+        .custom-pagination .ant-select-selector {
+          height: 32px !important;
+          border-radius: 6px !important;
+        }
+
+        .custom-pagination .ant-pagination-simple-pager input {
+          height: 32px !important;
+          border-radius: 6px !important;
+          text-align: center !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .ant-pagination {
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 8px !important;
+          }
+        }
       `}</style>
 
       {/* Header - Keep Original */}
@@ -983,31 +1141,94 @@ const UserVocabulary = () => {
           </Text>
         </div>
         
-        <div style={{ padding: "24px 32px" }}>
-          <Table
-            columns={columns}
-            dataSource={userVocabularies}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} của ${total} từ vựng`,
-              style: { 
-                marginTop: "24px",
-                textAlign: "center"
+        <div style={{ padding: "0" }}>
+          <div style={{ padding: "24px 32px", paddingBottom: "0" }}>
+            <Table
+              columns={columns}
+              dataSource={userVocabularies.slice(
+                (currentPage - 1) * pageSize,
+                currentPage * pageSize
+              )}
+              pagination={false}
+              scroll={{ x: 1100 }}
+              size="middle"
+              style={{ 
+                borderRadius: "12px",
+                background: "white"
+              }}
+              rowClassName={(record, index) => 
+                record.isCorrect === true ? "success-sparkle" : ""
               }
-            }}
-            scroll={{ x: 1100 }}
-            size="middle"
-            style={{ 
-              borderRadius: "12px",
-              background: "white"
-            }}
-            rowClassName={(record, index) => 
-              record.isCorrect === true ? "success-sparkle" : ""
-            }
-          />
+            />
+          </div>
+          
+          {/* Custom Pagination */}
+          <div style={{
+            padding: "20px 32px",
+            borderTop: "1px solid #f0f0f0",
+            background: "linear-gradient(135deg, #fafbfc 0%, #ffffff 100%)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "16px",
+            minHeight: "60px"
+          }}>
+            <div style={{
+              color: "#8c8c8c",
+              fontSize: "14px",
+              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              flex: "0 0 auto"
+            }}>
+              <span style={{
+                background: "linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%)",
+                padding: "4px 8px",
+                borderRadius: "12px",
+                border: "1px solid #91d5ff",
+                fontSize: "12px",
+                color: "#0958d9",
+                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                📚
+              </span>
+              Hiển thị {Math.min(pageSize, userVocabularies.length - (currentPage - 1) * pageSize)} 
+              {userVocabularies.length > pageSize ? ` / ${userVocabularies.length}` : ''} từ vựng
+            </div>
+            
+            {userVocabularies.length > pageSize && (
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flex: "0 0 auto"
+              }}>
+                <Pagination
+                  current={currentPage}
+                  total={userVocabularies.length}
+                  pageSize={pageSize}
+                  showSizeChanger={true}
+                  showQuickJumper={true}
+                  size="default"
+                  responsive={true}
+                  pageSizeOptions={['10', '20', '50', '100']}
+                  onShowSizeChange={(current, size) => {
+                    setPageSize(size);
+                    setCurrentPage(1);
+                  }}
+                  onChange={(page, pageSize) => {
+                    setCurrentPage(page);
+                  }}
+                  className="custom-pagination"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </Card>
     </div>

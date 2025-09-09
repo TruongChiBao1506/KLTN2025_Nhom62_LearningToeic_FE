@@ -459,86 +459,466 @@ const LearnerLayout = () => {
     return [];
   };
 
-  // User menu items
+  // User menu items with enhanced styling
   const userMenuItems = [
     {
+      key: "user-header",
+      label: (
+        <div 
+          style={{ 
+            padding: "16px 20px 12px", 
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            borderRadius: "12px 12px 0 0",
+            margin: "-8px -8px 12px",
+            color: "#1a202c"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <Avatar
+              size={48}
+              src={user?.avatar}
+              style={{
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                border: "2px solid rgba(103, 126, 234, 0.1)",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: "#fff"
+              }}
+            >
+              {user?.fullName?.charAt(0) || "U"}
+            </Avatar>
+            <div>
+              <div style={{ 
+                fontSize: "15px", 
+                fontWeight: "600", 
+                marginBottom: "2px",
+                color: "#1a202c"
+              }}>
+                {user?.fullName || "User"}
+              </div>
+              <div style={{ 
+                fontSize: "12px", 
+                color: "#64748b"
+              }}>
+                {user?.email || "user@example.com"}
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+      disabled: true,
+    },
+    {
       key: "profile",
-      icon: <User size={16} />,
-      label: <Link to="/learner/profile">Hồ sơ cá nhân</Link>,
+      label: (
+        <Link 
+          to="/learner/profile" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(103, 126, 234, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #667eea, #764ba2)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <User size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Hồ sơ cá nhân</span>
+        </Link>
+      ),
     },
     {
       key: "/learner/progress",
-      icon: <TrendingUp size={16} />,
-      label: <Link to="/learner/progress">Tiến độ học tập</Link>,
+      label: (
+        <Link 
+          to="/learner/progress" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(16, 185, 129, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #10b981, #059669)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <TrendingUp size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Tiến độ học tập</span>
+        </Link>
+      ),
     },
     {
       key: "/learner/notes",
-      icon: <StickyNote size={16} />,
-      label: <Link to="/learner/notes">Ghi chú cá nhân</Link>,
+      label: (
+        <Link 
+          to="/learner/notes" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(245, 158, 11, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #f59e0b, #d97706)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <StickyNote size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Ghi chú cá nhân</span>
+        </Link>
+      ),
     },
     {
       key: "/learner/vocabulary",
-      icon: <Heart size={16} />,
-      label: <Link to="/learner/vocabulary">Từ vựng đã lưu</Link>,
+      label: (
+        <Link 
+          to="/learner/vocabulary" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(239, 68, 68, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #ef4444, #dc2626)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <Heart size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Từ vựng đã lưu</span>
+        </Link>
+      ),
     },
     {
       key: "/learner/achievements",
-      icon: <Star size={16} />,
-      label: <Link to="/learner/achievements">Thành tích</Link>,
+      label: (
+        <Link 
+          to="/learner/achievements" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(139, 92, 246, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <Star size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Thành tích</span>
+        </Link>
+      ),
     },
     {
       key: "settings",
-      icon: <Settings size={16} />,
-      label: <Link to="/learner/settings">Cài đặt</Link>,
+      label: (
+        <Link 
+          to="/learner/settings" 
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(107, 114, 128, 0.15)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #6b7280, #4b5563)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <Settings size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Cài đặt</span>
+        </Link>
+      ),
     },
     {
       type: "divider",
+      style: { 
+        margin: "12px 8px",
+        background: "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)"
+      }
     },
     {
       key: "logout",
-      icon: <LogOut size={16} />,
-      label: "Đăng xuất",
-      onClick: handleLogout,
+      label: (
+        <div 
+          onClick={handleLogout}
+          className="dropdown-menu-item logout-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px 8px",
+            cursor: "pointer",
+            color: "#dc2626",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "#ffffff",
+            border: "1px solid rgba(239, 68, 68, 0.2)"
+          }}
+        >
+          <div style={{
+            background: "linear-gradient(135deg, #ef4444, #dc2626)",
+            borderRadius: "8px",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <LogOut size={16} style={{ color: "#fff" }} />
+          </div>
+          <span style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}>Đăng xuất</span>
+        </div>
+      ),
     },
   ];
 
-  // Notification menu items
+  // Notification menu items with enhanced styling
   const notificationMenuItems = [
     {
       key: "header",
       label: (
-        <div style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
-          <Text strong>Thông báo</Text>
-          <Button
-            type="link"
-            size="small"
-            style={{ float: "right", padding: 0 }}
-          >
-            Đánh dấu đã đọc
-          </Button>
+        <div 
+          className="notification-dropdown-header"
+          style={{ 
+            padding: "16px 20px 12px", 
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            borderRadius: "12px 12px 0 0",
+            margin: "-8px -8px 8px",
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                borderRadius: "6px",
+                padding: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                <Bell size={14} style={{ color: "#fff" }} />
+              </div>
+              <Text strong style={{ fontSize: "15px", fontWeight: "600", color: "#1a202c" }}>
+                Thông báo
+              </Text>
+            </div>
+            <Button
+              type="link"
+              size="small"
+              style={{ 
+                padding: "4px 8px", 
+                fontSize: "12px",
+                background: "rgba(103, 126, 234, 0.1)",
+                borderRadius: "6px",
+                color: "#667eea",
+                fontWeight: "500",
+                border: "none",
+                height: "auto"
+              }}
+              className="mark-read-btn"
+            >
+              Đánh dấu đã đọc
+            </Button>
+          </div>
         </div>
       ),
       disabled: true,
     },
     ...(notifications.length > 0
-      ? notifications.map((notification) => ({
+      ? notifications.map((notification, index) => ({
         key: notification.id,
         label: (
-          <div style={{ padding: "8px 0" }}>
-            <div
-              style={{ fontWeight: !notification.read ? "bold" : "normal" }}
-            >
-              {notification.title}
-            </div>
-            <div
-              style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}
-            >
-              {notification.message}
-            </div>
-            <div
-              style={{ fontSize: "11px", color: "#999", marginTop: "4px" }}
-            >
-              {notification.time}
+          <div 
+            className="notification-dropdown-item"
+            style={{ 
+              padding: "14px 16px",
+              borderRadius: "8px",
+              margin: "4px 8px",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              cursor: "pointer",
+              border: "1px solid transparent",
+              background: !notification.read 
+                ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
+                : "transparent",
+              position: "relative",
+              overflow: "hidden"
+            }}
+          >
+            {!notification.read && (
+              <div style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: "3px",
+                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                borderRadius: "0 2px 2px 0"
+              }} />
+            )}
+            <div style={{ 
+              display: "flex", 
+              alignItems: "flex-start", 
+              gap: "12px",
+              paddingLeft: !notification.read ? "8px" : "0"
+            }}>
+              <div style={{
+                background: !notification.read 
+                  ? "linear-gradient(135deg, #667eea, #764ba2)"
+                  : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                borderRadius: "8px",
+                padding: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: "32px",
+                height: "32px",
+                marginTop: "2px"
+              }}>
+                <Bell size={14} style={{ 
+                  color: !notification.read ? "#fff" : "#64748b" 
+                }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ 
+                  fontWeight: !notification.read ? "600" : "500",
+                  fontSize: "14px",
+                  color: !notification.read ? "#1a202c" : "#4a5568",
+                  marginBottom: "4px",
+                  lineHeight: "1.4",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden"
+                }}>
+                  {notification.title}
+                </div>
+                <div style={{ 
+                  fontSize: "13px", 
+                  color: "#64748b", 
+                  marginBottom: "6px",
+                  lineHeight: "1.4",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden"
+                }}>
+                  {notification.message}
+                </div>
+                <div style={{ 
+                  fontSize: "11px", 
+                  color: "#94a3b8",
+                  fontWeight: "500",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}>
+                  <Clock size={10} />
+                  {notification.time}
+                </div>
+              </div>
             </div>
           </div>
         ),
@@ -548,9 +928,30 @@ const LearnerLayout = () => {
           key: "empty",
           label: (
             <div
-              style={{ padding: "20px", textAlign: "center", color: "#999" }}
+              style={{ 
+                padding: "32px 20px", 
+                textAlign: "center",
+                color: "#94a3b8"
+              }}
             >
-              Không có thông báo nào
+              <div style={{
+                background: "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                borderRadius: "50%",
+                width: "48px",
+                height: "48px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 12px"
+              }}>
+                <Bell size={20} style={{ color: "#64748b" }} />
+              </div>
+              <div style={{ fontSize: "14px", fontWeight: "500", marginBottom: "4px" }}>
+                Không có thông báo nào
+              </div>
+              <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
+                Bạn sẽ nhận được thông báo tại đây
+              </div>
             </div>
           ),
           disabled: true,
@@ -558,10 +959,37 @@ const LearnerLayout = () => {
       ]),
     {
       type: "divider",
+      style: { 
+        margin: "8px 0",
+        background: "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)"
+      }
     },
     {
       key: "viewAll",
-      label: <Link to="/learner/notifications">Xem tất cả thông báo</Link>,
+      label: (
+        <Link 
+          to="/learner/notifications" 
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "12px 16px",
+            margin: "4px 8px 8px",
+            borderRadius: "8px",
+            background: "linear-gradient(135deg, #667eea, #764ba2)",
+            color: "#fff",
+            textDecoration: "none",
+            fontWeight: "500",
+            fontSize: "14px",
+            transition: "all 0.3s ease",
+            gap: "6px"
+          }}
+          className="view-all-notifications"
+        >
+          <span>Xem tất cả thông báo</span>
+          <ArrowRight size={14} />
+        </Link>
+      ),
     },
   ];
 
@@ -929,6 +1357,17 @@ const LearnerLayout = () => {
               menu={{ items: notificationMenuItems }}
               trigger={["click"]}
               placement="bottomRight"
+              overlayStyle={{
+                borderRadius: "12px",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                background: "#fff",
+                minWidth: "360px",
+                maxWidth: "400px",
+                padding: "0",
+                overflow: "hidden"
+              }}
+              overlayClassName="custom-notification-dropdown"
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', position: 'relative' }}>
                 <Button
@@ -982,6 +1421,16 @@ const LearnerLayout = () => {
               menu={{ items: userMenuItems }}
               trigger={["click"]}
               placement="bottomRight"
+              overlayStyle={{
+                borderRadius: "12px",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                background: "#fff",
+                minWidth: "280px",
+                padding: "0",
+                overflow: "hidden"
+              }}
+              overlayClassName="custom-user-dropdown"
             >
               <Space
                 style={{
@@ -1220,6 +1669,101 @@ const LearnerLayout = () => {
           }
         }
 
+        /* ✅ CUSTOM DROPDOWN MENU STYLING */
+        .custom-notification-dropdown .ant-dropdown-menu,
+        .custom-user-dropdown .ant-dropdown-menu {
+          padding: 0 !important;
+          border-radius: 12px !important;
+          background: #fff !important;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+          border: 1px solid rgba(0, 0, 0, 0.05) !important;
+          overflow: hidden !important;
+          animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          transform-origin: top right !important;
+        }
+
+        @keyframes dropdownSlideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        /* Notification dropdown specific styling */
+        .custom-notification-dropdown .notification-dropdown-item:hover {
+          background: linear-gradient(135deg, rgba(103, 126, 234, 0.08) 0%, rgba(79, 172, 254, 0.08) 100%) !important;
+          border-color: rgba(103, 126, 234, 0.1) !important;
+          transform: translateX(2px) !important;
+          box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
+        }
+
+        .custom-notification-dropdown .mark-read-btn:hover {
+          background: rgba(103, 126, 234, 0.15) !important;
+          transform: translateY(-1px) !important;
+        }
+
+        .custom-notification-dropdown .view-all-notifications:hover {
+          background: linear-gradient(135deg, #764ba2, #667eea) !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3) !important;
+        }
+
+            /* User dropdown specific styling */
+            .custom-user-dropdown .dropdown-menu-item:hover {
+              background: rgba(248, 250, 252, 0.8) !important;
+              border-color: rgba(103, 126, 234, 0.2) !important;
+              transform: translateX(2px) !important;
+              box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
+            }
+
+            .custom-user-dropdown .logout-item:hover {
+              background: rgba(254, 242, 242, 0.9) !important;
+              border-color: rgba(239, 68, 68, 0.25) !important;
+              transform: translateX(2px) !important;
+              box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+            }        /* Enhanced dropdown item animations */
+        .custom-notification-dropdown .ant-dropdown-menu-item,
+        .custom-user-dropdown .ant-dropdown-menu-item {
+          padding: 0 !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .custom-notification-dropdown .ant-dropdown-menu-item:hover,
+        .custom-user-dropdown .ant-dropdown-menu-item:hover {
+          background: transparent !important;
+        }
+
+        /* Responsive dropdown styling */
+        @media (max-width: 768px) {
+          .custom-notification-dropdown .ant-dropdown-menu,
+          .custom-user-dropdown .ant-dropdown-menu {
+            min-width: 300px !important;
+            max-width: 90vw !important;
+          }
+          
+          .custom-notification-dropdown {
+            transform: translateX(-20px) !important;
+          }
+          
+          .custom-user-dropdown {
+            transform: translateX(-10px) !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .custom-notification-dropdown .ant-dropdown-menu,
+          .custom-user-dropdown .ant-dropdown-menu {
+            min-width: 280px !important;
+            max-width: 85vw !important;
+          }
+        }
+
         /* ✅ LOẠI BỎ GẠCH CHÂN TRONG DROPDOWN MENU */
         .ant-dropdown-menu .ant-dropdown-menu-item a,
         .ant-dropdown-menu .ant-dropdown-menu-submenu-title a,
@@ -1308,6 +1852,44 @@ const LearnerLayout = () => {
 
         ::-webkit-scrollbar-thumb:hover {
           background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        /* Additional dropdown enhancements */
+        .custom-notification-dropdown .ant-dropdown-menu-item-disabled,
+        .custom-user-dropdown .ant-dropdown-menu-item-disabled {
+          opacity: 1 !important;
+        }
+
+        .custom-notification-dropdown .ant-dropdown-menu-item-divider,
+        .custom-user-dropdown .ant-dropdown-menu-item-divider {
+          margin: 8px 0 !important;
+          background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%) !important;
+          height: 1px !important;
+        }
+
+        /* Notification badge pulse animation */
+        .ant-badge-count {
+          animation: badgePulse 2s ease-in-out infinite !important;
+        }
+
+        @keyframes badgePulse {
+          0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7);
+          }
+          70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 6px rgba(255, 77, 79, 0);
+          }
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 77, 79, 0);
+          }
+        }
+
+        /* Backdrop blur effect for dropdowns */
+        .ant-dropdown-open .ant-dropdown-trigger {
+          backdrop-filter: blur(4px) !important;
         }
       `}</style>
     </Layout>

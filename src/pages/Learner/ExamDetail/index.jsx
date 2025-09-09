@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Comment from "../../../components/Learner/Comment";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import "./style.css"; // Import custom styles
 import {
   Layout,
   Card,
@@ -18,7 +19,6 @@ import {
   Spin,
   Modal,
   Image,
-  Divider,
   Tabs,
   Tag,
   Tooltip,
@@ -175,8 +175,30 @@ const ExamDetail = () => {
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [examResult, setExamResult] = useState(null);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
+  const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const [savedProgress, setSavedProgress] = useState(false);
   const timerRef = useRef(null);
+  const eventHandlersRef = useRef({ beforeUnload: null, popState: null });
+
+  // Define saveProgress early to avoid "used before defined" errors
+  const saveProgress = useCallback(async () => {
+    try {
+      await learnerExamService.saveProgress(
+        id,
+        userAnswers,
+        exam?.duration * 60 - remainingTime,
+        flaggedQuestions
+      );
+      setSavedProgress(true);
+      // Hiển thị thông báo đã lưu tạm thời
+      setTimeout(() => {
+        setSavedProgress(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Lỗi khi lưu tiến trình:", error);
+    }
+  }, [id, userAnswers, exam?.duration, remainingTime, flaggedQuestions]);
 
   const fetchExam = useCallback(async () => {
     try {
@@ -272,6 +294,79 @@ const ExamDetail = () => {
     };
   }, [fetchExam]);
 
+  // Warn user before leaving page during exam
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      // Only show warning if exam is started but not submitted and not exiting
+      if (examStarted && !examSubmitted && !isExiting) {
+        const message = "Bạn đang làm bài thi. Dữ liệu có thể bị mất nếu rời khỏi trang này. Bạn có chắc chắn muốn rời khỏi không?";
+        e.preventDefault();
+        e.returnValue = message; // Chrome requires returnValue to be set
+        return message; // For other browsers
+      }
+    };
+
+    const handlePopState = (e) => {
+      // Handle browser back/forward buttons
+      if (examStarted && !examSubmitted && !isExiting) {
+        e.preventDefault();
+        setShowExitWarning(true);
+        // Prevent navigation by pushing the current state again
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    // Store handlers in ref for later removal
+    eventHandlersRef.current.beforeUnload = handleBeforeUnload;
+    eventHandlersRef.current.popState = handlePopState;
+
+    if (examStarted && !examSubmitted) {
+      // Add warning for programmatic navigation
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      window.addEventListener('popstate', handlePopState);
+      
+      // Push initial state to handle back button
+      window.history.pushState(null, "", window.location.href);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [examStarted, examSubmitted, isExiting, saveProgress]);
+
+  // Additional warning for route changes in React Router
+  useEffect(() => {
+    if (!examStarted || examSubmitted) return;
+
+    // Custom implementation for React Router v6
+    const handleBeforeRouteChange = (e) => {
+      if (examStarted && !examSubmitted && !isExiting) {
+        e.preventDefault();
+        setShowExitWarning(true);
+        return false;
+      }
+      return true;
+    };
+
+    // Listen for link clicks and form submissions
+    const handleClick = (e) => {
+      const target = e.target.closest('a, button[type="submit"]');
+      if (target && target.href && target.href !== window.location.href) {
+        if (!handleBeforeRouteChange(e)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+    };
+  }, [examStarted, examSubmitted, isExiting, saveProgress]);
+
   // Stop any playing audio when question changes
   useEffect(() => {
     // Stop all audio when changing questions
@@ -323,6 +418,19 @@ const ExamDetail = () => {
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Function to clean question text by removing redundant titles
+  const cleanQuestionText = (text) => {
+    if (!text) return "";
+    
+    // Remove patterns like "Mini Test 1 - Question X" or "Test X - Question Y"
+    const cleanedText = text
+      .replace(/^(Mini\s+)?Test\s+\d+\s*-\s*Question\s+\d+\s*/i, "")
+      .replace(/^Question\s+\d+\s*[:.-]\s*/i, "")
+      .trim();
+    
+    return cleanedText || text; // Return original if cleaning results in empty string
   };
 
   const handleAnswerSelect = (questionId, answer) => {
@@ -401,23 +509,6 @@ const ExamDetail = () => {
     }
   };
 
-  const saveProgress = async () => {
-    try {
-      await learnerExamService.saveProgress(
-        id,
-        userAnswers,
-        exam.duration * 60 - remainingTime,
-        flaggedQuestions
-      );
-      setSavedProgress(true);
-      // Hiển thị thông báo đã lưu tạm thời
-      setTimeout(() => {
-        setSavedProgress(false);
-      }, 3000);
-    } catch (error) {
-      console.error("Lỗi khi lưu tiến trình:", error);
-    }
-  };
   const submitExam = async () => {
     // Dừng bộ đếm thời gian
     if (timerRef.current) {
@@ -923,7 +1014,7 @@ const ExamDetail = () => {
                         {/* Question Content */}
                         <div>
                           <Title level={5} style={{ marginBottom: "16px" }}>
-                            {question.text}
+                            {cleanQuestionText(question.text)}
                           </Title>
 
                           {/* Display image if exists */}
@@ -1149,132 +1240,249 @@ const ExamDetail = () => {
           <Breadcrumb.Item>{exam.name}</Breadcrumb.Item>
         </Breadcrumb>
 
-        {/* Exam Introduction */}
-        <Card
-          style={{
-            marginBottom: "24px",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            border: "none",
-          }}
-        >
-          <div style={{ textAlign: "center", color: "#fff" }}>
-            <Title level={2} style={{ color: "#fff", marginBottom: "16px" }}>
-              {exam.name}
-            </Title>
-            <Space size="large">
-              <Badge
-                count={
-                  <Space>
-                    <Clock size={16} />
-                    {exam.duration} phút
-                  </Space>
-                }
-                style={{
-                  backgroundColor: "#1890ff",
-                  fontSize: "14px",
-                  padding: "4px 12px",
-                  borderRadius: "16px",
-                }}
-              />
-              <Badge
-                count={
-                  <Space>
-                    <HelpCircle size={16} />
-                    {exam.questions ? exam.questions.length : 0} câu hỏi
-                  </Space>
-                }
-                style={{
-                  backgroundColor: "#52c41a",
-                  fontSize: "14px",
-                  padding: "4px 12px",
-                  borderRadius: "16px",
-                }}
-              />
-            </Space>
-          </div>
-        </Card>
-
-        <Row gutter={[24, 24]}>
-          <Col xs={24} lg={12}>
-            {/* Description */}
-            <Card
-              title={
-                <>
-                  <BookOpen size={16} style={{ marginRight: "8px" }} />
-                  Mô tả
-                </>
+        {/* Exam Introduction - Compact Hero Section */}
+        <div className="exam-detail-container" style={{ border: "none", borderBottom: "none", borderTop: "none" }}>
+          <Card
+            style={{
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              borderRadius: "16px",
+              marginBottom: "24px",
+              color: "#fff",
+              border: "none",
+              position: "relative",
+              overflow: "hidden",
+            }}
+            styles={{
+              body: { 
+                padding: "24px",
+                borderBottom: "none",
+                border: "none"
               }
-              style={{ height: "100%", marginBottom: "24px" }}
-            >
-              <Paragraph>{exam.description}</Paragraph>
-            </Card>
-          </Col>
-          <Col xs={24} lg={12}>
-            {/* Instructions */}
-            <Card
-              title={
-                <>
-                  <Target size={16} style={{ marginRight: "8px" }} />
-                  Hướng dẫn
-                </>
-              }
-              style={{ height: "100%", marginBottom: "24px" }}
-            >
-              <ul style={{ paddingLeft: "20px", margin: 0 }}>
-                <li style={{ marginBottom: "8px" }}>
-                  Bài thi này có {exam.questions ? exam.questions.length : 0}{" "}
-                  câu hỏi.
-                </li>
-                <li style={{ marginBottom: "8px" }}>
-                  Bạn có {exam.duration} phút để hoàn thành bài thi này.
-                </li>
-                <li style={{ marginBottom: "8px" }}>
-                  Bạn có thể đánh dấu các câu hỏi để xem lại sau.
-                </li>
-                <li style={{ marginBottom: "8px" }}>
-                  Bạn có thể lưu tiến trình và tiếp tục sau.
-                </li>
-                <li style={{ marginBottom: "8px" }}>
-                  Sau khi nộp bài, bạn không thể thay đổi câu trả lời.
-                </li>
-              </ul>
-            </Card>
-          </Col>
-        </Row>
-
-        {savedProgress && (
-          <Alert
-            message="Tiếp tục bài thi"
-            description="Bạn có một phiên đã lưu cho bài thi này. Bạn có thể tiếp tục từ nơi bạn đã dừng lại."
-            type="info"
-            showIcon
-            style={{ marginBottom: "24px" }}
+            }}
+            bodyStyle={{
+              border: "none",
+              borderBottom: "none",
+              borderTop: "none"
+            }}
+          >
+          {/* Background Pattern */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "150px",
+              height: "150px",
+              background: "radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)",
+              backgroundSize: "20px 20px",
+              opacity: 0.3,
+            }}
           />
-        )}
-
-        {/* Action Buttons */}
-        <Card style={{ textAlign: "center" }}>
-          <Space size="large">
-            <Button
-              type="primary"
-              size="large"
-              onClick={startExam}
-              icon={<PlayCircle size={20} />}
-              style={{ minWidth: "200px", height: "50px", fontSize: "16px" }}
-            >
-              {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
-            </Button>
-            <Link to="/learner/exams">
-              <Button
-                size="large"
-                icon={<ArrowLeft size={16} />}
-                style={{ minWidth: "120px", height: "50px" }}
-              >
-                Quay lại
-              </Button>
-            </Link>
-          </Space>
+          
+          <Row align="middle" gutter={[24, 16]} style={{ position: "relative", zIndex: 1 }}>
+            <Col xs={24} md={16}>
+              <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                <Title 
+                  level={2} 
+                  style={{ 
+                    color: "#fff", 
+                    marginBottom: "8px",
+                    fontSize: "1.8rem",
+                    fontWeight: "bold",
+                    borderBottom: "none",
+                    paddingBottom: "0"
+                  }}
+                >
+                  {exam.name}
+                </Title>
+                
+                <Paragraph 
+                  style={{ 
+                    color: "rgba(255,255,255,0.9)", 
+                    fontSize: "16px",
+                    marginBottom: "16px",
+                    lineHeight: "1.4"
+                  }}
+                >
+                  {exam.description}
+                </Paragraph>
+                
+                <Space size="middle">
+                  <Tag
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "20px",
+                      padding: "4px 12px",
+                      border: "none",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)"
+                    }}
+                  >
+                    <Clock size={14} style={{ marginRight: "6px" }} />
+                    {exam.duration} phút
+                  </Tag>
+                  <Tag
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "20px",
+                      padding: "4px 12px",
+                      border: "none",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)"
+                    }}
+                  >
+                    <HelpCircle size={14} style={{ marginRight: "6px" }} />
+                    {exam.questions ? exam.questions.length : 0} câu
+                  </Tag>
+                  <Tag
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: "20px",
+                      padding: "4px 12px",
+                      border: "none",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)"
+                    }}
+                  >
+                    <Target size={14} style={{ marginRight: "6px" }} />
+                    {exam.type === "full-test" ? "Full Test" : "Mini Test"}
+                  </Tag>
+                </Space>
+              </Space>
+            </Col>
+            
+            <Col xs={24} md={8} style={{ textAlign: "center" }}>
+              <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={startExam}
+                  icon={<PlayCircle size={20} />}
+                  style={{
+                    width: "100%",
+                    height: "48px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    borderRadius: "24px",
+                    background: "rgba(255,255,255,0.9)",
+                    border: "none",
+                    color: "#667eea",
+                    boxShadow: "0 4px 16px rgba(255,255,255,0.3)"
+                  }}
+                >
+                  {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
+                </Button>
+                
+                <Link to="/learner/exams">
+                  <Button
+                    size="middle"
+                    icon={<ArrowLeft size={14} />}
+                    style={{
+                      background: "#fff",
+                      border: "2px solid rgba(255,255,255,0.8)",
+                      color: "#667eea",
+                      borderRadius: "20px",
+                      fontWeight: "500",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                    }}
+                  >
+                    Quay lại
+                  </Button>
+                </Link>
+              </Space>
+            </Col>
+          </Row>
         </Card>
+        </div>
+
+        {/* Quick Instructions - Compact Version */}
+        {savedProgress ? (
+          <Card
+            style={{
+              marginBottom: "24px",
+              borderRadius: "12px",
+              border: "2px solid #52c41a",
+              background: "linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)"
+            }}
+          >
+            <Row align="middle" gutter={[16, 8]}>
+              <Col flex="none">
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    background: "#52c41a",
+                    borderRadius: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  <PlayCircle size={20} style={{ color: "#fff" }} />
+                </div>
+              </Col>
+              <Col flex="auto">
+                <Title level={5} style={{ marginBottom: "4px", color: "#389e0d" }}>
+                  Tiếp tục bài thi đã lưu
+                </Title>
+                <Text style={{ fontSize: "14px", color: "#666" }}>
+                  Bạn có thể tiếp tục từ nơi đã dừng lại
+                </Text>
+              </Col>
+            </Row>
+          </Card>
+        ) : (
+          <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
+            <Col xs={24} md={12}>
+              <Card
+                size="small"
+                style={{
+                  borderRadius: "12px",
+                  border: "1px solid #e6f4ff",
+                  background: "#f0f7ff"
+                }}
+              >
+                <Space align="start">
+                  <BookOpen size={20} style={{ color: "#1890ff", marginTop: "2px" }} />
+                  <div>
+                    <Title level={5} style={{ marginBottom: "8px", color: "#1890ff" }}>
+                      Hướng dẫn làm bài
+                    </Title>
+                    <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "14px", color: "#666" }}>
+                      <li>Đọc kỹ đề bài trước khi trả lời</li>
+                      <li>Đánh dấu câu khó để xem lại</li>
+                      <li>Lưu tiến trình thường xuyên</li>
+                    </ul>
+                  </div>
+                </Space>
+              </Card>
+            </Col>
+            <Col xs={24} md={12}>
+              <Card
+                size="small"
+                style={{
+                  borderRadius: "12px",
+                  border: "1px solid #fff7e6",
+                  background: "#fff7e6"
+                }}
+              >
+                <Space align="start">
+                  <Target size={20} style={{ color: "#fa8c16", marginTop: "2px" }} />
+                  <div>
+                    <Title level={5} style={{ marginBottom: "8px", color: "#fa8c16" }}>
+                      Lưu ý quan trọng
+                    </Title>
+                    <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "14px", color: "#666" }}>
+                      <li>Quản lý thời gian hợp lý</li>
+                      <li>Kiểm tra kỹ trước khi nộp</li>
+                      <li>Không thể sửa sau khi nộp bài</li>
+                    </ul>
+                  </div>
+                </Space>
+              </Card>
+            </Col>
+          </Row>
+        )}
 
         {/* Comment Section for this exam - Hiển thị ngay từ trang intro */}
         {exam && exam.id && (
@@ -1340,24 +1548,33 @@ const ExamDetail = () => {
   // ...existing code...
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
-      {/* Exam Header */}
+    <Layout style={{ minHeight: "100vh", background: "#f5f7fa" }}>
+      {/* Enhanced Exam Header */}
       <div
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          padding: "16px 24px",
+          padding: "12px 20px",
           color: "#fff",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          boxShadow: "0 4px 20px rgba(102, 126, 234, 0.3)",
           position: "sticky",
           top: 0,
           zIndex: 100,
+          height: "72px",
+          display: "flex",
+          alignItems: "center",
+          borderBottom: "3px solid rgba(255,255,255,0.1)",
         }}
       >
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Title level={4} style={{ color: "#fff", margin: 0 }}>
-              {exam.name}
-            </Title>
+        <Row justify="space-between" align="middle" style={{ width: "100%" }}>
+          <Col flex="auto">
+            <Space direction="vertical" size={0}>
+              <Title level={4} style={{ color: "#fff", margin: 0, fontWeight: "600" }}>
+                {exam.name}
+              </Title>
+              <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px" }}>
+                Câu {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
+              </Text>
+            </Space>
           </Col>
           <Col>
             <Space align="center" size="large">
@@ -1367,42 +1584,63 @@ const ExamDetail = () => {
               >
                 <div
                   style={{
-                    background: "rgba(255,255,255,0.2)",
+                    background: "rgba(255,255,255,0.15)",
                     padding: "8px 16px",
                     borderRadius: "20px",
                     backdropFilter: "blur(10px)",
                     cursor: "help",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "rgba(255,255,255,0.25)";
+                    e.target.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
-                  <Space>
-                    <PenTool size={20} />
+                  <Space size="small">
+                    <PenTool size={16} />
                     <Text
                       style={{
                         color: "#fff",
-                        fontSize: "16px",
-                        fontWeight: "bold",
+                        fontSize: "14px",
+                        fontWeight: "600",
                       }}
                     >
-                      Chọn văn bản để highlight/dịch
+                      Highlight/Dịch
                     </Text>
                   </Space>
                 </div>
               </Tooltip>
+              
+              {/* Enhanced Timer */}
               <div
                 style={{
-                  background: "rgba(255,255,255,0.2)",
+                  background: remainingTime < 300 ? 
+                    "linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)" :
+                    remainingTime < 900 ?
+                    "linear-gradient(135deg, #ffa726 0%, #ff9800 100%)" :
+                    "linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)",
                   padding: "8px 16px",
                   borderRadius: "20px",
                   backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  minWidth: "120px",
+                  textAlign: "center",
+                  animation: remainingTime < 300 ? "pulse 2s infinite" : "none",
                 }}
               >
-                <Space>
-                  <Clock size={20} />
+                <Space size="small">
+                  <Clock size={16} />
                   <Text
                     style={{
                       color: "#fff",
                       fontSize: "16px",
                       fontWeight: "bold",
+                      fontFamily: "monospace",
                     }}
                   >
                     {formatTime(remainingTime)}
@@ -1414,147 +1652,302 @@ const ExamDetail = () => {
         </Row>
       </div>
 
-      {/* Main Exam Content */}
-      <Content style={{ padding: "24px" }}>
-        <Row gutter={[24, 24]}>
-          {/* Question Navigation Sidebar */}
+      {/* Navigation Protection Alert */}
+      <div style={{ padding: "0 20px" }}>
+        <Alert
+          message={
+            <Space>
+              <AlertCircle size={16} />
+              <span style={{ fontWeight: "600" }}>Bảo vệ tiến trình làm bài</span>
+            </Space>
+          }
+          description="Hệ thống sẽ cảnh báo nếu bạn cố gắng rời khỏi trang hoặc chuyển tab khi đang làm bài. Nhấn 'Lưu tạm' để lưu tiến trình."
+          type="info"
+          showIcon={false}
+          style={{
+            background: "linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)",
+            border: "1px solid #2196f3",
+            borderRadius: "8px",
+            marginBottom: "20px",
+          }}
+          closable
+        />
+      </div>
+
+      {/* Main Exam Content - Enhanced */}
+      <Content style={{ padding: "20px", minHeight: "calc(100vh - 72px)", overflow: "auto" }}>
+        <Row gutter={[20, 20]} style={{ minHeight: "100%" }}>
+          {/* Enhanced Question Navigation Sidebar */}
           <Col xs={24} lg={6} xl={5}>
             <Card
               title={
-                <>
-                  <HelpCircle size={16} style={{ marginRight: "8px" }} />
-                  Câu hỏi
-                </>
+                <Space>
+                  <HelpCircle size={16} />
+                  <span style={{ fontWeight: "600" }}>Danh sách câu hỏi</span>
+                </Space>
               }
               style={{
-                position: "sticky",
-                top: "120px",
-                maxHeight: "calc(100vh - 200px)",
-                overflow: "auto",
+                height: "calc(100vh - 140px)",
                 display: window.innerWidth < 992 ? "none" : "block",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                borderRadius: "12px",
+                border: "1px solid #e8f4fd",
+                position: "sticky",
+                top: "20px",
+              }}
+              headStyle={{
+                background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                borderRadius: "12px 12px 0 0",
+                borderBottom: "1px solid #e8f4fd",
+                padding: "12px 16px",
+              }}
+              bodyStyle={{
+                padding: "16px",
+                height: "calc(100vh - 197px)",
+                display: "flex",
+                flexDirection: "column",
               }}
               size="small"
             >
-              <Row gutter={[8, 8]}>
-                {exam.questions &&
-                  exam.questions.map((q, index) => (
-                    <Col span={6} key={q.id}>
-                      <Button
-                        type={
-                          index === currentQuestionIndex ? "primary" : "default"
-                        }
-                        size="small"
+              {/* Enhanced Legend */}
+              <div style={{
+                background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                padding: "12px",
+                borderRadius: "8px",
+                marginBottom: "16px",
+                border: "1px solid #e2e8f0",
+                flexShrink: 0,
+                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+              }}>
+                <Row gutter={[8, 6]}>
+                  <Col span={24}>
+                    <Space size="small" style={{ marginBottom: "4px" }}>
+                      <div style={{
+                        width: "14px",
+                        height: "14px",
+                        background: "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
+                        borderRadius: "3px",
+                        boxShadow: "0 2px 4px rgba(24, 144, 255, 0.3)",
+                      }}></div>
+                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                        Câu hiện tại
+                      </Text>
+                    </Space>
+                  </Col>
+                  <Col span={12}>
+                    <Space size="small">
+                      <div style={{
+                        width: "14px",
+                        height: "14px",
+                        background: "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)",
+                        borderRadius: "3px",
+                        boxShadow: "0 2px 4px rgba(82, 196, 26, 0.3)",
+                      }}></div>
+                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                        Đã làm
+                      </Text>
+                    </Space>
+                  </Col>
+                  <Col span={12}>
+                    <Space size="small">
+                      <div style={{
+                        width: "14px",
+                        height: "14px",
+                        border: "2px solid #faad14",
+                        borderRadius: "3px",
+                        background: "#fff",
+                        boxShadow: "0 2px 4px rgba(250, 173, 20, 0.3)",
+                      }}></div>
+                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                        Đánh dấu
+                      </Text>
+                    </Space>
+                  </Col>
+                </Row>
+              </div>
+
+              {/* Enhanced Question Grid */}
+              <div style={{
+                flex: 1,
+                overflowY: "auto",
+                overflowX: "hidden",
+                maxHeight: "calc(100vh - 350px)",
+                minHeight: "200px",
+                paddingRight: "4px",
+              }}>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: exam.questions?.length > 60 ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
+                  gap: "6px",
+                  padding: "4px"
+                }}>
+                  {exam.questions && exam.questions.map((q, index) => {
+                    const isActive = index === currentQuestionIndex;
+                    const isAnswered = userAnswers[q.id] !== undefined;
+                    const isFlagged = flaggedQuestions.includes(q.id);
+                    
+                    return (
+                      <button
+                        key={q.id}
                         onClick={() => goToQuestion(index)}
                         style={{
                           width: "100%",
-                          background:
-                            userAnswers[q.id] !== undefined
-                              ? index === currentQuestionIndex
-                                ? "#1890ff"
-                                : "#52c41a"
-                              : index === currentQuestionIndex
-                              ? "#1890ff"
-                              : "#fff",
-                          borderColor: flaggedQuestions.includes(q.id)
-                            ? "#faad14"
-                            : index === currentQuestionIndex
-                            ? "#1890ff"
-                            : userAnswers[q.id] !== undefined
-                            ? "#52c41a"
-                            : "#d9d9d9",
-                          color:
-                            index === currentQuestionIndex
-                              ? "#fff"
-                              : userAnswers[q.id] !== undefined
-                              ? "#fff"
-                              : "#262626",
+                          height: "32px",
+                          border: `2px solid ${
+                            isFlagged ? "#faad14" : 
+                            isActive ? "#1890ff" : 
+                            isAnswered ? "#52c41a" : "#d1d5db"
+                          }`,
+                          background: isActive ? 
+                            "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)" : 
+                            isAnswered ? 
+                            "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)" : 
+                            "#ffffff",
+                          color: isActive || isAnswered ? "#fff" : "#374151",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                           position: "relative",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "0",
+                          boxShadow: isActive || isAnswered ? 
+                            "0 2px 8px rgba(0,0,0,0.15)" : 
+                            "0 1px 3px rgba(0,0,0,0.1)",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isActive) {
+                            e.target.style.transform = "scale(1.08) translateY(-1px)";
+                            e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = "scale(1) translateY(0)";
+                          e.target.style.boxShadow = isActive || isAnswered ? 
+                            "0 2px 8px rgba(0,0,0,0.15)" : 
+                            "0 1px 3px rgba(0,0,0,0.1)";
                         }}
                       >
                         {index + 1}
-                        {flaggedQuestions.includes(q.id) && (
+                        {isFlagged && (
                           <Flag
-                            size={10}
+                            size={8}
                             style={{
                               position: "absolute",
-                              top: "2px",
-                              right: "2px",
+                              top: "-2px",
+                              right: "-2px",
                               color: "#faad14",
+                              background: "#fff",
+                              borderRadius: "50%",
+                              padding: "1px",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
                             }}
                           />
                         )}
-                      </Button>
-                    </Col>
-                  ))}
-              </Row>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-              {/* Legend */}
-              <Divider />
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Space size="small">
-                  <div
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      background: "#1890ff",
-                      borderRadius: "2px",
-                    }}
-                  ></div>
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Hiện tại
-                  </Text>
-                </Space>
-                <Space size="small">
-                  <div
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      background: "#52c41a",
-                      borderRadius: "2px",
-                    }}
-                  ></div>
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Đã trả lời
-                  </Text>
-                </Space>
-                <Space size="small">
-                  <div
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      border: "2px solid #faad14",
-                      borderRadius: "2px",
-                    }}
-                  ></div>
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Đã đánh dấu
-                  </Text>
-                </Space>
-              </Space>
+              {/* Enhanced Progress Summary */}
+              <div style={{
+                marginTop: "12px",
+                padding: "12px",
+                background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                borderRadius: "8px",
+                border: "1px solid #bae6fd",
+                flexShrink: 0,
+                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+              }}>
+                <Row gutter={8}>
+                  <Col span={8} style={{ textAlign: "center" }}>
+                    <div style={{ 
+                      fontSize: "16px", 
+                      fontWeight: "bold", 
+                      color: "#1890ff",
+                      marginBottom: "2px"
+                    }}>
+                      {currentQuestionIndex + 1}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
+                      Hiện tại
+                    </div>
+                  </Col>
+                  <Col span={8} style={{ textAlign: "center" }}>
+                    <div style={{ 
+                      fontSize: "16px", 
+                      fontWeight: "bold", 
+                      color: "#52c41a",
+                      marginBottom: "2px"
+                    }}>
+                      {Object.keys(userAnswers).length}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
+                      Đã làm
+                    </div>
+                  </Col>
+                  <Col span={8} style={{ textAlign: "center" }}>
+                    <div style={{ 
+                      fontSize: "16px", 
+                      fontWeight: "bold", 
+                      color: "#faad14",
+                      marginBottom: "2px"
+                    }}>
+                      {flaggedQuestions.length}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
+                      Đánh dấu
+                    </div>
+                  </Col>
+                </Row>
+              </div>
             </Card>
           </Col>
 
-          {/* Question Content */}
+          {/* Enhanced Question Content */}
           <Col xs={24} lg={18} xl={19}>
-            <Card>
-              {/* Question Header */}
+            <Card
+              style={{ 
+                minHeight: "calc(100vh - 140px)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                borderRadius: "12px",
+                border: "1px solid #e8f4fd",
+                overflow: "visible",
+              }}
+              bodyStyle={{
+                padding: "24px",
+                minHeight: "calc(100vh - 197px)",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {/* Enhanced Question Header */}
               <div
                 style={{
-                  marginBottom: "24px",
+                  marginBottom: "20px",
                   paddingBottom: "16px",
-                  borderBottom: "1px solid #f0f0f0",
+                  borderBottom: "2px solid #f0f9ff",
+                  flexShrink: 0,
+                  background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  margin: "-24px -24px 20px -24px",
+                  padding: "16px 24px",
+                  borderRadius: "12px 12px 0 0",
                 }}
               >
                 <Row justify="space-between" align="middle">
                   <Col>
-                    <Title level={5} style={{ margin: 0 }}>
-                      Câu hỏi {currentQuestionIndex + 1} /{" "}
-                      {exam.questions ? exam.questions.length : 0}
-                    </Title>
+                    <Space direction="vertical" size={0}>
+                      <Title level={4} style={{ margin: 0, color: "#1e293b", fontWeight: "600" }}>
+                        Câu {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
+                      </Title>
+                      <Text style={{ color: "#64748b", fontSize: "13px" }}>
+                        {exam.type === "full-test" ? "TOEIC Full Test" : "Mini Test"}
+                      </Text>
+                    </Space>
                   </Col>
                   <Col>
                     <Button
@@ -1563,22 +1956,40 @@ const ExamDetail = () => {
                           ? "primary"
                           : "default"
                       }
-                      icon={<Flag size={16} />}
+                      size="middle"
+                      icon={<Flag size={14} />}
                       onClick={() => toggleFlagQuestion(currentQuestion.id)}
                       style={{
-                        borderColor: flaggedQuestions.includes(
-                          currentQuestion.id
-                        )
+                        borderColor: flaggedQuestions.includes(currentQuestion.id)
                           ? "#faad14"
-                          : "#d9d9d9",
-                        background: flaggedQuestions.includes(
-                          currentQuestion.id
-                        )
-                          ? "#faad14"
-                          : "#fff",
+                          : "#d1d5db",
+                        background: flaggedQuestions.includes(currentQuestion.id)
+                          ? "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)"
+                          : "#ffffff",
                         color: flaggedQuestions.includes(currentQuestion.id)
                           ? "#fff"
-                          : "#262626",
+                          : "#374151",
+                        borderRadius: "8px",
+                        fontWeight: "500",
+                        height: "36px",
+                        paddingLeft: "16px",
+                        paddingRight: "16px",
+                        boxShadow: flaggedQuestions.includes(currentQuestion.id)
+                          ? "0 2px 8px rgba(250, 173, 20, 0.3)"
+                          : "0 1px 3px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!flaggedQuestions.includes(currentQuestion.id)) {
+                          e.target.style.borderColor = "#faad14";
+                          e.target.style.color = "#faad14";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!flaggedQuestions.includes(currentQuestion.id)) {
+                          e.target.style.borderColor = "#d1d5db";
+                          e.target.style.color = "#374151";
+                        }
                       }}
                     >
                       {flaggedQuestions.includes(currentQuestion.id)
@@ -1589,256 +2000,620 @@ const ExamDetail = () => {
                 </Row>
               </div>
 
-              {/* Question Media */}
-              <Space
-                direction="vertical"
-                size="large"
-                style={{ width: "100%", marginBottom: "24px" }}
-              >
-                {currentQuestion.image && (
-                  <div>
-                    <Image
-                      src={currentQuestion.image}
-                      alt="Hình ảnh câu hỏi"
-                      style={{ maxWidth: "100%", borderRadius: "8px" }}
-                      placeholder={
-                        <div
-                          style={{
-                            padding: "40px",
-                            textAlign: "center",
-                            background: "#f5f5f5",
-                            borderRadius: "8px",
-                          }}
-                        >
-                          Loading image...
-                        </div>
-                      }
-                    />
-                  </div>
-                )}
+              {/* Enhanced Scrollable Content Area */}
+              <div style={{ 
+                flex: 1, 
+                overflow: "visible", 
+                paddingRight: "8px",
+                scrollBehavior: "smooth",
+                minHeight: "400px",
+              }}>
+                {/* Enhanced Question Media */}
+                <Space
+                  direction="vertical"
+                  size="large"
+                  style={{ width: "100%", marginBottom: "24px" }}
+                >
+                  {currentQuestion.image && (
+                    <Card
+                      size="small"
+                      style={{
+                        background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                        border: "1px solid #e2e8f0",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                      }}
+                      bodyStyle={{ padding: "16px", textAlign: "center" }}
+                    >
+                      <Image
+                        src={currentQuestion.image}
+                        alt="Hình ảnh câu hỏi"
+                        style={{ 
+                          maxWidth: "100%", 
+                          borderRadius: "8px",
+                          maxHeight: "400px",
+                          objectFit: "contain",
+                        }}
+                        placeholder={
+                          <div
+                            style={{
+                              padding: "40px",
+                              textAlign: "center",
+                              background: "#f8fafc",
+                              borderRadius: "8px",
+                              color: "#64748b",
+                            }}
+                          >
+                            <Spin size="large" />
+                            <div style={{ marginTop: "16px" }}>Đang tải hình ảnh...</div>
+                          </div>
+                        }
+                      />
+                    </Card>
+                  )}
 
-                {currentQuestion.audio && (
+                  {currentQuestion.audio && (
+                    <Card
+                      size="small"
+                      style={{
+                        background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                        border: "1px solid #bae6fd",
+                        borderRadius: "12px",
+                        boxShadow: "0 2px 8px rgba(59, 130, 246, 0.1)",
+                      }}
+                      bodyStyle={{ padding: "16px" }}
+                    >
+                      <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                        <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+                          <Volume2 size={16} style={{ color: "#3b82f6", marginRight: "8px" }} />
+                          <Text strong style={{ color: "#1e40af" }}>
+                            Audio cho câu hỏi này
+                          </Text>
+                        </div>
+                        <AudioPlayer
+                          src={currentQuestion.audio}
+                          questionId={currentQuestion.id}
+                          key={`audio-${currentQuestion.id}-${currentQuestion.audio}`}
+                        />
+                      </Space>
+                    </Card>
+                  )}
+                </Space>
+
+                {/* Enhanced Question Text */}
+                {/* <div style={{ marginBottom: "28px" }}>
                   <Card
                     size="small"
                     style={{
-                      background: "#f0f9ff",
-                      border: "1px solid #91d5ff",
+                      background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                      border: "2px solid #e2e8f0",
+                      borderRadius: "12px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     }}
+                    bodyStyle={{ padding: "20px" }}
                   >
-                    <AudioPlayer
-                      src={currentQuestion.audio}
-                      questionId={currentQuestion.id}
-                      key={`audio-${currentQuestion.id}-${currentQuestion.audio}`}
-                    />
+                    <Title
+                      level={4}
+                      style={{ 
+                        marginBottom: "0", 
+                        color: "#1e293b",
+                        lineHeight: "1.6",
+                        fontSize: "16px",
+                      }}
+                      id="question-text"
+                    >
+                      <TextHighlighter containerId="question-text">
+                        {cleanQuestionText(currentQuestion.text)}
+                      </TextHighlighter>
+                    </Title>
                   </Card>
-                )}
-              </Space>
+                </div> */}
 
-              {/* Question Text */}
-              <div style={{ marginBottom: "32px" }}>
-                <Title
-                  level={4}
-                  style={{ marginBottom: "24px", color: "#262626" }}
-                  id="question-text"
+                {/* Compact Answer Options */}
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                    borderRadius: "12px",
+                    padding: "16px",
+                    border: "1px solid #e2e8f0",
+                  }}
                 >
-                  <TextHighlighter containerId="question-text">
-                    {currentQuestion.text}
-                  </TextHighlighter>
-                </Title>
+                  <div style={{ marginBottom: "12px" }}>
+                    <Space>
+                      <CheckCircle size={16} style={{ color: "#3b82f6" }} />
+                      <Text style={{ color: "#1e293b", fontWeight: "600", fontSize: "14px" }}>
+                        Chọn đáp án
+                      </Text>
+                    </Space>
+                  </div>
+                  
+                  <Radio.Group
+                    value={userAnswers[currentQuestion.id]}
+                    onChange={(e) =>
+                      handleAnswerSelect(currentQuestion.id, e.target.value)
+                    }
+                    style={{ width: "100%" }}
+                  >
+                    <Row gutter={[8, 8]}>
+                      {currentQuestion.options &&
+                        currentQuestion.options.map((option, optionIndex) => {
+                          const optionLetter = String.fromCharCode(65 + optionIndex);
+                          const isSelected = userAnswers[currentQuestion.id] === option.id;
+                          
+                          return (
+                            <Col xs={24} sm={12} key={option.id}>
+                              <Radio
+                                value={option.id}
+                                style={{
+                                  width: "100%",
+                                  padding: "8px 12px",
+                                  borderRadius: "8px",
+                                  border: "1px solid",
+                                  borderColor: isSelected ? "#3b82f6" : "#d1d5db",
+                                  background: isSelected 
+                                    ? "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)"
+                                    : "#ffffff",
+                                  transition: "all 0.2s ease",
+                                  boxShadow: isSelected 
+                                    ? "0 2px 8px rgba(59, 130, 246, 0.15)"
+                                    : "0 1px 2px rgba(0,0,0,0.05)",
+                                  margin: 0,
+                                }}
+                              >
+                                <Space align="start" style={{ width: "100%" }}>
+                                  <div
+                                    style={{
+                                      width: "24px",
+                                      height: "24px",
+                                      borderRadius: "6px",
+                                      background: isSelected 
+                                        ? "#3b82f6"
+                                        : "#f1f5f9",
+                                      color: isSelected ? "#ffffff" : "#64748b",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontWeight: "600",
+                                      fontSize: "12px",
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    {optionLetter}
+                                  </div>
+                                  <Text
+                                    style={{ 
+                                      fontSize: "14px",
+                                      color: isSelected ? "#1e40af" : "#374151",
+                                      fontWeight: isSelected ? "500" : "400",
+                                      lineHeight: "1.4",
+                                      margin: 0,
+                                    }}
+                                  >
+                                    {option.text}
+                                  </Text>
+                                </Space>
+                              </Radio>
+                            </Col>
+                          );
+                        })}
+                    </Row>
+                  </Radio.Group>
+                </div>
               </div>
 
-              {/* Answer Options */}
-              <Radio.Group
-                value={userAnswers[currentQuestion.id]}
-                onChange={(e) =>
-                  handleAnswerSelect(currentQuestion.id, e.target.value)
-                }
-                style={{ width: "100%" }}
-              >
-                <Space
-                  direction="vertical"
-                  size="middle"
-                  style={{ width: "100%" }}
-                >
-                  {currentQuestion.options &&
-                    currentQuestion.options.map((option, optionIndex) => {
-                      const optionLetter = String.fromCharCode(
-                        65 + optionIndex
-                      );
-                      return (
-                        <Radio
-                          key={option.id}
-                          value={option.id}
-                          style={{
-                            width: "100%",
-                            padding: "16px",
-                            borderRadius: "8px",
-                            border: "2px solid",
-                            borderColor:
-                              userAnswers[currentQuestion.id] === option.id
-                                ? "#1890ff"
-                                : "#f0f0f0",
-                            background:
-                              userAnswers[currentQuestion.id] === option.id
-                                ? "#f0f9ff"
-                                : "#fff",
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <Space align="center" style={{ width: "100%" }}>
-                            <Tag
-                              color="blue"
-                              style={{ minWidth: "28px", textAlign: "center" }}
-                            >
-                              {optionLetter}
-                            </Tag>
-                            <Text
-                              style={{ fontSize: "16px" }}
-                              id={`option-text-${option.id}`}
-                            >
-                              <TextHighlighter
-                                containerId={`option-text-${option.id}`}
-                              >
-                                {option.text}
-                              </TextHighlighter>
-                            </Text>
-                          </Space>
-                        </Radio>
-                      );
-                    })}
-                </Space>
-              </Radio.Group>
-
-              {/* Navigation buttons */}
+              {/* Enhanced Navigation Buttons */}
               <div
                 style={{
-                  marginTop: "32px",
-                  paddingTop: "24px",
-                  borderTop: "1px solid #f0f0f0",
+                  marginTop: "24px",
+                  paddingTop: "20px",
+                  borderTop: "2px solid #f0f9ff",
+                  flexShrink: 0,
+                  background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  margin: "24px -24px 0 -24px",
+                  padding: "20px 24px",
+                  borderRadius: "0 0 12px 12px",
+                  boxShadow: "0 -2px 8px rgba(0,0,0,0.02)",
                 }}
               >
-                <Row justify="space-between" align="middle">
-                  <Col>
+                <div 
+                  className={window.innerWidth < 576 ? "navigation-buttons-mobile" : ""}
+                  style={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "16px",
+                    ...(window.innerWidth < 576 && {
+                      flexDirection: "column",
+                      gap: "12px"
+                    })
+                  }}
+                >
+                  {/* Previous Button */}
+                  <div style={{ 
+                    flex: window.innerWidth < 576 ? "1 1 100%" : "0 0 auto",
+                    width: window.innerWidth < 576 ? "100%" : "auto"
+                  }}>
                     <Button
                       type="default"
-                      size="large"
                       onClick={goToPrevQuestion}
                       disabled={currentQuestionIndex === 0}
-                      icon={<ChevronLeft size={16} />}
-                      style={{ minWidth: "120px" }}
+                      icon={<ChevronLeft size={18} />}
+                      size="large"
+                      style={{ 
+                        minWidth: window.innerWidth < 576 ? "100%" : "140px",
+                        width: window.innerWidth < 576 ? "100%" : "auto",
+                        height: "48px",
+                        borderRadius: "12px",
+                        fontWeight: "600",
+                        fontSize: "15px",
+                        border: currentQuestionIndex === 0 ? "2px solid #e5e7eb" : "2px solid #3b82f6",
+                        background: currentQuestionIndex === 0 ? 
+                          "#f9fafb" : 
+                          "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                        color: currentQuestionIndex === 0 ? "#9ca3af" : "#3b82f6",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        boxShadow: currentQuestionIndex === 0 ? "none" : "0 2px 8px rgba(59, 130, 246, 0.15)",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentQuestionIndex !== 0) {
+                          e.target.style.background = "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
+                          e.target.style.color = "#ffffff";
+                          e.target.style.transform = "translateY(-2px)";
+                          e.target.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.3)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentQuestionIndex !== 0) {
+                          e.target.style.background = "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
+                          e.target.style.color = "#3b82f6";
+                          e.target.style.transform = "translateY(0)";
+                          e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.15)";
+                        }
+                      }}
                     >
                       Câu trước
                     </Button>
-                  </Col>
-                  <Col>
-                    <Space size="middle">
-                      <Button
-                        type="default"
-                        size="large"
-                        onClick={saveProgress}
-                        icon={<Save size={16} />}
-                        style={{
-                          background: savedProgress ? "#52c41a" : "#1890ff",
-                          borderColor: savedProgress ? "#52c41a" : "#1890ff",
-                          color: "#fff",
-                        }}
-                      >
-                        {savedProgress ? "Đã lưu" : "Lưu tiến trình"}
-                      </Button>
+                  </div>
 
-                      <Button
-                        type="primary"
-                        size="large"
-                        onClick={() => setShowConfirmSubmit(true)}
-                        icon={<CheckCircle size={16} />}
-                        style={{
-                          background: "#52c41a",
-                          borderColor: "#52c41a",
-                          minWidth: "120px",
-                        }}
-                      >
-                        Nộp bài
-                      </Button>
-                    </Space>
-                  </Col>
-                  <Col>
+                  {/* Center Buttons */}
+                  <div 
+                    className={window.innerWidth < 576 ? "navigation-center-mobile" : ""}
+                    style={{ 
+                      display: "flex", 
+                      gap: "12px", 
+                      flex: window.innerWidth < 576 ? "1 1 100%" : "1 1 auto", 
+                      justifyContent: "center",
+                      flexWrap: "wrap",
+                      width: window.innerWidth < 576 ? "100%" : "auto",
+                      ...(window.innerWidth < 576 && {
+                        flexDirection: "column",
+                        gap: "8px"
+                      })
+                    }}
+                  >
                     <Button
                       type="default"
+                      onClick={saveProgress}
+                      icon={<Save size={18} />}
                       size="large"
+                      style={{
+                        minWidth: window.innerWidth < 576 ? "100%" : "120px",
+                        width: window.innerWidth < 576 ? "100%" : "auto",
+                        height: "48px",
+                        borderRadius: "12px",
+                        fontWeight: "600",
+                        fontSize: "15px",
+                        border: "2px solid transparent",
+                        background: savedProgress 
+                          ? "linear-gradient(135deg, #10b981 0%, #047857 100%)"
+                          : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                        color: "#ffffff",
+                        boxShadow: savedProgress
+                          ? "0 2px 8px rgba(16, 185, 129, 0.3)"
+                          : "0 2px 8px rgba(245, 158, 11, 0.3)",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "translateY(-2px)";
+                        e.target.style.boxShadow = savedProgress
+                          ? "0 4px 16px rgba(16, 185, 129, 0.4)"
+                          : "0 4px 16px rgba(245, 158, 11, 0.4)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "translateY(0)";
+                        e.target.style.boxShadow = savedProgress
+                          ? "0 2px 8px rgba(16, 185, 129, 0.3)"
+                          : "0 2px 8px rgba(245, 158, 11, 0.3)";
+                      }}
+                    >
+                      {savedProgress ? "✓ Đã lưu" : "Lưu tạm"}
+                    </Button>
+
+                    <Button
+                      type="primary"
+                      onClick={() => setShowConfirmSubmit(true)}
+                      icon={<CheckCircle size={18} />}
+                      size="large"
+                      style={{
+                        minWidth: window.innerWidth < 576 ? "100%" : "160px",
+                        width: window.innerWidth < 576 ? "100%" : "auto",
+                        height: "48px",
+                        borderRadius: "12px",
+                        fontWeight: "700",
+                        fontSize: "16px",
+                        border: "2px solid transparent",
+                        background: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+                        color: "#ffffff",
+                        boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "translateY(-2px) scale(1.02)";
+                        e.target.style.boxShadow = "0 6px 20px rgba(16, 185, 129, 0.4)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "translateY(0) scale(1)";
+                        e.target.style.boxShadow = "0 4px 16px rgba(16, 185, 129, 0.3)";
+                      }}
+                    >
+                      Nộp bài thi
+                    </Button>
+                  </div>
+
+                  {/* Next Button */}
+                  <div style={{ flex: "0 0 auto" }}>
+                    <Button
+                      type="default"
                       onClick={goToNextQuestion}
                       disabled={
                         !exam.questions ||
                         currentQuestionIndex === exam.questions.length - 1
                       }
-                      style={{ minWidth: "120px" }}
+                      size="large"
+                      style={{ 
+                        minWidth: "140px",
+                        height: "48px",
+                        borderRadius: "12px",
+                        fontWeight: "600",
+                        fontSize: "15px",
+                        border: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
+                          "2px solid #e5e7eb" : "2px solid #3b82f6",
+                        background: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
+                          "#f9fafb" : 
+                          "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                        color: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
+                          "#9ca3af" : "#3b82f6",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        boxShadow: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
+                          "none" : "0 2px 8px rgba(59, 130, 246, 0.15)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (exam.questions && currentQuestionIndex !== exam.questions.length - 1) {
+                          e.target.style.background = "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
+                          e.target.style.color = "#ffffff";
+                          e.target.style.transform = "translateY(-2px)";
+                          e.target.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.3)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (exam.questions && currentQuestionIndex !== exam.questions.length - 1) {
+                          e.target.style.background = "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
+                          e.target.style.color = "#3b82f6";
+                          e.target.style.transform = "translateY(0)";
+                          e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.15)";
+                        }
+                      }}
                     >
                       Câu tiếp
-                      <ChevronRight size={16} />
+                      <ChevronRight size={18} />
                     </Button>
-                  </Col>
-                </Row>
+                  </div>
+                </div>
               </div>
             </Card>
           </Col>
         </Row>
       </Content>
 
-      {/* Confirm Submit Modal */}
+      {/* Enhanced Confirm Submit Modal */}
       <Modal
         title={
-          <Space>
-            <AlertCircle size={20} style={{ color: "#faad14" }} />
-            Nộp bài thi?
-          </Space>
+          <div style={{
+            textAlign: "center",
+            padding: "8px 0",
+          }}>
+            <Space direction="vertical" size="small">
+              <div style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto",
+                boxShadow: "0 4px 12px rgba(250, 173, 20, 0.3)",
+              }}>
+                <AlertCircle size={24} style={{ color: "#fff" }} />
+              </div>
+              <Title level={4} style={{ margin: 0, color: "#1e293b" }}>
+                Nộp bài thi?
+              </Title>
+            </Space>
+          </div>
         }
         open={showConfirmSubmit}
         onCancel={() => setShowConfirmSubmit(false)}
         footer={null}
-        width={500}
+        width={600}
         centered
+        style={{
+          borderRadius: "16px",
+          overflow: "hidden",
+        }}
+        styles={{
+          content: {
+            borderRadius: "16px",
+            padding: "0",
+          },
+          body: {
+            padding: "24px",
+          }
+        }}
       >
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          <Text style={{ fontSize: "16px", color: "#595959" }}>
-            Bạn có chắc chắn muốn nộp bài thi? Bạn không thể thay đổi câu trả
-            lời sau khi đã nộp.
-          </Text>
+          <div style={{ textAlign: "center", padding: "0 20px" }}>
+            <Text style={{ 
+              fontSize: "16px", 
+              color: "#64748b",
+              lineHeight: "1.6",
+              display: "block",
+              marginBottom: "8px"
+            }}>
+              Bạn có chắc chắn muốn nộp bài thi không?
+            </Text>
+            <Text style={{ 
+              fontSize: "14px", 
+              color: "#94a3b8",
+              lineHeight: "1.5"
+            }}>
+              Bạn sẽ không thể thay đổi câu trả lời sau khi đã nộp bài.
+            </Text>
+          </div>
 
-          <Card size="small" style={{ background: "#f8f9fa" }}>
-            <Row gutter={[16, 16]}>
+          <Card 
+            size="small" 
+            style={{ 
+              background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+              border: "1px solid #e2e8f0",
+              borderRadius: "12px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            }}
+            bodyStyle={{ padding: "20px" }}
+          >
+            <Row gutter={[20, 16]}>
               <Col span={8}>
-                <Statistic
-                  title="Đã trả lời"
-                  value={Object.keys(userAnswers).length}
-                  suffix={`/ ${exam.questions ? exam.questions.length : 0}`}
-                  valueStyle={{ color: "#52c41a", fontWeight: "bold" }}
-                />
+                <div style={{ textAlign: "center" }}>
+                  <div style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 8px auto",
+                    boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                  }}>
+                    <CheckCircle size={20} style={{ color: "#fff" }} />
+                  </div>
+                  <Statistic
+                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Đã trả lời</span>}
+                    value={Object.keys(userAnswers).length}
+                    suffix={`/ ${exam.questions ? exam.questions.length : 0}`}
+                    valueStyle={{ 
+                      color: "#10b981", 
+                      fontWeight: "bold",
+                      fontSize: "18px"
+                    }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Statistic
-                  title="Chưa trả lời"
-                  value={
-                    (exam.questions ? exam.questions.length : 0) -
-                    Object.keys(userAnswers).length
-                  }
-                  valueStyle={{ color: "#ff4d4f", fontWeight: "bold" }}
-                />
+                <div style={{ textAlign: "center" }}>
+                  <div style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 8px auto",
+                    boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
+                  }}>
+                    <XCircle size={20} style={{ color: "#fff" }} />
+                  </div>
+                  <Statistic
+                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Chưa trả lời</span>}
+                    value={
+                      (exam.questions ? exam.questions.length : 0) -
+                      Object.keys(userAnswers).length
+                    }
+                    valueStyle={{ 
+                      color: "#ef4444", 
+                      fontWeight: "bold",
+                      fontSize: "18px"
+                    }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Statistic
-                  title="Đã đánh dấu"
-                  value={flaggedQuestions.length}
-                  valueStyle={{ color: "#faad14", fontWeight: "bold" }}
-                />
+                <div style={{ textAlign: "center" }}>
+                  <div style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 8px auto",
+                    boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
+                  }}>
+                    <Flag size={20} style={{ color: "#fff" }} />
+                  </div>
+                  <Statistic
+                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Đã đánh dấu</span>}
+                    value={flaggedQuestions.length}
+                    valueStyle={{ 
+                      color: "#f59e0b", 
+                      fontWeight: "bold",
+                      fontSize: "18px"
+                    }}
+                  />
+                </div>
               </Col>
             </Row>
           </Card>
 
-          <Row gutter={[16, 16]} justify="end">
+          <Row gutter={[16, 16]} justify="center">
             <Col>
               <Button
                 size="large"
                 onClick={() => setShowConfirmSubmit(false)}
                 icon={<X size={16} />}
+                style={{
+                  borderRadius: "8px",
+                  height: "48px",
+                  paddingLeft: "24px",
+                  paddingRight: "24px",
+                  fontWeight: "500",
+                  border: "2px solid #e5e7eb",
+                  background: "#ffffff",
+                  color: "#374151",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.borderColor = "#ef4444";
+                  e.target.style.color = "#ef4444";
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow = "0 2px 8px rgba(239, 68, 68, 0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.borderColor = "#e5e7eb";
+                  e.target.style.color = "#374151";
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "none";
+                }}
               >
                 Tiếp tục làm bài
               </Button>
@@ -1850,13 +2625,146 @@ const ExamDetail = () => {
                 onClick={submitExam}
                 loading={loading}
                 icon={<CheckCircle size={16} />}
-                style={{ background: "#52c41a", borderColor: "#52c41a" }}
+                style={{ 
+                  background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                  borderColor: "#10b981",
+                  borderRadius: "8px",
+                  height: "48px",
+                  paddingLeft: "24px",
+                  paddingRight: "24px",
+                  fontWeight: "600",
+                  fontSize: "15px",
+                  boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 2px 8px rgba(16, 185, 129, 0.3)";
+                }}
               >
                 {loading ? "Đang nộp bài..." : "Nộp bài ngay"}
               </Button>
             </Col>
           </Row>
         </Space>
+      </Modal>
+
+      {/* Exit Warning Modal */}
+      <Modal
+        title={
+          <Space>
+            <AlertCircle size={20} style={{ color: "#f59e0b" }} />
+            <span style={{ color: "#1f2937", fontWeight: "600" }}>
+              ⚠️ Cảnh báo rời khỏi bài thi
+            </span>
+          </Space>
+        }
+        open={showExitWarning}
+        onCancel={() => setShowExitWarning(false)}
+        footer={[
+          <Button 
+            key="stay" 
+            onClick={() => setShowExitWarning(false)}
+            style={{
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              borderColor: "#10b981",
+              color: "#fff",
+              fontWeight: "600",
+            }}
+          >
+            Tiếp tục làm bài
+          </Button>,
+          <Button 
+            key="save-exit" 
+            onClick={async () => {
+              setIsExiting(true);
+              setShowExitWarning(false);
+              
+              // Remove event listeners using stored references
+              if (eventHandlersRef.current.beforeUnload) {
+                window.removeEventListener('beforeunload', eventHandlersRef.current.beforeUnload);
+              }
+              if (eventHandlersRef.current.popState) {
+                window.removeEventListener('popstate', eventHandlersRef.current.popState);
+              }
+              
+              try {
+                await saveProgress();
+              } catch (error) {
+                console.error("Error saving progress:", error);
+              }
+              
+              // Navigate after a short delay
+              setTimeout(() => {
+                navigate(-1);
+              }, 100);
+            }}
+            style={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+              borderColor: "#3b82f6",
+              color: "#fff",
+              fontWeight: "600",
+            }}
+          >
+            Lưu và thoát
+          </Button>,
+          <Button 
+            key="exit" 
+            danger 
+            onClick={() => {
+              setIsExiting(true);
+              setShowExitWarning(false);
+              
+              // Remove event listeners using stored references
+              if (eventHandlersRef.current.beforeUnload) {
+                window.removeEventListener('beforeunload', eventHandlersRef.current.beforeUnload);
+              }
+              if (eventHandlersRef.current.popState) {
+                window.removeEventListener('popstate', eventHandlersRef.current.popState);
+              }
+              
+              // Navigate after a short delay
+              setTimeout(() => {
+                navigate(-1);
+              }, 100);
+            }}
+            style={{
+              fontWeight: "600",
+            }}
+          >
+            Thoát không lưu
+          </Button>
+        ]}
+        width={500}
+        style={{ top: 50 }}
+      >
+        <div style={{ padding: "20px 0" }}>
+          <Alert
+            message="Bạn đang cố gắng rời khỏi bài thi"
+            description={
+              <div style={{ marginTop: "12px" }}>
+                <p style={{ margin: "8px 0", color: "#4b5563" }}>
+                  <strong>Tiến trình hiện tại:</strong>
+                </p>
+                <ul style={{ margin: "8px 0", paddingLeft: "20px", color: "#6b7280" }}>
+                  <li>Đã trả lời: <strong>{Object.keys(userAnswers).length}/{exam?.questions?.length || 0}</strong> câu</li>
+                  <li>Thời gian còn lại: <strong>{formatTime(remainingTime)}</strong></li>
+                  <li>Đã đánh dấu: <strong>{flaggedQuestions.length}</strong> câu</li>
+                </ul>
+                <p style={{ margin: "12px 0 4px 0", color: "#dc2626", fontWeight: "500" }}>
+                  ⚠️ Nếu thoát mà không lưu, bạn sẽ mất toàn bộ tiến trình làm bài!
+                </p>
+              </div>
+            }
+            type="warning"
+            showIcon
+            style={{ marginBottom: "16px" }}
+          />
+        </div>
       </Modal>
     </Layout>
   );

@@ -1,5 +1,224 @@
 /* LearnerLayout.css - Modern Color Scheme */
 
+/* Enhanced Dropdown Menu Styling */
+.custom-notification-dropdown,
+.custom-user-dropdown {
+  z-index: 1050 !important;
+}
+
+.custom-notification-dropdown .ant-dropdown-menu,
+.custom-user-dropdown .ant-dropdown-menu {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  overflow: hidden !important;
+  animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: top right !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Notification Dropdown Enhancements */
+.notification-dropdown-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.notification-dropdown-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-dropdown-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.notification-dropdown-item:hover::before {
+  left: 100%;
+}
+
+.mark-read-btn {
+  transition: all 0.3s ease !important;
+}
+
+.mark-read-btn:hover {
+  background: rgba(103, 126, 234, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.view-all-notifications {
+  position: relative;
+  overflow: hidden;
+}
+
+.view-all-notifications::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.view-all-notifications:hover::before {
+  left: 100%;
+}
+
+/* User Dropdown Enhancements */
+.dropdown-menu-item {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dropdown-menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.dropdown-menu-item:hover {
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  background: rgba(248, 250, 252, 0.8) !important;
+  border-color: rgba(103, 126, 234, 0.2) !important;
+}
+
+.dropdown-menu-item:hover::before {
+  left: 100%;
+}
+
+.logout-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.logout-item:hover {
+  background: rgba(254, 242, 242, 0.9) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.logout-item:hover::before {
+  left: 100%;
+}
+
+/* Dark mode support for dropdowns */
+[data-theme="dark"] .custom-notification-dropdown .ant-dropdown-menu,
+[data-theme="dark"] .custom-user-dropdown .ant-dropdown-menu {
+  background: #2d3748 !important;
+  border-color: #4a5568 !important;
+}
+
+[data-theme="dark"] .notification-dropdown-header {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+  color: #f7fafc !important;
+}
+
+[data-theme="dark"] .notification-dropdown-item {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .notification-dropdown-item:hover {
+  background: linear-gradient(135deg, rgba(103, 126, 234, 0.15) 0%, rgba(79, 172, 254, 0.15) 100%) !important;
+}
+
+[data-theme="dark"] .dropdown-menu-item {
+  color: #f7fafc !important;
+  background: rgba(45, 55, 72, 0.3) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+[data-theme="dark"] .dropdown-menu-item:hover {
+  background: rgba(45, 55, 72, 0.6) !important;
+  border-color: rgba(103, 126, 234, 0.4) !important;
+}
+
+[data-theme="dark"] .logout-item {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .logout-item:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Responsive dropdown adjustments */
+@media (max-width: 768px) {
+  .custom-notification-dropdown .ant-dropdown-menu,
+  .custom-user-dropdown .ant-dropdown-menu {
+    min-width: 300px !important;
+    max-width: 90vw !important;
+    margin-right: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-notification-dropdown .ant-dropdown-menu,
+  .custom-user-dropdown .ant-dropdown-menu {
+    min-width: 280px !important;
+    max-width: 85vw !important;
+    margin-right: 5px !important;
+  }
+  
+  .notification-dropdown-header {
+    padding: 12px 16px 8px !important;
+  }
+  
+  .notification-dropdown-item {
+    padding: 12px 12px !important;
+    margin: 3px 6px !important;
+  }
+  
+  .dropdown-menu-item {
+    padding: 10px 12px !important;
+    margin: 2px 6px !important;
+  }
+}
+
 /* CSS Variables for consistent theming */
 :root {
   --primary-color: #4f46e5;
