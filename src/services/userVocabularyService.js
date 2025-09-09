@@ -118,12 +118,32 @@ const userVocabularyService = {
   // Thêm từ vựng vào danh sách yêu thích
   addToFavorites: async (vocabularyId) => {
     try {
-      const response = await axiosClient.post("/user-vocabularies", {
+      const userId = getUserIdFromToken();
+      if (!userId) {
+        throw new Error("Không thể lấy thông tin người dùng. Vui lòng đăng nhập lại.");
+      }
+      
+      // Ensure vocabularyId is a valid ObjectId string
+      if (!vocabularyId || typeof vocabularyId !== 'string') {
+        throw new Error("Vocabulary ID không hợp lệ");
+      }
+      
+      // Use the format required by the backend route
+      const requestData = {
         vocabulary: vocabularyId,
-      });
+      };
+      
+      console.log("Adding to favorites with data:", requestData);
+      console.log("VocabularyId:", vocabularyId);
+      
+      const response = await axiosClient.post("/user-vocabularies", requestData);
+      console.log("Add to favorites response:", response);
       return response;
     } catch (error) {
       console.error("Lỗi khi thêm từ vựng vào danh sách yêu thích:", error);
+      console.error("Error details:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      console.error("Error message:", error.message);
       throw error;
     }
   },
@@ -131,26 +151,63 @@ const userVocabularyService = {
   // Xóa từ vựng khỏi danh sách yêu thích
   removeFromFavorites: async (vocabularyId) => {
     try {
-      // First get the user's vocabularies to find the userVocabulary ID
-      const userVocabs = await axiosClient.get("/user-vocabularies/user");
-      const userVocabsList = Array.isArray(userVocabs) ? userVocabs : [];
+      console.log("Removing from favorites with vocabularyId:", vocabularyId);
       
-      const userVocab = userVocabsList.find(v => 
-        (v.vocabulary?._id === vocabularyId) || 
-        (v.vocabularyId === vocabularyId) ||
-        (v.vocabulary === vocabularyId)
-      );
+      // Ensure vocabularyId is a valid ObjectId string
+      if (!vocabularyId || typeof vocabularyId !== 'string') {
+        throw new Error("Vocabulary ID không hợp lệ");
+      }
+      
+      // First get the user's vocabularies to find the userVocabulary ID
+      const userVocabsResponse = await axiosClient.get("/user-vocabularies/user");
+      console.log("User vocabularies response:", userVocabsResponse);
+      
+      // Handle different response structures
+      let userVocabsList = [];
+      if (Array.isArray(userVocabsResponse)) {
+        userVocabsList = userVocabsResponse;
+      } else if (userVocabsResponse && Array.isArray(userVocabsResponse.data)) {
+        userVocabsList = userVocabsResponse.data;
+      } else if (userVocabsResponse && userVocabsResponse.userVocabularies) {
+        userVocabsList = userVocabsResponse.userVocabularies;
+      }
+      
+      console.log("User vocabularies list:", userVocabsList);
+      console.log("Looking for vocabularyId:", vocabularyId);
+      
+      // Find the userVocabulary record that matches the vocabularyId
+      const userVocab = userVocabsList.find(v => {
+        console.log("Checking vocabulary:", v);
+        console.log("Vocabulary._id:", v.vocabulary?._id);
+        console.log("Vocabulary.vocabularyId:", v.vocabularyId);
+        console.log("Vocabulary.vocabulary:", v.vocabulary);
+        
+        return (
+          (v.vocabulary?._id === vocabularyId) || 
+          (v.vocabularyId === vocabularyId) ||
+          (v.vocabulary === vocabularyId) ||
+          (typeof v.vocabulary === 'object' && v.vocabulary?._id === vocabularyId) ||
+          (typeof v.vocabulary === 'string' && v.vocabulary === vocabularyId)
+        );
+      });
+      
+      console.log("Found userVocab:", userVocab);
       
       if (!userVocab) {
-        // Don't throw error - just return success with a message
         console.warn("Từ vựng không có trong danh sách của bạn hoặc đã được xóa");
+        // Return success but with a warning message
         return { success: true, message: "Từ vựng đã được xóa hoặc không có trong danh sách" };
       }
 
+      // Use the userVocabulary._id (not vocabularyId) for the DELETE request
+      console.log("Deleting userVocab with userVocabulary._id:", userVocab._id);
       const response = await axiosClient.delete(`/user-vocabularies/${userVocab._id}`);
+      console.log("Delete response:", response);
       return response;
     } catch (error) {
       console.error("Lỗi khi xóa từ vựng khỏi danh sách yêu thích:", error);
+      console.error("Error details:", error.response?.data);
+      console.error("Error status:", error.response?.status);
       throw error;
     }
   },

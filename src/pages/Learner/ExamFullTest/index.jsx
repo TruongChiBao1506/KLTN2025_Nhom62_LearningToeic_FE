@@ -296,24 +296,7 @@ const ExamFullTest = () => {
         )}
       </div>
 
-      {/* Comment Section */}
-      <div
-        style={{
-          background: "white",
-          padding: "32px",
-          borderRadius: "16px",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-        }}
-      >
-        <Title level={2} style={{ textAlign: "center", marginBottom: "32px" }}>
-          <MessageSquare
-            size={28}
-            style={{ marginRight: "12px", verticalAlign: "middle" }}
-          />
-          Chia sẻ ý kiến của bạn
-        </Title>
-        <Comment />
-      </div>
+  {/* Đã chuyển comment sang ExamDetail, không hiển thị ở đây nữa */}
     </div>
   );
 };

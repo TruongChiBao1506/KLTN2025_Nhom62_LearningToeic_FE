@@ -55,6 +55,17 @@ const commentService = {
     }
   },
 
+  // Lấy tất cả bình luận theo examId
+  getCommentsByExamId: async (examId) => {
+    try {
+      const response = await axiosClient.get(`/comments/exam/${examId}`);
+      return response;
+    } catch (error) {
+      console.error(`Lỗi khi lấy bình luận cho exam ${examId}:`, error);
+      throw error;
+    }
+  },
+
   // Xóa bình luận
   deleteComment: async (commentId) => {
     try {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Comment from "../../../components/Learner/Comment";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Layout,
@@ -1116,6 +1117,13 @@ const ExamDetail = () => {
             />
           </Space>
         </Card>
+
+        {/* Comment Section for this exam - Hiển thị sau khi hoàn thành bài thi */}
+        {exam && exam.id && (
+          <div style={{ marginTop: "24px" }}>
+            <Comment examId={exam.id} />
+          </div>
+        )}
       </Content>
     );
   }
@@ -1267,6 +1275,13 @@ const ExamDetail = () => {
             </Link>
           </Space>
         </Card>
+
+        {/* Comment Section for this exam - Hiển thị ngay từ trang intro */}
+        {exam && exam.id && (
+          <div style={{ marginTop: "24px" }}>
+            <Comment examId={exam.id} />
+          </div>
+        )}
       </Content>
     );
   }

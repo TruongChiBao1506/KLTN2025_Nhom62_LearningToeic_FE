@@ -3,7 +3,7 @@ import { Card } from "antd";
 import CommentsList from "./CommentsList";
 import "./style.css";
 
-const Comment = () => {
+const Comment = ({ examId }) => {
   return (
     <Card 
       className="modern-comment-section"
@@ -15,7 +15,7 @@ const Comment = () => {
       }}
       bodyStyle={{ padding: "32px" }}
     >
-      <CommentsList />
+      <CommentsList examId={examId} />
     </Card>
   );
 };

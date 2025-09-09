@@ -7,9 +7,9 @@ class GrammarService {
 
   async create(data) {
     const response = await axiosClient.post(`${this.baseUrl}`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
     });
     return response;
   }
@@ -36,9 +36,9 @@ class GrammarService {
 
   async update(id, data) {
     const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
     });
     return response;
   }

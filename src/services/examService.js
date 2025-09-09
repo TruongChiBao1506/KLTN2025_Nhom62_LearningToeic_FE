@@ -1,6 +1,11 @@
+// import axiosClient from "./axiosClient";
 import axiosClient from "./axiosClient";
 
 class ExamService {
+  // Lấy danh sách comment theo examId
+  async getCommentsByExamId(examId) {
+    return await axiosClient.get(`/comments/exam/${examId}`);
+  }
   constructor(baseUrl = "/exam") {
     this.baseUrl = baseUrl;
   }  // Get FullTest exams

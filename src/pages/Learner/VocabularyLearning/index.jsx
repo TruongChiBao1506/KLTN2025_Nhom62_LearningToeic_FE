@@ -246,18 +246,51 @@ const VocabularyLearning = () => {
 
   const checkBookmarkStatus = async (vocabList) => {
     try {
-      const userVocabs = await userVocabularyService.getUserVocabularies();
-      if (userVocabs && userVocabs.userVocabularies) {
-        const updatedVocabs = vocabList.map((vocab) => ({
-          ...vocab,
-          isBookmarked: userVocabs.userVocabularies.some(
-            (userVocab) => userVocab.vocabulary._id === vocab._id
-          ),
-        }));
-        setVocabularies(updatedVocabs);
+      console.log("Checking bookmark status for vocabularies...");
+      const userVocabsResponse = await userVocabularyService.getUserVocabularies();
+      console.log("User vocabularies response:", userVocabsResponse);
+      
+      // Handle different response structures
+      let userVocabsList = [];
+      if (Array.isArray(userVocabsResponse)) {
+        userVocabsList = userVocabsResponse;
+      } else if (userVocabsResponse && Array.isArray(userVocabsResponse.data)) {
+        userVocabsList = userVocabsResponse.data;
+      } else if (userVocabsResponse && userVocabsResponse.userVocabularies) {
+        userVocabsList = userVocabsResponse.userVocabularies;
       }
+      
+      console.log("User vocabularies list:", userVocabsList);
+      
+      const updatedVocabs = vocabList.map((vocab) => {
+        const isBookmarked = userVocabsList.some((userVocab) => {
+          // Try multiple ways to match vocabularies
+          return (
+            (userVocab.vocabulary?._id === vocab._id) ||
+            (userVocab.vocabularyId === vocab._id) ||
+            (userVocab.vocabulary === vocab._id) ||
+            (typeof userVocab.vocabulary === 'object' && userVocab.vocabulary?._id === vocab._id) ||
+            (typeof userVocab.vocabulary === 'string' && userVocab.vocabulary === vocab._id)
+          );
+        });
+        
+        console.log(`Vocabulary ${vocab.word} (${vocab._id}) is bookmarked:`, isBookmarked);
+        
+        return {
+          ...vocab,
+          isBookmarked
+        };
+      });
+      
+      setVocabularies(updatedVocabs);
     } catch (error) {
       console.error("Error checking bookmark status:", error);
+      // If checking fails, just set all as not bookmarked
+      const updatedVocabs = vocabList.map((vocab) => ({
+        ...vocab,
+        isBookmarked: false
+      }));
+      setVocabularies(updatedVocabs);
     }
   };
 
@@ -426,20 +459,51 @@ const VocabularyLearning = () => {
   const toggleBookmark = async (index) => {
     const vocabulary = vocabularies[index];
     try {
+      console.log("Toggling bookmark for vocabulary:", vocabulary);
+      console.log("Vocabulary ID:", vocabulary._id);
+      console.log("Current isBookmarked state:", vocabulary.isBookmarked);
+      
       if (vocabulary.isBookmarked) {
+        console.log("Removing from favorites...");
         await userVocabularyService.removeFromFavorites(vocabulary._id);
         message.success("Đã xóa khỏi danh sách yêu thích");
+        
+        // Update state immediately after successful removal
+        const updatedVocabularies = [...vocabularies];
+        updatedVocabularies[index].isBookmarked = false;
+        setVocabularies(updatedVocabularies);
       } else {
+        console.log("Adding to favorites...");
         await userVocabularyService.addToFavorites(vocabulary._id);
         message.success("Đã thêm vào danh sách yêu thích");
+        
+        // Update state immediately after successful addition
+        const updatedVocabularies = [...vocabularies];
+        updatedVocabularies[index].isBookmarked = true;
+        setVocabularies(updatedVocabularies);
       }
-
-      const updatedVocabularies = [...vocabularies];
-      updatedVocabularies[index].isBookmarked = !updatedVocabularies[index].isBookmarked;
-      setVocabularies(updatedVocabularies);
     } catch (error) {
       console.error("Error toggling bookmark:", error);
-      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      console.error("Error response:", error.response);
+      console.error("Error status:", error.response?.status);
+      console.error("Error data:", error.response?.data);
+      
+      // Handle specific error cases
+      if (error.response?.status === 400) {
+        const errorMessage = error.response?.data?.message || "";
+        
+        if (errorMessage.includes("đã có trong danh sách")) {
+          // If vocabulary already exists, treat as already bookmarked
+          message.warning("Từ vựng đã có trong danh sách yêu thích");
+          const updatedVocabularies = [...vocabularies];
+          updatedVocabularies[index].isBookmarked = true;
+          setVocabularies(updatedVocabularies);
+        } else {
+          message.error(`Lỗi: ${errorMessage}`);
+        }
+      } else {
+        message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      }
     }
   };
 

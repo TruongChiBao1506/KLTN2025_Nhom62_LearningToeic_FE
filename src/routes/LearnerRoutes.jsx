@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import LearnerLayout from "../layouts/LearnerLayout";
 import LearnerDashboard from "../pages/Learner/LearnerDashboard";
 import LearningPath from '../pages/Learner/LearningPathNew';
@@ -21,9 +21,9 @@ import Profile from "../pages/Learner/Profile";
 import Grammar from "../pages/Learner/Grammar";
 import GrammarDetail from "../pages/Learner/GrammarDetail";
 import Note from "../pages/Learner/Note";
-import Topic from "../pages/Learner/Topic";
 import TopicDetail from "../pages/Learner/TopicDetail";
 import Flashcards from "../pages/Learner/Flashcards";
+import VocabularyGame from "../pages/Learner/VocabularyGame";
 import Quiz from "../pages/Learner/Quiz";
 import Section from "../pages/Learner/Section";
 import SectionSW from "../pages/Learner/SectionSW";
@@ -161,7 +161,7 @@ const LearnerRoutes = () => {
           path="topics"
           element={
             <ProtectedRoute>
-              <Topic />
+              <VocabularyTopics />
             </ProtectedRoute>
           }
         />
@@ -178,6 +178,14 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Flashcards />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vocabulary-game/:topicId"
+          element={
+            <ProtectedRoute>
+              <VocabularyGame />
             </ProtectedRoute>
           }
         />
@@ -297,14 +305,6 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <UserVocabulary />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="vocabulary-topics"
-          element={
-            <ProtectedRoute>
-              <VocabularyTopics />
             </ProtectedRoute>
           }
         />

@@ -378,9 +378,9 @@ const LearnerLayout = () => {
           label: <Link to="/learner/grammar">Học ngữ pháp</Link>,
         },
         {
-          key: "/learner/vocabulary-topics",
+          key: "/learner/topics",
           icon: <BookOpen size={16} />,
-          label: <Link to="/learner/vocabulary-topics">Học từ vựng</Link>,
+          label: <Link to="/learner/topics">Học từ vựng</Link>,
         },
       ],
     },

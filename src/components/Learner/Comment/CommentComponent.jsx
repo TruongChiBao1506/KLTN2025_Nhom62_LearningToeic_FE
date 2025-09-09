@@ -25,7 +25,7 @@ import "./style.css";
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
-const CommentComponent = ({ comment, parentId, retrieveComments }) => {
+const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState("");
 
@@ -86,19 +86,19 @@ const CommentComponent = ({ comment, parentId, retrieveComments }) => {
       const decoded = jwtDecode(learnerToken);
       const userId = decoded.id;
 
-      console.log("Current comment:", comment); // Debug: comment hiện tại
-      console.log("Parent comment ID should be:", comment.commentId); // Debug: ID của comment cha
-      console.log("Comment._id:", comment._id); // Debug: MongoDB _id
+      console.log("Current comment:", comment);
+      console.log("Parent comment ID should be:", comment.commentId);
+      console.log("Comment._id:", comment._id);
 
       const data = {
         text: replyText,
         userId: userId,
-        parentId: comment._id || comment.commentId, // Backend mong đợi field 'parentId'
+        examId: examId,
+        parentId: comment._id || comment.commentId,
       };
 
-      console.log("Creating reply with data:", data); // Debug log
-      const response = await commentService.createComment(data);
-      console.log("Create reply response:", response); // Debug log
+      console.log("Creating reply with data:", data);
+      await commentService.createComment(data);
       
       setReplyText("");
       setShowReplyForm(false);
@@ -290,6 +290,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments }) => {
                 comment={reply}
                 parentId={comment._id || comment.commentId} // Sử dụng _id của comment cha
                 retrieveComments={retrieveComments}
+                examId={examId} // Truyền examId xuống reply
               />
             ))}
           </Space>

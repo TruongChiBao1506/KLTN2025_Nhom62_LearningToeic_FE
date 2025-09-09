@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   Row,
@@ -16,10 +17,13 @@ import {
   Alert,
   Breadcrumb,
   Statistic,
+  Progress,
+  Badge,
   Space,
   Divider,
   Tag,
   Empty,
+  Modal,
   Timeline
 } from "antd";
 import {
@@ -33,6 +37,7 @@ import {
   ReloadOutlined,
   MailOutlined,
   PhoneOutlined,
+  CalendarOutlined,
   EnvironmentOutlined,
   TrophyOutlined,
   BookOutlined,
@@ -48,8 +53,6 @@ const { Option } = Select;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [statistics, setStatistics] = useState(null);
-  const [recentActivity, setRecentActivity] = useState([]);
   const [editedUser, setEditedUser] = useState({
     fullName: "",
     email: "",
@@ -75,8 +78,6 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserProfile();
-    fetchUserStatistics();
-    fetchRecentActivity();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -92,43 +93,19 @@ const Profile = () => {
         return;
       }
 
-      const response = await userService.getCurrentUser();
-      console.log("Raw response from getCurrentUser:", response);
-      // Nếu response là object hợp lệ (không phải null, không phải mảng)
-      if (response && typeof response === "object" && !Array.isArray(response)) {
-        const userData = response;
-        console.log("Raw userData from server:", userData);
-        // Map server data structure to component expected structure
-        const mappedUser = {
-          ...userData,
-          fullName: userData.name || userData.fullName || "",
-          phone: userData.phoneNumber || userData.phone || "",
-          dateOfBirth: userData.dateOfBirth || "",
-          gender: userData.gender === 1 ? "male" : userData.gender === 2 ? "female" : userData.gender === 3 ? "other" : userData.gender || "",
-          bio: userData.bio || "",
-          profileImage: userData.profileImage || null,
-          emailVerified: userData.emailVerified || Boolean(userData.status),
-          // Add statistics fields if they exist
-          totalExamsTaken: userData.totalExamsTaken || 0,
-          studyHours: userData.studyHours || 0,
-          highestScore: userData.highestScore || 0,
-          averageScore: userData.averageScore || 0,
-          completedLessons: userData.completedLessons || 0,
-          certificatesEarned: userData.certificatesEarned || 0,
-          currentStreak: userData.currentStreak || 0,
-          activeDays: userData.activeDays || [],
-          recentActivity: userData.recentActivity || []
-        };
-        console.log("Mapped user data:", mappedUser);
-        setUser(mappedUser);
+      const response = await userService.getUserProfile();
+      
+      if (response?.data) {
+        const userData = response.data;
+        setUser(userData);
         setEditedUser({
-          fullName: mappedUser.fullName,
-          email: mappedUser.email || "",
-          phone: mappedUser.phone,
-          dateOfBirth: mappedUser.dateOfBirth,
-          gender: mappedUser.gender,
-          address: mappedUser.address || "",
-          bio: mappedUser.bio,
+          fullName: userData.fullName || "",
+          email: userData.email || "",
+          phone: userData.phone || "",
+          dateOfBirth: userData.dateOfBirth || "",
+          gender: userData.gender || "",
+          address: userData.address || "",
+          bio: userData.bio || "",
         });
       } else {
         setErrors({
@@ -157,11 +134,9 @@ const Profile = () => {
       } else if (error?.code === 'NETWORK_ERROR' || !error?.response) {
         console.info("🔄 Lỗi mạng, sử dụng dữ liệu offline");
         const fallbackUser = {
-          _id: "offline_user",
-          name: "Người dùng offline",
+          id: "offline_user",
           fullName: "Người dùng offline",
           email: "user@example.com",
-          phoneNumber: "",
           phone: "",
           dateOfBirth: "",
           gender: "",
@@ -169,14 +144,10 @@ const Profile = () => {
           bio: "",
           profileImage: null,
           emailVerified: false,
-          status: 1,
-          isActive: 1,
           totalExamsTaken: 0,
           studyHours: 0,
           highestScore: 0,
           averageScore: 0,
-          completedLessons: 0,
-          certificatesEarned: 0,
           currentStreak: 0,
           activeDays: [],
           recentActivity: [],
@@ -205,40 +176,6 @@ const Profile = () => {
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchUserStatistics = async () => {
-    try {
-      const response = await userService.getUserStatistics();
-      if (response?.data) {
-        setStatistics(response.data);
-      }
-    } catch (error) {
-      console.error("Lỗi khi tải thống kê:", error);
-      // Set fallback statistics
-      setStatistics({
-        totalExamsTaken: 0,
-        studyHours: 0,
-        highestScore: 0,
-        averageScore: 0,
-        completedLessons: 0,
-        certificatesEarned: 0,
-        currentStreak: 0,
-        activeDays: []
-      });
-    }
-  };
-
-  const fetchRecentActivity = async () => {
-    try {
-      const response = await userService.getRecentActivity(5);
-      if (response?.data) {
-        setRecentActivity(response.data);
-      }
-    } catch (error) {
-      console.error("Lỗi khi tải hoạt động gần đây:", error);
-      setRecentActivity([]);
     }
   };
 
@@ -314,21 +251,9 @@ const Profile = () => {
       setErrors({});
 
       const formData = new FormData();
-      
-      // Map frontend field names to backend expected field names
-      const backendData = {
-        name: editedUser.fullName,
-        email: editedUser.email,
-        phoneNumber: editedUser.phone,
-        dateOfBirth: editedUser.dateOfBirth,
-        gender: editedUser.gender === "male" ? 1 : editedUser.gender === "female" ? 2 : editedUser.gender === "other" ? 3 : editedUser.gender,
-        address: editedUser.address,
-        bio: editedUser.bio
-      };
-      
-      Object.keys(backendData).forEach((key) => {
-        if (backendData[key] !== null && backendData[key] !== undefined && backendData[key] !== "") {
-          formData.append(key, backendData[key]);
+      Object.keys(editedUser).forEach((key) => {
+        if (editedUser[key]) {
+          formData.append(key, editedUser[key]);
         }
       });
 
@@ -336,7 +261,7 @@ const Profile = () => {
         formData.append("profileImage", selectedImage);
       }
 
-      const response = await userService.updateProfile(formData);
+      const response = await userService.updateUserProfile(formData);
 
       if (response?.data) {
         setUser(response.data);
@@ -401,10 +326,10 @@ const Profile = () => {
       setLoading(true);
       setErrors({});
 
-      await userService.changeUserPassword(
-        passwordData.currentPassword,
-        passwordData.newPassword
-      );
+      await userService.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
 
       setChangePasswordMode(false);
       setPasswordData({
@@ -455,11 +380,7 @@ const Profile = () => {
       setErrors({});
       setSuccessMessage("");
       
-      await Promise.all([
-        fetchUserProfile(),
-        fetchUserStatistics(),
-        fetchRecentActivity()
-      ]);
+      await fetchUserProfile();
       
       setSuccessMessage("Dữ liệu đã được cập nhật!");
       setTimeout(() => setSuccessMessage(""), 2000);
@@ -603,16 +524,14 @@ const Profile = () => {
                   </div>
                   
                   <Title level={3} style={{ margin: "16px 0 8px 0" }}>
-                    {user?.fullName || user?.name || "Người dùng"}
+                    {user?.fullName || "Người dùng"}
                   </Title>
                   
                   <Space>
-                    <Tag color={user?.emailVerified || user?.status === 1 ? "green" : "orange"}>
-                      {user?.emailVerified || user?.status === 1 ? "Đã xác thực" : "Chưa xác thực"}
+                    <Tag color={user?.emailVerified ? "green" : "orange"}>
+                      {user?.emailVerified ? "Đã xác thực" : "Chưa xác thực"}
                     </Tag>
-                    <Text type="secondary">
-                      {user?.roles?.[0]?.name || "System Administrator"}
-                    </Text>
+                    <Text type="secondary">System Administrator</Text>
                   </Space>
                 </div>
 
@@ -748,9 +667,9 @@ const Profile = () => {
                         <Text type="secondary">Giới tính</Text>
                         <div style={{ marginTop: "4px" }}>
                           <Text>
-                            {user?.gender === "male" || user?.gender === 1 ? "Nam" : 
-                             user?.gender === "female" || user?.gender === 2 ? "Nữ" : 
-                             user?.gender === "other" || user?.gender === 3 ? "Khác" : "Chưa cập nhật"}
+                            {user?.gender === "male" ? "Nam" : 
+                             user?.gender === "female" ? "Nữ" : 
+                             user?.gender === "other" ? "Khác" : "Chưa cập nhật"}
                           </Text>
                         </div>
                       </div>
@@ -868,7 +787,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Bài kiểm tra đã làm"
-                      value={statistics?.totalExamsTaken || user?.totalExamsTaken || 0}
+                      value={user?.totalExamsTaken || 0}
                       prefix={<BookOutlined style={{ color: "#1890ff" }} />}
                       valueStyle={{ color: "#1890ff" }}
                     />
@@ -876,7 +795,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Giờ học tập"
-                      value={statistics?.studyHours || user?.studyHours || 0}
+                      value={user?.studyHours || 0}
                       prefix={<ClockCircleOutlined style={{ color: "#52c41a" }} />}
                       valueStyle={{ color: "#52c41a" }}
                     />
@@ -884,7 +803,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Điểm cao nhất"
-                      value={statistics?.highestScore || user?.highestScore || 0}
+                      value={user?.highestScore || 0}
                       prefix={<TrophyOutlined style={{ color: "#faad14" }} />}
                       valueStyle={{ color: "#faad14" }}
                     />
@@ -892,7 +811,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Bài học hoàn thành"
-                      value={statistics?.completedLessons || user?.completedLessons || 0}
+                      value={user?.completedLessons || 0}
                       prefix={<StarOutlined style={{ color: "#722ed1" }} />}
                       valueStyle={{ color: "#722ed1" }}
                     />
@@ -900,7 +819,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Điểm trung bình"
-                      value={Math.round(statistics?.averageScore || user?.averageScore || 0)}
+                      value={Math.round(user?.averageScore || 0)}
                       prefix={<FireOutlined style={{ color: "#eb2f96" }} />}
                       valueStyle={{ color: "#eb2f96" }}
                     />
@@ -908,7 +827,7 @@ const Profile = () => {
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Chứng chỉ đạt được"
-                      value={statistics?.certificatesEarned || user?.certificatesEarned || 0}
+                      value={user?.certificatesEarned || 0}
                       prefix={<TrophyOutlined style={{ color: "#fa8c16" }} />}
                       valueStyle={{ color: "#fa8c16" }}
                     />
@@ -925,8 +844,7 @@ const Profile = () => {
                       const today = new Date();
                       const dayIndex = (today.getDay() - 6 + index) % 7;
                       const dayName = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][dayIndex];
-                      const active = statistics?.activeDays?.includes(dayIndex) || 
-                                   user?.activeDays?.includes(dayIndex);
+                      const active = user?.activeDays && user.activeDays.includes(dayIndex);
 
                       return (
                         <div
@@ -950,23 +868,23 @@ const Profile = () => {
                     })}
                   </div>
                   <Text type="secondary">
-                    Streak hiện tại: <Text strong>{statistics?.currentStreak || user?.currentStreak || 0}</Text> ngày
+                    Streak hiện tại: <Text strong>{user?.currentStreak || 0}</Text> ngày
                   </Text>
                 </div>
               </Card>
 
               {/* Recent Activity */}
               <Card title="Hoạt động gần đây">
-                {recentActivity && recentActivity.length > 0 ? (
+                {user?.recentActivity && user.recentActivity.length > 0 ? (
                   <Timeline>
-                    {recentActivity.map((activity, index) => (
+                    {user.recentActivity.slice(0, 5).map((activity, index) => (
                       <Timeline.Item
                         key={activity.id || index}
                         color={activity.type === "exam" ? "blue" : 
                                activity.type === "practice" ? "green" : "purple"}
                       >
                         <div>
-                          <Text strong>{activity.name || activity.title}</Text>
+                          <Text strong>{activity.name}</Text>
                           {activity.score && (
                             <Tag color="blue" style={{ marginLeft: "8px" }}>
                               {activity.score} điểm
@@ -974,7 +892,7 @@ const Profile = () => {
                           )}
                           <div style={{ marginTop: "4px" }}>
                             <Text type="secondary">
-                              {dayjs(activity.timestamp || activity.createdAt).format("DD/MM/YYYY HH:mm")}
+                              {dayjs(activity.timestamp).format("DD/MM/YYYY HH:mm")}
                             </Text>
                             {activity.duration && (
                               <Text type="secondary" style={{ marginLeft: "8px" }}>

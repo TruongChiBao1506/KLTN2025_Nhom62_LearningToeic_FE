@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
@@ -50,6 +50,7 @@ const getCardColor = (index) => {
 
 const TopicDetail = () => {
   const { topicId } = useParams();
+  const navigate = useNavigate();
 
   // States
   const [topic, setTopic] = useState({});
@@ -57,6 +58,10 @@ const TopicDetail = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [favoriteVocabs, setFavoriteVocabs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Game states (for display only)
+  const [gameStarted] = useState(false);
+  const [gameResult] = useState("");
 
   useEffect(() => {
     // Fetch topic and vocabulary data
@@ -120,6 +125,11 @@ const TopicDetail = () => {
         vocab.exampleSentence.toLowerCase().includes(searchLower))
     );
   });
+
+  // Navigate to learning page
+  const startLearning = () => {
+    navigate(`/learner/vocabulary-learning/${topicId}`);
+  };
 
   // Play pronunciation
   const playPronunciation = (word) => {
@@ -306,7 +316,7 @@ const TopicDetail = () => {
   return (
     <div
       style={{
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
         minHeight: "100vh",
       }}
     >
@@ -314,101 +324,180 @@ const TopicDetail = () => {
         {/* Compact Header */}
         <Row
           style={{
-            padding: "8px 0",
-            borderBottom: "1px solid rgba(255,255,255,0.2)",
-            backgroundColor: "rgba(255,255,255,0.95)",
-            backdropFilter: "blur(10px)",
-            borderRadius: "0 0 12px 12px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            padding: "20px 24px",
+            backgroundColor: "white",
+            borderRadius: "16px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+            marginBottom: "20px",
+            border: "1px solid rgba(102,126,234,0.1)",
           }}
         >
-          <Col span={18}>
+          <Col span={12}>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Link
-                  to="/learner/topics"
-                  style={{
-                    color: "#667eea",
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    marginRight: "16px",
-                  }}
-                >
-                  <ArrowLeft size={14} style={{ marginRight: "4px" }} />
-                  <Text style={{ fontSize: "12px", color: "#667eea" }}>
-                    Quay lại
-                  </Text>
-                </Link>
-                <div
-                  style={{
-                    background: "linear-gradient(45deg, #667eea, #764ba2)",
-                    color: "white",
-                    padding: "2px 8px",
-                    borderRadius: "12px",
-                    fontSize: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    marginRight: "8px",
-                    boxShadow: "0 2px 4px rgba(102,126,234,0.3)",
-                  }}
-                >
-                  <BookOpen size={10} style={{ marginRight: "2px" }} />
-                  Chủ đề
-                </div>
-                <Title
-                  level={5}
-                  style={{ margin: 0, fontSize: "16px", color: "#2c3e50" }}
-                >
-                  {topic.topicName || "Đang tải..."}
-                </Title>
-                <Text
-                  type="secondary"
-                  style={{
-                    marginLeft: "8px",
-                    fontSize: "11px",
-                    color: "#7f8c8d",
-                  }}
-                >
-                  {filteredVocabularies.length} từ • {favoriteVocabs.length}{" "}
-                  <span style={{ color: "#e74c3c" }}>❤️</span>
+              <Link
+                to="/learner/topics"
+                style={{
+                  color: "#667eea",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  marginRight: "16px",
+                  background: "rgba(102,126,234,0.1)",
+                  padding: "8px 16px",
+                  borderRadius: "12px",
+                  transition: "all 0.3s ease"
+                }}
+              >
+                <ArrowLeft size={16} style={{ marginRight: "6px" }} />
+                <Text style={{ fontSize: "14px", color: "#667eea", fontWeight: "500" }}>
+                  Quay lại
                 </Text>
+              </Link>
+              <div
+                style={{
+                  background: "linear-gradient(45deg, #667eea, #764ba2)",
+                  color: "white",
+                  padding: "6px 16px",
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "16px",
+                  boxShadow: "0 4px 12px rgba(102,126,234,0.3)",
+                  fontWeight: "500"
+                }}
+              >
+                <BookOpen size={14} style={{ marginRight: "6px" }} />
+                Preview
               </div>
+              <Title
+                level={5}
+                style={{ margin: 0, fontSize: "20px", color: "#2c3e50", fontWeight: "600" }}
+              >
+                {topic.topicName || "Đang tải..."}
+              </Title>
             </div>
           </Col>
-          <Col
-            span={6}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Input
-              prefix={<Search size={14} style={{ color: "#667eea" }} />}
-              placeholder="Tìm kiếm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                borderRadius: "20px",
-                fontSize: "12px",
-                border: "2px solid #667eea",
-                boxShadow: "0 2px 4px rgba(102,126,234,0.2)",
-              }}
-              size="small"
-            />
+          
+          <Col span={8}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Input
+                prefix={<Search size={14} style={{ color: "#667eea" }} />}
+                placeholder="Tìm kiếm từ vựng..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  border: "2px solid #667eea",
+                  boxShadow: "0 2px 4px rgba(102,126,234,0.2)",
+                }}
+                size="middle"
+              />
+            </div>
           </Col>
         </Row>
 
         <Row gutter={16} style={{ marginTop: "16px" }}>
           {/* Main Content - Vocabulary List (79% width) */}
           <Col span={19}>
+            {/* Topic Info Section */}
+            <Card
+              style={{
+                marginBottom: "20px",
+                borderRadius: "20px",
+                background: "white",
+                boxShadow: "0 12px 40px rgba(0,0,0,0.12)",
+                border: "1px solid rgba(102,126,234,0.1)",
+                overflow: "hidden",
+                position: "relative"
+              }}
+              bodyStyle={{ padding: "30px" }}
+            >
+              {/* Decorative background */}
+              <div style={{
+                position: "absolute",
+                top: "-50px",
+                right: "-50px",
+                width: "200px",
+                height: "200px",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                borderRadius: "50%",
+                opacity: 0.05,
+                zIndex: 0
+              }} />
+              
+              <div style={{ position: "relative", zIndex: 1 }}>
+                <Row gutter={24}>
+                  <Col span={16}>
+                    <div>
+                      <Title level={3} style={{ margin: 0, marginBottom: "12px", color: "#2c3e50", fontSize: "24px", fontWeight: "600" }}>
+                        {topic.topicName}
+                      </Title>
+                      {topic.description && (
+                        <Paragraph style={{ margin: 0, color: "#7f8c8d", fontSize: "16px", lineHeight: 1.6 }}>
+                          {topic.description}
+                        </Paragraph>
+                      )}
+                    </div>
+                  </Col>
+                  <Col span={8}>
+                    <Row gutter={12}>
+                      <Col span={8}>
+                        <div style={{ 
+                          textAlign: "center", 
+                          padding: "16px 12px", 
+                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
+                          borderRadius: "16px", 
+                          color: "white",
+                          boxShadow: "0 8px 24px rgba(102,126,234,0.3)"
+                        }}>
+                          <BookOpen size={24} style={{ marginBottom: "8px" }} />
+                          <div style={{ fontSize: "20px", fontWeight: "bold" }}>{vocabularies.length}</div>
+                          <div style={{ fontSize: "12px", opacity: 0.9 }}>Từ vựng</div>
+                        </div>
+                      </Col>
+                      <Col span={8}>
+                        <div style={{ 
+                          textAlign: "center", 
+                          padding: "16px 12px", 
+                          background: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)", 
+                          borderRadius: "16px", 
+                          color: "white",
+                          boxShadow: "0 8px 24px rgba(250,112,154,0.3)"
+                        }}>
+                          <Star size={24} style={{ marginBottom: "8px" }} />
+                        <div style={{ fontSize: "20px", fontWeight: "bold" }}>{favoriteVocabs.length}</div>
+                        <div style={{ fontSize: "12px", opacity: 0.9 }}>Yêu thích</div>
+                      </div>
+                    </Col>
+                    <Col span={8}>
+                      <div style={{ 
+                        textAlign: "center", 
+                        padding: "16px 12px", 
+                        background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", 
+                        borderRadius: "16px", 
+                        color: "white",
+                        boxShadow: "0 8px 24px rgba(67,233,123,0.3)"
+                      }}>
+                        <Target size={24} style={{ marginBottom: "8px" }} />
+                        <div style={{ fontSize: "20px", fontWeight: "bold" }}>
+                          {gameStarted ? (gameResult === "win" ? "🎉" : gameResult === "lose" ? "😅" : "🎮") : "🎯"}
+                        </div>
+                        <div style={{ fontSize: "12px", opacity: 0.9 }}>Game</div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              </div>
+            </Card>
+
             <div style={{ padding: "8px 0" }}>
               {filteredVocabularies.length === 0 ? (
                 <div
@@ -445,29 +534,37 @@ const TopicDetail = () => {
                   </Text>
                 </div>
               ) : (
-                <Row gutter={[12, 12]}>
+                <Row gutter={[16, 16]}>
                   {filteredVocabularies.map((vocab, index) => (
                     <Col key={vocab._id} xs={24} sm={12} md={8} xl={6}>
                       <Card
                         hoverable
                         style={{
-                          borderRadius: "12px",
+                          borderRadius: "16px",
                           overflow: "hidden",
                           height: "100%",
-                          border: "none",
-                          background: "rgba(255,255,255,0.95)",
-                          backdropFilter: "blur(10px)",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                          border: "1px solid rgba(102,126,234,0.1)",
+                          background: "white",
+                          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                           transition: "all 0.3s ease",
+                          transform: "translateY(0)",
                         }}
-                        bodyStyle={{ padding: "16px" }}
+                        bodyStyle={{ padding: "20px" }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "translateY(-4px)";
+                          e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.15)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.08)";
+                        }}
                       >
                         <div
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            marginBottom: "12px",
+                            marginBottom: "16px",
                           }}
                         >
                           <span
@@ -477,12 +574,12 @@ const TopicDetail = () => {
                               )})`,
                               color: "white",
                               borderRadius: "50%",
-                              width: "24px",
-                              height: "24px",
+                              width: "28px",
+                              height: "28px",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              fontSize: "11px",
+                              fontSize: "12px",
                               fontWeight: "bold",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
                             }}
@@ -642,56 +739,73 @@ const TopicDetail = () => {
               <Title
                 level={5}
                 style={{
-                  margin: "0 0 12px 0",
-                  fontSize: "16px",
+                  margin: "0 0 20px 0",
+                  fontSize: "18px",
                   display: "flex",
                   alignItems: "center",
-                  color: "white",
-                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  color: "#2c3e50",
+                  fontWeight: "600"
                 }}
               >
                 <BookOpen
-                  size={16}
-                  style={{ marginRight: "6px", color: "#fff" }}
+                  size={18}
+                  style={{ marginRight: "8px", color: "#667eea" }}
                 />
-                🎯 Luyện tập
+                Luyện tập
               </Title>
 
-              <Space direction="vertical" size={12} style={{ width: "100%" }}>
+              <Space direction="vertical" size={16} style={{ width: "100%" }}>
                 <Card
                   size="small"
                   hoverable
                   style={{
-                    borderRadius: "12px",
-                    border: "none",
-                    background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    boxShadow: "0 4px 12px rgba(102,126,234,0.3)",
+                    borderRadius: "16px",
+                    border: "1px solid rgba(102,126,234,0.1)",
+                    background: "white",
+                    boxShadow: "0 8px 24px rgba(102,126,234,0.15)",
                     transition: "all 0.3s ease",
+                    transform: "translateY(0)"
                   }}
-                  bodyStyle={{ padding: "16px" }}
+                  bodyStyle={{ padding: "20px" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(102,126,234,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(102,126,234,0.15)";
+                  }}
                 >
                   <div style={{ textAlign: "center" }}>
-                    <Target
-                      size={24}
-                      style={{ color: "white", marginBottom: "8px" }}
-                    />
+                    <div style={{
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      marginBottom: "12px",
+                      display: "inline-block"
+                    }}>
+                      <Target
+                        size={28}
+                        style={{ color: "white" }}
+                      />
+                    </div>
                     <Text
                       strong
                       style={{
                         display: "block",
-                        fontSize: "14px",
-                        marginBottom: "4px",
-                        color: "white",
+                        fontSize: "16px",
+                        marginBottom: "6px",
+                        color: "#2c3e50",
+                        fontWeight: "600"
                       }}
                     >
                       Flashcards
                     </Text>
                     <Text
                       style={{
-                        fontSize: "11px",
-                        marginBottom: "12px",
-                        color: "rgba(255,255,255,0.8)",
+                        fontSize: "13px",
+                        marginBottom: "16px",
+                        color: "#7f8c8d",
                         display: "block",
                       }}
                     >
@@ -700,14 +814,15 @@ const TopicDetail = () => {
                     <Link to={`/learner/flashcards/${topicId}`}>
                       <Button
                         type="primary"
-                        size="small"
+                        size="middle"
                         style={{
-                          fontSize: "11px",
-                          backgroundColor: "rgba(255,255,255,0.2)",
-                          borderColor: "rgba(255,255,255,0.3)",
+                          fontSize: "13px",
+                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          border: "none",
                           color: "white",
-                          backdropFilter: "blur(10px)",
-                          borderRadius: "20px",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                          width: "100%"
                         }}
                       >
                         <Play size={12} style={{ marginRight: "4px" }} />
@@ -717,40 +832,136 @@ const TopicDetail = () => {
                   </div>
                 </Card>
 
+                {/* Game Card */}
                 <Card
                   size="small"
                   hoverable
                   style={{
-                    borderRadius: "12px",
-                    border: "none",
-                    background:
-                      "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                    boxShadow: "0 4px 12px rgba(240,147,251,0.3)",
+                    borderRadius: "16px",
+                    border: "1px solid rgba(67,233,123,0.1)",
+                    background: "white",
+                    boxShadow: "0 8px 24px rgba(67,233,123,0.15)",
                     transition: "all 0.3s ease",
+                    transform: "translateY(0)"
                   }}
-                  bodyStyle={{ padding: "16px" }}
+                  bodyStyle={{ padding: "20px" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(67,233,123,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(67,233,123,0.15)";
+                  }}
                 >
                   <div style={{ textAlign: "center" }}>
-                    <Zap
-                      size={24}
-                      style={{ color: "white", marginBottom: "8px" }}
-                    />
+                    <div style={{
+                      background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      marginBottom: "12px",
+                      display: "inline-block"
+                    }}>
+                      <Target
+                        size={28}
+                        style={{ color: "white" }}
+                      />
+                    </div>
                     <Text
                       strong
                       style={{
                         display: "block",
-                        fontSize: "14px",
-                        marginBottom: "4px",
-                        color: "white",
+                        fontSize: "16px",
+                        marginBottom: "6px",
+                        color: "#2c3e50",
+                        fontWeight: "600"
+                      }}
+                    >
+                      Đoán từ vựng
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "13px",
+                        marginBottom: "16px",
+                        color: "#7f8c8d",
+                        display: "block",
+                      }}
+                    >
+                      Trò chơi thú vị
+                    </Text>
+                    
+                    <Link to={`/learner/vocabulary-game/${topicId}`}>
+                      <Button
+                        type="primary"
+                        size="middle"
+                        style={{
+                          fontSize: "13px",
+                          background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+                          border: "none",
+                          color: "white",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                          width: "100%"
+                        }}
+                      >
+                        <Play size={14} style={{ marginRight: "6px" }} />
+                        Chơi trò đoán từ
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+
+                <Card
+                  size="small"
+                  hoverable
+                  style={{
+                    borderRadius: "16px",
+                    border: "1px solid rgba(240,147,251,0.1)",
+                    background: "white",
+                    boxShadow: "0 8px 24px rgba(240,147,251,0.15)",
+                    transition: "all 0.3s ease",
+                    transform: "translateY(0)"
+                  }}
+                  bodyStyle={{ padding: "20px" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(240,147,251,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(240,147,251,0.15)";
+                  }}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{
+                      background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      marginBottom: "12px",
+                      display: "inline-block"
+                    }}>
+                      <Zap
+                        size={28}
+                        style={{ color: "white" }}
+                      />
+                    </div>
+                    <Text
+                      strong
+                      style={{
+                        display: "block",
+                        fontSize: "16px",
+                        marginBottom: "6px",
+                        color: "#2c3e50",
+                        fontWeight: "600"
                       }}
                     >
                       Trắc nghiệm
                     </Text>
                     <Text
                       style={{
-                        fontSize: "11px",
-                        marginBottom: "12px",
-                        color: "rgba(255,255,255,0.8)",
+                        fontSize: "13px",
+                        marginBottom: "16px",
+                        color: "#7f8c8d",
                         display: "block",
                       }}
                     >
@@ -759,17 +970,18 @@ const TopicDetail = () => {
                     <Link to={`/learner/quiz/${topicId}`}>
                       <Button
                         type="primary"
-                        size="small"
+                        size="middle"
                         style={{
-                          fontSize: "11px",
-                          backgroundColor: "rgba(255,255,255,0.2)",
-                          borderColor: "rgba(255,255,255,0.3)",
+                          fontSize: "13px",
+                          background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                          border: "none",
                           color: "white",
-                          backdropFilter: "blur(10px)",
-                          borderRadius: "20px",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                          width: "100%"
                         }}
                       >
-                        <CheckCircle size={12} style={{ marginRight: "4px" }} />
+                        <CheckCircle size={14} style={{ marginRight: "6px" }} />
                         Bắt đầu kiểm tra
                       </Button>
                     </Link>
@@ -780,42 +992,43 @@ const TopicDetail = () => {
               <Card
                 size="small"
                 style={{
-                  marginTop: "16px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "rgba(255,255,255,0.95)",
-                  backdropFilter: "blur(10px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  marginTop: "24px",
+                  borderRadius: "16px",
+                  border: "1px solid rgba(102,126,234,0.1)",
+                  background: "white",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                 }}
-                bodyStyle={{ padding: "16px" }}
+                bodyStyle={{ padding: "20px" }}
               >
                 <Title
                   level={5}
                   style={{
-                    margin: "0 0 12px 0",
-                    fontSize: "14px",
+                    margin: "0 0 16px 0",
+                    fontSize: "16px",
                     color: "#2c3e50",
                     display: "flex",
                     alignItems: "center",
+                    fontWeight: "600"
                   }}
                 >
                   📊 Thống kê học tập
                 </Title>
-                <Space direction="vertical" size={8} style={{ width: "100%" }}>
+                <Space direction="vertical" size={12} style={{ width: "100%" }}>
                   <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "12px",
-                      padding: "8px 12px",
-                      backgroundColor: "rgba(102,126,234,0.1)",
-                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "12px 16px",
+                      backgroundColor: "rgba(102,126,234,0.08)",
+                      borderRadius: "12px",
+                      border: "1px solid rgba(102,126,234,0.1)"
                     }}
                   >
-                    <Text style={{ color: "#667eea", fontWeight: "bold" }}>
+                    <Text style={{ color: "#667eea", fontWeight: "600" }}>
                       📚 Tổng:
                     </Text>
-                    <Text strong style={{ color: "#2c3e50" }}>
+                    <Text strong style={{ color: "#2c3e50", fontSize: "14px" }}>
                       {vocabularies.length} từ
                     </Text>
                   </div>
@@ -823,16 +1036,17 @@ const TopicDetail = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "12px",
-                      padding: "8px 12px",
-                      backgroundColor: "rgba(52,152,219,0.1)",
-                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "12px 16px",
+                      backgroundColor: "rgba(52,152,219,0.08)",
+                      borderRadius: "12px",
+                      border: "1px solid rgba(52,152,219,0.1)"
                     }}
                   >
-                    <Text style={{ color: "#3498db", fontWeight: "bold" }}>
+                    <Text style={{ color: "#3498db", fontWeight: "600" }}>
                       👁️ Hiển thị:
                     </Text>
-                    <Text strong style={{ color: "#2c3e50" }}>
+                    <Text strong style={{ color: "#2c3e50", fontSize: "14px" }}>
                       {filteredVocabularies.length} từ
                     </Text>
                   </div>
@@ -840,16 +1054,17 @@ const TopicDetail = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "12px",
-                      padding: "8px 12px",
-                      backgroundColor: "rgba(231,76,60,0.1)",
-                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "12px 16px",
+                      backgroundColor: "rgba(231,76,60,0.08)",
+                      borderRadius: "12px",
+                      border: "1px solid rgba(231,76,60,0.1)"
                     }}
                   >
-                    <Text style={{ color: "#e74c3c", fontWeight: "bold" }}>
+                    <Text style={{ color: "#e74c3c", fontWeight: "600" }}>
                       ❤️ Yêu thích:
                     </Text>
-                    <Text strong style={{ color: "#e74c3c" }}>
+                    <Text strong style={{ color: "#e74c3c", fontSize: "14px" }}>
                       {favoriteVocabs.length} từ
                     </Text>
                   </div>

@@ -24,7 +24,7 @@ const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const CommentsList = () => {
+const CommentsList = ({ examId }) => {
   const [filter, setFilter] = useState("all");
   const [comments, setComments] = useState([]);
   const [visibleComments, setVisibleComments] = useState([]);
@@ -39,13 +39,17 @@ const CommentsList = () => {
         const learnerToken = localStorage.getItem("learnerToken");
         if (learnerToken) {
           const decoded = jwtDecode(learnerToken);
+          // Lấy comment của user cho exam này
           fetchedComments = await commentService.getUserComments(decoded.id);
+          // Lọc theo examId
+          fetchedComments = fetchedComments.filter(comment => comment.exam === examId);
         } else {
           toast.error("Vui lòng đăng nhập để xem bình luận của bạn");
           return;
         }
       } else {
-        fetchedComments = await commentService.getAllComments();
+        // Lấy tất cả comment cho exam này
+        fetchedComments = await commentService.getCommentsByExamId(examId);
       }
 
       if (fetchedComments && fetchedComments.length > 0) {
@@ -61,7 +65,7 @@ const CommentsList = () => {
       console.error("Lỗi khi lấy bình luận:", error);
       toast.error("Không thể tải bình luận, vui lòng thử lại sau");
     }
-  }, [filter]);
+  }, [filter, examId]);
 
   useEffect(() => {
     retrieveComments();
@@ -82,12 +86,11 @@ const CommentsList = () => {
       const data = {
         text: newCommentText,
         userId: decoded.id,
-        // Không có parentCommentId cho comment gốc
+        examId: examId,
       };
 
-      console.log("Creating root comment with data:", data); // Debug log
-      const response = await commentService.createComment(data);
-      console.log("Create comment response:", response); // Debug log
+      console.log("Creating root comment with data:", data);
+      await commentService.createComment(data);
       
       setNewCommentText("");
       retrieveComments();
@@ -206,6 +209,7 @@ const CommentsList = () => {
                 comment={comment}
                 parentId={null} // Comment gốc không có parent
                 retrieveComments={retrieveComments}
+                examId={examId} // Truyền examId xuống CommentComponent
                 className="comment"
               />
             ))}

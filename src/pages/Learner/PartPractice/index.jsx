@@ -11,7 +11,6 @@ import {
   Tabs,
   Empty
 } from "antd";
-import "./style.css";
 import { 
   PlayCircleOutlined, 
   FileTextOutlined,
@@ -52,7 +51,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState("lessons");
+  const [activeTab, setActiveTab] = useState("tests");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,90 +109,65 @@ const PartPractice = ({ sectionId: propSectionId }) => {
   };
 
   const renderLessonCard = (lesson) => (
-    <Col xs={24} sm={12} md={8} lg={6} key={lesson.lessonId || lesson._id}>
+    <Col xs={24} sm={12} lg={8} xl={6} key={lesson.lessonId || lesson._id}>
       <Card
-        className="lesson-card"
         hoverable
         style={{
-          borderRadius: "20px",
-          overflow: "hidden",
-          border: "none",
-          boxShadow: "0 8px 32px rgba(79, 70, 229, 0.1)",
-          height: "100%",
-          background: "linear-gradient(145deg, #ffffff 0%, #f8faff 100%)",
-          position: "relative"
+          borderRadius: "16px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+          height: "280px",
+          transition: "all 0.3s ease"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.06)";
         }}
         bodyStyle={{ 
-          padding: "24px", 
+          padding: "20px", 
           height: "100%",
           display: "flex",
           flexDirection: "column"
         }}
       >
-        {/* Header với icon và badge */}
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "16px"
-        }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "16px",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            width: "40px",
+            height: "40px",
+            borderRadius: "12px",
+            background: "#667eea",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 16px rgba(102, 126, 234, 0.3)"
+            justifyContent: "center"
           }}>
-            <ReadOutlined style={{ color: "#fff", fontSize: "20px" }} />
+            <ReadOutlined style={{ color: "#fff", fontSize: "18px" }} />
           </div>
-          <Tag 
-            color="blue" 
-            style={{ 
-              margin: 0,
-              borderRadius: "12px",
-              padding: "4px 12px",
-              fontSize: "12px",
-              fontWeight: "500",
-              border: "none",
-              background: "linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%)",
-              color: "#1890ff"
-            }}
-          >
+          <Tag color="blue" style={{ borderRadius: "8px", fontSize: "12px" }}>
             Bài học
           </Tag>
         </div>
         
-        {/* Title */}
-        <Title 
-          level={5} 
-          style={{ 
-            margin: "0 0 12px 0", 
-            color: "#1e293b", 
-            lineHeight: "1.4",
-            fontSize: "16px",
-            fontWeight: "600"
-          }}
-        >
+        {/* Content */}
+        <Title level={5} style={{ margin: "0 0 8px 0", fontSize: "16px", lineHeight: "1.4" }}>
           {lesson.lessonName || lesson.name}
         </Title>
         
-        {/* Description */}
-        <Paragraph 
-          style={{ 
-            margin: "0 0 20px 0", 
-            color: "#64748b", 
-            fontSize: "14px",
-            lineHeight: "1.6",
-            flex: 1,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden"
-          }}
-        >
+        <Paragraph style={{ 
+          margin: "0 0 16px 0", 
+          color: "#64748b", 
+          fontSize: "14px",
+          lineHeight: "1.5",
+          flex: 1,
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical"
+        }}>
           {lesson.description || "Bài học giúp bạn nắm vững kiến thức cơ bản"}
         </Paragraph>
         
@@ -202,37 +176,21 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           display: "flex", 
           justifyContent: "space-between", 
           alignItems: "center",
-          marginTop: "auto",
           paddingTop: "16px",
           borderTop: "1px solid #f1f5f9"
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            <BookOutlined style={{ color: "#6366f1", fontSize: "14px" }} />
-            <span style={{ 
-              color: "#6366f1", 
-              fontSize: "13px", 
-              fontWeight: "500" 
-            }}>
-              {lesson.duration || "30"} phút
-            </span>
-          </div>
+          <span style={{ color: "#64748b", fontSize: "13px" }}>
+            <BookOutlined style={{ marginRight: "4px" }} />
+            {lesson.duration || "30"} phút
+          </span>
           
           <Button
             type="primary"
-            icon={<ReadOutlined />}
+            size="small"
             onClick={() => handleStartLesson(lesson.lessonId || lesson._id)}
-            style={{
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              border: "none",
-              fontWeight: "500",
-              height: "36px",
-              paddingLeft: "16px",
-              paddingRight: "16px",
-              boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)"
-            }}
+            style={{ borderRadius: "8px" }}
           >
-            Học
+            Học ngay
           </Button>
         </div>
       </Card>
@@ -240,90 +198,65 @@ const PartPractice = ({ sectionId: propSectionId }) => {
   );
 
   const renderTestCard = (test) => (
-    <Col xs={24} sm={12} md={8} lg={6} key={test.testId || test._id}>
+    <Col xs={24} sm={12} lg={8} xl={6} key={test.testId || test._id}>
       <Card
-        className="test-card"
         hoverable
         style={{
-          borderRadius: "20px",
-          overflow: "hidden",
-          border: "none",
-          boxShadow: "0 8px 32px rgba(16, 185, 129, 0.1)",
-          height: "100%",
-          background: "linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%)",
-          position: "relative"
+          borderRadius: "16px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+          height: "280px",
+          transition: "all 0.3s ease"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.06)";
         }}
         bodyStyle={{ 
-          padding: "24px", 
+          padding: "20px", 
           height: "100%",
           display: "flex",
           flexDirection: "column"
         }}
       >
-        {/* Header với icon và badge */}
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "16px"
-        }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "16px",
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            width: "40px",
+            height: "40px",
+            borderRadius: "12px",
+            background: "#10b981",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)"
+            justifyContent: "center"
           }}>
-            <PlayCircleOutlined style={{ color: "#fff", fontSize: "20px" }} />
+            <PlayCircleOutlined style={{ color: "#fff", fontSize: "18px" }} />
           </div>
-          <Tag 
-            color="green" 
-            style={{ 
-              margin: 0,
-              borderRadius: "12px",
-              padding: "4px 12px",
-              fontSize: "12px",
-              fontWeight: "500",
-              border: "none",
-              background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)",
-              color: "#059669"
-            }}
-          >
-            Bài test
+          <Tag color="green" style={{ borderRadius: "8px", fontSize: "12px" }}>
+            Bài kiểm tra
           </Tag>
         </div>
         
-        {/* Title */}
-        <Title 
-          level={5} 
-          style={{ 
-            margin: "0 0 12px 0", 
-            color: "#1e293b", 
-            lineHeight: "1.4",
-            fontSize: "16px",
-            fontWeight: "600"
-          }}
-        >
+        {/* Content */}
+        <Title level={5} style={{ margin: "0 0 8px 0", fontSize: "16px", lineHeight: "1.4" }}>
           {test.testName || test.name}
         </Title>
         
-        {/* Description */}
-        <Paragraph 
-          style={{ 
-            margin: "0 0 20px 0", 
-            color: "#64748b", 
-            fontSize: "14px",
-            lineHeight: "1.6",
-            flex: 1,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden"
-          }}
-        >
+        <Paragraph style={{ 
+          margin: "0 0 16px 0", 
+          color: "#64748b", 
+          fontSize: "14px",
+          lineHeight: "1.5",
+          flex: 1,
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical"
+        }}>
           {test.description || "Kiểm tra kiến thức và kỹ năng của bạn"}
         </Paragraph>
         
@@ -331,67 +264,31 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         <div style={{ 
           display: "flex", 
           gap: "12px", 
-          marginBottom: "20px",
-          padding: "12px",
-          background: "rgba(16, 185, 129, 0.05)",
-          borderRadius: "12px"
+          marginBottom: "16px",
+          padding: "8px 12px",
+          background: "#f0fdf4",
+          borderRadius: "8px",
+          border: "1px solid #d1fae5"
         }}>
-          <div style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "4px",
-            flex: 1
-          }}>
-            <FileTextOutlined style={{ color: "#059669", fontSize: "14px" }} />
-            <span style={{ 
-              color: "#059669", 
-              fontSize: "13px", 
-              fontWeight: "500" 
-            }}>
-              {test.questionCount || 20} câu
-            </span>
-          </div>
-          <div style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "4px",
-            flex: 1
-          }}>
-            <UserOutlined style={{ color: "#f59e0b", fontSize: "14px" }} />
-            <span style={{ 
-              color: "#f59e0b", 
-              fontSize: "13px", 
-              fontWeight: "500" 
-            }}>
-              {test.testParticipants || 0} lượt
-            </span>
-          </div>
+          <span style={{ color: "#059669", fontSize: "13px" }}>
+            <FileTextOutlined style={{ marginRight: "4px" }} />
+            {test.questionCount || 20} câu
+          </span>
+          <span style={{ color: "#f59e0b", fontSize: "13px" }}>
+            <UserOutlined style={{ marginRight: "4px" }} />
+            {test.testParticipants || 0} lượt
+          </span>
         </div>
         
         {/* Footer */}
-        <div style={{ 
-          marginTop: "auto",
-          paddingTop: "16px",
-          borderTop: "1px solid #f1f5f9"
-        }}>
-          <Button
-            type="primary"
-            icon={<PlayCircleOutlined />}
-            onClick={() => handleStartTest(test.testId || test._id)}
-            block
-            style={{
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              border: "none",
-              fontWeight: "500",
-              height: "40px",
-              fontSize: "14px",
-              boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)"
-            }}
-          >
-            Làm bài
-          </Button>
-        </div>
+        <Button
+          type="primary"
+          onClick={() => handleStartTest(test.testId || test._id)}
+          block
+          style={{ borderRadius: "8px", background: "#10b981", borderColor: "#10b981" }}
+        >
+          <PlayCircleOutlined /> Làm bài
+        </Button>
       </Card>
     </Col>
   );
@@ -400,7 +297,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
     return (
       <div style={{ 
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#f8fafc",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -408,12 +305,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       }}>
         <div style={{
           textAlign: "center",
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "#ffffff",
           borderRadius: "24px",
           padding: "48px",
-          boxShadow: "0 16px 64px rgba(0, 0, 0, 0.1)",
-          backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.2)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+          border: "1px solid #e2e8f0",
           minWidth: "320px"
         }}>
           <Spin size="large" />
@@ -434,7 +330,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
     return (
       <div style={{ 
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#f8fafc",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -442,10 +338,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       }}>
         <div style={{
           textAlign: "center",
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "#ffffff",
           borderRadius: "24px",
           padding: "48px",
-          boxShadow: "0 16px 64px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+          border: "1px solid #e2e8f0",
           maxWidth: "500px"
         }}>
           <div style={{ fontSize: "64px", marginBottom: "24px" }}>😔</div>
@@ -467,36 +364,33 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       error={sectionError}
       isAccessible={isAccessible}
     >
-      <div className="part-practice-container" style={{ 
+      <div style={{ 
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#f8fafc",
         padding: "24px"
       }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Header */}
-        <div style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "24px",
-          padding: "32px",
-          marginBottom: "24px",
-          boxShadow: "0 16px 64px rgba(0, 0, 0, 0.1)",
-          backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.2)"
-        }}>
-          <div style={{ textAlign: "center" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          {/* Header */}
+          <div style={{
+            background: "#ffffff",
+            borderRadius: "16px",
+            padding: "24px",
+            marginBottom: "24px",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+            border: "1px solid #e2e8f0",
+            textAlign: "center"
+          }}>
             <Title level={1} style={{ 
-              margin: 0,
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              fontSize: "clamp(28px, 5vw, 48px)"
+              margin: "0 0 8px 0",
+              color: "#667eea",
+              fontSize: "32px"
             }}>
               {section?.name || "Luyện tập TOEIC"}
             </Title>
             <Paragraph style={{ 
-              fontSize: "18px", 
+              fontSize: "16px", 
               color: "#64748b", 
-              margin: "16px 0 0 0",
+              margin: 0,
               maxWidth: "600px",
               marginLeft: "auto",
               marginRight: "auto"
@@ -504,63 +398,20 @@ const PartPractice = ({ sectionId: propSectionId }) => {
               {section?.description || "Nâng cao kỹ năng TOEIC với các bài học và bài kiểm tra được thiết kế chuyên nghiệp"}
             </Paragraph>
           </div>
-        </div>
 
-        {/* Content */}
-        <div style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "24px",
-          padding: "32px",
-          boxShadow: "0 16px 64px rgba(0, 0, 0, 0.1)",
-          backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.2)"
-        }}>
+          {/* Content */}
           <Tabs 
             activeKey={activeTab} 
             onChange={setActiveTab}
             size="large"
             style={{ 
-              marginBottom: "0",
-              background: "rgba(248, 250, 252, 0.8)",
-              borderRadius: "20px",
-              padding: "8px",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(226, 232, 240, 0.5)",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.06)"
-            }}
-            tabBarStyle={{
-              marginBottom: "24px",
-              border: "none"
+              background: "#ffffff",
+              borderRadius: "16px",
+              padding: "24px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+              border: "1px solid #e2e8f0"
             }}
           >
-            <TabPane 
-              tab={
-                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <ReadOutlined />
-                  Bài học ({lessons.length})
-                </span>
-              } 
-              key="lessons"
-            >
-              <div style={{ padding: "0 8px" }}>
-                {lessons.length > 0 ? (
-                  <Row gutter={[24, 24]} style={{ margin: "0 -12px" }}>
-                    {lessons.map(renderLessonCard)}
-                  </Row>
-                ) : (
-                  <Empty
-                    description={
-                      <span style={{ color: "#64748b", fontSize: "16px" }}>
-                        Chưa có bài học nào
-                      </span>
-                    }
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    style={{ padding: "60px 20px" }}
-                  />
-                )}
-              </div>
-            </TabPane>
-            
             <TabPane 
               tab={
                 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -570,28 +421,42 @@ const PartPractice = ({ sectionId: propSectionId }) => {
               } 
               key="tests"
             >
-              <div style={{ padding: "0 8px" }}>
-                {tests.length > 0 ? (
-                  <Row gutter={[24, 24]} style={{ margin: "0 -12px" }}>
-                    {tests.map(renderTestCard)}
-                  </Row>
-                ) : (
-                  <Empty
-                    description={
-                      <span style={{ color: "#64748b", fontSize: "16px" }}>
-                        Chưa có bài kiểm tra nào
-                      </span>
-                    }
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    style={{ padding: "60px 20px" }}
-                  />
-                )}
-              </div>
+              {tests.length > 0 ? (
+                <Row gutter={[20, 20]}>
+                  {tests.map(renderTestCard)}
+                </Row>
+              ) : (
+                <Empty
+                  description="Chưa có bài kiểm tra nào"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{ padding: "40px 20px" }}
+                />
+              )}
+            </TabPane>
+            <TabPane 
+              tab={
+                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <ReadOutlined />
+                  Bài học ({lessons.length})
+                </span>
+              } 
+              key="lessons"
+            >
+              {lessons.length > 0 ? (
+                <Row gutter={[20, 20]}>
+                  {lessons.map(renderLessonCard)}
+                </Row>
+              ) : (
+                <Empty
+                  description="Chưa có bài học nào"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{ padding: "40px 20px" }}
+                />
+              )}
             </TabPane>
           </Tabs>
         </div>
       </div>
-    </div>
     </SectionAccessGuard>
   );
 };

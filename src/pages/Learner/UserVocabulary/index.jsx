@@ -11,7 +11,6 @@ import {
   Alert,
   Row,
   Col,
-  Statistic,
   Progress,
   message,
 } from "antd";
@@ -24,8 +23,8 @@ import {
   Trophy,
   RotateCcw,
   CheckCircle,
-  XCircle,
   Users,
+  Trash2,
 } from "lucide-react";
 import userVocabularyService from "../../../services/userVocabularyService";
 
@@ -328,142 +327,295 @@ const UserVocabulary = () => {
     };
   }, []);
 
+  // Hàm xóa từ vựng khỏi danh sách yêu thích
+  const removeVocabularyFromFavorites = async (record) => {
+    try {
+      setLoading(true);
+      
+      // Sử dụng vocabularyId từ record
+      const vocabularyId = record.vocabulary._id || record.vocabulary;
+      
+      console.log("Removing vocabulary with ID:", vocabularyId);
+      
+      await userVocabularyService.removeFromFavorites(vocabularyId);
+      
+      // Cập nhật danh sách từ vựng local
+      const updatedVocabularies = userVocabularies.filter(
+        (item) => item._id !== record._id
+      );
+      setUserVocabularies(updatedVocabularies);
+      
+      // Cập nhật lại thống kê
+      const stats = {
+        total: updatedVocabularies.length,
+        learned: updatedVocabularies.filter((item) => item.isLearned).length,
+        practicing: updatedVocabularies.filter(
+          (item) => item.reviewCount > 0 && !item.isLearned
+        ).length,
+        mastered: updatedVocabularies.filter(
+          (item) => item.proficiencyLevel >= 80
+        ).length,
+      };
+      setStatistics(stats);
+      
+      message.success(`Đã xóa "${record.vocabulary.word}" khỏi danh sách yêu thích`);
+    } catch (error) {
+      console.error("Lỗi khi xóa từ vựng:", error);
+      message.error("Không thể xóa từ vựng. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Định nghĩa columns cho Ant Design Table
   const columns = [
     {
       title: "Chủ đề",
       dataIndex: ["vocabulary", "topic", "topicName"],
       key: "topic",
-      width: 150,
+      width: 140,
       render: (text) => (
-        <Tag color="blue" style={{ borderRadius: "6px" }}>
-          <BookOpen size={12} style={{ marginRight: "4px" }} />
-          {text}
-        </Tag>
+        <div style={{
+          background: "linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%)",
+          padding: "8px 12px",
+          borderRadius: "10px",
+          border: "1px solid #91d5ff",
+          textAlign: "center"
+        }}>
+          <BookOpen size={14} style={{ color: "#1890ff", marginBottom: "4px", display: "block", margin: "0 auto 4px" }} />
+          <Text style={{ 
+            color: "#0958d9", 
+            fontSize: "12px", 
+            fontWeight: "600",
+            display: "block",
+            lineHeight: "1.2"
+          }}>
+            {text}
+          </Text>
+        </div>
       ),
     },
     {
       title: "Từ vựng",
       dataIndex: ["vocabulary", "word"],
       key: "word",
-      width: 150,
+      width: 200,
       render: (text, record, index) => (
-        <Text
-          strong
-          style={{
-            color:
-              record.isCorrect === null
-                ? "#262626"
-                : record.isCorrect
-                  ? "#52c41a"
-                  : "#ff4d4f",
-            fontSize: "16px",
-          }}
-        >
-          {text}
-        </Text>
-      ),
-    },
-    {
-      title: "Hình ảnh",
-      dataIndex: ["vocabulary", "image"],
-      key: "image",
-      width: 100,
-      render: (image, record) => (
-        <Image
-          src={getImageUrl(record.vocabulary)}
-          alt={record.vocabulary.word}
-          width={60}
-          height={60}
-          style={{
-            borderRadius: "8px",
-            objectFit: "cover",
-          }}
-          placeholder={
-            <div
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <Image
+            src={getImageUrl(record.vocabulary)}
+            alt={record.vocabulary.word}
+            width={50}
+            height={50}
+            style={{
+              borderRadius: "10px",
+              objectFit: "cover",
+              border: "2px solid #f0f0f0",
+            }}
+            placeholder={
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                  background: "linear-gradient(135deg, #f0f0f0 0%, #e6f7ff 100%)",
+                  borderRadius: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "2px solid #d6e4ff",
+                }}
+              >
+                <BookOpen size={18} style={{ color: "#1890ff" }} />
+              </div>
+            }
+            fallback="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop"
+          />
+          <div>
+            <Text
+              strong
               style={{
-                width: 60,
-                height: 60,
-                background: "#f0f0f0",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                color:
+                  record.isCorrect === null
+                    ? "#262626"
+                    : record.isCorrect
+                      ? "#52c41a"
+                      : "#ff4d4f",
+                fontSize: "16px",
+                display: "block",
+                marginBottom: "4px"
               }}
             >
-              <BookOpen size={20} style={{ color: "#bfbfbf" }} />
-            </div>
-          }
-          fallback="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop"
-        />
-      ),
-    },
-    {
-      title: "Phiên âm",
-      dataIndex: ["vocabulary", "ipa"],
-      key: "ipa",
-      width: 120,
-      render: (text) => (
-        <Text
-          code
-          style={{
-            background: "#f6ffed",
-            color: "#52c41a",
-            borderRadius: "4px",
-          }}
-        >
-          {text}
-        </Text>
+              {text}
+            </Text>
+            {record.vocabulary.ipa && (
+              <Text
+                code
+                style={{
+                  background: "linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)",
+                  color: "#389e0d",
+                  borderRadius: "4px",
+                  border: "1px solid #b7eb8f",
+                  fontSize: "12px",
+                  padding: "2px 6px"
+                }}
+              >
+                {record.vocabulary.ipa}
+              </Text>
+            )}
+          </div>
+        </div>
       ),
     },
     {
       title: "Nghĩa",
       dataIndex: ["vocabulary", "meaning"],
       key: "meaning",
-      width: 200,
-      render: (text) => <Text style={{ fontSize: "14px" }}>{text}</Text>,
+      width: 180,
+      render: (text) => (
+        <div style={{
+          padding: "6px 10px",
+          background: "linear-gradient(135deg, #fff7e6 0%, #ffd591 100%)",
+          borderRadius: "6px",
+          border: "1px solid #ffec8b",
+          fontSize: "13px",
+          color: "#d46b08",
+          fontWeight: "500",
+          maxWidth: "160px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap"
+        }}
+        title={text}
+        >
+          {text}
+        </div>
+      ),
     },
     {
-      title: "Trạng thái",
+      title: "Trạng thái & Tiến độ",
       key: "status",
-      width: 140,
+      width: 200,
       render: (_, record) => {
-        let status = { color: "default", icon: null, text: "Chưa học" };
+        let status = { color: "default", icon: null, text: "Chưa học", bgColor: "#f5f5f5" };
 
         if (record.isLearned) {
           status = {
             color: "success",
             icon: <CheckCircle size={12} />,
             text: "Đã học",
+            bgColor: "linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)"
           };
         } else if (record.proficiencyLevel >= 80) {
           status = {
             color: "success",
             icon: <Trophy size={12} />,
             text: "Thành thạo",
+            bgColor: "linear-gradient(135deg, #fff0f6 0%, #ffadd6 100%)"
           };
         } else if (record.reviewCount > 0) {
           status = {
             color: "processing",
             icon: <RotateCcw size={12} />,
             text: "Đang học",
+            bgColor: "linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%)"
           };
         }
 
         return (
           <div className={record.isCorrect !== null ? "status-change" : ""}>
-            <Tag color={status.color} icon={status.icon}>
-              {status.text}
-            </Tag>
-            {record.reviewCount > 0 && (
-              <div
+            {/* Status Tag */}
+            <div style={{
+              background: status.bgColor,
+              padding: "6px 12px",
+              borderRadius: "8px",
+              border: `1px solid ${
+                status.color === "success" ? "#b7eb8f" : 
+                status.color === "processing" ? "#91d5ff" : "#d9d9d9"
+              }`,
+              marginBottom: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px"
+            }}>
+              {status.icon}
+              <Text style={{ 
+                fontSize: "12px", 
+                fontWeight: "500",
+                color: status.color === "success" ? "#389e0d" : 
+                       status.color === "processing" ? "#0958d9" : "#8c8c8c"
+              }}>
+                {status.text}
+              </Text>
+            </div>
+            
+            {/* Progress Bar */}
+            <div style={{ width: "100%" }}>
+              <Progress
+                percent={record.proficiencyLevel}
+                size="small"
+                strokeColor={
+                  record.proficiencyLevel >= 80 
+                    ? "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)" 
+                    : record.proficiencyLevel >= 50 
+                      ? "linear-gradient(135deg, #faad14 0%, #ffc53d 100%)" 
+                      : "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)"
+                }
+                trailColor="#f5f5f5"
+                format={(percent) => `${percent}%`}
                 style={{
-                  fontSize: "10px",
-                  color: "#8c8c8c",
-                  marginTop: "2px",
+                  transition: "all 0.3s ease-in-out",
                 }}
-              >
-                {record.reviewCount} lần thử
+                strokeWidth={8}
+              />
+            </div>
+            
+            {/* Review Count */}
+            {record.reviewCount > 0 && (
+              <div style={{
+                marginTop: "6px",
+                fontSize: "11px",
+                color: "#8c8c8c",
+                textAlign: "center",
+                background: "#fafafa",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                border: "1px solid #f0f0f0"
+              }}>
+                🎯 {record.reviewCount} lần thử
+              </div>
+            )}
+            
+            {/* Success/Error feedback */}
+            {record.isCorrect === true && (
+              <div style={{
+                marginTop: "6px",
+                fontSize: "11px",
+                color: "#52c41a",
+                fontWeight: "500",
+                animation: "fadeIn 0.5s ease-in-out",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)",
+                padding: "3px 8px",
+                borderRadius: "6px",
+                border: "1px solid #b7eb8f"
+              }}>
+                +10 điểm! 🎯
+              </div>
+            )}
+            {record.isCorrect === false && (
+              <div style={{
+                marginTop: "6px",
+                fontSize: "11px",
+                color: "#ff4d4f",
+                fontWeight: "500",
+                animation: "fadeIn 0.5s ease-in-out",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+                padding: "3px 8px",
+                borderRadius: "6px",
+                border: "1px solid #ffaaa5"
+              }}>
+                -5 điểm 📚
               </div>
             )}
           </div>
@@ -471,120 +623,123 @@ const UserVocabulary = () => {
       },
     },
     {
-      title: "Độ thành thạo",
-      dataIndex: "proficiencyLevel",
-      key: "proficiencyLevel",
-      width: 150,
-      render: (level, record) => (
-        <div style={{ width: "100%" }}>
-          <Progress
-            percent={level}
-            size="small"
-            strokeColor={
-              level >= 80 ? "#52c41a" : level >= 50 ? "#faad14" : "#ff4d4f"
-            }
-            format={(percent) => `${percent}%`}
-            style={{
-              transition: "all 0.3s ease-in-out",
-            }}
-          />
-          {/* Hiển thị badge nếu vừa thay đổi */}
-          {record.isCorrect === true && (
-            <div
-              style={{
-                marginTop: "4px",
-                fontSize: "10px",
-                color: "#52c41a",
-                fontWeight: "500",
-                animation: "fadeIn 0.5s ease-in-out",
-              }}
-            >
-              +10 điểm! 🎯
-            </div>
-          )}
-          {record.isCorrect === false && (
-            <div
-              style={{
-                marginTop: "4px",
-                fontSize: "10px",
-                color: "#ff4d4f",
-                fontWeight: "500",
-                animation: "fadeIn 0.5s ease-in-out",
-              }}
-            >
-              -5 điểm 📚
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: "Hành động",
-      key: "actions",
-      width: 150,
+      title: "Phát âm của bạn",
+      key: "pronunciation",
+      width: 180,
       render: (_, record, index) => (
-        <Space size="small">
-          <Button
-            type="primary"
-            ghost
-            size="small"
-            icon={<Volume2 size={14} />}
-            onClick={() => speakWord(record.vocabulary)}
-            style={{ borderRadius: "6px" }}
-          />
-          <Button
-            type={isSpeaking && activeIndex === index ? "danger" : "default"}
-            size="small"
-            icon={
-              isSpeaking && activeIndex === index ? (
-                <MicOff size={14} />
+        <Space size="middle" direction="vertical" style={{ width: "100%" }}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <Button
+              type="primary"
+              size="small"
+              icon={<Volume2 size={14} />}
+              onClick={() => speakWord(record.vocabulary)}
+              style={{ 
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                border: "none",
+                boxShadow: "0 2px 8px rgba(24, 144, 255, 0.3)",
+              }}
+              className="pronunciation-btn"
+            >
+              Nghe
+            </Button>
+            <Button
+              type={isSpeaking && activeIndex === index ? "danger" : "default"}
+              size="small"
+              icon={
+                isSpeaking && activeIndex === index ? (
+                  <MicOff size={14} />
+                ) : (
+                  <Mic size={14} />
+                )
+              }
+              onClick={() => practicePronunciation(record, index)}
+              style={{ 
+                borderRadius: "8px",
+                background: isSpeaking && activeIndex === index 
+                  ? "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)"
+                  : "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                border: "none",
+                color: "white",
+                boxShadow: isSpeaking && activeIndex === index
+                  ? "0 2px 8px rgba(255, 77, 79, 0.3)"
+                  : "0 2px 8px rgba(82, 196, 26, 0.3)",
+              }}
+              loading={isSpeaking && activeIndex === index}
+              className="pronunciation-btn"
+            >
+              {isSpeaking && activeIndex === index ? "Đang nghe" : "Thử"}
+            </Button>
+          </div>
+          
+          {/* Hiển thị kết quả phát âm */}
+          {record.isCorrect !== null && (
+            <div style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              fontSize: "12px",
+              textAlign: "center",
+              background: record.isCorrect 
+                ? "linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)"
+                : "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+              border: `1px solid ${record.isCorrect ? "#b7eb8f" : "#ffaaa5"}`,
+              color: record.isCorrect ? "#389e0d" : "#cf1322",
+              fontWeight: "500"
+            }}>
+              {record.isCorrect ? (
+                <span>✅ Chính xác!</span>
               ) : (
-                <Mic size={14} />
-              )
-            }
-            onClick={() => practicePronunciation(record, index)}
-            style={{ borderRadius: "6px" }}
-            loading={isSpeaking && activeIndex === index}
-          />
+                <span>❌ Thử lại: "{record.lowerTranscript}"</span>
+              )}
+            </div>
+          )}
         </Space>
       ),
     },
     {
-      title: "Phát âm của bạn",
-      dataIndex: "lowerTranscript",
-      key: "transcript",
-      width: 180,
-      render: (text, record) => {
-        if (!text) return <Text type="secondary">Chưa thử</Text>;
-
-        return (
-          <Space direction="vertical" size={0}>
-            <Text
-              style={{
-                color: record.isCorrect ? "#52c41a" : "#ff4d4f",
-                fontWeight: "500",
-              }}
-            >
-              {text}
-            </Text>
-            {record.isCorrect !== null && (
-              <Tag
-                color={record.isCorrect ? "success" : "error"}
-                size="small"
-                icon={
-                  record.isCorrect ? (
-                    <CheckCircle size={10} />
-                  ) : (
-                    <XCircle size={10} />
-                  )
-                }
-              >
-                {record.isCorrect ? "Chính xác" : "Chưa đúng"}
-              </Tag>
-            )}
-          </Space>
-        );
-      },
+      title: "Thao tác",
+      key: "actions",
+      width: 120,
+      fixed: "right",
+      render: (_, record) => (
+        <div style={{ textAlign: "center" }}>
+          <Button
+            type="text"
+            danger
+            icon={<Trash2 size={16} />}
+            onClick={() => removeVocabularyFromFavorites(record)}
+            style={{
+              borderRadius: "8px",
+              background: "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+              border: "1px solid #ffaaa5",
+              color: "#cf1322",
+              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+              width: "100%",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)";
+              e.target.style.color = "white";
+              e.target.style.borderColor = "#ff4d4f";
+              e.target.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)";
+              e.target.style.color = "#cf1322";
+              e.target.style.borderColor = "#ffaaa5";
+              e.target.style.transform = "scale(1)";
+            }}
+            title="Xóa khỏi danh sách yêu thích"
+          >
+            Xóa
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -668,6 +823,23 @@ const UserVocabulary = () => {
           }
         }
 
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes sparkle {
+          0% { transform: scale(1) rotate(0deg); }
+          50% { transform: scale(1.2) rotate(180deg); }
+          100% { transform: scale(1) rotate(360deg); }
+        }
+
         .proficiency-update {
           animation: pulse 0.6s ease-in-out;
         }
@@ -675,9 +847,21 @@ const UserVocabulary = () => {
         .status-change {
           animation: fadeIn 0.8s ease-in-out;
         }
+
+        .pronunciation-btn {
+          transition: all 0.3s ease;
+        }
+
+        .pronunciation-btn:hover {
+          transform: scale(1.05);
+        }
+
+        .success-sparkle {
+          animation: sparkle 0.8s ease-in-out;
+        }
       `}</style>
 
-      {/* Header */}
+      {/* Header - Keep Original */}
       <div style={{ marginBottom: "24px" }}>
         <Title
           level={2}
@@ -696,77 +880,135 @@ const UserVocabulary = () => {
           Từ vựng cá nhân
         </Title>
         <Text type="secondary" style={{ fontSize: "16px" }}>
-          Quản lý và luyện tập từ vựng đã học • Phát âm chính xác để tăng độ
-          thành thạo
+          Quản lý và luyện tập từ vựng đã học • Phát âm chính xác để tăng độ thành thạo
         </Text>
       </div>
 
-      {/* Statistics Cards */}
+      {/* Statistics Cards - Keep Original */}
       <Row gutter={16} style={{ marginBottom: "24px" }}>
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #d6e4ff" }}>
-            <Statistic
-              title="Tổng từ vựng"
-              value={statistics.total}
-              prefix={<Users size={20} style={{ color: "#1890ff" }} />}
-              valueStyle={{ color: "#1890ff" }}
-            />
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#1890ff", marginBottom: "8px" }}>
+                <Users size={20} />
+              </div>
+              <Text strong style={{ fontSize: "24px", color: "#1890ff", display: "block" }}>
+                {statistics.total}
+              </Text>
+              <Text type="secondary">Tổng từ vựng</Text>
+            </div>
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #d9f7be" }}>
-            <Statistic
-              title="Đã học"
-              value={statistics.learned}
-              prefix={<CheckCircle size={20} style={{ color: "#52c41a" }} />}
-              valueStyle={{ color: "#52c41a" }}
-            />
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#52c41a", marginBottom: "8px" }}>
+                <CheckCircle size={20} />
+              </div>
+              <Text strong style={{ fontSize: "24px", color: "#52c41a", display: "block" }}>
+                {statistics.learned}
+              </Text>
+              <Text type="secondary">Đã học</Text>
+            </div>
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #fff7e6" }}>
-            <Statistic
-              title="Đang luyện tập"
-              value={statistics.practicing}
-              prefix={<Target size={20} style={{ color: "#fa8c16" }} />}
-              valueStyle={{ color: "#fa8c16" }}
-            />
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#fa8c16", marginBottom: "8px" }}>
+                <Target size={20} />
+              </div>
+              <Text strong style={{ fontSize: "24px", color: "#fa8c16", display: "block" }}>
+                {statistics.practicing}
+              </Text>
+              <Text type="secondary">Đang luyện tập</Text>
+            </div>
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #fff0f6" }}>
-            <Statistic
-              title="Thành thạo"
-              value={statistics.mastered}
-              prefix={<Trophy size={20} style={{ color: "#eb2f96" }} />}
-              valueStyle={{ color: "#eb2f96" }}
-            />
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: "#eb2f96", marginBottom: "8px" }}>
+                <Trophy size={20} />
+              </div>
+              <Text strong style={{ fontSize: "24px", color: "#eb2f96", display: "block" }}>
+                {statistics.mastered}
+              </Text>
+              <Text type="secondary">Thành thạo</Text>
+            </div>
           </Card>
         </Col>
       </Row>
 
-      {/* Vocabulary Table */}
+      {/* Enhanced Vocabulary Table Only */}
       <Card
         style={{
           borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           border: "none",
+          background: "white",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+          overflow: "hidden",
         }}
+        bodyStyle={{ padding: "0" }}
       >
-        <Table
-          columns={columns}
-          dataSource={userVocabularies}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} của ${total} từ vựng`,
-          }}
-          scroll={{ x: 1200 }}
-          size="middle"
-          style={{ borderRadius: "8px" }}
-        />
+        {/* Table Header */}
+        <div style={{
+          background: "linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)",
+          padding: "24px 32px",
+          borderBottom: "1px solid #f0f0f0"
+        }}>
+          <Title level={3} style={{ 
+            margin: 0, 
+            color: "#1890ff",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px"
+          }}>
+            <BookOpen size={24} />
+            Danh sách từ vựng
+            <Tag 
+              color="blue" 
+              style={{ 
+                marginLeft: "8px",
+                borderRadius: "12px",
+                padding: "4px 12px",
+                fontSize: "14px"
+              }}
+            >
+              {statistics.total} từ
+            </Tag>
+          </Title>
+          <Text type="secondary" style={{ fontSize: "14px", marginTop: "4px", display: "block" }}>
+            Luyện tập phát âm để nâng cao độ thành thạo
+          </Text>
+        </div>
+        
+        <div style={{ padding: "24px 32px" }}>
+          <Table
+            columns={columns}
+            dataSource={userVocabularies}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} của ${total} từ vựng`,
+              style: { 
+                marginTop: "24px",
+                textAlign: "center"
+              }
+            }}
+            scroll={{ x: 1100 }}
+            size="middle"
+            style={{ 
+              borderRadius: "12px",
+              background: "white"
+            }}
+            rowClassName={(record, index) => 
+              record.isCorrect === true ? "success-sparkle" : ""
+            }
+          />
+        </div>
       </Card>
     </div>
   );
