@@ -529,3 +529,352 @@ p, span, div {
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
+
+/* Enhanced Styles for New Components */
+
+/* Goal Progress Card */
+.goal-progress-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  margin-bottom: 24px;
+}
+
+.goal-progress-bar {
+  background: rgba(255,255,255,0.3);
+  border-radius: 10px;
+  height: 20px;
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.goal-progress-fill {
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s ease-in-out;
+}
+
+/* Study Streak Cards */
+.streak-card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.streak-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Skills Comparison Chart Enhanced */
+.skills-comparison-container {
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.skill-comparison-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 100%;
+  padding: 0 10px;
+  height: 280px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.skill-comparison-item {
+  text-align: center;
+  min-width: 80px;
+  flex: 0 0 auto;
+}
+
+.skill-comparison-bars {
+  display: flex;
+  gap: 4px;
+  align-items: end;
+  justify-content: center;
+  height: 200px;
+}
+
+.skill-comparison-bar {
+  display: inline-block;
+  margin: 0 2px;
+  text-align: center;
+}
+
+.listening-bar {
+  background-color: #52c41a;
+  width: 32px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 4px;
+  transition: height 0.5s ease-in-out;
+  min-height: 20px;
+  max-height: 180px;
+}
+
+.reading-bar {
+  background-color: #1890ff;
+  width: 32px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 4px;
+  transition: height 0.5s ease-in-out;
+  min-height: 20px;
+  max-height: 180px;
+}
+
+.skill-comparison-label {
+  font-size: 10px;
+  font-weight: 600;
+  display: block;
+}
+
+.skill-comparison-month {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.skill-comparison-legend {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.legend-item {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Skills Radar Chart */
+.skills-radar-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.radar-chart {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  border: 2px solid #e8e8e8;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Study Time Chart */
+.study-time-chart {
+  padding: 20px;
+}
+
+.study-time-bar {
+  border-radius: 4px 4px 0 0;
+  margin: 0 auto 8px;
+  width: 40px;
+  transition: height 0.5s ease-in-out;
+  min-height: 10px;
+}
+
+.study-time-bar.primary {
+  background-color: #1890ff;
+}
+
+.study-time-bar.success {
+  background-color: #52c41a;
+}
+
+/* Enhanced Chart Selector */
+.chart-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Enhanced Card Styles */
+.enhanced-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.enhanced-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Activity Items Enhanced */
+.activity-item-enhanced {
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 4px 0;
+}
+
+.activity-item-enhanced:hover {
+  background: rgba(24, 144, 255, 0.04);
+  padding-left: 8px;
+}
+
+/* Responsive Enhancements for New Components */
+@media (max-width: 768px) {
+  .chart-selector {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .chart-selector .ant-btn {
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 8px;
+  }
+  
+  .radar-chart {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .skills-comparison-container {
+    padding: 12px;
+  }
+  
+  .skill-comparison-wrapper {
+    gap: 8px;
+    padding: 0 5px;
+    height: 240px;
+  }
+  
+  .skill-comparison-item {
+    min-width: 60px;
+  }
+  
+  .skill-comparison-bars {
+    height: 160px;
+    gap: 2px;
+  }
+  
+  .listening-bar,
+  .reading-bar {
+    width: 24px;
+    max-height: 140px;
+  }
+  
+  .skill-comparison-month {
+    font-size: 11px;
+  }
+  
+  .skill-comparison-label {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 576px) {
+  .goal-progress-card {
+    padding: 16px;
+  }
+  
+  .study-time-chart {
+    padding: 12px;
+  }
+  
+  .radar-chart {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .skills-comparison-container {
+    padding: 8px;
+  }
+  
+  .skill-comparison-wrapper {
+    gap: 6px;
+    height: 200px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0 8px;
+  }
+  
+  .skill-comparison-item {
+    min-width: 50px;
+    flex-shrink: 0;
+  }
+  
+  .skill-comparison-bars {
+    height: 140px;
+  }
+  
+  .listening-bar,
+  .reading-bar {
+    width: 20px;
+    max-height: 120px;
+  }
+  
+  .chart-selector {
+    padding: 0 8px;
+  }
+  
+  .chart-selector .ant-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    height: auto;
+  }
+}
+
+/* Scrollbar tùy chỉnh cho comparison chart */
+.skill-comparison-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.skill-comparison-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.skill-comparison-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.skill-comparison-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation for progress bars */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+.animated-progress {
+  animation: progressFill 1.5s ease-out;
+}
+
+/* Animation for skill bars */
+@keyframes skillBarGrow {
+  from {
+    height: 20px;
+  }
+  to {
+    height: var(--bar-height);
+  }
+}
+
+.listening-bar,
+.reading-bar {
+  animation: skillBarGrow 0.8s ease-out;
+}

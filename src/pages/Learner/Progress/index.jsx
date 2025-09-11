@@ -18,8 +18,7 @@ import "aos/dist/aos.css";
 import "./style.css";
 
 // Import services
-import learnerProgressService from "../../../services/learnerProgressService";
-import learnerExamService from "../../../services/learnerExamService";
+import learningProgressService from "../../../services/learningProgressService";
 
 const { Title, Text } = Typography;
 
@@ -65,177 +64,175 @@ const Progress = () => {
       try {
         setLoading(true);
 
-        // Fetch available data from existing services with improved error handling
+        // Sử dụng learning progress service mới
         const [
-          studyTimeResponse,
-          skillPerformanceResponse,
-          completedExamsResponse,
-          averageScoreResponse,
-          recentExamsResponse,
+          overviewResponse,
+          skillsResponse,
+          timeProgressResponse,
+          strengthsWeaknessesResponse,
+          dashboardResponse,
         ] = await Promise.all([
-          learnerProgressService.getTotalStudyTime().catch(() => {
-            return { data: { totalHours: 45, thisWeek: 12, lastWeek: 8 } };
+          learningProgressService.getOverview().catch((error) => {
+            console.log('Overview API not available:', error.message);
+            return { data: { 
+              totalExams: 7, 
+              averageScore: 720, 
+              totalStudyTime: 45, 
+              completedLessons: 23 
+            }};
           }),
-          learnerProgressService.getSkillPerformance().catch(() => {
-            return { data: { listening: 75, reading: 82, grammar: 78, vocabulary: 88 } };
+          learningProgressService.getSkillProgress().catch((error) => {
+            console.log('Skills API not available:', error.message);
+            return { data: { 
+              listening: 75, 
+              reading: 82, 
+              grammar: 78, 
+              vocabulary: 88,
+              comparison: [
+                { month: "Jan", listening: 65, reading: 70 },
+                { month: "Feb", listening: 68, reading: 73 },
+                { month: "Mar", listening: 72, reading: 76 },
+                { month: "Apr", listening: 75, reading: 80 },
+                { month: "May", listening: 73, reading: 82 },
+                { month: "Jun", listening: 75, reading: 82 }
+              ]
+            }};
           }),
-          learnerExamService.getCompletedExamsCount().catch(() => {
-            return { data: { count: 7 } };
-          }),
-          learnerExamService.getAverageScore().catch(() => {
-            return { data: { averageScore: 720 } };
-          }),
-          learnerExamService.getRecentExams(10).catch(() => {
-            return { data: [
-              {
-                examName: "TOEIC Practice Test 1",
-                completedAt: "2025-06-28T10:00:00Z",
-                score: 720,
-                type: "Mixed",
-                maxScore: 990,
-                duration: 120
+          learningProgressService.getTimeProgress().catch((error) => {
+            console.log('Time Progress API not available:', error.message);
+            return { data: {
+              progressByMonth: {
+                "Jan 2025": { averageScore: 600, listeningAverage: 300, readingAverage: 300 },
+                "Feb 2025": { averageScore: 640, listeningAverage: 320, readingAverage: 320 },
+                "Mar 2025": { averageScore: 670, listeningAverage: 335, readingAverage: 335 },
+                "Apr 2025": { averageScore: 690, listeningAverage: 345, readingAverage: 345 },
+                "May 2025": { averageScore: 710, listeningAverage: 355, readingAverage: 355 },
+                "Jun 2025": { averageScore: 720, listeningAverage: 360, readingAverage: 360 }
               },
-              {
-                examName: "Listening Skills Test",
-                completedAt: "2025-06-26T15:30:00Z",
-                score: 380,
-                type: "Listening",
-                maxScore: 495,
-                duration: 60
+              studyTimeData: [
+                { date: "2025-06-01", studyTime: 60 },
+                { date: "2025-06-02", studyTime: 45 },
+                { date: "2025-06-03", studyTime: 90 },
+                { date: "2025-06-04", studyTime: 30 },
+                { date: "2025-06-05", studyTime: 75 }
+              ]
+            }};
+          }),
+          learningProgressService.getStrengthsWeaknesses().catch((error) => {
+            console.log('Strengths/Weaknesses API not available:', error.message);
+            return { data: {
+              strengths: ["Grammar", "Vocabulary", "Reading Part 5"],
+              weaknesses: ["Listening Part 3", "Reading Part 7", "Time Management"],
+              skillsRadar: [
+                { skill: "Listening", score: 75 },
+                { skill: "Reading", score: 82 },
+                { skill: "Grammar", score: 78 },
+                { skill: "Vocabulary", score: 88 }
+              ]
+            }};
+          }),
+          learningProgressService.getDashboard().catch((error) => {
+            console.log('Dashboard API not available:', error.message);
+            return { data: {
+              goalProgress: {
+                currentScore: 720,
+                targetScore: 850,
+                progressPercentage: 85,
+                isAchieved: false,
+                highestScore: 720
               },
-              {
-                examName: "Reading Comprehension",
-                completedAt: "2025-06-24T09:00:00Z",
-                score: 340,
-                type: "Reading",
-                maxScore: 495,
-                duration: 90
-              },
-              {
-                examName: "Grammar Focus Test",
-                completedAt: "2025-06-22T14:00:00Z",
-                score: 410,
-                type: "Grammar",
-                maxScore: 495,
-                duration: 75
-              }
-            ] };
+              recentActivity: [
+                {
+                  examName: "TOEIC Practice Test 1",
+                  score: 720,
+                  date: "2025-06-28T10:00:00Z",
+                  type: "Mixed"
+                },
+                {
+                  examName: "Listening Skills Test",
+                  score: 380,
+                  date: "2025-06-26T15:30:00Z",
+                  type: "Listening"
+                },
+                {
+                  examName: "Reading Comprehension",
+                  score: 340,
+                  date: "2025-06-24T09:00:00Z",
+                  type: "Reading"
+                }
+              ],
+              currentStreak: 5,
+              studyTimeThisWeek: 12
+            }};
           }),
         ]);
         
-        // Process and combine data with correct mapping
+        // Xử lý và kết hợp dữ liệu từ API responses (cập nhật cho response format mới)
+        const overviewData = overviewResponse?.data || {};
+        const skillsData = skillsResponse?.data || {};
+        const timeProgressData = timeProgressResponse?.data || {};
+        const strengthsData = strengthsWeaknessesResponse?.data || {};
+        const dashboardData = dashboardResponse?.data || {};
+
+        // Tạo dữ liệu progress hoàn chỉnh
         const userData = {
-          totalExams: completedExamsResponse?.count || 0,
-          averageScore: averageScoreResponse?.averageScore || 0,
-          listeningAverage: skillPerformanceResponse?.data?.listening || 0,
-          readingAverage: skillPerformanceResponse?.data?.reading || 0,
-          studyHours: studyTimeResponse?.data?.totalHours || 0,
-          completedLessons: Math.floor((studyTimeResponse?.data?.totalHours || 0) / 2),
-          strengths: (skillPerformanceResponse?.data?.listening || 0) > 75 
-            ? ["Listening Part 1", "Listening Part 2"] 
-            : (skillPerformanceResponse?.data?.reading || 0) > 75 
-            ? ["Reading Part 5", "Reading Part 6"] 
-            : ["Grammar", "Vocabulary"],
-          weaknesses: (skillPerformanceResponse?.data?.listening || 0) < 70 
-            ? ["Listening Part 3", "Listening Part 4"] 
-            : (skillPerformanceResponse?.data?.reading || 0) < 70 
-            ? ["Reading Part 7", "Long Passages"] 
-            : ["Time Management", "Complex Grammar"],
-          recentActivity: Array.isArray(recentExamsResponse?.data) && recentExamsResponse.data.length > 0
-            ? recentExamsResponse.data.slice(0, 5).map(exam => ({
-                type: "exam",
-                title: exam?.examName || exam?.name || "Bài thi TOEIC",
-                date: exam?.completedAt || exam?.createdAt || new Date().toISOString(),
-                duration: exam?.duration || 120,
-                score: exam?.score || 0
-              }))
-            : [
-                {
-                  type: "exam",
-                  title: "TOEIC Practice Test 1",
-                  date: "2025-06-28T10:00:00Z",
-                  duration: 120,
-                  score: 720
-                },
-                {
-                  type: "lesson",
-                  title: "Advanced Grammar Lesson",
-                  date: "2025-06-27T14:30:00Z",
-                  duration: 45
-                }
-              ],
-          examHistory: Array.isArray(recentExamsResponse?.data) && recentExamsResponse.data.length > 0
-            ? recentExamsResponse.data
-            : [
-                {
-                  examName: "TOEIC Practice Test 1",
-                  completedAt: "2025-06-28T10:00:00Z",
-                  score: 720,
-                  type: "Mixed",
-                  maxScore: 990
-                },
-                {
-                  examName: "Listening Comprehension Test",
-                  completedAt: "2025-06-25T14:30:00Z",
-                  score: 380,
-                  type: "Listening",
-                  maxScore: 495
-                }
-              ],
-          progressByMonth: {
-            "Jan 2025": { 
-              averageScore: Math.max(100, (averageScoreResponse?.averageScore || 167) - 67), 
-              listeningAverage: Math.max(50, ((averageScoreResponse?.averageScore || 167) / 2) - 33), 
-              readingAverage: Math.max(50, ((averageScoreResponse?.averageScore || 167) / 2) - 34) 
-            },
-            "Feb 2025": { 
-              averageScore: Math.max(120, (averageScoreResponse?.averageScore || 167) - 47), 
-              listeningAverage: Math.max(60, ((averageScoreResponse?.averageScore || 167) / 2) - 23), 
-              readingAverage: Math.max(60, ((averageScoreResponse?.averageScore || 167) / 2) - 24) 
-            },
-            "Mar 2025": { 
-              averageScore: Math.max(140, (averageScoreResponse?.averageScore || 167) - 27), 
-              listeningAverage: Math.max(70, ((averageScoreResponse?.averageScore || 167) / 2) - 13), 
-              readingAverage: Math.max(70, ((averageScoreResponse?.averageScore || 167) / 2) - 14) 
-            },
-            "Apr 2025": { 
-              averageScore: Math.max(150, (averageScoreResponse?.averageScore || 167) - 17), 
-              listeningAverage: Math.max(75, ((averageScoreResponse?.averageScore || 167) / 2) - 8), 
-              readingAverage: Math.max(75, ((averageScoreResponse?.averageScore || 167) / 2) - 9) 
-            },
-            "May 2025": { 
-              averageScore: Math.max(160, (averageScoreResponse?.averageScore || 167) - 7), 
-              listeningAverage: Math.max(80, ((averageScoreResponse?.averageScore || 167) / 2) - 3), 
-              readingAverage: Math.max(80, ((averageScoreResponse?.averageScore || 167) / 2) - 4) 
-            },
-            "Jun 2025": { 
-              averageScore: averageScoreResponse?.averageScore || 167, 
-              listeningAverage: Math.round((averageScoreResponse?.averageScore || 167) / 2), 
-              readingAverage: Math.round((averageScoreResponse?.averageScore || 167) / 2) 
-            },
+          totalExams: overviewData.totalExams || 0,
+          averageScore: overviewData.averageScore || 0,
+          listeningAverage: overviewData.listeningAverage || Math.round((overviewData.averageScore || 0) / 2),
+          readingAverage: overviewData.readingAverage || Math.round((overviewData.averageScore || 0) / 2),
+          studyHours: overviewData.studyHours || overviewData.totalStudyTime || 0,
+          completedLessons: overviewData.completedLessons || 0,
+          strengths: strengthsData.strengths || ["Grammar", "Vocabulary"],
+          weaknesses: strengthsData.weaknesses || ["Listening Part 3", "Reading Part 7"],
+          recentActivity: (dashboardData.recentActivity || []).map(activity => ({
+            type: "exam",
+            title: activity.examName || activity.title || "Bài thi TOEIC",
+            date: activity.date || activity.createdAt || new Date().toISOString(),
+            duration: activity.duration || 120,
+            score: activity.score || activity.totalScore || 0
+          })),
+          examHistory: dashboardData.examHistory || dashboardData.recentActivity || [],
+          progressByMonth: timeProgressData.progressByMonth || timeProgressData.monthlyProgress || {
+            "Jan 2025": { averageScore: 600, listeningAverage: 300, readingAverage: 300 },
+            "Feb 2025": { averageScore: 640, listeningAverage: 320, readingAverage: 320 },
+            "Mar 2025": { averageScore: 670, listeningAverage: 335, readingAverage: 335 },
+            "Apr 2025": { averageScore: 690, listeningAverage: 345, readingAverage: 345 },
+            "May 2025": { averageScore: 710, listeningAverage: 355, readingAverage: 355 },
+            "Jun 2025": { averageScore: 720, listeningAverage: 360, readingAverage: 360 }
           },
           skillBreakdown: {
-            listening: skillPerformanceResponse?.data?.listening || 75,
-            reading: skillPerformanceResponse?.data?.reading || 80,
-            grammar: skillPerformanceResponse?.data?.grammar || 70,
-            vocabulary: skillPerformanceResponse?.data?.vocabulary || 85,
+            listening: skillsData.listening || skillsData.listeningScore || 75,
+            reading: skillsData.reading || skillsData.readingScore || 82,
+            grammar: skillsData.grammar || skillsData.grammarScore || 78,
+            vocabulary: skillsData.vocabulary || skillsData.vocabularyScore || 88,
           },
+          // Thêm dữ liệu mở rộng từ dashboard
+          goalProgress: dashboardData.goalProgress || {
+            currentScore: overviewData.averageScore || 0,
+            targetScore: 850,
+            progressPercentage: Math.min(Math.round(((overviewData.averageScore || 0) / 850) * 100), 100),
+            isAchieved: (overviewData.averageScore || 0) >= 850,
+            highestScore: overviewData.averageScore || 0
+          },
+          currentStreak: dashboardData.currentStreak || 0,
+          studyTimeThisWeek: dashboardData.studyTimeThisWeek || overviewData.studyTimeThisWeek || 0,
+          skillsComparison: skillsData.comparison || skillsData.monthlyComparison || [],
+          studyTimeData: timeProgressData.studyTimeData || timeProgressData.dailyStudyTime || [],
+          skillsRadar: strengthsData.skillsRadar || strengthsData.radarData || []
         };
 
         setProgressData(userData);
       } catch (error) {
-        // Silent error handling - không hiển thị thông báo lỗi cho người dùng
-        // vì chúng ta đã có fallback data phù hợp
-        console.info("Sử dụng dữ liệu mẫu - backend đang trong quá trình phát triển");
+        console.error("Error fetching progress data:", error);
         
-        // Set comprehensive fallback data for better user experience
+        // Fallback data nếu có lỗi
         setProgressData({
           totalExams: 7,
-          averageScore: 167,
-          listeningAverage: 84,
-          readingAverage: 83,
-          studyHours: 0,
-          completedLessons: 0,
+          averageScore: 720,
+          listeningAverage: 360,
+          readingAverage: 360,
+          studyHours: 45,
+          completedLessons: 23,
           strengths: ["Grammar", "Vocabulary"],
           weaknesses: ["Listening Part 3", "Reading Part 7", "Time Management"],
           recentActivity: [
@@ -244,32 +241,25 @@ const Progress = () => {
               title: "TOEIC Practice Test 1",
               date: "2025-06-28T10:00:00Z",
               duration: 120,
-              score: 167
-            },
-            {
-              type: "lesson",
-              title: "Basic Grammar Lesson",
-              date: "2025-06-27T14:30:00Z",
-              duration: 45,
-              score: undefined
+              score: 720
             }
           ],
           examHistory: [
             {
               examName: "TOEIC Practice Test 1",
               completedAt: "2025-06-28T10:00:00Z",
-              score: 167,
+              score: 720,
               type: "Mixed",
               maxScore: 990
             }
           ],
           progressByMonth: {
-            "Jan 2025": { averageScore: 100, listeningAverage: 50, readingAverage: 50 },
-            "Feb 2025": { averageScore: 120, listeningAverage: 60, readingAverage: 60 },
-            "Mar 2025": { averageScore: 140, listeningAverage: 70, readingAverage: 70 },
-            "Apr 2025": { averageScore: 150, listeningAverage: 75, readingAverage: 75 },
-            "May 2025": { averageScore: 160, listeningAverage: 80, readingAverage: 80 },
-            "Jun 2025": { averageScore: 167, listeningAverage: 84, readingAverage: 83 },
+            "Jan 2025": { averageScore: 600, listeningAverage: 300, readingAverage: 300 },
+            "Feb 2025": { averageScore: 640, listeningAverage: 320, readingAverage: 320 },
+            "Mar 2025": { averageScore: 670, listeningAverage: 335, readingAverage: 335 },
+            "Apr 2025": { averageScore: 690, listeningAverage: 345, readingAverage: 345 },
+            "May 2025": { averageScore: 710, listeningAverage: 355, readingAverage: 355 },
+            "Jun 2025": { averageScore: 720, listeningAverage: 360, readingAverage: 360 }
           },
           skillBreakdown: {
             listening: 75,
@@ -277,6 +267,36 @@ const Progress = () => {
             grammar: 78,
             vocabulary: 88,
           },
+          goalProgress: {
+            currentScore: 720,
+            targetScore: 850,
+            progressPercentage: 85,
+            isAchieved: false,
+            highestScore: 720
+          },
+          currentStreak: 5,
+          studyTimeThisWeek: 12,
+          skillsComparison: [
+            { month: "Jan", listening: 65, reading: 70 },
+            { month: "Feb", listening: 68, reading: 73 },
+            { month: "Mar", listening: 72, reading: 76 },
+            { month: "Apr", listening: 75, reading: 80 },
+            { month: "May", listening: 73, reading: 82 },
+            { month: "Jun", listening: 75, reading: 82 }
+          ],
+          studyTimeData: [
+            { date: "2025-06-01", studyTime: 60 },
+            { date: "2025-06-02", studyTime: 45 },
+            { date: "2025-06-03", studyTime: 90 },
+            { date: "2025-06-04", studyTime: 30 },
+            { date: "2025-06-05", studyTime: 75 }
+          ],
+          skillsRadar: [
+            { skill: "Listening", score: 75 },
+            { skill: "Reading", score: 82 },
+            { skill: "Grammar", score: 78 },
+            { skill: "Vocabulary", score: 88 }
+          ]
         });
       } finally {
         setLoading(false);
@@ -580,6 +600,109 @@ const Progress = () => {
         </Text>
       </div>
 
+      {/* Goal Progress Section */}
+      {progressData.goalProgress && (
+        <Row gutter={16} style={{ marginBottom: "24px" }}>
+          <Col span={24}>
+            <Card
+              style={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                border: "none",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              }}
+            >
+              <div style={{ color: "white" }}>
+                <Title level={4} style={{ color: "white", marginBottom: "16px" }}>
+                  <Target size={20} style={{ marginRight: "8px" }} />
+                  Tiến độ mục tiêu
+                </Title>
+                <Row gutter={16} align="middle">
+                  <Col xs={24} md={12}>
+                    <Text style={{ color: "white", fontSize: "16px" }}>
+                      Mục tiêu: <strong>{progressData.goalProgress.targetScore} điểm</strong>
+                    </Text>
+                    <br />
+                    <Text style={{ color: "white", fontSize: "16px" }}>
+                      Điểm cao nhất: <strong>{progressData.goalProgress.highestScore} điểm</strong>
+                    </Text>
+                    <div style={{ marginTop: "12px" }}>
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.3)",
+                          borderRadius: "10px",
+                          height: "20px",
+                          position: "relative",
+                          overflow: "hidden"
+                        }}
+                      >
+                        <div
+                          style={{
+                            background: "linear-gradient(90deg, #4ade80, #22c55e)",
+                            height: "100%",
+                            width: `${progressData.goalProgress.progressPercentage}%`,
+                            borderRadius: "10px",
+                            transition: "width 1s ease-in-out"
+                          }}
+                        />
+                      </div>
+                      <Text style={{ color: "white", fontSize: "14px", marginTop: "4px" }}>
+                        {progressData.goalProgress.progressPercentage}% hoàn thành
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col xs={24} md={12} style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: "48px", color: "white", marginBottom: "8px" }}>
+                      {progressData.goalProgress.isAchieved ? "🎉" : "🎯"}
+                    </div>
+                    <Text style={{ color: "white", fontSize: "16px" }}>
+                      {progressData.goalProgress.isAchieved 
+                        ? "Mục tiêu đã đạt được!" 
+                        : `Còn ${progressData.goalProgress.targetScore - progressData.goalProgress.highestScore} điểm để đạt mục tiêu`
+                      }
+                    </Text>
+                  </Col>
+                </Row>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      )}
+
+      {/* Study Streak Section */}
+      {(progressData.currentStreak > 0 || progressData.studyTimeThisWeek > 0) && (
+        <Row gutter={16} style={{ marginBottom: "24px" }}>
+          <Col xs={24} md={12}>
+            <Card style={{ borderRadius: "12px", border: "1px solid #ffd6e7" }}>
+              <Statistic
+                title="Chuỗi học tập hiện tại"
+                value={progressData.currentStreak}
+                suffix="ngày"
+                prefix={<FontAwesomeIcon icon={faCheckCircle} style={{ color: "#ff4d4f" }} />}
+                valueStyle={{ color: "#ff4d4f", fontSize: "32px" }}
+              />
+              <Text type="secondary" style={{ fontSize: "14px" }}>
+                Tiếp tục duy trì để đạt kỷ lục mới! 🔥
+              </Text>
+            </Card>
+          </Col>
+          <Col xs={24} md={12}>
+            <Card style={{ borderRadius: "12px", border: "1px solid #e6f7ff" }}>
+              <Statistic
+                title="Thời gian học tuần này"
+                value={progressData.studyTimeThisWeek}
+                suffix="giờ"
+                prefix={<Clock size={20} style={{ color: "#1890ff" }} />}
+                valueStyle={{ color: "#1890ff", fontSize: "32px" }}
+              />
+              <Text type="secondary" style={{ fontSize: "14px" }}>
+                Tuyệt vời! Hãy duy trì nhịp độ này 📚
+              </Text>
+            </Card>
+          </Col>
+        </Row>
+      )}
+
       {/* Statistics Cards */}
       <Row gutter={16} style={{ marginBottom: "24px" }}>
         <Col xs={24} sm={12} md={6}>
@@ -648,8 +771,15 @@ const Progress = () => {
               <Button
                 type={chartType === "skills" ? "primary" : "default"}
                 onClick={() => setChartType("skills")}
+                style={{ marginRight: "8px" }}
               >
                 Phân tích kỹ năng
+              </Button>
+              <Button
+                type={chartType === "comparison" ? "primary" : "default"}
+                onClick={() => setChartType("comparison")}
+              >
+                So sánh Listening vs Reading
               </Button>
             </div>
             <div className="chart-wrapper" style={{ minHeight: "400px", position: "relative" }}>
@@ -658,6 +788,113 @@ const Progress = () => {
               )}
               {chartType === "skills" && (
                 <div className="chart-container" ref={skillsChartRef} style={{ width: "100%", height: "400px" }}></div>
+              )}
+              {chartType === "comparison" && progressData.skillsComparison && progressData.skillsComparison.length > 0 && (
+                <div style={{ width: "100%", height: "400px", padding: "20px", overflow: "hidden" }}>
+                  <Title level={5} style={{ textAlign: "center", marginBottom: "20px" }}>
+                    So sánh điểm số Listening vs Reading theo tháng
+                  </Title>
+                  <div style={{ 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "end", 
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    maxWidth: "100%",
+                    padding: "0 10px",
+                    height: "280px",
+                    overflowX: "auto"
+                  }}>
+                    {progressData.skillsComparison.map((item, index) => (
+                      <div key={index} style={{ 
+                        textAlign: "center", 
+                        minWidth: "80px",
+                        flex: "0 0 auto"
+                      }}>
+                        <Text strong style={{ 
+                          display: "block", 
+                          marginBottom: "8px",
+                          fontSize: "12px"
+                        }}>
+                          {item.month}
+                        </Text>
+                        <div style={{ 
+                          display: "flex", 
+                          gap: "4px", 
+                          alignItems: "end",
+                          justifyContent: "center",
+                          height: "200px"
+                        }}>
+                          <div style={{ textAlign: "center" }}>
+                            <div
+                              style={{
+                                width: "32px",
+                                height: `${Math.min(item.listening * 2, 180)}px`,
+                                backgroundColor: "#52c41a",
+                                borderRadius: "4px 4px 0 0",
+                                marginBottom: "4px",
+                                minHeight: "20px",
+                                transition: "height 0.5s ease-in-out"
+                              }}
+                            />
+                            <Text style={{ 
+                              fontSize: "10px", 
+                              color: "#52c41a",
+                              display: "block",
+                              fontWeight: "600"
+                            }}>
+                              L: {item.listening}
+                            </Text>
+                          </div>
+                          <div style={{ textAlign: "center" }}>
+                            <div
+                              style={{
+                                width: "32px",
+                                height: `${Math.min(item.reading * 2, 180)}px`,
+                                backgroundColor: "#1890ff",
+                                borderRadius: "4px 4px 0 0",
+                                marginBottom: "4px",
+                                minHeight: "20px",
+                                transition: "height 0.5s ease-in-out"
+                              }}
+                            />
+                            <Text style={{ 
+                              fontSize: "10px", 
+                              color: "#1890ff",
+                              display: "block",
+                              fontWeight: "600"
+                            }}>
+                              R: {item.reading}
+                            </Text>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ 
+                    textAlign: "center", 
+                    marginTop: "20px",
+                    paddingTop: "16px",
+                    borderTop: "1px solid #f0f0f0"
+                  }}>
+                    <Space size="large">
+                      <span style={{ 
+                        color: "#52c41a", 
+                        fontSize: "14px",
+                        fontWeight: "600"
+                      }}>
+                        ● Listening
+                      </span>
+                      <span style={{ 
+                        color: "#1890ff", 
+                        fontSize: "14px",
+                        fontWeight: "600"
+                      }}>
+                        ● Reading
+                      </span>
+                    </Space>
+                  </div>
+                </div>
               )}
             </div>
           </Card>
@@ -704,6 +941,105 @@ const Progress = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Skills Radar Chart */}
+      {progressData.skillsRadar && progressData.skillsRadar.length > 0 && (
+        <Row gutter={16} style={{ marginBottom: "24px" }}>
+          <Col span={24}>
+            <Card
+              style={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                border: "none",
+              }}
+            >
+              <Title level={4} style={{ marginBottom: "16px" }}>
+                Biểu đồ radar kỹ năng
+              </Title>
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  {/* Simple radar chart using CSS */}
+                  <div style={{ 
+                    width: "300px", 
+                    height: "300px", 
+                    position: "relative",
+                    border: "2px solid #e8e8e8",
+                    borderRadius: "50%",
+                    margin: "0 auto"
+                  }}>
+                    {/* Inner circles */}
+                    <div style={{
+                      position: "absolute",
+                      top: "25%",
+                      left: "25%",
+                      width: "50%",
+                      height: "50%",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "50%"
+                    }} />
+                    <div style={{
+                      position: "absolute",
+                      top: "12.5%",
+                      left: "12.5%",
+                      width: "75%",
+                      height: "75%",
+                      border: "1px solid #f5f5f5",
+                      borderRadius: "50%"
+                    }} />
+                    
+                    {/* Skill points */}
+                    {progressData.skillsRadar.map((skill, index) => {
+                      const angle = (index * 90) - 90; // 4 skills, 90 degrees apart, starting from top
+                      const radius = (skill.score / 100) * 120; // Scale to fit within circle
+                      const x = 150 + radius * Math.cos(angle * Math.PI / 180);
+                      const y = 150 + radius * Math.sin(angle * Math.PI / 180);
+                      
+                      return (
+                        <div key={skill.skill}>
+                          {/* Skill point */}
+                          <div style={{
+                            position: "absolute",
+                            left: `${x - 8}px`,
+                            top: `${y - 8}px`,
+                            width: "16px",
+                            height: "16px",
+                            backgroundColor: index === 0 ? "#52c41a" : index === 1 ? "#1890ff" : index === 2 ? "#fa8c16" : "#eb2f96",
+                            borderRadius: "50%",
+                            border: "2px solid white",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                          }} />
+                          
+                          {/* Skill label */}
+                          <div style={{
+                            position: "absolute",
+                            left: `${x + (x > 150 ? 20 : -80)}px`,
+                            top: `${y - 10}px`,
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            color: "#666"
+                          }}>
+                            {skill.skill}: {skill.score}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {/* Legend */}
+                <div style={{ marginTop: "20px" }}>
+                  <Space wrap>
+                    <span style={{ color: "#52c41a" }}>● Listening</span>
+                    <span style={{ color: "#1890ff" }}>● Reading</span>
+                    <span style={{ color: "#fa8c16" }}>● Grammar</span>
+                    <span style={{ color: "#eb2f96" }}>● Vocabulary</span>
+                  </Space>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      )}
 
       {/* Exam History and Recent Activity */}
       <Row gutter={16} style={{ marginBottom: "24px" }}>
@@ -799,6 +1135,54 @@ const Progress = () => {
         </Col>
       </Row>
 
+      {/* Study Time Analysis */}
+      {progressData.studyTimeData && progressData.studyTimeData.length > 0 && (
+        <Row gutter={16} style={{ marginBottom: "24px" }}>
+          <Col span={24}>
+            <Card
+              style={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                border: "none",
+              }}
+            >
+              <Title level={4} style={{ marginBottom: "16px" }}>
+                Thời gian học tập gần đây
+              </Title>
+              <div style={{ padding: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: "20px" }}>
+                  {progressData.studyTimeData.map((item, index) => (
+                    <div key={index} style={{ textAlign: "center", flex: 1 }}>
+                      <div
+                        style={{
+                          height: `${item.studyTime * 2}px`,
+                          backgroundColor: index % 2 === 0 ? "#1890ff" : "#52c41a",
+                          borderRadius: "4px 4px 0 0",
+                          marginBottom: "8px",
+                          minHeight: "10px",
+                          margin: "0 auto 8px",
+                          width: "40px",
+                          transition: "height 0.5s ease-in-out"
+                        }}
+                      />
+                      <Text style={{ fontSize: "12px", display: "block" }}>
+                        {new Date(item.date).toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' })}
+                      </Text>
+                      <Text style={{ fontSize: "12px", color: "#666", display: "block" }}>
+                        {item.studyTime}p
+                      </Text>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <Text type="secondary">Thời gian học tập hàng ngày (phút)</Text>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      )}
+
       {/* Learning Tips */}
       <Row gutter={16}>
         <Col span={24}>
@@ -867,4 +1251,42 @@ const Progress = () => {
   );
 };
 
+// Export utility functions for recording progress
+export const recordVocabularyProgress = async (vocabularyId, isCorrect, timeSpent = 0) => {
+  try {
+    const progressData = {
+      vocabularyId,
+      isCorrect,
+      timeSpent,
+      timestamp: new Date().toISOString()
+    };
+    
+    const response = await learningProgressService.recordVocabularyAnswer(progressData);
+    console.log('Vocabulary progress recorded:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to record vocabulary progress:', error);
+    return null;
+  }
+};
+
+export const recordGrammarProgress = async (grammarId, isCorrect, timeSpent = 0) => {
+  try {
+    const progressData = {
+      grammarId,
+      isCorrect,
+      timeSpent,
+      timestamp: new Date().toISOString()
+    };
+    
+    const response = await learningProgressService.recordGrammarAnswer(progressData);
+    console.log('Grammar progress recorded:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to record grammar progress:', error);
+    return null;
+  }
+};
+
+// Export the main component
 export default Progress;
