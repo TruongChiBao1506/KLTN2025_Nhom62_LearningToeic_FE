@@ -44,6 +44,8 @@ const VocabularyGame = () => {
   const [currentVocab, setCurrentVocab] = useState(null);
   const [score, setScore] = useState(0);
   const [totalPlayed, setTotalPlayed] = useState(0);
+  const [usedVocabularies, setUsedVocabularies] = useState([]);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
   useEffect(() => {
     document.title = "Trò chơi đoán từ vựng | TOEIC Learning Platform";
@@ -78,16 +80,37 @@ const VocabularyGame = () => {
   }, [topicId]);
 
   // Game functions
+  const getNextVocabulary = () => {
+    const availableWords = vocabularies.filter((vocab, index) => !usedVocabularies.includes(index));
+    
+    if (availableWords.length === 0) {
+      // Tất cả từ đã được sử dụng
+      message.success(`🎉 Chúc mừng! Bạn đã hoàn thành tất cả ${vocabularies.length} từ vựng trong chủ đề này!`);
+      setUsedVocabularies([]);
+      return vocabularies[Math.floor(Math.random() * vocabularies.length)];
+    }
+    
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const selectedVocab = availableWords[randomIndex];
+    const originalIndex = vocabularies.findIndex(vocab => vocab.id === selectedVocab.id);
+    
+    return { vocab: selectedVocab, originalIndex };
+  };
+
   const startGame = () => {
     if (vocabularies.length === 0) {
       message.warning("Không có từ vựng để chơi!");
       return;
     }
     
-    const randomVocab = vocabularies[Math.floor(Math.random() * vocabularies.length)];
-    setCurrentVocab(randomVocab);
-    setCurrentWord(randomVocab.word.toUpperCase());
-    setCurrentHint(randomVocab.meaning);
+    const nextWord = getNextVocabulary();
+    const selectedVocab = nextWord.vocab || nextWord;
+    const wordIndex = nextWord.originalIndex || 0;
+    
+    setCurrentVocab(selectedVocab);
+    setCurrentWord(selectedVocab.word.toUpperCase());
+    setCurrentHint(selectedVocab.meaning);
+    setCurrentWordIndex(wordIndex);
     setGuessedLetters([]);
     setCorrectLetters([]);
     setWrongLetters([]);
@@ -107,6 +130,32 @@ const VocabularyGame = () => {
     }
   };
 
+  const playNextWord = () => {
+    if (vocabularies.length === 0) {
+      message.warning("Không có từ vựng để chơi!");
+      return;
+    }
+    
+    const nextWord = getNextVocabulary();
+    const selectedVocab = nextWord.vocab || nextWord;
+    const wordIndex = nextWord.originalIndex || 0;
+    
+    // Thêm từ hiện tại vào danh sách đã sử dụng
+    if (!usedVocabularies.includes(currentWordIndex)) {
+      setUsedVocabularies(prev => [...prev, currentWordIndex]);
+    }
+    
+    setCurrentVocab(selectedVocab);
+    setCurrentWord(selectedVocab.word.toUpperCase());
+    setCurrentHint(selectedVocab.meaning);
+    setCurrentWordIndex(wordIndex);
+    setGuessedLetters([]);
+    setCorrectLetters([]);
+    setWrongLetters([]);
+    setRemainingChances(6);
+    setGameResult("");
+  };
+
   const guessLetter = (letter) => {
     if (guessedLetters.includes(letter) || gameResult) return;
 
@@ -123,6 +172,12 @@ const VocabularyGame = () => {
         setGameResult("win");
         setScore(prev => prev + 1);
         setTotalPlayed(prev => prev + 1);
+        
+        // Thêm từ hiện tại vào danh sách đã sử dụng
+        if (!usedVocabularies.includes(currentWordIndex)) {
+          setUsedVocabularies(prev => [...prev, currentWordIndex]);
+        }
+        
         message.success("🎉 Chúc mừng! Bạn đã đoán đúng!");
         
         // Play success sound
@@ -164,6 +219,8 @@ const VocabularyGame = () => {
   const resetStats = () => {
     setScore(0);
     setTotalPlayed(0);
+    setUsedVocabularies([]);
+    setCurrentWordIndex(0);
     setGameStarted(false);
     setGameResult("");
   };
@@ -283,7 +340,9 @@ const VocabularyGame = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
           }}>
             <Text style={{ color: "#8c8c8c", fontSize: "11px", display: "block" }}>Đã chơi</Text>
-            <Text style={{ color: "#faad14", fontSize: "16px", fontWeight: "bold" }}>{totalPlayed}</Text>
+            <Text style={{ color: "#faad14", fontSize: "16px", fontWeight: "bold" }}>
+              {usedVocabularies.length}/{vocabularies.length}
+            </Text>
           </div>
           <div style={{ 
             textAlign: "center",
@@ -314,7 +373,7 @@ const VocabularyGame = () => {
           padding: "20px",
           position: "relative",
           overflow: "hidden",
-          minHeight: "calc(100vh - 120px)" // Fit in remaining screen space
+          minHeight: "calc(60vh - 120px)" // Fit in remaining screen space
         }}>
           {/* Decorative background elements */}
           <div style={{
@@ -349,7 +408,7 @@ const VocabularyGame = () => {
                   fontSize: "24px",
                   fontWeight: "bold"
                 }}>
-                  🎯 Hãy đoán từ vựng dựa trên gợi ý!
+                  Hãy đoán từ vựng dựa trên gợi ý!
                 </Title>
                 <Text style={{ 
                   fontSize: "16px", 
@@ -404,7 +463,8 @@ const VocabularyGame = () => {
                   color: "#7f8c8d",
                   display: "block"
                 }}>
-                  Chủ đề: <strong style={{ color: "#667eea" }}>{topic.topicName}</strong>
+                  Chủ đề: <strong style={{ color: "#667eea" }}>{topic.topicName}</strong> • 
+                  Từ thứ <strong style={{ color: "#52c41a" }}>{usedVocabularies.length + 1}</strong>/{vocabularies.length}
                 </Text>
               </div>
 
@@ -553,6 +613,69 @@ const VocabularyGame = () => {
                           <strong>Phiên âm:</strong> {currentVocab.ipa}
                         </div>
                       )}
+                      
+                      {/* Action buttons trong alert */}
+                      <div style={{ 
+                        marginTop: "12px", 
+                        display: "flex", 
+                        gap: "8px", 
+                        justifyContent: "center",
+                        flexWrap: "wrap"
+                      }}>
+                        {gameResult === "win" && (
+                          <Button 
+                            type="primary" 
+                            size="small"
+                            icon={<RefreshCw size={14} />}
+                            onClick={playNextWord}
+                            style={{ 
+                              borderRadius: "6px",
+                              fontSize: "13px",
+                              background: "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                              border: "none"
+                            }}
+                          >
+                            Từ tiếp theo
+                          </Button>
+                        )}
+                        
+                        {gameResult === "lose" && (
+                          <Button 
+                            type="primary" 
+                            size="small"
+                            icon={<RefreshCw size={14} />}
+                            onClick={playNextWord}
+                            style={{ 
+                              borderRadius: "6px",
+                              fontSize: "13px",
+                              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                              border: "none"
+                            }}
+                          >
+                            Thử từ khác
+                          </Button>
+                        )}
+                        
+                        {usedVocabularies.length === vocabularies.length && (
+                          <Button 
+                            size="small"
+                            icon={<RefreshCw size={14} />}
+                            onClick={() => {
+                              setUsedVocabularies([]);
+                              playNextWord();
+                            }}
+                            style={{ 
+                              borderRadius: "6px",
+                              fontSize: "13px",
+                              background: "linear-gradient(135deg, #fa8c16 0%, #faad14 100%)",
+                              border: "none",
+                              color: "white"
+                            }}
+                          >
+                            Chơi lại tất cả
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   }
                   type={gameResult === "win" ? "success" : "error"}
@@ -611,43 +734,91 @@ const VocabularyGame = () => {
                 </div>
               </div>
 
-              {/* Bottom Section: Action Buttons */}
-              <div style={{ 
-                display: "flex",
-                justifyContent: "center",
-                gap: "12px",
-                flexWrap: "wrap",
-                flex: "0 0 auto"
-              }}>
-                <Button 
-                  type="primary" 
-                  size="middle"
-                  icon={<RefreshCw size={16} />}
-                  onClick={startGame}
-                  style={{ 
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    padding: "8px 16px",
-                    height: "auto",
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    border: "none"
-                  }}
-                >
-                  Từ mới
-                </Button>
-                <Button 
-                  size="middle"
-                  onClick={() => setGameStarted(false)}
-                  style={{ 
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    padding: "8px 16px",
-                    height: "auto"
-                  }}
-                >
-                  Dừng chơi
-                </Button>
-              </div>
+              {/* Bottom Section: Action Buttons - Only show when game is ongoing */}
+              {!gameResult && (
+                <div style={{ 
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "12px",
+                  flexWrap: "wrap",
+                  flex: "0 0 auto"
+                }}>
+                  <Button 
+                    type="primary" 
+                    size="middle"
+                    icon={<RefreshCw size={16} />}
+                    onClick={playNextWord}
+                    style={{ 
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "8px 16px",
+                      height: "auto",
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      border: "none"
+                    }}
+                  >
+                    Từ tiếp theo
+                  </Button>
+                  
+                  {usedVocabularies.length === vocabularies.length && (
+                    <Button 
+                      type="default" 
+                      size="middle"
+                      icon={<RefreshCw size={16} />}
+                      onClick={() => {
+                        setUsedVocabularies([]);
+                        playNextWord();
+                      }}
+                      style={{ 
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        padding: "8px 16px",
+                        height: "auto",
+                        background: "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                        border: "none",
+                        color: "white"
+                      }}
+                    >
+                      Chơi lại tất cả
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    size="middle"
+                    onClick={() => setGameStarted(false)}
+                    style={{ 
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "8px 16px",
+                      height: "auto"
+                    }}
+                  >
+                    Dừng chơi
+                  </Button>
+                </div>
+              )}
+              
+              {/* Always show quit button */}
+              {gameResult && (
+                <div style={{ 
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "10px"
+                }}>
+                  <Button 
+                    size="middle"
+                    onClick={() => setGameStarted(false)}
+                    style={{ 
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      padding: "8px 16px",
+                      height: "auto"
+                    }}
+                  >
+                    Dừng chơi
+                  </Button>
+                </div>
+              )}
             </div>
           )}
           </div>

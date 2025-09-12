@@ -24,6 +24,7 @@ import Note from "../pages/Learner/Note";
 import TopicDetail from "../pages/Learner/TopicDetail";
 import Flashcards from "../pages/Learner/Flashcards";
 import VocabularyGame from "../pages/Learner/VocabularyGame";
+import VocabularyQuiz from "../pages/Learner/VocabularyQuiz";
 import Quiz from "../pages/Learner/Quiz";
 import Section from "../pages/Learner/Section";
 import SectionSW from "../pages/Learner/SectionSW";
@@ -194,6 +195,14 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Quiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vocabulary-quiz/:topicId"
+          element={
+            <ProtectedRoute>
+              <VocabularyQuiz />
             </ProtectedRoute>
           }
         />

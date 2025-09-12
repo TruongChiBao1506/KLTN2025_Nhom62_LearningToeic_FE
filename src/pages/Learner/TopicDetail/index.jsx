@@ -911,6 +911,85 @@ const TopicDetail = () => {
                   </div>
                 </Card>
 
+                {/* Quiz Card - Trắc nghiệm nghĩa từ vựng */}
+                <Card
+                  size="small"
+                  hoverable
+                  style={{
+                    borderRadius: "16px",
+                    border: "1px solid rgba(24,144,255,0.1)",
+                    background: "white",
+                    boxShadow: "0 8px 24px rgba(24,144,255,0.15)",
+                    transition: "all 0.3s ease",
+                    transform: "translateY(0)"
+                  }}
+                  bodyStyle={{ padding: "20px" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(24,144,255,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(24,144,255,0.15)";
+                  }}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{
+                      background: "linear-gradient(135deg, #1890ff 0%, #36cfc9 100%)",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      marginBottom: "12px",
+                      display: "inline-block"
+                    }}>
+                      <CheckCircle
+                        size={28}
+                        style={{ color: "white" }}
+                      />
+                    </div>
+                    <Text
+                      strong
+                      style={{
+                        display: "block",
+                        fontSize: "16px",
+                        marginBottom: "6px",
+                        color: "#2c3e50",
+                        fontWeight: "600"
+                      }}
+                    >
+                      Quiz nghĩa từ
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "13px",
+                        marginBottom: "16px",
+                        color: "#7f8c8d",
+                        display: "block",
+                      }}
+                    >
+                      Chọn nghĩa đúng
+                    </Text>
+                    
+                    <Link to={`/learner/quiz/${topicId}`}>
+                      <Button
+                        type="primary"
+                        size="middle"
+                        style={{
+                          fontSize: "13px",
+                          background: "linear-gradient(135deg, #1890ff 0%, #36cfc9 100%)",
+                          border: "none",
+                          color: "white",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                          width: "100%"
+                        }}
+                      >
+                        <Play size={14} style={{ marginRight: "6px" }} />
+                        Bắt đầu quiz
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+
                 <Card
                   size="small"
                   hoverable
@@ -955,7 +1034,7 @@ const TopicDetail = () => {
                         fontWeight: "600"
                       }}
                     >
-                      Trắc nghiệm
+                      Luyện tập từ vựng
                     </Text>
                     <Text
                       style={{
@@ -965,9 +1044,9 @@ const TopicDetail = () => {
                         display: "block",
                       }}
                     >
-                      Kiểm tra kiến thức
+                      Trắc nghiệm nâng cao
                     </Text>
-                    <Link to={`/learner/quiz/${topicId}`}>
+                    <Link to={`/learner/vocabulary-quiz/${topicId}`}>
                       <Button
                         type="primary"
                         size="middle"
@@ -982,7 +1061,7 @@ const TopicDetail = () => {
                         }}
                       >
                         <CheckCircle size={14} style={{ marginRight: "6px" }} />
-                        Bắt đầu kiểm tra
+                        Luyện tập nâng cao
                       </Button>
                     </Link>
                   </div>
