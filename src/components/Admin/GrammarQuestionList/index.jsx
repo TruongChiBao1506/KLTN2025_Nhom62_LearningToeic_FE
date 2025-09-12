@@ -1,10 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
     faEdit,
     faTrash,
-    faSearch
+    faSearch,
+    faDownload,
+    faUpload,
+    faFileExcel
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 
@@ -36,6 +39,9 @@ const GrammarQuestionList = ({
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedGrammarQuestionId, setSelectedGrammarQuestionId] = useState(null);
+
+    // File import ref
+    const fileInputRef = useRef(null);
 
     // Constants
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
@@ -170,6 +176,100 @@ const GrammarQuestionList = ({
         }
     };
 
+    // Export functions
+    const handleDownloadTemplate = async () => {
+        try {
+            await GrammarQuestionService.exportTemplate();
+            toast.success('Tải template thành công!', {
+                autoClose: 2000,
+            });
+        } catch (error) {
+            console.error('Error downloading template:', error);
+            toast.error('Lỗi khi tải template!', {
+                autoClose: 2000,
+            });
+        }
+    };
+
+    const handleExportQuestions = async () => {
+        try {
+            if (normalizedGrammarQuestions.length === 0) {
+                toast.warning('Không có câu hỏi nào để export!', {
+                    autoClose: 2000,
+                });
+                return;
+            }
+
+            await GrammarQuestionService.exportByGrammar(grammarId);
+            toast.success('Export câu hỏi thành công!', {
+                autoClose: 2000,
+            });
+        } catch (error) {
+            console.error('Error exporting questions:', error);
+            toast.error(error.message || 'Lỗi khi export câu hỏi!', {
+                autoClose: 2000,
+            });
+        }
+    };
+
+    const handleImportQuestions = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileImport = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const allowedTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+            toast.error('Vui lòng chọn file Excel (.xlsx hoặc .xls)', {
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        try {
+            const result = await Swal.fire({
+                title: 'Xác nhận import',
+                text: `Bạn có chắc chắn muốn import các câu hỏi từ file "${file.name}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Import',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#dc3545'
+            });
+
+            if (result.isConfirmed) {
+                await GrammarQuestionService.importTemplate(file, grammarId);
+                
+                toast.success('Import câu hỏi thành công!', {
+                    autoClose: 2000,
+                });
+
+                // Refresh the list
+                retrieveGrammarQuestions();
+            }
+        } catch (error) {
+            console.error('Error importing questions:', error);
+            
+            Swal.fire({
+                title: 'Lỗi import!',
+                text: error.response?.data?.message || error.message || 'Có lỗi xảy ra khi import',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            // Reset file input
+            event.target.value = '';
+        }
+    };
+
     // Pagination functions
     const changePage = (page) => {
         if (page >= 1 && page <= totalPageCount) {
@@ -233,14 +333,14 @@ const GrammarQuestionList = ({
                         </div>
 
                         {/* Search input */}
-                        <div className="col-6">
+                        <div className="col-3">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
                                     className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm câu hỏi..."
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -250,19 +350,97 @@ const GrammarQuestionList = ({
                             </div>
                         </div>
 
-                        {/* Add button */}
-                        <div className="col-3 d-flex justify-content-end">
+                        {/* Add button and Import/Export buttons */}
+                        <div className="col-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                            {/* Download Template Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleDownloadTemplate}
+                                title="Tải template mẫu Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faDownload} className="me-2" />
+                                Template
+                            </button>
+
+                            {/* Import Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleImportQuestions}
+                                title="Import câu hỏi từ file Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faUpload} className="me-2" />
+                                Import
+                            </button>
+
+                            {/* Export Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleExportQuestions}
+                                disabled={normalizedGrammarQuestions.length === 0}
+                                title="Export tất cả câu hỏi ra file Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px',
+                                    whiteSpace: 'nowrap',
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center',
+                                    opacity: normalizedGrammarQuestions.length === 0 ? 0.6 : 1
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faFileExcel} className="me-2" />
+                                Export
+                            </button>
+
+                            {/* Add new button */}
                             <button
                                 type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
+                                className="btn btn-success d-flex align-items-center"
                                 onClick={handleShowAddModal}
                                 title="Thêm grammar question mới"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
                             >
                                 <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
                                 Thêm mới
                             </button>
                         </div>
                     </div>
+
+                    {/* Hidden file input for import */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileImport}
+                        accept=".xlsx,.xls"
+                        style={{ display: 'none' }}
+                    />
 
                     {/* Table */}
                     <div className="card-body">

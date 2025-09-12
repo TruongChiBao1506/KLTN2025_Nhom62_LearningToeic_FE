@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Breadcrumb } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faHouse,
     faUsers,
     faFolderOpen,
     faComments,
@@ -142,25 +143,97 @@ const Dashboard = () => {
                 if (columnChartContainer) {
                     Highcharts.chart(columnChartContainer, {
                         chart: {
-                            type: 'column'
+                            type: 'column',
+                            backgroundColor: 'transparent',
+                            height: 350,
+                            style: {
+                                fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
+                            }
                         },
                         title: {
-                            text: 'Thống kê tổng số lượt tham gia từng bài thi FULL TEST'
+                            text: 'Thống kê tổng số lượt tham gia từng bài thi FULL TEST',
+                            style: {
+                                color: '#333',
+                                fontWeight: 'bold',
+                                fontSize: '18px'
+                            }
                         },
                         xAxis: {
-                            categories: columnChartData.map((item) => item.name)
+                            categories: columnChartData.map((item) => item.name),
+                            gridLineWidth: 0,
+                            lineWidth: 0,
+                            tickWidth: 0,
+                            labels: {
+                                style: {
+                                    color: '#666',
+                                    fontSize: '13px'
+                                }
+                            }
                         },
                         yAxis: {
                             title: {
-                                text: 'Participants'
+                                text: 'Số lượt tham gia',
+                                style: {
+                                    color: '#666',
+                                    fontSize: '13px'
+                                }
+                            },
+                            gridLineWidth: 1,
+                            gridLineColor: '#f0f0f0',
+                            labels: {
+                                style: {
+                                    color: '#666',
+                                    fontSize: '12px'
+                                }
                             }
                         },
+                        plotOptions: {
+                            column: {
+                                borderRadius: 10,
+                                borderWidth: 0,
+                                pointPadding: 0.1,
+                                groupPadding: 0.15,
+                                colorByPoint: true
+                            }
+                        },
+                        colors: [
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                                stops: [ [0, '#4f8cff'], [1, '#a6c1ee'] ]
+                            },
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                                stops: [ [0, '#43e97b'], [1, '#38f9d7'] ]
+                            },
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                                stops: [ [0, '#fa709a'], [1, '#fee140'] ]
+                            }
+                        ],
                         series: [{
-                            name: 'Participants',
+                            name: 'Số lượt tham gia',
                             data: columnChartData.map((item) => item.y),
-                            color: '#17a2b8'
+                            dataLabels: {
+                                enabled: true,
+                                style: {
+                                    color: '#333',
+                                    fontSize: '12px',
+                                    fontWeight: 'bold'
+                                }
+                            }
                         }],
-                        // Tắt accessibility thay vì bật
+                        legend: {
+                            enabled: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.85)',
+                            style: {
+                                color: '#fff',
+                                fontSize: '13px'
+                            },
+                            borderWidth: 0,
+                            borderRadius: 10
+                        },
                         accessibility: {
                             enabled: false
                         }
@@ -248,15 +321,76 @@ const Dashboard = () => {
                     Highcharts.chart(pieChartContainer, {
                         chart: {
                             type: 'pie',
+                            backgroundColor: 'transparent',
+                            height: 350,
+                            style: {
+                                fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
+                            }
                         },
                         title: {
                             text: 'Thống kê tỉ lệ đánh giá hệ thống',
+                            style: {
+                                color: '#333',
+                                fontWeight: 'bold',
+                                fontSize: '18px'
+                            }
                         },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                    style: {
+                                        color: '#333',
+                                        fontSize: '13px',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                showInLegend: true,
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }
+                        },
+                        colors: [
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                                stops: [ [0, '#4f8cff'], [1, '#a6c1ee'] ]
+                            },
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                                stops: [ [0, '#43e97b'], [1, '#38f9d7'] ]
+                            },
+                            {
+                                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                                stops: [ [0, '#fa709a'], [1, '#fee140'] ]
+                            }
+                        ],
                         series: [{
                             name: 'Tỉ lệ %',
                             data: pieChartData,
                             colorByPoint: true
                         }],
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            itemStyle: {
+                                color: '#666',
+                                fontSize: '13px'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.85)',
+                            style: {
+                                color: '#fff',
+                                fontSize: '13px'
+                            },
+                            borderWidth: 0,
+                            borderRadius: 10,
+                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        },
                         accessibility: {
                             enabled: false
                         }
@@ -296,42 +430,41 @@ const Dashboard = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* Breadcrumb ... */}
+            {/* Breadcrumb Ant Design + Gradient */}
             <div
-                className="mt-2 shadow-lg rounded-4 px-2 py-1"
                 style={{
-                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
+                    background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
                     minHeight: 70,
-                    border: 'none'
+                    border: 'none',
+                    borderRadius: 16,
+                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0 32px',
+                    marginBottom: 16,
                 }}
                 data-aos="fade-down"
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <nav>
-                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
-                        <li className="current d-flex align-items-center">
-                            <span
-                                style={{
-                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
-                                    borderRadius: '50%',
-                                    width: 40,
-                                    height: 40,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginRight: 8,
-                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faHouse} color="#fff" />
-                            </span>
-                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
-                                Dashboard
-                            </span>
-                        </li>
-                    </ol>
-                </nav>
+                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                    <Breadcrumb.Item>
+                        <span style={{
+                            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                            borderRadius: '50%',
+                            width: 40,
+                            height: 40,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                        }}>
+                            <HomeOutlined style={{ color: '#fff', fontSize: 22 }} />
+                        </span>
+                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Dashboard</span>
+                    </Breadcrumb.Item>
+                </Breadcrumb>
             </div>
 
             <div className="mt-3">

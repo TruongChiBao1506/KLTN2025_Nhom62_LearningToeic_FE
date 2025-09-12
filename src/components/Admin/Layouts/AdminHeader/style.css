@@ -1,120 +1,110 @@
-.custom-dropdown {
-    position: absolute;
-    left: -100px;
-    top: 50px;
-    z-index: 9999 !important;
+/* ✅ CUSTOM DROPDOWN MENU STYLING for Ant Design */
+.custom-admin-dropdown .ant-dropdown-menu {
+    border-radius: 12px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background: #fff !important;
+    padding: 8px !important;
+    overflow: hidden !important;
+    animation: dropdownSlideIn 0.2s ease-out !important;
 }
 
-.dropdown-menu {
-    cursor: pointer;
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.navbar .navbar-nav .dropdown {
+/* Dropdown menu item hover effects */
+.custom-admin-dropdown .ant-dropdown-menu-item {
+    border-radius: 8px !important;
+    margin: 2px 0 !important;
+    padding: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.custom-admin-dropdown .ant-dropdown-menu-item:hover {
+    background: transparent !important;
+}
+
+.custom-admin-dropdown .ant-dropdown-menu-item .dropdown-menu-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    z-index: 9999 !important;
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(10px);
-    position: absolute;
-    top: 100%;
-    left: -150px;
-    z-index: 9999 !important;
-    background-color: #fff;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
-    margin-top: 0;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    min-width: 200px;
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-    pointer-events: none;
-    padding: 8px;
     overflow: hidden;
 }
 
-/* Chỉ hover chính xác vào dropdown item */
-.navbar .navbar-nav .dropdown:hover .dropdown-menu,
-.navbar .navbar-nav .dropdown .dropdown-menu:hover {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-    z-index: 9999 !important; /* Đảm bảo khi show vẫn có z-index cao */
-}
-
-/* Giới hạn hover area chỉ trong avatar */
-.navbar .navbar-nav .dropdown > a {
-    display: inline-block;
-    padding: 4px; /* Nhỏ gọn hover area */
-}
-
-/* Styling cho dropdown items */
-.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
-    padding: 12px 16px;
-    color: #212529;
-    font-size: 14px;
-    line-height: 1.5;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-    border-radius: 6px;
-    margin: 2px 0;
-    display: flex;
-    align-items: center;
-    width: calc(100% - 4px);
-    box-sizing: border-box;
-    position: relative;
-    z-index: 9999 !important; /* Z-index cho dropdown items */
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
-    background: linear-gradient(45deg, #1c75bc, #145a91);
-    color: #fff;
-    border-radius: 50px;
-    transform: translateX(2px);
-    margin-left: 2px;
-    width: calc(100% - 6px);
-    z-index: 9999 !important;
-}
-
-/* Đảm bảo Link wrapper không ảnh hưởng */
-.navbar .navbar-nav .dropdown .dropdown-menu li {
-    margin: 0;
-    padding: 0;
-    z-index: 9999 !important;
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu li a {
-    display: block;
-    margin: 0;
-    padding: 0;
+.custom-admin-dropdown .ant-dropdown-menu-item .dropdown-menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
     width: 100%;
-    z-index: 9999 !important;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 8px;
 }
 
-/* Dropdown divider styling */
-.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-divider {
-    margin: 8px 0;
-    border-color: rgba(0, 0, 0, 0.1);
+.custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item::before {
+    left: 0;
 }
 
-/* Avatar styling với limited hover */
-.navbar .navbar-nav .dropdown .dropdown-toggle img {
-    border-radius: 50%;
+.custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item {
+    color: #fff !important;
+    transform: translateX(2px);
+}
+
+.custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item span {
+    color: #fff !important;
+}
+
+/* Logout item special styling */
+.custom-admin-dropdown .ant-dropdown-menu-item .logout-item::before {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.custom-admin-dropdown .ant-dropdown-menu-item:hover .logout-item {
+    color: #fff !important;
+}
+
+/* Divider styling */
+.custom-admin-dropdown .ant-dropdown-menu-item-divider {
+    margin: 12px 8px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%) !important;
+    border-color: transparent !important;
+}
+
+/* Remove text decoration from all links */
+.custom-admin-dropdown a,
+.custom-admin-dropdown .ant-dropdown-menu-item a {
+    text-decoration: none !important;
+}
+
+.custom-admin-dropdown a:hover,
+.custom-admin-dropdown .ant-dropdown-menu-item a:hover {
+    text-decoration: none !important;
+}
+
+/* Avatar hover effect */
+.navbar .navbar-nav .nav-item .ant-space {
     transition: all 0.2s ease;
-    border: 2px solid transparent;
 }
 
-.navbar .navbar-nav .dropdown:hover .dropdown-toggle img {
-    border-color: #1c75bc;
-    transform: scale(1.05);
+.navbar .navbar-nav .nav-item .ant-space:hover .ant-avatar {
+    border-color: #1c75bc !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 12px rgba(28, 117, 188, 0.3) !important;
 }
 
-/* Nav items spacing để tránh overlap */
+/* Nav items styling for navbar compatibility */
 .navbar .navbar-nav .nav-item {
-    margin: 0 8px; /* Tạo khoảng cách giữa các nav items */
+    margin: 0 8px;
 }
 
 .navbar .navbar-nav .nav-item:last-child {
@@ -135,27 +125,10 @@
     transform: translateY(-1px);
 }
 
-/* QUAN TRỌNG: Đảm bảo navbar có z-index cao */
-.navbar {
-    z-index: 1030 !important; /* Bootstrap navbar z-index */
-    position: relative !important;
-}
-
-/* QUAN TRỌNG: Override bất kỳ z-index nào có thể che dropdown */
-.navbar .navbar-nav .dropdown .dropdown-menu.show {
-    z-index: 9999 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    pointer-events: auto !important;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .navbar .navbar-nav .dropdown .dropdown-menu {
-        left: -80px;
-        min-width: 180px;
-        z-index: 9999 !important;
+    .custom-admin-dropdown .ant-dropdown-menu {
+        min-width: 250px !important;
     }
     
     .navbar .navbar-nav .nav-item {
@@ -163,91 +136,9 @@
     }
 }
 
-/* Animation cho smooth experience */
-@keyframes dropdownFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Ensure navbar has proper z-index */
+.navbar {
+    z-index: 1030 !important;
+    position: relative !important;
 }
 
-.navbar .navbar-nav .dropdown:hover .dropdown-menu {
-    animation: dropdownFadeIn 0.2s ease-out;
-    z-index: 9999 !important;
-}
-
-.dropdown-toggle::after {
-    display: none; 
-}
-
-/* Logo responsive */
-@media (max-width: 768px) {
-    .logo {
-        width: 80px;
-    }
-}
-
-/* Additional fixes */
-.dropdown-menu li:first-child .dropdown-item {
-    margin-top: 0;
-}
-
-.dropdown-menu li:last-child .dropdown-item {
-    margin-bottom: 0;
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    max-width: 220px;
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu .dropdown-item {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Ensure hover only works on specific area */
-.navbar .navbar-nav .dropdown .dropdown-toggle {
-    border-radius: 50%;
-    padding: 2px !important; /* Giới hạn padding */
-    margin: 0 !important;
-}
-
-/* Prevent dropdown from affecting other nav items */
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    pointer-events: none;
-}
-
-.navbar .navbar-nav .dropdown:hover .dropdown-menu,
-.navbar .navbar-nav .dropdown .dropdown-menu:hover {
-    pointer-events: auto;
-    z-index: 9999 !important;
-}
-
-/* THÊM: Đảm bảo dropdown không bị che bởi sidebar hoặc content */
-.navbar .navbar-nav .dropdown {
-    position: static; /* Thay đổi từ relative */
-}
-
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    position: fixed !important; /* Thay đổi từ absolute thành fixed */
-    top: auto !important;
-    right: 20px !important; /* Định vị từ bên phải */
-    left: auto !important;
-    margin-top: 15px !important; /* Khoảng cách từ navbar */
-}
-
-/* Hoặc nếu muốn giữ absolute, thêm z-index cao hơn */
-.container-fluid {
-    position: relative;
-    z-index: 1030;
-}
-
-/* Override StudyTimer CSS conflicts */
-.navbar .navbar-nav .dropdown .dropdown-menu {
-    z-index: 10000 !important; /* Cao hơn StudyTimer modal (1000) */
-}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpellCheck, faBook } from '@fortawesome/free-solid-svg-icons';
+import { Breadcrumb } from 'antd';
+import { BookOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -127,61 +127,57 @@ const GrammarContent = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* Breadcrumb with AOS */}
+            {/* Breadcrumb Ant Design + Gradient */}
             <div
-                className="mt-2 shadow-lg rounded-4 px-2 py-1"
                 style={{
-                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
-                    border: 'none'
+                    background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                    minHeight: 70,
+                    border: 'none',
+                    borderRadius: 16,
+                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0 32px',
+                    marginBottom: 16,
                 }}
                 data-aos="fade-down"
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <nav>
-                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
-                        <li>
-                            <span
-                                style={{
-                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
-                                    borderRadius: '50%',
-                                    width: 40,
-                                    height: 40,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginRight: 8,
-                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faSpellCheck} color="#fff" />
-                            </span>
-                            <Link to="/admin/grammar" className="fw-bold text-decoration-none" style={{ color: '#4f8cff', fontSize: 18 }}>
-                                Grammar
-                            </Link>
-                        </li>
-                        <li className="current d-flex align-items-center">
-                            <span
-                                style={{
-                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
-                                    borderRadius: '50%',
-                                    width: 40,
-                                    height: 40,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginRight: 8,
-                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faBook} color="#fff" />
-                            </span>
-                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 18 }}>
-                                Grammar Content
-                            </span>
-                        </li>
-                    </ol>
-                </nav>
+                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>
+                    <Breadcrumb.Item>
+                        <span style={{
+                            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                            borderRadius: '50%',
+                            width: 40,
+                            height: 40,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                        }}>
+                            <BookOutlined style={{ color: '#fff', fontSize: 20 }} />
+                        </span>
+                        <Link to="/admin/grammar" style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Grammar</Link>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        <span style={{
+                            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                            borderRadius: '50%',
+                            width: 40,
+                            height: 40,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                        }}>
+                            <BookOutlined style={{ color: '#fff', fontSize: 20 }} />
+                        </span>
+                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Grammar Content</span>
+                    </Breadcrumb.Item>
+                </Breadcrumb>
             </div>
 
             {/* GrammarContentList with AOS */}
@@ -212,7 +208,7 @@ const GrammarContent = () => {
                             data-aos="fade-in"
                             data-aos-duration="500"
                         >
-                            <FontAwesomeIcon icon={faBook} size="2x" className="mb-3" />
+                            <BookOutlined style={{ color: '#d32f2f', fontSize: 22, marginBottom: 8 }} />
                             <h5>Lỗi tải dữ liệu</h5>
                             <p>{error}</p>
                             <button

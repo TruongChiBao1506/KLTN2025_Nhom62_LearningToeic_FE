@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faQuestion, faEdit, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faQuestion, faEdit, faTrash, faSearch, faFileExcel, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
@@ -19,6 +19,9 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedVocabularyQuestionId, setSelectedVocabularyQuestionId] = useState(null);
+    
+    // File import ref
+    const fileInputRef = useRef(null);
 
     const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
 
@@ -175,6 +178,117 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
         return tempDiv.textContent || tempDiv.innerText || '';
     };
 
+    // Export functions
+    const handleDownloadTemplate = async () => {
+        try {
+            await VocabularyQuestionService.exportTemplate();
+            toast.success('Tải template thành công!', {
+                autoClose: 2000,
+            });
+        } catch (error) {
+            console.error('Error downloading template:', error);
+            toast.error('Lỗi khi tải template!', {
+                autoClose: 2000,
+            });
+        }
+    };
+
+    const handleExportQuestions = async () => {
+        try {
+            if (vocabularyQuestions.length === 0) {
+                toast.warning('Không có câu hỏi nào để export!', {
+                    autoClose: 2000,
+                });
+                return;
+            }
+
+            await VocabularyQuestionService.exportByTopic(topicId);
+            toast.success('Export câu hỏi thành công!', {
+                autoClose: 2000,
+            });
+        } catch (error) {
+            console.error('Error exporting questions:', error);
+            toast.error(error.message || 'Lỗi khi export câu hỏi!', {
+                autoClose: 2000,
+            });
+        }
+    };
+
+    const handleImportQuestions = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileImport = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const allowedTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+            toast.error('Chỉ chấp nhận file Excel (.xlsx, .xls)!', {
+                autoClose: 2000,
+            });
+            return;
+        }
+
+        try {
+            const result = await Swal.fire({
+                title: 'Xác nhận import',
+                text: `Bạn có muốn import câu hỏi từ file "${file.name}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Import',
+                cancelButtonText: 'Hủy'
+            });
+
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Đang import...',
+                    text: 'Vui lòng đợi trong giây lát',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                await VocabularyQuestionService.importTemplate(file, topicId);
+                
+                // Refresh data
+                await retrieveVocabularyQuestions();
+                
+                Swal.fire({
+                    title: 'Import thành công!',
+                    text: 'Câu hỏi đã được thêm vào topic',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+
+                toast.success('Import câu hỏi thành công!', {
+                    autoClose: 2000,
+                });
+            }
+        } catch (error) {
+            console.error('Error importing questions:', error);
+            Swal.fire({
+                title: 'Lỗi import!',
+                text: error.response?.data?.message || error.message || 'Có lỗi xảy ra khi import',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            // Reset file input
+            event.target.value = '';
+        }
+    };
+
     return (
         <div className="page-heading">
             <section className="section">
@@ -231,7 +345,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                         </div>
 
                         {/* Search input */}
-                        <div className="col-6">
+                        <div className="col-3">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
@@ -248,19 +362,97 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                             </div>
                         </div>
 
-                        {/* Add button */}
-                        <div className="col-3 d-flex justify-content-end">
+                        {/* Add button and Import/Export buttons */}
+                        <div className="col-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                            {/* Download Template Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleDownloadTemplate}
+                                title="Tải template mẫu Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faDownload} className="me-2" />
+                                Template
+                            </button>
+
+                            {/* Import Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleImportQuestions}
+                                title="Import câu hỏi từ file Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faUpload} className="me-2" />
+                                Import
+                            </button>
+
+                            {/* Export Button */}
+                            <button
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleExportQuestions}
+                                disabled={vocabularyQuestions.length === 0}
+                                title="Export tất cả câu hỏi ra file Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px',
+                                    whiteSpace: 'nowrap',
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center',
+                                    opacity: vocabularyQuestions.length === 0 ? 0.6 : 1
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faFileExcel} className="me-2" />
+                                Export
+                            </button>
+
+                            {/* Add new button */}
                             <button
                                 type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
+                                className="btn btn-success d-flex align-items-center"
                                 onClick={handleShowAddModal}
                                 title="Thêm vocabulary question mới"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
                             >
                                 <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
                                 Thêm mới
                             </button>
                         </div>
                     </div>
+
+                    {/* Hidden file input for import */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileImport}
+                        accept=".xlsx,.xls"
+                        style={{ display: 'none' }}
+                    />
 
                     {/* Table */}
                     <div className="card-body">
@@ -468,13 +660,41 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                         <p className="text-muted">
                                             Topic này chưa có vocabulary questions. Hãy thêm câu hỏi đầu tiên.
                                         </p>
-                                        <button
-                                            className="btn btn-success"
-                                            onClick={handleShowAddModal}
-                                        >
-                                            <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-                                            Thêm câu hỏi đầu tiên
-                                        </button>
+                                        <div className="d-flex justify-content-center gap-3 flex-wrap">
+                                            <button
+                                                className="btn btn-success"
+                                                onClick={handleShowAddModal}
+                                            >
+                                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                                Thêm câu hỏi đầu tiên
+                                            </button>
+                                            
+                                            <div className="d-flex gap-2">
+                                                <button
+                                                    className="btn btn-outline-primary"
+                                                    onClick={handleDownloadTemplate}
+                                                    title="Tải template Excel để import nhiều câu hỏi cùng lúc"
+                                                >
+                                                    <FontAwesomeIcon icon={faDownload} className="me-2" />
+                                                    Tải template
+                                                </button>
+                                                
+                                                <button
+                                                    className="btn btn-outline-info"
+                                                    onClick={handleImportQuestions}
+                                                    title="Import câu hỏi từ file Excel"
+                                                >
+                                                    <FontAwesomeIcon icon={faUpload} className="me-2" />
+                                                    Import Excel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="mt-4">
+                                            <small className="text-muted">
+                                                💡 <strong>Gợi ý:</strong> Sử dụng tính năng import Excel để thêm nhiều câu hỏi cùng lúc
+                                            </small>
+                                        </div>
                                     </div>
                                 )}
                             </>

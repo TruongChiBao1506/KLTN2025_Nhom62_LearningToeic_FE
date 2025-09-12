@@ -35,38 +35,15 @@
     overflow-x: hidden;
 }
 
-/* Sidebar with improved animation timing */
-#sidebar-wrapper {
-    width: 250px;
-    min-height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    background: white;
-    border-right: 1px solid #dee2e6;
-    
-    /* Enhanced animation with better timing */
-    transform: translateX(0);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Smoother easing curve */
-    
-    /* Performance optimizations */
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    perspective: 1000px;
-    -webkit-perspective: 1000px;
-}
-
-/* Main content with synchronized timing */
+/* Main content area that adjusts to sidebar width */
 .container-fluid.background {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    margin-left: 280px; /* Default expanded sidebar width */
+    width: calc(100% - 280px);
     min-height: 100vh;
     position: relative;
     
     /* Synchronized animation with sidebar */
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Same timing as sidebar */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Performance optimizations */
     will-change: margin-left, width;
@@ -74,55 +51,19 @@
     -webkit-backface-visibility: hidden;
 }
 
-/* Hidden state with staggered animation */
-.sidebar-hidden #sidebar-wrapper {
-    transform: translateX(-250px);
-    /* Slightly faster when hiding */
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
+/* When sidebar is collapsed */
 .sidebar-hidden .container-fluid.background {
-    margin-left: 0;
-    width: 100%;
-    /* Content expands slightly faster when sidebar hides */
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-left: 80px; /* Collapsed sidebar width */
+    width: calc(100% - 80px);
 }
 
-/* Showing state with optimized timing */
-#wrapper:not(.sidebar-hidden) #sidebar-wrapper {
-    transform: translateX(0);
-    /* Slower, smoother when showing */
-    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#wrapper:not(.sidebar-hidden) .container-fluid.background {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-    /* Content shrinks slightly slower to match sidebar */
+/* Animation states for better UX */
+.sidebar-animating .container-fluid.background {
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-/* Sidebar content animation */
-#sidebar-wrapper .logo-header-glass,
-#sidebar-wrapper .list-group {
-    transition: opacity 0.3s ease 0.2s; /* Slight delay for content */
-}
-
-.sidebar-hidden #sidebar-wrapper .logo-header-glass,
-.sidebar-hidden #sidebar-wrapper .list-group {
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-/* Enhanced hover effect */
-#sidebar-wrapper:hover {
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
-    transition: box-shadow 0.3s ease;
 }
 
 /* Main content area optimization */
 .main-content {
-    /* padding: 1rem; */
     min-height: calc(100vh - 80px);
     transform: translateZ(0);
     /* Subtle content animation */
@@ -130,58 +71,26 @@
 }
 
 /* Loading state prevention */
-.wrapper-loading #sidebar-wrapper,
 .wrapper-loading .container-fluid.background {
     transition: none !important;
 }
 
 /* GPU acceleration for better performance */
-#sidebar-wrapper,
 .container-fluid.background {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
 }
 
 /* Prevent flash during initial load */
-.wrapper-loading #sidebar-wrapper {
-    transform: translateX(0) !important;
-}
-
 .wrapper-loading .container-fluid.background {
-    margin-left: 250px !important;
-    width: calc(100% - 250px) !important;
+    margin-left: 280px !important;
+    width: calc(100% - 280px) !important;
 }
 
 /* Responsive improvements for smoother animation */
 @media (max-width: 1200px) {
-    #sidebar-wrapper {
-        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    
     .container-fluid.background {
         transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     }
 }
 
-/* Animation keyframes for pulse effect */
-@keyframes pulse {
-    0%, 100% { 
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% { 
-        transform: scale(1.05);
-        opacity: 0.8;
-    }
-}
-
-/* Smooth sidebar content transitions */
-.custom-list-item {
-    transition: all 0.2s ease;
-    transform: translateX(0);
-}
-
-.sidebar-hidden .custom-list-item {
-    transform: translateX(-10px);
-    opacity: 0.8;
-}

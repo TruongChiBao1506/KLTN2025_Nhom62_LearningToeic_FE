@@ -227,16 +227,29 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                             </div>
                         </div>
 
-                        {/* Add button */}
-                        <div className="col-3 d-flex justify-content-end">
-                            <button
-                                type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
-                                onClick={handleShowAddModal}
-                            >
-                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-                                Thêm mới
-                            </button>
+                        {/* Action buttons */}
+                        <div className="col-3">
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
+                                <button
+                                    type="button"
+                                    className="btn btn-success d-flex align-items-center"
+                                    onClick={handleShowAddModal}
+                                    title="Thêm bài học mới"
+                                    style={{ 
+                                        borderRadius: '20px', 
+                                        fontSize: '14px', 
+                                        padding: '10px 18px', 
+                                        whiteSpace: 'nowrap', 
+                                        flexShrink: 0,
+                                        minWidth: '110px',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                    Thêm mới
+                                </button>
+                                {/* Nếu có import/export/xóa hết thì thêm các button tương tự tại đây */}
+                            </div>
                         </div>
                     </div>
 

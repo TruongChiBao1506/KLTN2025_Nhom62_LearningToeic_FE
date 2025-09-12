@@ -1,645 +1,204 @@
-/*   Complete Updated AdminSidebar CSS với #1c75bc theme */
+/* AdminSidebar CSS - Exact Match with LearnerLayout Design */
 
-/*   Liquid Glass Menu Item Base Styling */
-.custom-list-item {
-    font-family: "Inter", "Roboto", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(74, 85, 104, 0.9);
-
-    /*   Liquid Glass Effect */
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 25%,
-            rgba(255, 255, 255, 0.1) 50%,
-            rgba(255, 255, 255, 0.05) 75%,
-            rgba(255, 255, 255, 0.1) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 50px;
-    padding: 12px 16px;
-    margin: 6px 12px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-
-    /*   Liquid Animation */
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-
-    /*  Glass Shadow */
-    box-shadow:
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+/* Main Sidebar Container */
+.learner-sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  transition: width 0.3s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+  width: 280px; /* Default expanded width to match AdminLayout */
 }
 
-/*   Liquid Glass Ripple Effect */
-.custom-list-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center,
-            rgba(28, 117, 188, 0.3) 0%,
-            rgba(28, 117, 188, 0.1) 30%,
-            transparent 70%);
-    transform: scale(0);
+/* When explicitly collapsed (when isToggled = false) */
+.learner-sidebar:not(.active) {
+  width: 80px; /* Collapsed width */
+}
+
+/* Sidebar Header - Purple Gradient */
+.sidebar-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px 20px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+  overflow: hidden;
+}
+
+/* Collapsed header styling */
+.learner-sidebar:not(.active) .sidebar-header {
+  padding: 24px 10px;
+  justify-content: center;
+}
+
+.learner-sidebar:not(.active) .logo-container {
+  justify-content: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Navigation Styles */
+.sidebar-nav {
+  padding: 0;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin: 0;
+  border-bottom: none;
+}
+
+/* Main Navigation Links - Clean Design */
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  color: #333333;
+  text-decoration: none;
+  border: none;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-link:hover {
+  background-color: #f8f9fa;
+  color: #333333;
+}
+
+.nav-link.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+/* Navigation Icons */
+.nav-icon {
+  margin-right: 12px;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  color: #666666;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  color: #333333;
+}
+
+.nav-link.active .nav-icon {
+  color: #1976d2;
+}
+
+/* Navigation Text */
+.nav-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+/* Hide text when collapsed */
+.learner-sidebar:not(.active) .nav-text {
+  display: none;
+}
+
+.learner-sidebar:not(.active) .nav-link {
+  justify-content: center;
+  padding: 16px 10px;
+  position: relative;
+}
+
+.learner-sidebar:not(.active) .nav-icon {
+  margin-right: 0;
+}
+
+/* Tooltip for collapsed sidebar */
+.learner-sidebar:not(.active) .nav-link:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1001;
+  margin-left: 10px;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease forwards;
+}
+
+@keyframes tooltipFadeIn {
+  from {
     opacity: 0;
-    border-radius: 50%;
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/*   Icon Container - Liquid Glass */
-.menu-icon-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    margin-right: 16px;
-    border-radius: 12px;
-    position: relative;
-    z-index: 2;
-
-    /*   Mini Glass Effect */
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.25) 0%,
-            rgba(255, 255, 255, 0.1) 100%);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-    box-shadow:
-        0 4px 16px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-/*   Icon Styling */
-.menu-icon-container .fa-icon {
-    color: rgba(107, 114, 128, 0.8);
-    font-size: 14px;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/*   Menu Text - Liquid Style */
-.menu-text {
-    flex: 1;
-    font-size: 14px;
-    line-height: 1.5;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    position: relative;
-    z-index: 2;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/*   Chevron - Liquid Glass */
-.menu-chevron {
-    opacity: 0;
-    transform: translateX(-15px) scale(0.8);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-    position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/*   HOVER STATE - Liquid Glass Activation với #1c75bc */
-.custom-list-item:hover {
-    /* 🎨 Enhanced Glass Effect với #1c75bc đậm hơn */
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.25) 0%,
-            rgba(28, 117, 188, 0.18) 25%,
-            rgba(28, 117, 188, 0.22) 50%,
-            rgba(28, 117, 188, 0.18) 75%,
-            rgba(28, 117, 188, 0.25) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(28, 117, 188, 0.5);
-
-    /* 🌊 Liquid Transform */
-    transform: translateY(-4px) translateX(6px) scale(1.02);
-
-    /* 🌟 Enhanced Glow với #1c75bc đậm hơn */
-    box-shadow:
-        0 20px 40px rgba(28, 117, 188, 0.35),
-        0 8px 16px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.1),
-        0 0 60px rgba(28, 117, 188, 0.3);
-}
-
-.custom-list-item:hover::before {
-    transform: scale(1.2);
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
     opacity: 1;
-    background: radial-gradient(circle at center,
-            rgba(28, 117, 188, 0.4) 0%,
-            rgba(20, 90, 145, 0.3) 30%,
-            transparent 70%);
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
-.custom-list-item:hover .menu-icon-container {
-    background:
-        linear-gradient(45deg, rgba(28, 117, 188, 0.5), rgba(20, 90, 145, 0.4)),
-        linear-gradient(135deg,
-            rgba(255, 255, 255, 0.3) 0%,
-            rgba(255, 255, 255, 0.1) 100%);
-    backdrop-filter: blur(15px);
-    transform: scale(1.1) rotate(5deg);
-    border-color: rgba(28, 117, 188, 0.4);
-    box-shadow:
-        0 8px 25px rgba(28, 117, 188, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+/* Scrollbar Styling */
+.learner-sidebar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.custom-list-item:hover .menu-icon-container .fa-icon {
-    color: rgba(255, 255, 255, 0.9);
-    transform: scale(1.1);
+.learner-sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.custom-list-item:hover .menu-text {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+.learner-sidebar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
 
-.custom-list-item:hover .menu-chevron {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    color: rgba(255, 255, 255, 0.8);
+.learner-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
 }
 
-/*   ACTIVE STATE - Liquid Glass Selected với #1c75bc */
-.custom-list-item.active {
-    /* 🎨 Vibrant Glass Effect với #1c75bc đậm hơn */
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.4) 0%,
-            rgba(28, 117, 188, 0.32) 25%,
-            rgba(28, 117, 188, 0.45) 50%,
-            rgba(28, 117, 188, 0.32) 75%,
-            rgba(28, 117, 188, 0.4) 100%);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    color: rgba(255, 255, 255, 1);
-    border: 2px solid rgba(28, 117, 188, 0.6);
-    border-left: 6px solid rgba(28, 117, 188, 1);
-
-    /* 🌊 Active Transform */
-    transform: translateX(8px) scale(1.02);
-
-    /* 🌟 Intense Glow với #1c75bc đậm hơn */
-    box-shadow:
-        0 25px 50px rgba(28, 117, 188, 0.5),
-        0 10px 20px rgba(28, 117, 188, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.15),
-        0 0 80px rgba(28, 117, 188, 0.5);
-
-    /* 🌊 Liquid Pulse Animation với #1c75bc đậm hơn */
-    animation: liquidPulse 3s ease-in-out infinite;
-}
-
-/*   Updated Pulse Animation với #1c75bc */
-@keyframes liquidPulse {
-
-    0%,
-    100% {
-        box-shadow:
-            0 25px 50px rgba(28, 117, 188, 0.5),
-            0 10px 20px rgba(28, 117, 188, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3),
-            0 0 80px rgba(28, 117, 188, 0.5);
-    }
-
-    50% {
-        box-shadow:
-            0 30px 60px rgba(28, 117, 188, 0.6),
-            0 15px 30px rgba(28, 117, 188, 0.5),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4),
-            0 0 100px rgba(28, 117, 188, 0.6);
-    }
-}
-
-.custom-list-item.active .menu-icon-container {
-    background:
-        linear-gradient(45deg, rgba(28, 117, 188, 0.7), rgba(20, 90, 145, 0.6)),
-        linear-gradient(135deg,
-            rgba(255, 255, 255, 0.4) 0%,
-            rgba(255, 255, 255, 0.2) 100%);
-    backdrop-filter: blur(20px);
-    transform: scale(1.15);
-    border: 1px solid rgba(28, 117, 188, 0.6);
-    box-shadow:
-        0 10px 30px rgba(28, 117, 188, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.custom-list-item.active .menu-icon-container .fa-icon {
-    color: rgba(255, 255, 255, 1);
-    transform: scale(1.2);
-}
-
-.custom-list-item.active .menu-text {
-    font-weight: 700;
-    color: rgba(255, 255, 255, 1);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.custom-list-item.active .menu-chevron {
-    opacity: 1;
-    transform: translateX(2px) scale(1.1);
-    color: rgba(28, 117, 188, 1);
-}
-
-/*   Badge - Liquid Glass Style với #1c75bc theme */
-.menu-badge {
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.9) 0%,
-            rgba(28, 117, 188, 0.8) 100%);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 12px;
-    margin-left: auto;
-    margin-right: 8px;
-    position: relative;
-    z-index: 2;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-    box-shadow:
-        0 4px 15px rgba(28, 117, 188, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.custom-list-item:hover .menu-badge {
-    background: linear-gradient(45deg, #1c75bc, #145a91);
-    color: white;
-    transform: scale(1.1);
-    box-shadow:
-        0 6px 20px rgba(28, 117, 188, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-/*   Focus State - Liquid Glass với #1c75bc */
-.custom-list-item:focus {
-    outline: none;
-    border-color: rgba(28, 117, 188, 0.7);
-    box-shadow:
-        0 0 0 4px rgba(28, 117, 188, 0.25),
-        0 15px 35px rgba(20, 90, 145, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-/*   Click Animation - Liquid Ripple với #1c75bc */
-.custom-list-item:active {
-    transform: translateY(-2px) translateX(4px) scale(0.98);
-    transition: all 0.1s ease;
-}
-
-.custom-list-item:active::before {
-    transform: scale(1.5);
-    opacity: 0.8;
-    transition: all 0.1s ease;
-    background: radial-gradient(circle at center,
-        rgba(28, 117, 188, 0.5) 0%,
-        rgba(20, 90, 145, 0.4) 30%,
-        transparent 70%
-    );
-}
-
-.custom-list-item.active.variant-intense {
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.5) 0%,
-            rgba(28, 117, 188, 0.4) 25%,
-            rgba(28, 117, 188, 0.55) 50%,
-            rgba(28, 117, 188, 0.4) 75%,
-            rgba(28, 117, 188, 0.5) 100%);
-}
-
-.custom-list-item:hover.variant-intense {
-    background: linear-gradient(135deg,
-            rgba(28, 117, 188, 0.3) 0%,
-            rgba(28, 117, 188, 0.22) 25%,
-            rgba(28, 117, 188, 0.28) 50%,
-            rgba(28, 117, 188, 0.22) 75%,
-            rgba(28, 117, 188, 0.3) 100%);
-}
-
-/*   Responsive Liquid Glass */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .custom-list-item {
-        padding: 14px 18px;
-        margin: 6px 10px;
-        border-radius: 14px;
-        backdrop-filter: blur(8px);
-    }
-
-    .menu-icon-container {
-        width: 28px;
-        height: 28px;
-        margin-right: 14px;
-        border-radius: 10px;
-    }
-
-    .menu-icon-container .fa-icon {
-        font-size: 12px;
-    }
-
-    .menu-text {
-        font-size: 13px;
-    }
-
-    /*  Responsive hover effects */
-    .custom-list-item:hover {
-        background:
-            linear-gradient(45deg, rgba(28, 117, 188, 0.22), rgba(20, 90, 145, 0.2)),
-            linear-gradient(135deg,
-                rgba(255, 255, 255, 0.08) 0%,
-                rgba(255, 255, 255, 0.04) 50%,
-                rgba(255, 255, 255, 0.08) 100%);
-        box-shadow:
-            0 15px 30px rgba(28, 117, 188, 0.3),
-            0 6px 12px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    .custom-list-item.active {
-        background:
-            linear-gradient(45deg, rgba(28, 117, 188, 0.37), rgba(20, 90, 145, 0.32)),
-            linear-gradient(135deg,
-                rgba(255, 255, 255, 0.12) 0%,
-                rgba(255, 255, 255, 0.06) 50%,
-                rgba(255, 255, 255, 0.12) 100%);
-        box-shadow:
-            0 20px 40px rgba(28, 117, 188, 0.4),
-            0 8px 16px rgba(20, 90, 145, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
+  .learner-sidebar {
+    width: 260px !important;
+  }
+  
+  .learner-sidebar.active {
+    width: 260px !important;
+  }
 }
 
-@keyframes liquidPulseGradient {
-
-    0%,
-    100% {
-        background:
-            linear-gradient(45deg, rgba(28, 117, 188, 0.4), rgba(20, 90, 145, 0.35)),
-            linear-gradient(135deg,
-                rgba(255, 255, 255, 0.15) 0%,
-                rgba(255, 255, 255, 0.08) 50%,
-                rgba(255, 255, 255, 0.15) 100%);
-        box-shadow:
-            0 25px 50px rgba(28, 117, 188, 0.5),
-            0 10px 20px rgba(20, 90, 145, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3),
-            0 0 80px rgba(28, 117, 188, 0.5);
-    }
-
-    50% {
-        background:
-            linear-gradient(45deg, rgba(28, 117, 188, 0.45), rgba(20, 90, 145, 0.4)),
-            linear-gradient(135deg,
-                rgba(255, 255, 255, 0.2) 0%,
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0.2) 100%);
-        box-shadow:
-            0 30px 60px rgba(28, 117, 188, 0.6),
-            0 15px 30px rgba(20, 90, 145, 0.5),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4),
-            0 0 100px rgba(28, 117, 188, 0.6);
-    }
-}
-
-/*   Dark Theme Liquid Glass với #1c75bc */
-@media (prefers-color-scheme: dark) {
-    .custom-list-item {
-        background: linear-gradient(135deg,
-                rgba(255, 254, 254, 0.6) 0%,
-                rgba(245, 244, 244, 0.4) 100%);
-        border-color: rgba(75, 85, 99, 0.3);
-    }
-
-    .menu-icon-container {
-        background: linear-gradient(135deg,
-                rgba(75, 85, 99, 0.4) 0%,
-                rgba(55, 65, 81, 0.3) 100%);
-        border-color: rgba(156, 163, 175, 0.2);
-    }
-
-    .menu-icon-container .fa-icon {
-        color: rgba(156, 163, 175, 0.8);
-    }
-
-    /* Dark theme hover với #1c75bc */
-    .custom-list-item:hover {
-        background: linear-gradient(135deg,
-                rgba(28, 117, 188, 0.25) 0%,
-                rgba(28, 117, 188, 0.20) 50%,
-                rgba(28, 117, 188, 0.25) 100%);
-    }
-
-    .custom-list-item.active {
-        background: linear-gradient(135deg,
-                rgba(28, 117, 188, 0.4) 0%,
-                rgba(28, 117, 188, 0.35) 50%,
-                rgba(28, 117, 188, 0.4) 100%);
-    }
-}
-
-/*   Loading State - Liquid Glass với #1c75bc */
-.custom-list-item.loading {
-    pointer-events: none;
-    opacity: 0.8;
-    backdrop-filter: blur(5px);
-}
-
-.custom-list-item.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(28, 117, 188, 0.3),
-            transparent);
-    animation: liquidShimmer 2s ease-in-out infinite;
-    opacity: 1;
-    z-index: 3;
-}
-
-@keyframes liquidShimmer {
-    0% {
-        transform: translateX(-100%) scale(0.8);
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-        transform: translateX(0%) scale(1);
-    }
-
-    100% {
-        transform: translateX(100%) scale(0.8);
-        opacity: 0;
-    }
-}
-
-/*   Liquid Glass Glow Keyframes với #1c75bc */
-@keyframes liquidGlow {
-
-    0%,
-    100% {
-        box-shadow:
-            0 8px 32px rgba(31, 38, 135, 0.37),
-            0 0 40px rgba(28, 117, 188, 0.2);
-    }
-
-    50% {
-        box-shadow:
-            0 12px 40px rgba(31, 38, 135, 0.5),
-            0 0 60px rgba(28, 117, 188, 0.3);
-    }
-}
-
-/*   Menu Separator - Liquid Glass với #1c75bc */
-.menu-separator {
-    height: 2px;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(28, 117, 188, 0.3),
-            transparent);
-    backdrop-filter: blur(10px);
-    margin: 20px 24px;
-    position: relative;
-    border-radius: 2px;
-}
-
-.menu-separator::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 6px;
-    background: linear-gradient(45deg,
-            rgba(28, 117, 188, 0.8),
-            rgba(28, 117, 188, 0.9));
-    border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(28, 117, 188, 0.3);
-}
-
-/*   Enhanced Logo Area với #1c75bc theme */
-.logo-header-glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 25px 20px;
-    border: 1px solid rgba(28, 117, 188, 0.2);
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        0 0 40px rgba(28, 117, 188, 0.1);
-    position: relative;
-}
-
-/*   Logo pulse animation với #1c75bc */
-@keyframes pulse {
-
-    0%,
-    100% {
-        border-color: rgba(28, 117, 188, 0.3);
-        box-shadow: 0 0 30px rgba(28, 117, 188, 0.3);
-    }
-
-    50% {
-        border-color: rgba(28, 117, 188, 0.5);
-        box-shadow: 0 0 40px rgba(28, 117, 188, 0.5);
-    }
-}
-
-/*   Brand color cho text elements */
-.logo-header-glass h4 {
-    color: #1c75bc !important;
-    font-size: 16px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo-header-glass .badge.bg-success {
-    background: linear-gradient(45deg, #1c75bc, rgba(28, 117, 188, 0.8)) !important;
-}
-
-/*  Disabled state (if needed) */
-.custom-list-item:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.custom-list-item:disabled:hover {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 100%);
-    color: rgba(74, 85, 104, 0.9);
-    transform: none;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-}
-
-/*   Additional utility classes */
-.menu-item-highlight {
-    animation: liquidGlow 2s ease-in-out infinite;
-}
-
-.menu-item-new {
-    position: relative;
-}
-
-.menu-item-new::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    background: rgba(28, 117, 188, 1);
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(28, 117, 188, 0.6);
-    animation: liquidPulse 2s ease-in-out infinite;
-}
-
-/*   Smooth enter/exit animations */
-.menu-enter {
-    opacity: 0;
-    transform: translateX(-20px) scale(0.95);
-}
-
-.menu-enter-active {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    transition: all 0.3s ease-out;
-}
-
-.menu-exit {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-}
-
-.menu-exit-active {
-    opacity: 0;
-    transform: translateX(-20px) scale(0.95);
-    transition: all 0.2s ease-in;
+@media (max-width: 480px) {
+  .learner-sidebar {
+    width: 240px !important;
+  }
+  
+  .learner-sidebar.active {
+    width: 240px !important;
+  }
 }

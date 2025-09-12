@@ -289,14 +289,14 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Search input */}
-                        <div className="col-5">
+                        <div className="col-6">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
                                     className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm từ vựng..."
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -306,25 +306,43 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                             </div>
                         </div>
 
-                        {/* Action buttons */}
-                        <div className="col-4 d-flex justify-content-end">
-                            {/* Add button */}
+                        {/* Add button and Import/Export buttons */}
+                        <div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                            {/* Download Template Button */}
                             <button
-                                type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
-                                onClick={handleShowAddModal}
-                                title="Thêm vocabulary mới"
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={downloadTemplate}
+                                title="Tải template mẫu Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
                             >
-                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-                                Thêm mới
+                                <FontAwesomeIcon icon={faFileDownload} className="me-2" />
+                                Template
                             </button>
 
-                            {/* Import button */}
+                            {/* Import Button */}
                             <label
                                 htmlFor="fileInput"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5 ms-2"
-                                title="Import từ Excel file"
-                                style={{ cursor: 'pointer', height: '72%' }}
+                                className="btn btn-success d-flex align-items-center"
+                                title="Import từ vựng từ file Excel"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    marginBottom: 0
+                                }}
                             >
                                 <FontAwesomeIcon icon={faFileImport} className="me-2" />
                                 Import
@@ -338,15 +356,24 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                 accept=".xlsx,.xls"
                             />
 
-                            {/* Export button */}
+                            {/* Add new button */}
                             <button
                                 type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5 ms-2"
-                                onClick={downloadTemplate}
-                                title="Download template Excel"
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleShowAddModal}
+                                title="Thêm từ vựng mới"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
                             >
-                                <FontAwesomeIcon icon={faFileDownload} className="me-2" />
-                                Export
+                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                Thêm mới
                             </button>
                         </div>
                     </div>

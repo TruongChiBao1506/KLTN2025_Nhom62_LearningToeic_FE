@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faHome,
     faBell,
-    faBars,
-    faGear,
-    faUser,
-    faRightFromBracket
+    faBars
 } from '@fortawesome/free-solid-svg-icons';
+import { Dropdown, Avatar, Space } from 'antd';
+import { User, Settings, LogOut } from 'lucide-react';
 import { useAdminStore } from '../../../../hooks/useAdminStore';
 import userService from '../../../../services/userService';
 import { jwtDecode } from 'jwt-decode';
@@ -17,16 +16,13 @@ import './style.css';
 const HeaderComponent = ({ toggleSidebar }) => {
     const { setIsAuthenticatedAdmin } = useAdminStore();
     const navigate = useNavigate();
-    const [userId, setUserId] = useState(null);
     const [profileImage, setProfileImage] = useState('');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    const timeoutRef = useRef(null);
+    const [adminUserData, setAdminUserData] = useState(null);
 
     // Existing functions...
     const signOut = async () => {
         try {
-            const result = await userService.signOut();
+            await userService.signOut();
 
             localStorage.removeItem('adminRefreshToken');
             localStorage.removeItem('adminToken');
@@ -79,8 +75,6 @@ const HeaderComponent = ({ toggleSidebar }) => {
                 actualUserId = userIdResult.userId;
             }
 
-            setUserId(actualUserId);
-
             const userDataResult = await userService.getUserById(actualUserId);
             let userData;
 
@@ -90,6 +84,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
 
             console.log('User data:', userData);
             setProfileImage(userData.image);
+            setAdminUserData(userData);
             console.log('Profile image:', userData.image);
 
         } catch (error) {
@@ -97,30 +92,178 @@ const HeaderComponent = ({ toggleSidebar }) => {
         }
     };
 
-    // Dropdown handlers với delay
-    const handleMouseEnter = () => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-        }
-        setIsDropdownOpen(true);
-    };
-
-    const handleMouseLeave = () => {
-        // Thêm delay 300ms trước khi đóng dropdown
-        timeoutRef.current = setTimeout(() => {
-            setIsDropdownOpen(false);
-        }, 300);
+    // Create user menu items similar to learner layout
+    const createUserMenuItems = () => {
+        return [
+            {
+                key: "user-header",
+                label: (
+                    <div 
+                        style={{ 
+                            padding: "16px 20px 12px", 
+                            borderBottom: "1px solid rgba(0,0,0,0.06)",
+                            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+                            borderRadius: "12px 12px 0 0",
+                            margin: "-8px -8px 12px",
+                            color: "#1a202c"
+                        }}
+                    >
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <Avatar
+                                size={48}
+                                src={getImageUrl(profileImage)}
+                                style={{
+                                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                                    border: "2px solid rgba(103, 126, 234, 0.1)",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: "#fff"
+                                }}
+                            >
+                                {adminUserData?.fullName?.charAt(0) || adminUserData?.username?.charAt(0) || "A"}
+                            </Avatar>
+                            <div>
+                                <div style={{ 
+                                    fontSize: "15px", 
+                                    fontWeight: "600", 
+                                    marginBottom: "2px",
+                                    color: "#1a202c"
+                                }}>
+                                    {adminUserData?.fullName || adminUserData?.username || "Admin"}
+                                </div>
+                                <div style={{ 
+                                    fontSize: "12px", 
+                                    color: "#64748b"
+                                }}>
+                                    {adminUserData?.email || "admin@example.com"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ),
+                disabled: true,
+            },
+            {
+                key: "/admin/score-table/all",
+                label: (
+                    <Link 
+                        to="/admin/score-table/all" 
+                        className="dropdown-menu-item"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "12px 16px",
+                            borderRadius: "8px",
+                            margin: "2px 8px",
+                            textDecoration: "none",
+                            color: "#1f2937",
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            position: "relative",
+                            overflow: "hidden",
+                            background: "#ffffff",
+                            border: "1px solid rgba(16, 185, 129, 0.15)"
+                        }}
+                    >
+                        <div style={{
+                            background: "linear-gradient(135deg, #10b981, #059669)",
+                            borderRadius: "8px",
+                            padding: "8px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                            <Settings size={16} style={{ color: "#fff" }} />
+                        </div>
+                        <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Thiết lập điểm số</span>
+                    </Link>
+                ),
+            },
+            {
+                key: "/admin/profile",
+                label: (
+                    <Link 
+                        to="/admin/profile" 
+                        className="dropdown-menu-item"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "12px 16px",
+                            borderRadius: "8px",
+                            margin: "2px 8px",
+                            textDecoration: "none",
+                            color: "#1f2937",
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            position: "relative",
+                            overflow: "hidden",
+                            background: "#ffffff",
+                            border: "1px solid rgba(103, 126, 234, 0.15)"
+                        }}
+                    >
+                        <div style={{
+                            background: "linear-gradient(135deg, #667eea, #764ba2)",
+                            borderRadius: "8px",
+                            padding: "8px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                            <User size={16} style={{ color: "#fff" }} />
+                        </div>
+                        <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Hồ sơ cá nhân</span>
+                    </Link>
+                ),
+            },
+            {
+                type: "divider",
+                style: { 
+                    margin: "12px 8px",
+                    background: "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)"
+                }
+            },
+            {
+                key: "logout",
+                label: (
+                    <div 
+                        onClick={signOut}
+                        className="dropdown-menu-item logout-item"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "12px 16px",
+                            borderRadius: "8px",
+                            margin: "2px 8px 8px",
+                            cursor: "pointer",
+                            color: "#dc2626",
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            position: "relative",
+                            overflow: "hidden",
+                            background: "#ffffff",
+                            border: "1px solid rgba(239, 68, 68, 0.2)"
+                        }}
+                    >
+                        <div style={{
+                            background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                            borderRadius: "8px",
+                            padding: "8px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                            <LogOut size={16} style={{ color: "#fff" }} />
+                        </div>
+                        <span style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}>Đăng xuất</span>
+                    </div>
+                ),
+            },
+        ];
     };
 
     useEffect(() => {
         getUserById();
-
-        // Cleanup timeout khi component unmount
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-            }
-        };
     }, []);
 
     return (
@@ -150,71 +293,50 @@ const HeaderComponent = ({ toggleSidebar }) => {
                             </a>
                         </li>
 
-                        {/* User dropdown với improved hover */}
-                        <li
-                            className="nav-item dropdown"
-                            ref={dropdownRef}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <a
-                                href="#"
-                                className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                                style={{ marginTop: '4px' }}
-                                aria-expanded={isDropdownOpen}
-                            >
-                                <img
-                                    src={getImageUrl(profileImage)}
-                                    alt="User avatar"
-                                    width="32"
-                                    height="32"
-                                    className="rounded-circle"
-                                />
-                            </a>
-                            <ul
-                                className={`dropdown-menu text-small custom-dropdown ${isDropdownOpen ? 'show' : ''} rounded-4`}
-                                style={{
-                                    visibility: isDropdownOpen ? 'visible' : 'hidden',
-                                    opacity: isDropdownOpen ? 1 : 0,
-                                    transform: isDropdownOpen ? 'translateY(0)' : 'translateY(10px)'
+                        {/* User dropdown với Ant Design */}
+                        <li className="nav-item">
+                            <Dropdown
+                                menu={{ items: createUserMenuItems() }}
+                                trigger={["click"]}
+                                placement="bottomRight"
+                                overlayStyle={{
+                                    borderRadius: "12px",
+                                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                                    border: "1px solid rgba(0, 0, 0, 0.05)",
+                                    background: "#fff",
+                                    minWidth: "280px",
+                                    padding: "0",
+                                    overflow: "hidden"
                                 }}
+                                overlayClassName="custom-admin-dropdown"
                             >
-                                <li>
-                                    <Link
-                                        to="/admin/score-table/all"
-                                        className="text-dark"
+                                <Space
+                                    style={{
+                                        cursor: "pointer",
+                                        padding: "4px",
+                                        borderRadius: "50%",
+                                        transition: "all 0.2s ease",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <Avatar
+                                        size={32}
+                                        src={getImageUrl(profileImage)}
+                                        style={{
+                                            background: "linear-gradient(135deg, #667eea, #764ba2)",
+                                            color: "#fff",
+                                            border: "2px solid transparent",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
                                     >
-                                        <div className="dropdown-item">
-                                            <FontAwesomeIcon icon={faGear} className="me-2" />
-                                            Thiết lập điểm số
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/admin/profile"
-                                        className="text-dark"
-                                    >
-                                        <div className="dropdown-item">
-                                            <FontAwesomeIcon icon={faUser} className="me-2" />
-                                            Hồ sơ cá nhân
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <hr className="dropdown-divider" />
-                                </li>
-                                <li>
-                                    <div
-                                        className="dropdown-item"
-                                        onClick={signOut}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
-                                        Đăng xuất
-                                    </div>
-                                </li>
-                            </ul>
+                                        {adminUserData?.fullName?.charAt(0) || adminUserData?.username?.charAt(0) || "A"}
+                                    </Avatar>
+                                </Space>
+                            </Dropdown>
                         </li>
                     </ul>
                 </div>

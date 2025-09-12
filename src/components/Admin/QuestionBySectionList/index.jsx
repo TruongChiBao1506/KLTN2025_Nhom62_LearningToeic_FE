@@ -346,8 +346,9 @@ const QuestionSectionPage = ({
     <div className="page-heading">
       <div className="section">
         <div className="card border-0">
+          {/* Control row with Bootstrap grid columns */}
           <div className="row align-items-center p-3">
-            {/* Items per page selector cải tiến */}
+            {/* Items per page selector */}
             <div className="col-3">
               <div className="d-flex align-items-center px-3 py-2 rounded-4">
                 <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
@@ -414,12 +415,22 @@ const QuestionSectionPage = ({
               </div>
             </div>
 
-            {/* Add button */}
-            <div className="col-3 d-flex justify-content-end">
+            {/* Add button styled like TopicList */}
+            <div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
               <button
                 type="button"
-                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
+                className="btn btn-success d-flex align-items-center"
                 onClick={handleShowAddModal}
+                title="Thêm mới câu hỏi"
+                style={{ 
+                  borderRadius: '20px', 
+                  fontSize: '14px', 
+                  padding: '10px 18px', 
+                  whiteSpace: 'nowrap', 
+                  flexShrink: 0,
+                  minWidth: '110px',
+                  justifyContent: 'center'
+                }}
               >
                 <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
                 Thêm mới

@@ -222,7 +222,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                     className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm chủ đề..."
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -233,11 +233,21 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                         </div>
 
                         {/* Add button */}
-                        <div className="col-3 d-flex justify-content-end">
+                        <div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
                             <button
                                 type="button"
-                                className="btn badge text-bg-success d-flex align-items-center p-3 rounded-5"
+                                className="btn btn-success d-flex align-items-center"
                                 onClick={handleShowAddModal}
+                                title="Thêm chủ đề mới"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '14px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
                             >
                                 <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
                                 Thêm mới

@@ -140,14 +140,19 @@ body {
 }
 
 /* Statistic card style */
+/* Dashboard Card - Đều kích thước, căn giữa nội dung */
 .dashboard-card {
     background: #fff;
     border-radius: 2rem;
     box-shadow: 0 6px 32px 0 rgba(80, 120, 255, 0.08), 0 1.5px 6px 0 rgba(80, 120, 255, 0.04);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 1.2rem;
     padding: 2rem 1.5rem;
+    min-height: 170px;
+    height: 100%;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
 }
@@ -203,10 +208,12 @@ body {
 @media (max-width: 991px) {
     .dashboard-card {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
         gap: 0.5rem;
+        min-height: 140px;
+        height: 100%;
     }
-
     .stat-card .stat-icon {
         margin-bottom: 0.5rem;
     }

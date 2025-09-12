@@ -15,7 +15,7 @@ td {
 .glowing-button {
     padding: 10px 20px;
     font-size: 13px;
-    background: linear-gradient(45deg, #1c75bc, #145a91);
+    background: linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%);
     color: white;
     border: none;
     border-radius: 25px;

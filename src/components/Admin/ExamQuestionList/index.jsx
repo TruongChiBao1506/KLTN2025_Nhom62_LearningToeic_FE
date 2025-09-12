@@ -346,7 +346,8 @@ const ExamQuestionList = ({
                         </div>
 
                         {/* Action buttons */}
-                        <div className="col-3 d-flex justify-content-end">
+                        <div className="col-3">
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
                             {showImportButton ? (
                                 <button
                                     type="button"
@@ -377,6 +378,7 @@ const ExamQuestionList = ({
                                 <FontAwesomeIcon icon={faFileDownload} className="me-2" />
                                 Export
                             </button>
+                            </div>
                         </div>
                     </div>
 
