@@ -30,7 +30,7 @@
     background-color: white;
     border-radius: 0.5rem 0.5rem 0 0;
     font-weight: 600;
-    border-bottom: 2px solid #55c57a;
+    /* border-bottom: 2px solid #55c57a; */
 }
 
 .nav-pills .nav-link.active {

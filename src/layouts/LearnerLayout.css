@@ -571,23 +571,59 @@
 /* Sidebar Styles - Modern Light Theme with Submenu Support */
 .learner-sidebar {
   position: fixed;
-  top: 80px;
+  top: 0px;
   left: 0;
-  width: 280px; /* Optimal width for readability */
-  height: calc(100vh - 80px);
+  width: 280px; /* Default expanded width */
+  height: 100vh;
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-right: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
   z-index: 900;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
-  transform: translateX(0); /* Show by default on desktop */
   backdrop-filter: blur(10px);
 }
 
-.learner-sidebar.active {
-  transform: translateX(0);
-  animation: slideInFromLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* When collapsed (when collapsed = true) */
+.learner-sidebar:not(.active) {
+  width: 80px; /* Collapsed width */
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+  overflow: hidden;
+}
+
+/* Collapsed header styling */
+.learner-sidebar:not(.active) .sidebar-header {
+  padding: 24px 10px;
+  justify-content: center;
+}
+
+.learner-sidebar:not(.active) .logo-container {
+  justify-content: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle-btn {
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
 }
 
 /* Animation and Modern Effects */
@@ -663,7 +699,7 @@
   background: linear-gradient(90deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
   color: #4f46e5;
   border-left-color: #4f46e5;
-  transform: translateX(4px);
+  /* Removed translateX effect */
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -703,12 +739,12 @@
 
 .nav-link:hover .nav-icon {
   color: #4f46e5;
-  transform: scale(1.1);
+  /* Removed scale effect */
 }
 
 .nav-link.active .nav-icon {
   color: #4f46e5;
-  transform: scale(1.1);
+  /* Removed scale effect */
 }
 
 .nav-text {
@@ -717,6 +753,51 @@
   letter-spacing: 0.025em;
   transition: all 0.3s ease;
   flex-grow: 1;
+}
+
+/* Hide text when collapsed */
+.learner-sidebar:not(.active) .nav-text {
+  display: none;
+}
+
+.learner-sidebar:not(.active) .nav-link {
+  justify-content: center;
+  padding: 14px 10px;
+  position: relative;
+}
+
+.learner-sidebar:not(.active) .nav-icon {
+  margin-right: 0;
+}
+
+/* Tooltip for collapsed sidebar */
+.learner-sidebar:not(.active) .nav-link:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1001;
+  margin-left: 10px;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease forwards;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 /* Category Toggle Button Styles */
@@ -742,26 +823,261 @@
   color: #4f46e5;
 }
 
-/* Submenu Styles */
+/* Submenu Styles with Enhanced Animation */
 .nav-submenu {
   list-style: none;
   padding: 0;
   margin: 0;
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-              opacity 0.3s ease,
-              transform 0.3s ease;
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
-  border-left: 4px solid rgba(226, 232, 240, 0.6);
+  transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.4s ease-out,
+              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              padding 0.3s ease;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%);
+  border-left: 4px solid rgba(226, 232, 240, 0.8);
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-15px) scaleY(0.8);
+  transform-origin: top;
+  border-radius: 0 0 12px 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .nav-submenu.expanded {
-  max-height: 500px;
+  max-height: 600px;
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scaleY(1);
+  padding: 8px 0;
+  animation: submenuSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes submenuSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scaleY(0.7);
+    max-height: 0;
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-5px) scaleY(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    max-height: 600px;
+  }
+}
+
+/* Stagger animation for submenu items */
+.nav-submenu li {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-submenu.expanded li {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nav-submenu.expanded li:nth-child(1) { animation-delay: 0.05s; }
+.nav-submenu.expanded li:nth-child(2) { animation-delay: 0.08s; }
+.nav-submenu.expanded li:nth-child(3) { animation-delay: 0.11s; }
+.nav-submenu.expanded li:nth-child(4) { animation-delay: 0.14s; }
+.nav-submenu.expanded li:nth-child(5) { animation-delay: 0.17s; }
+.nav-submenu.expanded li:nth-child(6) { animation-delay: 0.2s; }
+.nav-submenu.expanded li:nth-child(7) { animation-delay: 0.23s; }
+
+/* Enhanced submenu item hover effects */
+.nav-submenu a {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-submenu a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  transform: scaleY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-submenu a:hover::before {
+  transform: scaleY(1);
+}
+
+.nav-submenu a:hover {
+  background: linear-gradient(135deg, rgba(103, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  /* Removed translateX effect */
+  box-shadow: 0 4px 12px rgba(103, 126, 234, 0.15);
+  border-radius: 8px;
+  margin: 2px 8px;
+}
+
+/* Active state animation */
+.nav-submenu a.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white !important;
+  /* Removed translateX effect */
+  box-shadow: 0 6px 20px rgba(103, 126, 234, 0.3);
+}
+
+/* Icon animation in submenu */
+.submenu-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-submenu a:hover .submenu-icon {
+  /* Removed scale and rotate effects */
+  color: #667eea;
+}
+
+.nav-submenu a.active .submenu-icon {
+  /* Removed scale effect */
+  color: white;
+}
+
+.nav-submenu.collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-15px) scaleY(0.8);
+  padding: 0;
+  animation: submenuSlideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced arrow animation */
+.nav-arrow {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.nav-arrow svg {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bounce effect for arrow when expanding */
+@keyframes arrowBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Ripple effect for menu items - REMOVED */
+/* .nav-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(103, 126, 234, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+}
+
+.nav-link:active::after {
+  width: 300px;
+  height: 300px;
+  transition: width 0s, height 0s;
+} */
+
+/* Smooth closing animation */
+.nav-submenu:not(.expanded) {
+  animation: submenuSlideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes submenuSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    max-height: 600px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.9);
+    max-height: 0;
+  }
+}
+
+/* Loading animation for submenu items */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-submenu.expanded li {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* Enhanced focus states for accessibility */
+.nav-submenu a:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  background: rgba(103, 126, 234, 0.1);
+  border-radius: 6px;
+}
+
+/* Mobile responsive submenu animations */
+@media (max-width: 768px) {
+  .nav-submenu {
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .nav-submenu.expanded {
+    max-height: 400px;
+    animation: submenuSlideIn 0.3s ease;
+  }
+
+  .nav-submenu li {
+    animation-delay: 0.02s !important;
+  }
+}
+
+/* Smooth transition for sidebar width changes */
+.learner-sidebar {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced tooltip animation */
+.learner-sidebar:not(.active) .nav-link:hover::after {
+  animation: tooltipFadeIn 0.3s ease-out;
+}
+
+/* Loading state animation */
+.nav-submenu.loading {
+  background: linear-gradient(90deg, rgba(248, 250, 252, 0.8) 25%, rgba(241, 245, 249, 0.8) 50%, rgba(248, 250, 252, 0.8) 75%);
+  background-size: 200% 100%;
+  animation: loadingShimmer 1.5s infinite;
+}
+
+@keyframes loadingShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .nav-submenu li {
@@ -812,12 +1128,12 @@
 
 .nav-submenu a:hover .submenu-icon {
   color: #4f46e5;
-  transform: scale(1.1);
+  /* Removed scale effect */
 }
 
 .nav-submenu a.active .submenu-icon {
   color: #4f46e5;
-  transform: scale(1.1);
+  /* Removed scale effect */
 }
 
 /* Main Content Area - Updated for new sidebar */
@@ -1234,23 +1550,6 @@
   background-color: #4a5568;
 }
 
-/* Enhanced Animations */
-@keyframes streak-pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.stat-icon.streak {
-  animation: streak-pulse 2s ease-in-out infinite;
-}
-
 /* Mobile responsive for new elements */
 @media (max-width: 768px) {
   .study-stats {
@@ -1456,23 +1755,6 @@
 .search-bar button:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
-}
-
-/* Enhanced Active State with Pulse Animation */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
-  }
-}
-
-.sidebar-nav a.active::after {
-  animation: pulse 2s infinite;
 }
 
 /* Menu Section Header Enhanced */

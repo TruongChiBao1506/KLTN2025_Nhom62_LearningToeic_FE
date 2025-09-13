@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
-  Calendar,
-  Video,
-  Gift,
-  Lightbulb,
   User,
   Settings,
   Menu as MenuIcon,
@@ -45,8 +41,28 @@ import { Layout, Typography, Button, Drawer, Space, Card, Input, Dropdown, Badge
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
+const { RightOutlined, DownOutlined } = require("@ant-design/icons");
 
 const LearnerLayout = () => {
+  // State for submenu open keys (for sidebar)
+  const [openKeys, setOpenKeys] = useState([]);
+
+  // Toggle submenu open/close
+  const handleToggleSubmenu = (keys) => {
+    setOpenKeys(keys);
+
+    // Load sections when opening listening-reading submenu
+    if (keys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
+      fetchSections();
+    }
+  };
+  // Xử lý sự kiện tìm kiếm
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Xử lý tìm kiếm, ví dụ:
+    toast.info(`Đang tìm kiếm: ${searchQuery}`);
+    setSearchQuery("");
+  };
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -96,20 +112,68 @@ const LearnerLayout = () => {
   // Handle window resize
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    
+
     // Refresh sections when window gets focus (user comes back to app)
     const handleFocus = () => {
       fetchSections();
     };
-    
+
     window.addEventListener("resize", handleResize);
     window.addEventListener("focus", handleFocus);
-    
+
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("focus", handleFocus);
     };
   }, [fetchSections]);
+
+  // Load sections on component mount
+  useEffect(() => {
+    fetchSections();
+  }, [fetchSections]);
+
+  const openKeysRef = useRef(openKeys);
+  
+  // Keep ref in sync with state
+  useEffect(() => {
+    openKeysRef.current = openKeys;
+  }, [openKeys]);
+
+  // Update openKeys when location changes to keep submenu open for current page
+  useEffect(() => {
+    const path = location.pathname;
+    const currentOpenKeys = openKeysRef.current;
+    let newOpenKeys = [...currentOpenKeys];
+    let shouldUpdate = false;
+    
+    // Check if current path is in listening-reading submenu
+    if (path.startsWith('/learner/listening-reading/')) {
+      if (!newOpenKeys.includes('listening-reading')) {
+        newOpenKeys.push('listening-reading');
+        shouldUpdate = true;
+      }
+    }
+    
+    // Check if current path is in learning submenu
+    if (path.startsWith('/learner/dictionary') || path.startsWith('/learner/grammar') || path.startsWith('/learner/topics')) {
+      if (!newOpenKeys.includes('learning')) {
+        newOpenKeys.push('learning');
+        shouldUpdate = true;
+      }
+    }
+    
+    // Check if current path is in practice-tests submenu
+    if (path.startsWith('/learner/practice-tests/') || path === '/learner/practice-tests') {
+      if (!newOpenKeys.includes('practice-tests')) {
+        newOpenKeys.push('practice-tests');
+        shouldUpdate = true;
+      }
+    }
+    
+    if (shouldUpdate) {
+      setOpenKeys(newOpenKeys);
+    }
+  }, [location.pathname]);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -154,173 +218,49 @@ const LearnerLayout = () => {
     toast.success(`🔥 Streak: ${studyStreak} ngày! Đã học thêm 5 phút!`);
   };
 
-  // Check if the path starts with the given route
-  const isActive = useCallback(
-    (path) => {
-      return (
-        location.pathname === path || location.pathname.startsWith(`${path}/`)
-      );
-    },
-    [location.pathname]
-  );
   const handleLogout = async () => {
     try {
       // Sử dụng authService để đăng xuất
       await authService.signOut();
-
-      // Xóa thông tin người học trong localStorage
       localStorage.removeItem("learnerToken");
       localStorage.removeItem("learnerRefreshToken");
       localStorage.removeItem("learnerAccessTokenExpirationTime");
       localStorage.removeItem("learnerRefreshTokenExpirationTime");
       localStorage.removeItem("LearnerAuthenticated");
-
-      // Cập nhật Redux store nếu cần
       dispatch(logout());
-
       toast.success("Đăng xuất thành công!");
-
-      // Chuyển hướng về trang đăng nhập
       window.location.href = "/auth/signin";
     } catch (error) {
-      console.error("Lỗi khi đăng xuất:", error);
-      toast.error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
+      console.error(error);
+      toast.error("Đã xảy ra lỗi khi đăng xuất.");
     }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Search functionality would go here
-    toast.info(`Đang tìm kiếm: ${searchQuery}`);
-    setSearchQuery("");
-  };
-
-  // Fetch notifications on component mount
-  useEffect(() => {
-    // Set initial theme
-    document.documentElement.setAttribute(
-      "data-theme",
-      darkMode ? "dark" : "light"
-    );
-
-    // Load study progress
-    const savedStreak = parseInt(localStorage.getItem("studyStreak") || "0");
-    setStudyStreak(savedStreak);
-
-    // Check if studied today
-    const today = new Date().toDateString();
-    const lastStudyDate = localStorage.getItem("lastStudyDate");
-    if (lastStudyDate === today) {
-      setTodayStudyTime(
-        parseInt(localStorage.getItem("todayStudyTime") || "0")
-      );
-    }
-
-    // Check if learner tokens exist in localStorage
-    const learnerToken = localStorage.getItem("learnerToken");
-    const learnerRefreshToken = localStorage.getItem("learnerRefreshToken");
-    const learnerAuthenticated = localStorage.getItem("learnerAuthenticated");
-    const accessTokenExpiration = localStorage.getItem(
-      "learnerAccessTokenExpirationTime"
-    );
-
-    console.log("Token verification on layout mount:");
-    console.log("learnerToken exists:", !!learnerToken);
-    console.log("learnerRefreshToken exists:", !!learnerRefreshToken);
-    console.log("learnerAuthenticated flag:", learnerAuthenticated);
-    console.log(
-      "Token expiration:",
-      accessTokenExpiration
-        ? new Date(parseInt(accessTokenExpiration)).toLocaleString()
-        : "Not set"
-    );
-
-    // Check capitalization consistency for the authenticated flag
-    const learnerAuthUppercase = localStorage.getItem("LearnerAuthenticated");
-    if (learnerAuthUppercase !== null && learnerAuthenticated === null) {
-      console.warn(
-        "Warning: Authentication flag found as 'LearnerAuthenticated' (uppercase L) instead of 'learnerAuthenticated'"
-      );
-    }
-
-    // Simulated API call for notifications
-    const fetchNotifications = async () => {
-      try {
-        const dummyNotifications = [
-          {
-            id: 1,
-            title: "🎉 Chúc mừng! Bạn đã đạt streak 7 ngày",
-            message: "Tiếp tục duy trì thói quen học tập tuyệt vời này!",
-            time: "5 phút trước",
-            read: false,
-          },
-          {
-            id: 2,
-            title: "📚 Tài liệu mới",
-            message: "Chúng tôi vừa thêm mới tài liệu TOEIC Part 7 Reading",
-            time: "1 giờ trước",
-            read: true,
-          },
-          {
-            id: 3,
-            title: "⏰ Nhắc nhở học tập",
-            message: "Đã đến giờ ôn tập hàng ngày của bạn!",
-            time: "3 giờ trước",
-            read: true,
-          },
-        ];
-        setNotifications(dummyNotifications);
-      } catch (error) {
-        console.error("Lỗi khi tải thông báo:", error);
-      }
-    };
-
-    fetchNotifications();
-  }, [isActive, darkMode]);
-
-  useEffect(() => {
-    fetchSections();
-
-    // Poll for section changes every 30 seconds
-    const pollInterval = setInterval(fetchSections, 30000);
-
-    // Listen for page visibility changes (when user switches tabs)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchSections();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      clearInterval(pollInterval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [fetchSections]);
-
-  // Function to manually refresh sections
-  const refreshSections = async () => {
-    await fetchSections();
   };
 
   // Generate dynamic menu items for L&R sections
   const generateListeningReadingMenuItems = () => {
-    const listeningReadingSections = sections.filter(section => 
+    const listeningReadingSections = sections.filter(section =>
       section.type === 1 || section.type === 2 // Listening and Reading
     );
-    
-    // If sections are loading, show loading indicator
+
+    // Always include "Luyện theo chuyên đề" item
+    const menuItems = [{
+      key: "/learner/improve",
+      icon: <Target size={16} />,
+      label: <Link to="/learner/improve">Luyện theo chuyên đề</Link>,
+    }];
+
+    // If sections are loading and we have no sections yet, show loading indicator
     if (sectionsLoading && listeningReadingSections.length === 0) {
-      return [{
+      menuItems.unshift({
         key: "loading",
         icon: <FileText size={16} />,
         label: <span style={{ color: '#999' }}>Đang tải...</span>,
         disabled: true,
-      }];
+      });
+      return menuItems;
     }
-    
-    // Map sections to menu items
+
+    // Map sections to menu items and add them before "Luyện theo chuyên đề"
     const sectionMenuItems = listeningReadingSections.map(section => {
       // Generate route based on section name for backward compatibility
       let routePath = '';
@@ -340,14 +280,10 @@ const LearnerLayout = () => {
       };
     });
 
-    // Add the "Luyện theo chuyên đề" item at the end
-    sectionMenuItems.push({
-      key: "/learner/improve",
-      icon: <Target size={16} />,
-      label: <Link to="/learner/improve">Luyện theo chuyên đề</Link>,
-    });
+    // Add section items at the beginning, before "Luyện theo chuyên đề"
+    menuItems.unshift(...sectionMenuItems);
 
-    return sectionMenuItems;
+    return menuItems;
   };
 
   // Menu items configuration
@@ -444,19 +380,6 @@ const LearnerLayout = () => {
       }
     }
     return [path];
-  };
-
-  // Get current open keys for submenu
-  const getCurrentOpenKeys = () => {
-    const path = location.pathname;
-    for (const item of menuItems) {
-      if (item.children) {
-        for (const child of item.children) {
-          if (child.key === path) return [item.key];
-        }
-      }
-    }
-    return [];
   };
 
   // User menu items with enhanced styling
@@ -1056,7 +979,8 @@ const LearnerLayout = () => {
           <Menu
             mode="inline"
             selectedKeys={getCurrentMenuKey()}
-            defaultOpenKeys={getCurrentOpenKeys()}
+            openKeys={openKeys}
+            onOpenChange={handleToggleSubmenu}
             items={menuItems}
             style={{
               border: "none",
@@ -1066,106 +990,89 @@ const LearnerLayout = () => {
         </div>
       </Drawer>
 
-      {/* Desktop Sidebar */}
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-        width={280}
-        style={{
-          background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
-          boxShadow: "4px 0 20px rgba(0,0,0,0.08)",
-          zIndex: 100,
-          borderRight: "1px solid rgba(0,0,0,0.06)",
-        }}
-        breakpoint="lg"
-        collapsedWidth={0}
-        onBreakpoint={(broken) => {
-          if (broken) {
-            setCollapsed(true);
-          }
-        }}
-        className="desktop-sider"
-      >
-        <div
-          style={{
-            padding: "24px 20px",
-            borderBottom: "1px solid rgba(0,0,0,0.08)",
-            textAlign: collapsed ? "center" : "left",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {/* Background pattern */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background:
-                'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Cpath d="M20 20c0-11.046-8.954-20-20-20v40c11.046 0 20-8.954 20-20z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-              opacity: 0.3,
-            }}
-          />
-
-          <Link
-            to="/learner/dashboard"
-            style={{ textDecoration: "none", position: "relative", zIndex: 1 }}
-          >
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <div
-                style={{
-                  background: "rgba(255,255,255,0.15)",
-                  borderRadius: "12px",
-                  padding: "8px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                }}
-              >
-                <GraduationCap
-                  size={collapsed ? 20 : 24}
-                  style={{ color: "#fff" }}
-                />
-              </div>
-              {!collapsed && (
-                <Title
-                  level={4}
-                  style={{
-                    margin: 0,
-                    color: "#fff",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    textShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  }}
-                >
+      {/* Sidebar learner style giống admin, giữ submenu */}
+      <div className={`learner-sidebar ${collapsed ? '' : 'active'}`}> 
+        {/* Header Section */}
+        <div className="sidebar-header" style={{display: 'flex', alignItems: 'center'}}>
+          <div className="logo-container" style={{display: 'flex', alignItems: 'center'}}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'white',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: collapsed ? '0' : '12px',
+              flexShrink: 0
+            }}>
+              <GraduationCap size={24} style={{ color: '#764ba2' }} />
+            </div>
+            {!collapsed && (
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  lineHeight: '1.2'
+                }}>
                   TOEIC Learning
-                </Title>
-              )}
-            </Space>
-          </Link>
+                </div>
+                <div style={{
+                  color: 'rgba(255,255,255,0.8)',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  marginTop: '2px'
+                }}>
+                  Learner Panel
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-
-        <div style={{ padding: "16px 0" }}>
-          <Menu
-            mode="inline"
-            selectedKeys={getCurrentMenuKey()}
-            defaultOpenKeys={getCurrentOpenKeys()}
-            items={menuItems}
-            style={{
-              border: "none",
-              background: "transparent",
-            }}
-          />
+        {/* Navigation Menu */}
+        <div className="sidebar-nav">
+          <ul className="nav-list">
+            {menuItems.map(item => (
+              <li key={item.key} className="nav-item">
+                <div
+                  className={`nav-link ${location.pathname === item.key ? 'active' : ''}`}
+                  onClick={() => item.children ? handleToggleSubmenu(item.key) : window.location.pathname = item.key}
+                  data-tooltip={item.label?.props?.children || item.label}
+                  style={{ cursor: item.children ? 'pointer' : 'default' }}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {!collapsed && <span className="nav-text">{item.label?.props?.children || item.label}</span>}
+                  {/* Arrow for submenu */}
+                  {item.children && !collapsed && (
+                    <span className="nav-arrow" style={{ marginLeft: 8, transition: 'transform 0.3s' }}>
+                      {openKeys.includes(item.key) ? <DownOutlined /> : <RightOutlined />}
+                    </span>
+                  )}
+                </div>
+                {item.children && !collapsed && (
+                  <ul className={`nav-submenu ${openKeys.includes(item.key) ? 'expanded' : 'collapsed'}`}>
+                    {item.children.map((sub, index) => (
+                      <li key={sub.key} style={{ animationDelay: `${index * 0.1}s` }}>
+                        <div
+                          className={`nav-link ${location.pathname === sub.key ? 'active' : ''}`}
+                          onClick={() => window.location.pathname = sub.key}
+                          data-tooltip={sub.label?.props?.children || sub.label}
+                        >
+                          <span className="nav-icon">{sub.icon}</span>
+                          <span className="nav-text">{sub.label?.props?.children || sub.label}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
-      </Sider>
+      </div>
 
-      <Layout>
+      <Layout style={{ marginLeft: collapsed ? '80px' : '280px', transition: 'margin-left 0.3s ease' }}>
         {/* Header */}
         <Header
           style={{
@@ -1197,6 +1104,23 @@ const LearnerLayout = () => {
           />
 
           <Space size={24} style={{ position: "relative", zIndex: 1, height: '100%', alignItems: 'center' }}>
+            {/* Sidebar Toggle Button - moved to header */}
+            <button
+              className="sidebar-toggle-btn"
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '22px',
+                marginRight: '12px',
+                padding: '4px 8px'
+              }}
+              aria-label={collapsed ? 'Mở rộng sidebar' : 'Thu nhỏ sidebar'}
+            >
+              {collapsed ? <MenuIcon size={22} /> : <MenuIcon size={22} />}
+            </button>
             {/* Mobile menu button */}
             <Button
               type="text"

@@ -289,7 +289,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Search input */}
-                        <div className="col-6">
+                        <div className="col-4">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
@@ -307,7 +307,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Add button and Import/Export buttons */}
-                        <div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                        <div className="col-5" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
                             {/* Download Template Button */}
                             <button
                                 className="btn btn-success d-flex align-items-center"
