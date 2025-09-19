@@ -27,6 +27,7 @@ import {
   Headphones,
   Star,
   Target,
+  Trophy,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -34,6 +35,9 @@ import { toast } from "react-toastify";
 import authService from "../services/authService";
 import sectionService from "../services/sectionsService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
+import { useAuthStore } from '../hooks/useAuthStore';
+import { useNotificationContext } from '../contexts/NotificationContext';
+import socketService from '../services/socketService';
 
 import "./LearnerLayout.css";
 
@@ -43,17 +47,48 @@ const { Header, Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 const { RightOutlined, DownOutlined } = require("@ant-design/icons");
 
+
+
 const LearnerLayout = () => {
   // State for submenu open keys (for sidebar)
   const [openKeys, setOpenKeys] = useState([]);
+  const { info } = useAuthStore();
+  const { notifications, markAsRead, markAllAsRead, unreadCount, addNotification, fetchNotifications } = useNotificationContext();
+
+  // Kết nối socket và setup listener khi LearnerLayout mount
+  useEffect(() => {
+    if (info?.id) {
+      console.log('🔌 Connecting socket in LearnerLayout for user:', info.id);
+      socketService.connect(info.id); // Connect socket với userId
+
+      // Setup listener cho notification
+      const handleNewNotification = (notification) => {
+        console.log('🔔 Real-time notification received in LearnerLayout:', notification);
+        addNotification(notification); // Thêm vào context
+      };
+      socketService.on('notification', handleNewNotification);
+
+      // Fetch initial notifications
+      fetchNotifications(info.id);
+
+      return () => {
+        socketService.off('notification', handleNewNotification);
+      };
+    }
+  }, [info?.id, addNotification, fetchNotifications]);
 
   // Toggle submenu open/close
   const handleToggleSubmenu = (keys) => {
-    setOpenKeys(keys);
+    // Handle array from Menu onOpenChange
+    if (Array.isArray(keys)) {
+      // For accordion behavior, we need to handle the open/close logic properly
+      // Ant Design Menu onOpenChange gives us the new array of open keys
+      setOpenKeys(keys);
 
-    // Load sections when opening listening-reading submenu
-    if (keys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
-      fetchSections();
+      // Load sections when opening listening-reading submenu
+      if (keys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
+        fetchSections();
+      }
     }
   };
   // Xử lý sự kiện tìm kiếm
@@ -69,7 +104,6 @@ const LearnerLayout = () => {
   // States
   const [collapsed, setCollapsed] = useState(false);
   const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
-  const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
@@ -83,7 +117,7 @@ const LearnerLayout = () => {
   const [sectionsLoading, setSectionsLoading] = useState(false);
   const [lastSectionsUpdate, setLastSectionsUpdate] = useState(Date.now());
   const sectionsRef = useRef([]);
-  const user = useSelector((state) => state?.auth?.user);
+
 
   // Load sections for dynamic menu
   const fetchSections = useCallback(async () => {
@@ -242,6 +276,20 @@ const LearnerLayout = () => {
       section.type === 1 || section.type === 2 // Listening and Reading
     );
 
+    // Sort sections by Part number for proper ordering
+    const sortedSections = listeningReadingSections.sort((a, b) => {
+      // Extract part number from section name
+      const getPartNumber = (name) => {
+        const partMatch = name.match(/Part\s*(\d+)/i);
+        return partMatch ? parseInt(partMatch[1]) : 999; // Default high number for non-Part sections
+      };
+
+      const partA = getPartNumber(a.name);
+      const partB = getPartNumber(b.name);
+
+      return partA - partB;
+    });
+
     // Always include "Luyện theo chuyên đề" item
     const menuItems = [{
       key: "/learner/improve",
@@ -261,7 +309,7 @@ const LearnerLayout = () => {
     }
 
     // Map sections to menu items and add them before "Luyện theo chuyên đề"
-    const sectionMenuItems = listeningReadingSections.map(section => {
+    const sectionMenuItems = sortedSections.map(section => {
       // Generate route based on section name for backward compatibility
       let routePath = '';
       if (section.name.includes('Part 1')) routePath = '/learner/part-1';
@@ -349,6 +397,11 @@ const LearnerLayout = () => {
       ],
     },
     {
+      key: "/learner/leaderboard",
+      icon: <Trophy size={18} />,
+      label: <Link to="/learner/leaderboard">Bảng xếp hạng</Link>,
+    },
+    {
       key: "others",
       icon: <Settings size={18} />,
       label: "Khác",
@@ -400,7 +453,7 @@ const LearnerLayout = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <Avatar
               size={48}
-              src={user?.avatar}
+              src={info?.avatar}
               style={{
                 background: "linear-gradient(135deg, #667eea, #764ba2)",
                 border: "2px solid rgba(103, 126, 234, 0.1)",
@@ -410,7 +463,7 @@ const LearnerLayout = () => {
                 color: "#fff"
               }}
             >
-              {user?.fullName?.charAt(0) || "U"}
+              {info?.name?.charAt(0) || "U"}
             </Avatar>
             <div>
               <div style={{ 
@@ -419,13 +472,13 @@ const LearnerLayout = () => {
                 marginBottom: "2px",
                 color: "#1a202c"
               }}>
-                {user?.fullName || "User"}
+                {info?.name || "User"}
               </div>
               <div style={{ 
                 fontSize: "12px", 
                 color: "#64748b"
               }}>
-                {user?.email || "user@example.com"}
+                {info?.email || "user@example.com"}
               </div>
             </div>
           </div>
@@ -731,6 +784,7 @@ const LearnerLayout = () => {
             <Button
               type="link"
               size="small"
+              onClick={() => markAllAsRead(info.id)}
               style={{ 
                 padding: "4px 8px", 
                 fontSize: "12px",
@@ -763,14 +817,14 @@ const LearnerLayout = () => {
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               cursor: "pointer",
               border: "1px solid transparent",
-              background: !notification.read 
+              background: !notification.isRead 
                 ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
                 : "transparent",
               position: "relative",
               overflow: "hidden"
             }}
           >
-            {!notification.read && (
+            {!notification.isRead && (
               <div style={{
                 position: "absolute",
                 left: 0,
@@ -785,10 +839,10 @@ const LearnerLayout = () => {
               display: "flex", 
               alignItems: "flex-start", 
               gap: "12px",
-              paddingLeft: !notification.read ? "8px" : "0"
+              paddingLeft: !notification.isRead ? "8px" : "0"
             }}>
               <div style={{
-                background: !notification.read 
+                background: !notification.isRead 
                   ? "linear-gradient(135deg, #667eea, #764ba2)"
                   : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
                 borderRadius: "8px",
@@ -801,14 +855,14 @@ const LearnerLayout = () => {
                 marginTop: "2px"
               }}>
                 <Bell size={14} style={{ 
-                  color: !notification.read ? "#fff" : "#64748b" 
+                  color: !notification.isRead ? "#fff" : "#64748b" 
                 }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ 
-                  fontWeight: !notification.read ? "600" : "500",
+                  fontWeight: !notification.isRead ? "600" : "500",
                   fontSize: "14px",
-                  color: !notification.read ? "#1a202c" : "#4a5568",
+                  color: !notification.isRead ? "#1a202c" : "#4a5568",
                   marginBottom: "4px",
                   lineHeight: "1.4",
                   display: "-webkit-box",
@@ -839,7 +893,7 @@ const LearnerLayout = () => {
                   gap: "4px"
                 }}>
                   <Clock size={10} />
-                  {notification.time}
+                  {notification.timestamp ? new Date(notification.timestamp).toLocaleString('vi-VN') : notification.createdAt ? new Date(notification.createdAt).toLocaleString('vi-VN') : 'Vừa xong'}
                 </div>
               </div>
             </div>
@@ -1037,7 +1091,22 @@ const LearnerLayout = () => {
               <li key={item.key} className="nav-item">
                 <div
                   className={`nav-link ${location.pathname === item.key ? 'active' : ''}`}
-                  onClick={() => item.children ? handleToggleSubmenu(item.key) : window.location.pathname = item.key}
+                  onClick={() => {
+                    if (item.children) {
+                      // Toggle submenu for sidebar
+                      const newOpenKeys = openKeys.includes(item.key)
+                        ? openKeys.filter(key => key !== item.key)
+                        : [...openKeys, item.key];
+                      setOpenKeys(newOpenKeys);
+                      
+                      // Load sections when opening listening-reading submenu
+                      if (newOpenKeys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
+                        fetchSections();
+                      }
+                    } else {
+                      window.location.pathname = item.key;
+                    }
+                  }}
                   data-tooltip={item.label?.props?.children || item.label}
                   style={{ cursor: item.children ? 'pointer' : 'default' }}
                 >
@@ -1298,10 +1367,10 @@ const LearnerLayout = () => {
                   type="text"
                   icon={<Bell size={18} />}
                   style={{
-                    background: notifications.some((n) => !n.read)
+                    background: unreadCount > 0
                       ? "linear-gradient(135deg, #a8edea, #fed6e3)"
                       : "rgba(255,255,255,0.15)",
-                    color: notifications.some((n) => !n.read)
+                    color: unreadCount > 0
                       ? "#722ed1"
                       : "#fff",
                     border: "none",
@@ -1311,15 +1380,15 @@ const LearnerLayout = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    boxShadow: notifications.some((n) => !n.read)
+                    boxShadow: unreadCount > 0
                       ? "0 2px 8px rgba(168, 237, 234, 0.3)"
                       : "0 2px 8px rgba(0,0,0,0.08)",
                     transition: "all 0.3s ease",
                   }}
                 />
-                {notifications.filter((n) => !n.read).length > 0 && (
+                {unreadCount > 0 && (
                   <Badge
-                    count={notifications.filter((n) => !n.read).length}
+                    count={unreadCount}
                     size="small"
                     style={{
                       position: "absolute",
@@ -1372,7 +1441,7 @@ const LearnerLayout = () => {
               >
                 <Avatar
                   size={32}
-                  src={user?.avatar}
+                  src={info?.avatar}
                   style={{
                     background: "linear-gradient(135deg, #667eea, #764ba2)",
                     color: "#fff",
@@ -1382,7 +1451,7 @@ const LearnerLayout = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {user?.fullName?.charAt(0) || "U"}
+                  {info?.name?.charAt(0) || "U"}
                 </Avatar>
                 <Text
                   style={{
@@ -1393,7 +1462,7 @@ const LearnerLayout = () => {
                     marginLeft: 6,
                   }}
                 >
-                  {user?.fullName || "User"}
+                  {info?.name || "User"}
                 </Text>
               </Space>
             </Dropdown>

@@ -276,8 +276,8 @@ const LearnerDashboard = () => {
       <div style={{padding:"24px"}}>
         <div className="welcome-banner" data-aos="fade-up">
           <div className="banner-content">
-            <h2>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
-            <p>
+            <h2 style={{color:"#fff"}}>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
+            <p style={{color:"#fff"}}>
               Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi
               TOEIC tiếp theo của bạn.
             </p>

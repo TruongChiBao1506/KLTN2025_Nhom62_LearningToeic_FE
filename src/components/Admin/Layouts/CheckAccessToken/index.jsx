@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../../../services/authService';
-import { useAdminStore } from '../../../../hooks/useAdminStore';
+import { useAuthStore } from '../../../../hooks/useAuthStore';
 
 const TokenManager = () => {
-    const { setIsAuthenticatedAdmin } = useAdminStore();
+    const { setIsAuthenticated } = useAuthStore();
     const navigate = useNavigate();
     const tokenRefreshIntervalRef = useRef(null);
     const refreshTokenTimeoutRef = useRef(null);
@@ -16,7 +16,7 @@ const TokenManager = () => {
         localStorage.removeItem("adminAccessTokenExpirationTime");
         localStorage.removeItem("adminRefreshTokenExpirationTime");
         localStorage.setItem('theme', 'light');
-        setIsAuthenticatedAdmin(false);
+    setIsAuthenticated(false);
         navigate('/admin/signin');
     };
 
@@ -158,7 +158,7 @@ const TokenManager = () => {
                 refreshTokenTimeoutRef.current = null;
             }
         };
-    }, [navigate, setIsAuthenticatedAdmin]);
+    }, [navigate, setIsAuthenticated]);
 
     return null;
 };

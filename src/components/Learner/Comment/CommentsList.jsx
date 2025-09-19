@@ -8,16 +8,19 @@ import {
   Avatar, 
   Typography,
   Divider,
-  Empty
+  Empty,
+  Spin // Thêm Spin cho loading
 } from "antd";
 import { 
   SendOutlined, 
   MessageOutlined, 
   FilterOutlined,
-  UserOutlined 
+  UserOutlined,
+  LoadingOutlined // Thêm icon loading
 } from "@ant-design/icons";
 import CommentComponent from "./CommentComponent";
 import commentService from "../../../services/commentService";
+import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
 import { toast } from "react-toastify";
 
 const { TextArea } = Input;
@@ -30,7 +33,9 @@ const CommentsList = ({ examId }) => {
   const [visibleComments, setVisibleComments] = useState([]);
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(true);
   const [newCommentText, setNewCommentText] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false); // Loading state cho submit
   const loadMoreComments = 10;
+  const { recordContributeContent } = useAchievementNotifications();
 
   const retrieveComments = useCallback(async () => {
     try {
@@ -72,9 +77,10 @@ const CommentsList = ({ examId }) => {
   }, [retrieveComments]);
 
   const addComment = async () => {
-    if (!newCommentText.trim()) return;
+    if (!newCommentText.trim() || isSubmittingComment) return;
 
     try {
+      setIsSubmittingComment(true);
       const learnerToken = localStorage.getItem("learnerToken");
       if (!learnerToken) {
         toast.error("Vui lòng đăng nhập để bình luận");
@@ -82,22 +88,82 @@ const CommentsList = ({ examId }) => {
       }
 
       const decoded = jwtDecode(learnerToken);
+      const userId = decoded.id;
 
       const data = {
         text: newCommentText,
-        userId: decoded.id,
+        userId: userId,
         examId: examId,
       };
 
-      console.log("Creating root comment with data:", data);
-      await commentService.createComment(data);
-      
-      setNewCommentText("");
-      retrieveComments();
-      toast.success("Đã thêm bình luận");
+      // Tạo optimistic comment (tạm thời hiển thị ngay)
+      const optimisticComment = {
+        commentId: `temp-${Date.now()}`, // ID tạm thời
+        _id: `temp-${Date.now()}`, // ID tạm thời
+        text: newCommentText,
+        userId: userId,
+        userName: decoded.name || "Bạn", // Giả sử có name trong token
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        replies: [],
+        isOptimistic: true, // Flag để biết là optimistic
+        isSubmitting: true // Flag cho loading state
+      };
+
+      // Thêm vào UI ngay lập tức
+      setComments(prev => [optimisticComment, ...prev]);
+      setVisibleComments(prev => [optimisticComment, ...prev.slice(0, loadMoreComments - 1)]);
+      setNewCommentText(""); // Clear input ngay
+
+      // Chạy API calls song song (parallel)
+      const [createResult, recordResult] = await Promise.allSettled([
+        commentService.createComment(data), // Tạo comment
+        recordContributeContent(userId, 'comment', examId).catch(err => {
+          console.warn("⚠️ Không thể ghi nhận achievement:", err);
+          return null; // Không fail toàn bộ nếu achievement lỗi
+        })
+      ]);
+
+      // Xử lý kết quả tạo comment
+      if (createResult.status === 'fulfilled') {
+        const response = createResult.value;
+        console.log("✅ Comment created:", response);
+
+        // Update optimistic comment với data thật
+        setComments(prev => prev.map(comment => 
+          comment.commentId === optimisticComment.commentId 
+            ? { ...response, isOptimistic: false, isSubmitting: false }
+            : comment
+        ));
+        setVisibleComments(prev => prev.map(comment => 
+          comment.commentId === optimisticComment.commentId 
+            ? { ...response, isOptimistic: false, isSubmitting: false }
+            : comment
+        ));
+
+        toast.success("Đã thêm bình luận");
+      } else {
+        // API thất bại: Remove optimistic comment
+        console.error("❌ Failed to create comment:", createResult.reason);
+        setComments(prev => prev.filter(comment => comment.commentId !== optimisticComment.commentId));
+        setVisibleComments(prev => prev.filter(comment => comment.commentId !== optimisticComment.commentId));
+        toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+      }
+
+      // Log achievement result (không ảnh hưởng UX)
+      if (recordResult.status === 'fulfilled' && recordResult.value) {
+        console.log("🎉 Achievement recorded:", recordResult.value);
+      }
+
     } catch (error) {
       console.error("Lỗi khi bình luận:", error);
       toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+      
+      // Revert optimistic update nếu có lỗi unexpected
+      setComments(prev => prev.filter(comment => comment.commentId !== `temp-${Date.now()}`));
+      setVisibleComments(prev => prev.filter(comment => comment.commentId !== `temp-${Date.now()}`));
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
 
@@ -182,16 +248,17 @@ const CommentsList = ({ examId }) => {
               }}>
                 <Button
                   type="primary"
-                  icon={<SendOutlined />}
+                  icon={isSubmittingComment ? <LoadingOutlined spin /> : <SendOutlined />}
                   onClick={addComment}
-                  disabled={!newCommentText.trim()}
+                  disabled={!newCommentText.trim() || isSubmittingComment}
+                  loading={isSubmittingComment} // Hiển thị loading trên button
                   style={{ 
                     borderRadius: "6px",
                     background: "linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)",
                     border: "none"
                   }}
                 >
-                  Gửi bình luận
+                  {isSubmittingComment ? "Đang gửi..." : "Gửi bình luận"}
                 </Button>
               </div>
             </div>
@@ -204,14 +271,33 @@ const CommentsList = ({ examId }) => {
         {visibleComments.length > 0 ? (
           <Space direction="vertical" style={{ width: "100%" }} size="large">
             {visibleComments.map((comment) => (
-              <CommentComponent
-                key={comment.commentId || comment._id}
-                comment={comment}
-                parentId={null} // Comment gốc không có parent
-                retrieveComments={retrieveComments}
-                examId={examId} // Truyền examId xuống CommentComponent
-                className="comment"
-              />
+              <div key={comment.commentId || comment._id} style={{ position: "relative" }}>
+                <CommentComponent
+                  comment={comment}
+                  parentId={null} // Comment gốc không có parent
+                  retrieveComments={retrieveComments}
+                  examId={examId} // Truyền examId xuống CommentComponent
+                  className="comment"
+                />
+                {/* Loading overlay cho optimistic comment */}
+                {comment.isSubmitting && (
+                  <div style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: "rgba(255, 255, 255, 0.8)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "12px",
+                    zIndex: 10
+                  }}>
+                    <Spin size="small" tip="Đang gửi..." />
+                  </div>
+                )}
+              </div>
             ))}
           </Space>
         ) : (

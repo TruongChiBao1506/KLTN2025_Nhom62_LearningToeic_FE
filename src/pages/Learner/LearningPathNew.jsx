@@ -1311,7 +1311,7 @@ const LearningPathPage = () => {
                     </Row>
 
                     <Form.Item
-                        name="weakSkills"
+                        name="focusAreas"
                         label="Kỹ năng cần cải thiện"
                     >
                         <Checkbox.Group

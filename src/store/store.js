@@ -1,6 +1,7 @@
+
 import { createSlice, configureStore } from '@reduxjs/toolkit';
-import { 
-  persistStore, 
+import {
+  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -9,69 +10,51 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // localStorage
+import storage from 'redux-persist/lib/storage';
 
-// Cấu hình persist cho admin
+// Cấu hình persist cho auth
 const persistConfig = {
-  key: 'PiniaPersistedstateAdmin',
+  key: 'PiniaPersistedstateAuth',
   storage,
-  whitelist: ['isAuthenticatedAdmin'],
+  whitelist: ['info', 'isAuthenticated', 'role'],
 };
 
-// Cấu hình persist cho user
-const userPersistConfig = {
-  key: 'PiniaPersistedstateUser',
-  storage,
-  whitelist: ['info', 'isAuthenticatedUser'],
-};
-
-// Tạo slice admin
-const adminSlice = createSlice({
-  name: 'admin',
+// Tạo slice auth
+const authSlice = createSlice({
+  name: 'auth',
   initialState: {
-    isAuthenticatedAdmin: false,
+    info: null, // Thông tin người dùng
+    isAuthenticated: false,
+    role: null, // 'admin' hoặc 'user'
   },
   reducers: {
-    setIsAuthenticatedAdmin: (state, action) => {
-      state.isAuthenticatedAdmin = action.payload;
-    },
-  },
-});
-
-// Tạo slice user
-const userSlice = createSlice({
-  name: 'user',
-  initialState: {
-    info: null,
-    isAuthenticatedUser: false,
-  },
-  reducers: {
-    setUserInfo: (state, action) => {
+    setInfo: (state, action) => {
       state.info = action.payload;
     },
-    setIsAuthenticatedUser: (state, action) => {
-      state.isAuthenticatedUser = action.payload;
+    setIsAuthenticated: (state, action) => {
+      state.isAuthenticated = action.payload;
     },
-    logoutUser: (state) => {
+    setRole: (state, action) => {
+      state.role = action.payload;
+    },
+    logout: (state) => {
       state.info = null;
-      state.isAuthenticatedUser = false;
+      state.isAuthenticated = false;
+      state.role = null;
     },
   },
 });
 
 // Export actions
-export const { setIsAuthenticatedAdmin } = adminSlice.actions;
-export const { setUserInfo, setIsAuthenticatedUser, logoutUser } = userSlice.actions;
+export const { setInfo, setIsAuthenticated, setRole, logout } = authSlice.actions;
 
-// Tạo persisted reducers
-const persistedAdminReducer = persistReducer(persistConfig, adminSlice.reducer);
-const persistedUserReducer = persistReducer(userPersistConfig, userSlice.reducer);
+// Tạo persisted reducer
+const persistedAuthReducer = persistReducer(persistConfig, authSlice.reducer);
 
 // Tạo store
 export const store = configureStore({
   reducer: {
-    admin: persistedAdminReducer,
-    user: persistedUserReducer,
+    auth: persistedAuthReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

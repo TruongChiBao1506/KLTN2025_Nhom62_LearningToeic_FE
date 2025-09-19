@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../../services/authService';
 import SignInForm from '../../../components/Admin/AdminSignInForm';
-import { useAdminStore } from '../../../hooks/useAdminStore';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 const AdminSignIn = () => {
   const navigate = useNavigate();
-  const { setIsAuthenticatedAdmin } = useAdminStore();
+  const { setInfo, setIsAuthenticated, setRole } = useAuthStore();
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const AdminSignIn = () => {
       localStorage.removeItem('adminRefreshToken');
       localStorage.removeItem('adminAccessTokenExpirationTime');
       localStorage.removeItem('adminRefreshTokenExpirationTime');
-      setIsAuthenticatedAdmin(false);
+  setIsAuthenticated(false);
       navigate('/admin/signin');
       return false;
     }
@@ -62,7 +62,17 @@ const AdminSignIn = () => {
       const jwtExpirationTime = responseData.jwtExpirationTime;
       const refreshTokenExpirationTime = responseData.refreshTokenExpirationTime;
 
-      setIsAuthenticatedAdmin(true);
+      // Lưu thông tin admin vào Redux store
+      const adminInfo = {
+        id: responseData.id,
+        username: responseData.username,
+        email: responseData.email,
+        name: responseData.name,
+        roles: responseData.roles,
+      };
+      setInfo(adminInfo);
+      setIsAuthenticated(true);
+      setRole('admin');
 
       // Lưu token cho admin (isAdmin = true)
       AuthService.saveToken(token, refreshToken, jwtExpirationTime, refreshTokenExpirationTime, true);

@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { setLearnerCredentials } from "../../../store/learnerStore";
 import authService from "../../../services/authService";
+import { useAuthStore } from "../../../hooks/useAuthStore";
+import achievementService from "../../../services/achievementService";
 import {
   Layout,
   Card,
@@ -47,6 +48,8 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  // Hook lưu thông tin user vào Redux
+  const { setInfo, setIsAuthenticated, setRole } = useAuthStore();
 
   // Validation Schema
   const validationSchema = Yup.object({
@@ -74,8 +77,7 @@ const SignIn = () => {
           const roles = response.data.roles;
           const refreshToken = response.data.refreshToken;
           const jwtExpirationTime = response.data.jwtExpirationTime;
-          const refreshTokenExpirationTime =
-            response.data.refreshTokenExpirationTime;
+          const refreshTokenExpirationTime = response.data.refreshTokenExpirationTime;
 
           const user = {
             id: response.data.id,
@@ -85,7 +87,7 @@ const SignIn = () => {
             roles: response.data.roles,
           };
 
-          // Lưu token và thông tin
+          // Lưu token và thông tin vào localStorage (giữ nguyên)
           localStorage.setItem("learnerToken", token);
           localStorage.setItem("learnerRefreshToken", refreshToken);
           localStorage.setItem(
@@ -97,9 +99,27 @@ const SignIn = () => {
             (Date.now() + refreshTokenExpirationTime).toString()
           );
           localStorage.setItem("learnerAuthenticated", "true");
-          
-          // Lưu thông tin user
           localStorage.setItem("learnerUser", JSON.stringify(user));
+
+          // Lưu thông tin user vào Redux store
+          setInfo(user);
+          setIsAuthenticated(true);
+          setRole(
+            roles.includes("ROLE_ADMIN")
+              ? "admin"
+              : roles.includes("ROLE_LEARNER")
+              ? "user"
+              : null
+          );
+
+          // Ghi nhận hoạt động đăng nhập cho streak
+          try {
+            await achievementService.recordLogin(user.id);
+            console.log("✅ Đã ghi nhận hoạt động đăng nhập cho streak");
+          } catch (streakError) {
+            console.warn("⚠️ Không thể ghi nhận streak đăng nhập:", streakError);
+            // Không làm gián đoạn flow đăng nhập nếu streak service lỗi
+          }
 
           // Remember me
           if (rememberMe) {
@@ -112,7 +132,6 @@ const SignIn = () => {
 
           // Kiểm tra role
           if (roles.includes("ROLE_LEARNER") || roles.includes("ROLE_ADMIN")) {
-            // Sử dụng cả toast và message để đảm bảo hiển thị
             toast.success(
               "🎉 Đăng nhập thành công! Chào mừng bạn đến với TOEIC Learning!",
               {
@@ -120,8 +139,6 @@ const SignIn = () => {
                 autoClose: 3000,
               }
             );
-
-
             setTimeout(() => {
               navigate("/learner/", { replace: true });
             }, 1500);
@@ -130,9 +147,7 @@ const SignIn = () => {
               position: "top-right",
               autoClose: 4000,
             });
-
             message.error("❌ Bạn không có quyền truy cập vào trang học viên!");
-
             localStorage.removeItem("learnerToken");
             localStorage.removeItem("learnerRefreshToken");
             localStorage.removeItem("learnerAccessTokenExpirationTime");

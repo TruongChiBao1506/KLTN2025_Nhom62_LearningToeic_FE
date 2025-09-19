@@ -8,13 +8,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Dropdown, Avatar, Space } from 'antd';
 import { User, Settings, LogOut } from 'lucide-react';
-import { useAdminStore } from '../../../../hooks/useAdminStore';
+import { useAuthStore } from '../../../../hooks/useAuthStore';
 import userService from '../../../../services/userService';
 import { jwtDecode } from 'jwt-decode';
 import './style.css';
 
 const HeaderComponent = ({ toggleSidebar }) => {
-    const { setIsAuthenticatedAdmin } = useAdminStore();
+    const { setIsAuthenticated } = useAuthStore();
     const navigate = useNavigate();
     const [profileImage, setProfileImage] = useState('');
     const [adminUserData, setAdminUserData] = useState(null);
@@ -29,7 +29,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
             localStorage.removeItem('adminAccessTokenExpirationTime');
             localStorage.removeItem('adminRefreshTokenExpirationTime');
 
-            setIsAuthenticatedAdmin(false);
+            setIsAuthenticated(false);
             navigate('/admin/signin');
         } catch (error) {
             console.log('Sign out error:', error);
@@ -37,7 +37,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
             localStorage.removeItem('adminToken');
             localStorage.removeItem('adminAccessTokenExpirationTime');
             localStorage.removeItem('adminRefreshTokenExpirationTime');
-            setIsAuthenticatedAdmin(false);
+            setIsAuthenticated(false);
             navigate('/admin/signin');
         }
     };

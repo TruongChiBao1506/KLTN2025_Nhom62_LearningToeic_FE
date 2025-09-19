@@ -4,6 +4,7 @@ import { Button, Spin, Result } from "antd";
 import { ReloadOutlined, ArrowLeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import TestService from "../../../services/testService";
+import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
 
 // Những component TestPart sẽ được tạo sau
 import TestPart1 from "../../../components/Learner/TestPart1";
@@ -26,6 +27,7 @@ const Study = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noQuestions, setNoQuestions] = useState(false);
+  const { recordCompleteQuestion } = useAchievementNotifications();
 
   // Lấy danh sách câu hỏi từ bài kiểm tra
   const retrieveQuestions = useCallback(async () => {
@@ -122,6 +124,27 @@ const Study = () => {
       (question) =>
         question.answered && question.selectedOption !== question.correctOption
     ).length;
+
+    // Ghi nhận hoàn thành câu hỏi cho streak với notification
+    try {
+      const learnerToken = localStorage.getItem("learnerToken");
+      if (learnerToken) {
+        const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+        const userId = decoded.id;
+        const skill = sectionId === "1" || sectionId === "2" ? "listening" : "reading";
+        
+        // Ghi nhận từng câu hỏi đã trả lời đúng với notification
+        for (let i = 0; i < correctCount; i++) {
+          recordCompleteQuestion(userId, 1, skill).catch(streakError => {
+            console.warn("⚠️ Không thể ghi nhận streak câu hỏi:", streakError);
+          });
+        }
+        
+        console.log(`✅ Đã ghi nhận ${correctCount} câu hỏi đúng cho streak với notification`);
+      }
+    } catch (error) {
+      console.warn("⚠️ Lỗi khi ghi nhận hoàn thành câu hỏi:", error);
+    }
 
     // Hiển thị kết quả
     Swal.fire({

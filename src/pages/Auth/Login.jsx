@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import authService from "../../services/authService";
+import useAchievementNotifications from "../../hooks/useAchievementNotifications";
 import "./Login.css";
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { recordLogin } = useAchievementNotifications();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +41,8 @@ const Login = () => {
             refreshTokenExpirationTime,
             true
           );
+          // Record login achievement for admin
+          await recordLogin(response.data.userId || username);
           navigate("/admin/dashboard");
         } else if (roles.includes("ROLE_LEARNER")) {
           await authService.saveToken(
@@ -48,6 +52,8 @@ const Login = () => {
             refreshTokenExpirationTime,
             false
           );
+          // Record login achievement for learner
+          await recordLogin(response.data.userId || username);
           navigate("/learner/dashboard");
         } else {
           toast.error("Bạn không có quyền truy cập hệ thống!");

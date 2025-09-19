@@ -244,7 +244,7 @@ const VocabularyTopics = () => {
             <Title
               level={2}
               style={{
-                background: "linear-gradient(135deg, #1890ff, #40a9ff)",
+                background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 marginBottom: "8px",

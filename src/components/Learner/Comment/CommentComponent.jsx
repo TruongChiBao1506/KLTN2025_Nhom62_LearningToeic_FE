@@ -4,21 +4,21 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { toast } from "react-toastify";
 import commentService from "../../../services/commentService";
-import { 
-  Card, 
-  Avatar, 
-  Typography, 
-  Button, 
-  Input, 
-  Space, 
+import {
+  Card,
+  Avatar,
+  Typography,
+  Button,
+  Input,
+  Space,
   Dropdown
 } from "antd";
-import { 
-  UserOutlined, 
-  MessageOutlined, 
-  DeleteOutlined, 
+import {
+  UserOutlined,
+  MessageOutlined,
+  DeleteOutlined,
   MoreOutlined,
-  SendOutlined 
+  SendOutlined
 } from "@ant-design/icons";
 import "./style.css";
 
@@ -34,7 +34,12 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
       if (!dateString) {
         return "Vừa xong";
       }
-      
+
+      // Xử lý cho optimistic comments
+      if (comment.isOptimistic) {
+        return "Đang gửi...";
+      }
+
       // Xử lý các định dạng ngày khác nhau
       let date;
       if (typeof dateString === 'string') {
@@ -47,25 +52,22 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
         // Nếu đã là Date object
         date = dateString;
       }
-      
+
       // Kiểm tra xem date có hợp lệ không
       if (!date || isNaN(date.getTime())) {
         console.warn("Invalid date value:", dateString);
         return "Vừa xong";
       }
-      
+
       // Tính khoảng cách thời gian với hiện tại
       const now = new Date();
       const diffInSeconds = Math.floor((now - date) / 1000);
-      
+
       // Nếu comment được tạo trong vòng 1 phút (60 giây), hiển thị "Vừa xong"
       if (diffInSeconds < 60) {
         return "Vừa xong";
       }
-      
-      // Debug log để kiểm tra
-      console.log("Formatting date:", dateString, "Parsed:", date, "Diff in seconds:", diffInSeconds);
-      
+
       return formatDistanceToNow(date, { addSuffix: true, locale: vi });
     } catch (error) {
       console.error("Lỗi khi format ngày:", error, "Input:", dateString);
@@ -99,7 +101,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
       console.log("Creating reply with data:", data);
       await commentService.createComment(data);
-      
+
       setReplyText("");
       setShowReplyForm(false);
       retrieveComments();
@@ -133,37 +135,51 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
     }
   };
 
+  const isOptimistic = comment.isOptimistic || false;
+
   return (
-    <Card 
+    <Card
       className="modern-comment-card"
       style={{
-        background: "#fff",
+        background: isOptimistic ? "#f6ffed" : "#fff", // Highlight optimistic comments
         borderRadius: "12px",
-        border: "1px solid #f0f0f0",
+        border: `1px solid ${isOptimistic ? "#b7eb8f" : "#f0f0f0"}`,
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-        marginBottom: comment.replies?.length > 0 ? "16px" : "8px"
+        marginBottom: comment.replies?.length > 0 ? "16px" : "8px",
+        opacity: isOptimistic ? 0.8 : 1 // Làm mờ optimistic comments
       }}
       bodyStyle={{ padding: "16px" }}
     >
       {/* Comment Header */}
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
         alignItems: "flex-start",
-        marginBottom: "12px" 
+        marginBottom: "12px"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <Avatar 
-            icon={<UserOutlined />}
-            style={{ 
-              backgroundColor: "#1890ff",
-              color: "#fff"
-            }}
-            size={40}
-          />
+          {comment.user.image ? (
+            <>
+              <Avatar
+                src={comment.user.image}
+                style={{ backgroundColor: "#1890ff", color: "#fff" }}
+                size={40}
+              />
+            </>
+          ) : (
+            <Avatar
+              icon={<UserOutlined />}
+              style={{
+                backgroundColor: "#1890ff",
+                color: "#fff"
+              }}
+              size={40}
+            />
+          )}
+
           <div>
             <Text strong style={{ fontSize: "14px", color: "#262626" }}>
-              {comment.userName || "Người dùng"}
+              {comment.user.name || "Người dùng"}
             </Text>
             <br />
             <Text type="secondary" style={{ fontSize: "12px" }}>
@@ -198,10 +214,10 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
       {/* Comment Content */}
       <div style={{ marginBottom: "12px", marginLeft: "52px" }}>
-        <Paragraph 
-          style={{ 
-            margin: 0, 
-            fontSize: "14px", 
+        <Paragraph
+          style={{
+            margin: 0,
+            fontSize: "14px",
             lineHeight: "1.6",
             color: "#262626"
           }}
@@ -218,11 +234,12 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
             size="small"
             icon={<MessageOutlined />}
             onClick={() => setShowReplyForm(!showReplyForm)}
-            style={{ 
+            style={{
               color: showReplyForm ? "#1890ff" : "#8c8c8c",
               padding: "0 8px",
               height: "28px"
             }}
+            disabled={isOptimistic} // Disable reply cho optimistic comments
           >
             {showReplyForm ? "Hủy" : "Trả lời"}
           </Button>
@@ -231,8 +248,8 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
       {/* Reply Form */}
       {showReplyForm && (
-        <div style={{ 
-          marginTop: "16px", 
+        <div style={{
+          marginTop: "16px",
           marginLeft: "52px",
           background: "#fafafa",
           padding: "16px",
@@ -248,7 +265,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
               style={{ borderRadius: "6px" }}
             />
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-              <Button 
+              <Button
                 size="small"
                 onClick={() => setShowReplyForm(false)}
               >
@@ -260,7 +277,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
                 icon={<SendOutlined />}
                 onClick={addReply}
                 disabled={!replyText.trim()}
-                style={{ 
+                style={{
                   background: "linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)",
                   border: "none"
                 }}
@@ -274,8 +291,8 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
       {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div style={{ 
-          marginTop: "16px", 
+        <div style={{
+          marginTop: "16px",
           marginLeft: "52px",
           borderLeft: "2px solid #f0f0f0",
           paddingLeft: "16px"

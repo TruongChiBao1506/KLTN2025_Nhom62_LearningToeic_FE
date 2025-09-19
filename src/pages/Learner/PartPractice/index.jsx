@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import testService from "../../../services/testService";
 import lessonService from "../../../services/lessonService";
+import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
 import useSectionAccess from "../../../hooks/useSectionAccess";
 import SectionAccessGuard from "../../../components/Learner/SectionAccessGuard";
 
@@ -52,6 +53,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("tests");
+  const { recordActivity } = useAchievementNotifications();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,10 +103,49 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       console.error("Lesson ID is undefined!");
       return;
     }
+    
+    // Ghi nhận bắt đầu học bài học cho streak với notification
+    try {
+      const learnerToken = localStorage.getItem("learnerToken");
+      if (learnerToken) {
+        const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+        const userId = decoded.id;
+        
+        // Ghi nhận bắt đầu học (có thể tính là một dạng hoạt động học tập)
+        recordActivity(userId, 'start_lesson', { 
+          lessonId, 
+          sectionId 
+        }).catch(streakError => {
+          console.warn("⚠️ Không thể ghi nhận streak bắt đầu bài học:", streakError);
+        });
+      }
+    } catch (error) {
+      console.warn("⚠️ Lỗi khi ghi nhận bắt đầu bài học:", error);
+    }
+    
     navigate(`/learner/section/${sectionId}/lesson/${lessonId}`);
   };
 
   const handleStartTest = (testId) => {
+    // Ghi nhận bắt đầu làm bài test cho streak với notification
+    try {
+      const learnerToken = localStorage.getItem("learnerToken");
+      if (learnerToken) {
+        const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+        const userId = decoded.id;
+        
+        // Ghi nhận bắt đầu làm bài test
+        recordActivity(userId, 'start_test', { 
+          testId, 
+          sectionId 
+        }).catch(streakError => {
+          console.warn("⚠️ Không thể ghi nhận streak bắt đầu bài test:", streakError);
+        });
+      }
+    } catch (error) {
+      console.warn("⚠️ Lỗi khi ghi nhận bắt đầu bài test:", error);
+    }
+    
     navigate(`/learner/section/${sectionId}/study/${testId}`);
   };
 

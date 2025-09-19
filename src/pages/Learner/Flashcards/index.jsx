@@ -29,6 +29,7 @@ import {
 // Import services
 import topicService from "../../../services/topicService";
 import vocabularyService from "../../../services/vocabularyService";
+import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
 
 // Add CSS for animations
 const pulseAnimation = `
@@ -69,6 +70,7 @@ const Flashcards = () => {
   const [progress, setProgress] = useState({ correct: 0, total: 0 });
   const [answered, setAnswered] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const { recordLearnVocab } = useAchievementNotifications();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,6 +139,28 @@ const Flashcards = () => {
 
     const correctCount = newAnswered.filter(Boolean).length;
     setProgress({ correct: correctCount, total: newAnswered.length });
+
+    // Ghi nhận học từ vựng cho streak với notification
+    try {
+      const learnerToken = localStorage.getItem("learnerToken");
+      if (learnerToken) {
+        const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+        const userId = decoded.id;
+        const currentVocab = vocabularies[currentIndex];
+        
+        if (currentVocab) {
+          recordLearnVocab(userId, 1, currentVocab.vocabularyId || currentVocab._id)
+            .then(() => {
+              console.log("✅ Đã ghi nhận học từ vựng cho streak với notification");
+            })
+            .catch(streakError => {
+              console.warn("⚠️ Không thể ghi nhận streak học từ vựng:", streakError);
+            });
+        }
+      }
+    } catch (error) {
+      console.warn("⚠️ Lỗi khi ghi nhận học từ vựng:", error);
+    }
 
     setTimeout(() => {
       nextCard();
@@ -710,7 +734,7 @@ const Flashcards = () => {
                     fontWeight: "500",
                   }}
                 >
-                  🎯 Hãy đánh giá độ khó của từ này
+                  Hãy đánh giá độ khó của từ này
                 </Text>
               </Card>
             )}

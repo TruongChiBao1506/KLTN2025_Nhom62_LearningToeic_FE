@@ -48,6 +48,7 @@ import {
   PenTool,
 } from "lucide-react";
 import learnerExamService from "../../../services/learnerExamService";
+import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
 import AudioPlayer from "../../../components/AudioPlayer";
 import audioRegistry from "../../../utils/AudioRegistry";
 import TextHighlighter from "../../../components/TextHighlighter/TextHighlighter";
@@ -180,6 +181,7 @@ const ExamDetail = () => {
   const [savedProgress, setSavedProgress] = useState(false);
   const timerRef = useRef(null);
   const eventHandlersRef = useRef({ beforeUnload: null, popState: null });
+  const { recordCompleteTest } = useAchievementNotifications();
 
   // Define saveProgress early to avoid "used before defined" errors
   const saveProgress = useCallback(async () => {
@@ -566,6 +568,24 @@ const ExamDetail = () => {
       };
 
       setExamResult(resultData);
+      
+      // Ghi nhận hoàn thành bài test cho streak với notification
+      try {
+        const learnerToken = localStorage.getItem("learnerToken");
+        if (learnerToken) {
+          const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+          const userId = decoded.id;
+          const score = resultData.totalScore || 0;
+          const examType = exam?.examType || 'TOEIC';
+          
+          await recordCompleteTest(userId, score, examType);
+          console.log("✅ Đã ghi nhận hoàn thành bài test cho streak với notification");
+        }
+      } catch (streakError) {
+        console.warn("⚠️ Không thể ghi nhận streak bài test:", streakError);
+        // Không làm gián đoạn flow nộp bài nếu streak service lỗi
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error("Lỗi khi nộp bài thi:", error);
