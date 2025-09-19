@@ -48,6 +48,24 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
+.reset-order-btn {
+  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
+  margin-top: 10px;
+}
+
+.reset-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 77, 79, 0.4);
+}
+
 .add-note-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);

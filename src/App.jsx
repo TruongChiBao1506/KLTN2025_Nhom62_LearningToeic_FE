@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,6 +10,7 @@ import LearnerRoutes from "./routes/LearnerRoutes";
 import AuthRoutes from "./routes/AuthRoutes";
 import NotFound from "./pages/NotFound";
 import AdminRoutes from "./routes/AdminRoutes";
+import HomePage from "./pages/Home";
 
 function App() {
   return (
@@ -26,8 +26,8 @@ function App() {
         {/* Learner Routes */}
         <Route path="/learner/*" element={<LearnerRoutes />} />
 
-        {/* Default Redirects */}
-        <Route path="/" element={<Navigate to="/auth/signin" replace />} />
+        {/* Home Page */}
+        <Route path="/" element={<HomePage />} />
 
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />

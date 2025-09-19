@@ -129,15 +129,36 @@ const Note = () => {
 
       setNotes(processedNotes);
 
-      // Khởi tạo local order nếu chưa có
-      if (localOrder.length === 0) {
-        setLocalOrder(processedNotes.map(note => note.noteId));
+      // Chỉ khởi tạo local order nếu chưa có trong localStorage
+      const savedOrder = localStorage.getItem(`noteOrder_${userId}`);
+      if (!savedOrder) {
+        const defaultOrder = processedNotes.map(note => note.noteId);
+        setLocalOrder(defaultOrder);
+        localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(defaultOrder));
       }
     } catch (error) {
       console.error("Lỗi khi tải ghi chú:", error);
       toast.error("Không thể tải ghi chú. Vui lòng thử lại sau.");
     }
-  }, [userId, localOrder.length]);
+  }, [userId]);
+
+  useEffect(() => {
+    // Load local order từ localStorage khi component mount
+    if (userId) {
+      const savedOrder = localStorage.getItem(`noteOrder_${userId}`);
+      if (savedOrder) {
+        try {
+          const parsedOrder = JSON.parse(savedOrder);
+          setLocalOrder(parsedOrder);
+          console.log('Loaded saved order:', parsedOrder); // Debug log
+        } catch (error) {
+          console.error('Error parsing saved order:', error);
+          // Nếu có lỗi, reset về mặc định
+          setLocalOrder([]);
+        }
+      }
+    }
+  }, [userId]);
 
   useEffect(() => {
     // Fetch notes when userId is available
@@ -157,12 +178,14 @@ const Note = () => {
 
         const newItems = arrayMove(items, oldIndex, newIndex);
 
-        // Cập nhật local order
+        // Cập nhật local order với thứ tự mới
         const newOrder = newItems.map(note => note.noteId);
         setLocalOrder(newOrder);
 
         // Lưu vào localStorage để duy trì thứ tự trong session
         localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(newOrder));
+
+        console.log('Updated order:', newOrder); // Debug log
 
         return newItems;
       });
@@ -214,10 +237,21 @@ const Note = () => {
         userId: userId,
       };
 
-      await noteService.create(data);
+      const response = await noteService.create(data);
       toast.success("Tạo ghi chú thành công");
       resetForm();
       setShowNewNoteForm(false);
+
+      // Cập nhật localOrder để bao gồm ghi chú mới
+      const newNoteId = response.data?._id || response._id;
+      if (newNoteId) {
+        setLocalOrder(prev => {
+          const newOrder = [...prev, newNoteId];
+          localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(newOrder));
+          return newOrder;
+        });
+      }
+
       getAllNotesByUserId();
     } catch (error) {
       console.error("Lỗi khi tạo ghi chú:", error);
@@ -231,6 +265,14 @@ const Note = () => {
       try {
         await noteService.delete(noteId);
         toast.success("Xóa ghi chú thành công");
+
+        // Cập nhật localOrder để loại bỏ ghi chú đã xóa
+        setLocalOrder(prev => {
+          const newOrder = prev.filter(id => id !== noteId);
+          localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(newOrder));
+          return newOrder;
+        });
+
         getAllNotesByUserId();
       } catch (error) {
         console.error("Lỗi khi xóa ghi chú:", error);
@@ -240,21 +282,25 @@ const Note = () => {
   };
 
   // Sắp xếp notes theo local order
-  const sortedNotes = notes.sort((a, b) => {
-    const aIndex = localOrder.indexOf(a.noteId);
-    const bIndex = localOrder.indexOf(b.noteId);
-    
-    // Nếu chưa có trong localOrder, sắp xếp theo createdAt
-    if (aIndex === -1 && bIndex === -1) {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    }
-    
-    // Ưu tiên localOrder, sau đó theo thời gian
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    
-    return aIndex - bIndex;
-  });
+  const sortedNotes = React.useMemo(() => {
+    if (!notes.length) return [];
+
+    // Tạo map để tra cứu nhanh
+    const noteMap = new Map(notes.map(note => [note.noteId, note]));
+
+    // Sắp xếp theo localOrder, ghi chú không có trong localOrder sẽ ở cuối
+    const sorted = localOrder
+      .map(noteId => noteMap.get(noteId))
+      .filter(Boolean); // Loại bỏ undefined
+
+    // Thêm ghi chú mới (không có trong localOrder) vào cuối
+    const remainingNotes = notes.filter(note => !localOrder.includes(note.noteId));
+    const sortedRemaining = remainingNotes.sort((a, b) =>
+      new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    return [...sorted, ...sortedRemaining];
+  }, [notes, localOrder]);
 
   return (
     <div className="notes-container">
@@ -266,6 +312,28 @@ const Note = () => {
             <p className="notes-subtitle">
               Quản lý và tổ chức các ghi chú học tập của bạn
             </p>
+            {/* Reset Order Button */}
+            {notes.length > 1 && (
+              <div className="text-center mt-3">
+                <button
+                  className="reset-order-btn"
+                  onClick={() => {
+                    if (window.confirm("Bạn có muốn reset về thứ tự mặc định (theo thời gian tạo)?")) {
+                      const defaultOrder = notes
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .map(note => note.noteId);
+                      setLocalOrder(defaultOrder);
+                      localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(defaultOrder));
+                      toast.success("Đã reset về thứ tự mặc định");
+                    }
+                  }}
+                  title="Reset về thứ tự mặc định"
+                >
+                  <FontAwesomeIcon icon={faTimes} className="me-2" />
+                  Reset thứ tự
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Add New Note button */}
