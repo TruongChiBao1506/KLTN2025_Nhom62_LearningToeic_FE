@@ -149,7 +149,7 @@ const Profile = () => {
             setIsLoading(true);
             const adminToken = localStorage.getItem("adminToken");
             const decoded = jwtDecode(adminToken);
-            const username = decoded.username;
+            const username = decoded.username || decoded.name;
             const userIdResult = await UserService.getUserIdByUsername(username);
             setUserId(userIdResult.userId);
 

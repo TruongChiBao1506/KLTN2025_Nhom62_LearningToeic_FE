@@ -92,6 +92,8 @@ const Dictionary = () => {
 
   // Load data from localStorage
   useEffect(() => {
+    document.title = "Từ điển | TOEIC Learning Platform";
+
     const savedHistory = localStorage.getItem("dictionaryHistory");
     const savedBookmarks = localStorage.getItem("dictionaryBookmarks");
     const savedVoiceSettings = localStorage.getItem("voiceSettings");
@@ -1646,7 +1648,7 @@ const Dictionary = () => {
             level={2}
             style={{
               marginBottom: "8px",
-              background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+              background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -1654,11 +1656,11 @@ const Dictionary = () => {
           >
             <BookOpen
               size={28}
-              style={{ marginRight: "12px", color: "#1890ff" }}
+              style={{ marginRight: "12px", color: "rgb(102, 126, 234)" }}
             />
             Công cụ Dịch thuật & Từ điển
           </Title>
-          <Text type="secondary" style={{ fontSize: "16px" }}>
+          <Text type="secondary" style={{ fontSize: "16px", background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text" }}>
             Dịch văn bản và tra cứu từ điển tiếng Anh một cách dễ dàng
           </Text>
         </div>

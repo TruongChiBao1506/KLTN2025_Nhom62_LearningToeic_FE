@@ -90,6 +90,8 @@ const Leaderboard = () => {
 
   // Fetch leaderboard data
   useEffect(() => {
+    document.title = "Bảng xếp hạng | TOEIC Learning Platform";
+
     fetchLeaderboardData();
   }, [fetchLeaderboardData]);
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import LearnerLayout from "../layouts/LearnerLayout";
 import LearnerDashboard from "../pages/Learner/LearnerDashboard";
-import LearningPath from '../pages/Learner/LearningPathNew';
+import LearningPath from '../pages/Learner/LearningPath';
 import ExamList from "../pages/Learner/ExamList";
 import ExamDetail from "../pages/Learner/ExamDetail";
 import ExamFullTest from "../pages/Learner/ExamFullTest";

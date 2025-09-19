@@ -56,6 +56,8 @@ const ImproveStudy = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Cải thiện học tập | TOEIC Learning Platform";
+
     const fetchSections = async () => {
       try {
         const fetchedSections = await sectionsService.allEnable();

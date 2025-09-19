@@ -227,7 +227,7 @@ const VocabularyTopics = () => {
           <div style={{ textAlign: "center" }}>
             <div
               style={{
-                background: "linear-gradient(135deg, #1890ff, #40a9ff)",
+                background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%)",
                 borderRadius: "50%",
                 width: "64px",
                 height: "64px",

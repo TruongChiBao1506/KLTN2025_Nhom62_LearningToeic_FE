@@ -42,6 +42,8 @@ const ExamMiniTest = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    document.title = "Bài thi TOEIC Mini | TOEIC Learning Platform";
+
     const retrieveExams = async () => {
       try {
         setLoading(true);

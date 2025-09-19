@@ -37,6 +37,24 @@ const CommentsList = ({ examId }) => {
   const loadMoreComments = 10;
   const { recordContributeContent } = useAchievementNotifications();
 
+  // Function để normalize comment data
+  const normalizeComment = useCallback((comment) => {
+    return {
+      ...comment,
+      user: comment.user || {
+        name: comment.userName || "Người dùng",
+        image: comment.userImage || null
+      },
+      replies: comment.replies ? comment.replies.map(reply => ({
+        ...reply,
+        user: reply.user || {
+          name: reply.userName || "Người dùng",
+          image: reply.userImage || null
+        }
+      })) : []
+    };
+  }, []);
+
   const retrieveComments = useCallback(async () => {
     try {
       let fetchedComments;
@@ -58,9 +76,11 @@ const CommentsList = ({ examId }) => {
       }
 
       if (fetchedComments && fetchedComments.length > 0) {
-        setComments(fetchedComments);
-        setShowLoadMoreButton(fetchedComments.length > loadMoreComments);
-        setVisibleComments(fetchedComments.slice(0, loadMoreComments));
+        // Normalize comments để đảm bảo có user object
+        const normalizedComments = fetchedComments.map(normalizeComment);
+        setComments(normalizedComments);
+        setShowLoadMoreButton(normalizedComments.length > loadMoreComments);
+        setVisibleComments(normalizedComments.slice(0, loadMoreComments));
       } else {
         setComments([]);
         setVisibleComments([]);
@@ -70,7 +90,7 @@ const CommentsList = ({ examId }) => {
       console.error("Lỗi khi lấy bình luận:", error);
       toast.error("Không thể tải bình luận, vui lòng thử lại sau");
     }
-  }, [filter, examId]);
+  }, [filter, examId, normalizeComment]);
 
   useEffect(() => {
     retrieveComments();
@@ -102,7 +122,10 @@ const CommentsList = ({ examId }) => {
         _id: `temp-${Date.now()}`, // ID tạm thời
         text: newCommentText,
         userId: userId,
-        userName: decoded.name || "Bạn", // Giả sử có name trong token
+        user: {
+          name: decoded.name || "Bạn",
+          image: decoded.image || null
+        },
         date: new Date().toISOString(),
         createdAt: new Date().toISOString(),
         replies: [],
@@ -129,15 +152,16 @@ const CommentsList = ({ examId }) => {
         const response = createResult.value;
         console.log("✅ Comment created:", response);
 
-        // Update optimistic comment với data thật
+        // Update optimistic comment với data thật (đã normalize)
+        const normalizedResponse = normalizeComment(response);
         setComments(prev => prev.map(comment => 
           comment.commentId === optimisticComment.commentId 
-            ? { ...response, isOptimistic: false, isSubmitting: false }
+            ? { ...normalizedResponse, isOptimistic: false, isSubmitting: false }
             : comment
         ));
         setVisibleComments(prev => prev.map(comment => 
           comment.commentId === optimisticComment.commentId 
-            ? { ...response, isOptimistic: false, isSubmitting: false }
+            ? { ...normalizedResponse, isOptimistic: false, isSubmitting: false }
             : comment
         ));
 

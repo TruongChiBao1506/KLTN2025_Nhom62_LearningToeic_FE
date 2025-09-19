@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import achievementService from '../../../services/achievementService';
-import useAchievementNotifications from '../../../hooks/useAchievementNotifications';
 
 const Achievements = () => {
   const [achievements, setAchievements] = useState([]);
@@ -19,7 +18,6 @@ const Achievements = () => {
   const [error, setError] = useState(null);
 
   const { info } = useAuthStore();
-  const { recordContributeContent } = useAchievementNotifications();
 
   const fetchAchievements = useCallback(async () => {
     setLoading(true);
@@ -103,70 +101,6 @@ const Achievements = () => {
     fetchAchievements();
   };
 
-  const testNotification = async () => {
-    if (!info || !info.id) {
-      alert('Vui lòng đăng nhập để test thông báo');
-      return;
-    }
-
-    try {
-      // Test với một thành tích mẫu - hiển thị trực tiếp
-      const mockAchievement = {
-        id: 'test-achievement',
-        title: 'Test Achievement',
-        description: 'Đây là thông báo test để kiểm tra tính năng hiển thị thành tích',
-        category: 'contribution',
-        rarity: 'rare',
-        points: 50,
-        icon: '🎯'
-      };
-
-      // Hiển thị notification trực tiếp để test UI
-      alert(`Thông báo test: ${mockAchievement.title}\n${mockAchievement.description}`);
-      
-      alert('Thông báo test đã được hiển thị!');
-    } catch (error) {
-      console.error('Test notification error:', error);
-      alert('Lỗi khi test thông báo: ' + error.message);
-    }
-  };
-
-  const testAPI = async () => {
-    if (!info || !info.id) {
-      alert('Vui lòng đăng nhập để test API');
-      return;
-    }
-
-    try {
-      console.log('🧪 Testing API call...');
-      const result = await recordContributeContent(info.id, 'test', 'test-exam-id');
-      console.log('📡 API Response:', result);
-      
-      alert(`API test hoàn thành! Kiểm tra Console để xem response.\nSuccess: ${result.success}\nUnlocked: ${result.unlockedAchievements?.length || 0}`);
-    } catch (error) {
-      console.error('API test error:', error);
-      alert('Lỗi khi test API: ' + error.message);
-    }
-  };
-
-  const testCommentAction = async () => {
-    if (!info || !info.id) {
-      alert('Vui lòng đăng nhập để test comment action');
-      return;
-    }
-
-    try {
-      console.log('💬 Testing comment action...');
-      const result = await recordContributeContent(info.id, 'comment', 'test-exam-123');
-      console.log('💬 Comment API Response:', result);
-      
-      alert(`Comment test hoàn thành! Kiểm tra Console để xem response.\nSuccess: ${result.success}\nUnlocked: ${result.unlockedAchievements?.length || 0}`);
-    } catch (error) {
-      console.error('Comment test error:', error);
-      alert('Lỗi khi test comment: ' + error.message);
-    }
-  };
-
   const openModal = (achievement) => {
     setSelectedAchievement(achievement);
     setShowModal(true);
@@ -230,85 +164,6 @@ const Achievements = () => {
       <div className="achievements-header">
         <h1>⭐ Thành tích</h1>
         <p>Theo dõi tiến độ và mở khóa các thành tích đặc biệt trong hành trình học TOEIC của bạn!</p>
-        <div style={{ marginTop: '16px' }}>
-          <button
-            onClick={testNotification}
-            style={{
-              background: 'linear-gradient(135deg, #ff6b35, #f7931e)',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '8px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
-              marginRight: '12px'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 16px rgba(255, 107, 53, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.3)';
-            }}
-          >
-            🧪 Test Thông Báo Thành Tích
-          </button>
-          <button
-            onClick={testAPI}
-            style={{
-              background: 'linear-gradient(135deg, #1890ff, #36cfc9)',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '8px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 12px rgba(24, 144, 255, 0.3)',
-              marginRight: '12px'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 16px rgba(24, 144, 255, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(24, 144, 255, 0.3)';
-            }}
-          >
-            🔍 Test API Achievement
-          </button>
-          <button
-            onClick={testCommentAction}
-            style={{
-              background: 'linear-gradient(135deg, #52c41a, #73d13d)',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '8px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 12px rgba(82, 196, 26, 0.3)'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 16px rgba(82, 196, 26, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(82, 196, 26, 0.3)';
-            }}
-          >
-            💬 Test Comment Action
-          </button>
-        </div>
       </div>
 
       {loading ? (
@@ -459,63 +314,475 @@ const Achievements = () => {
         </>
       )}
 
-      {/* Modal */}
+      {/* Enhanced Modal */}
       {showModal && selectedAchievement && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>
-                {selectedAchievement.unlocked
-                  ? getCategoryIcon(selectedAchievement.category || 'general')
-                  : '🔒'
-                } {selectedAchievement.title || 'Unknown Achievement'}
-              </h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <p className="achievement-description">{selectedAchievement.description || 'No description available'}</p>
-              <div className="achievement-details">
-                <div className="detail-row">
-                  <strong>Danh mục:</strong> {getCategoryIcon(selectedAchievement.category || 'general')} {getCategoryLabel(selectedAchievement.category || 'general')}
+        <div
+          className="modal-overlay"
+          onClick={() => setShowModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            animation: 'modalFadeIn 0.3s ease-out'
+          }}
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#ffffff', // Solid white background
+              borderRadius: '20px',
+              boxShadow: selectedAchievement.unlocked
+                ? `0 25px 50px rgba(${getRarityColor(selectedAchievement.rarity || 'common').slice(1, 3)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(3, 5)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(5, 7)}, 0.3)`
+                : '0 25px 50px rgba(0, 0, 0, 0.15)',
+              border: selectedAchievement.unlocked
+                ? `2px solid ${getRarityColor(selectedAchievement.rarity || 'common')}40`
+                : '1px solid rgba(0, 0, 0, 0.1)',
+              maxWidth: '500px',
+              width: '90%',
+              maxHeight: '80vh',
+              overflow: 'hidden',
+              animation: 'modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              position: 'relative'
+            }}
+          >
+            {/* Achievement Icon Background */}
+            {selectedAchievement.unlocked && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-50px',
+                  right: '-50px',
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, ${getRarityColor(selectedAchievement.rarity || 'common')}30, transparent)`,
+                  opacity: 0.6,
+                  animation: 'iconGlow 2s ease-in-out infinite alternate'
+                }}
+              />
+            )}
+
+            <div className="modal-header" style={{
+              padding: '30px 30px 20px',
+              borderBottom: selectedAchievement.unlocked
+                ? `1px solid ${getRarityColor(selectedAchievement.rarity || 'common')}30`
+                : '1px solid rgba(0, 0, 0, 0.1)',
+              position: 'relative',
+              zIndex: 1,
+              background: 'rgba(255, 255, 255, 0.95)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
+                <div
+                  style={{
+                    fontSize: '3rem',
+                    filter: selectedAchievement.unlocked ? 'none' : 'grayscale(100%)',
+                    opacity: selectedAchievement.unlocked ? 1 : 0.5,
+                    animation: selectedAchievement.unlocked ? 'iconBounce 0.6s ease-out' : 'none'
+                  }}
+                >
+                  {selectedAchievement.unlocked
+                    ? getCategoryIcon(selectedAchievement.category || 'general')
+                    : '🔒'
+                  }
                 </div>
-                <div className="detail-row">
-                  <strong>Độ hiếm:</strong>
-                  <span
-                    className="rarity-badge"
-                    style={{ backgroundColor: getRarityColor(selectedAchievement.rarity || 'common') }}
-                  >
-                    {getRarityLabel(selectedAchievement.rarity || 'common')}
+                <div style={{ flex: 1 }}>
+                  <h2 style={{
+                    margin: 0,
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    color: selectedAchievement.unlocked ? '#1a202c' : '#718096',
+                    lineHeight: '1.3'
+                  }}>
+                    {selectedAchievement.title || 'Unknown Achievement'}
+                  </h2>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginTop: '8px'
+                  }}>
+                    <span
+                      className="rarity-badge"
+                      style={{
+                        background: `linear-gradient(135deg, ${getRarityColor(selectedAchievement.rarity || 'common')}, ${getRarityColor(selectedAchievement.rarity || 'common')}dd)`,
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        boxShadow: `0 4px 12px rgba(${getRarityColor(selectedAchievement.rarity || 'common').slice(1, 3)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(3, 5)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(5, 7)}, 0.3)`
+                      }}
+                    >
+                      {getRarityLabel(selectedAchievement.rarity || 'common')}
+                    </span>
+                    {selectedAchievement.unlocked && (
+                      <span style={{
+                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        animation: 'statusPulse 2s ease-in-out infinite'
+                      }}>
+                        ✅ Đã mở khóa
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                className="modal-close"
+                onClick={() => setShowModal(false)}
+                style={{
+                  position: 'absolute',
+                  top: '20px',
+                  right: '20px',
+                  background: 'rgba(0, 0, 0, 0.1)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1.5rem',
+                  color: '#666',
+                  transition: 'all 0.3s ease',
+                  zIndex: 2
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = 'rgba(0, 0, 0, 0.2)';
+                  e.target.style.transform = 'scale(1.1)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'rgba(0, 0, 0, 0.1)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="modal-body" style={{
+              padding: '20px 30px 30px',
+              position: 'relative',
+              zIndex: 1,
+              background: 'rgba(255, 255, 255, 0.95)'
+            }}>
+              <p className="achievement-description" style={{
+                fontSize: '1rem',
+                lineHeight: '1.6',
+                color: '#4a5568',
+                marginBottom: '25px',
+                fontStyle: 'italic',
+                textAlign: 'center',
+                padding: '15px',
+                background: selectedAchievement.unlocked
+                  ? 'rgba(255, 255, 255, 0.95)'
+                  : 'rgba(248, 250, 252, 0.8)',
+                borderRadius: '12px',
+                border: selectedAchievement.unlocked
+                  ? `1px solid ${getRarityColor(selectedAchievement.rarity || 'common')}30`
+                  : '1px solid rgba(0, 0, 0, 0.05)'
+              }}>
+                "{selectedAchievement.description || 'No description available'}"
+              </p>
+
+              <div className="achievement-details" style={{
+                display: 'grid',
+                gap: '15px'
+              }}>
+                <div className="detail-row" style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  background: 'rgba(248, 250, 252, 0.8)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>
+                      {getCategoryIcon(selectedAchievement.category || 'general')}
+                    </span>
+                    <strong style={{ color: '#2d3748' }}>Danh mục:</strong>
+                  </div>
+                  <span style={{ color: '#4a5568', fontWeight: '500' }}>
+                    {getCategoryLabel(selectedAchievement.category || 'general')}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <strong>Điểm thưởng:</strong> +{(selectedAchievement.points || 0)} XP
+
+                <div className="detail-row" style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  background: 'rgba(248, 250, 252, 0.8)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>⭐</span>
+                    <strong style={{ color: '#2d3748' }}>Điểm thưởng:</strong>
+                  </div>
+                  <span style={{
+                    color: '#4f46e5',
+                    fontWeight: '700',
+                    fontSize: '1.1rem',
+                    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>
+                    +{(selectedAchievement.points || 0)} XP
+                  </span>
                 </div>
-                <div className="detail-row">
-                  <strong>Mục tiêu:</strong> {selectedAchievement.target || 1}
+
+                <div className="detail-row" style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  background: 'rgba(248, 250, 252, 0.8)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>🎯</span>
+                    <strong style={{ color: '#2d3748' }}>Mục tiêu:</strong>
+                  </div>
+                  <span style={{ color: '#4a5568', fontWeight: '500' }}>
+                    {selectedAchievement.target || 1}
+                  </span>
                 </div>
+
                 {selectedAchievement.unlocked ? (
-                  <div className="detail-row">
-                    <strong>Mở khóa:</strong> {selectedAchievement.unlockedAt && selectedAchievement.unlockedAt instanceof Date
-                      ? selectedAchievement.unlockedAt.toLocaleDateString('vi-VN')
-                      : 'N/A'}
+                  <div className="detail-row" style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'linear-gradient(135deg, #10b98120, #05966920)',
+                    borderRadius: '10px',
+                    border: '1px solid #10b98140',
+                    animation: 'successGlow 2s ease-in-out infinite alternate'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontSize: '1.2rem' }}>🎉</span>
+                      <strong style={{ color: '#065f46' }}>Mở khóa:</strong>
+                    </div>
+                    <span style={{ color: '#065f46', fontWeight: '600' }}>
+                      {selectedAchievement.unlockedAt && selectedAchievement.unlockedAt instanceof Date
+                        ? selectedAchievement.unlockedAt.toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })
+                        : 'N/A'}
+                    </span>
                   </div>
                 ) : (
-                  <div className="progress-detail">
-                    <strong>Tiến độ:</strong>
-                    <div className="progress-bar">
+                  <div className="progress-detail" style={{
+                    padding: '20px 16px',
+                    background: 'rgba(248, 250, 252, 0.8)',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(0, 0, 0, 0.05)'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '15px'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ fontSize: '1.2rem' }}>📊</span>
+                        <strong style={{ color: '#2d3748' }}>Tiến độ:</strong>
+                      </div>
+                      <span style={{
+                        color: '#4a5568',
+                        fontWeight: '600',
+                        background: 'rgba(0, 0, 0, 0.05)',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.9rem'
+                      }}>
+                        {(selectedAchievement.progress || 0)}/{(selectedAchievement.target || 1)}
+                      </span>
+                    </div>
+                    <div className="progress-bar" style={{
+                      height: '12px',
+                      background: 'rgba(0, 0, 0, 0.1)',
+                      borderRadius: '20px',
+                      overflow: 'hidden',
+                      position: 'relative'
+                    }}>
                       <div
                         className="progress-fill"
-                        style={{ width: `${getProgressPercentage(selectedAchievement.progress || 0, selectedAchievement.target || 1)}%` }}
-                      />
+                        style={{
+                          width: `${getProgressPercentage(selectedAchievement.progress || 0, selectedAchievement.target || 1)}%`,
+                          height: '100%',
+                          background: `linear-gradient(90deg, ${getRarityColor(selectedAchievement.rarity || 'common')}, ${getRarityColor(selectedAchievement.rarity || 'common')}dd)`,
+                          borderRadius: '20px',
+                          transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                          position: 'relative',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                          animation: 'progressShine 2s ease-in-out infinite'
+                        }} />
+                      </div>
                     </div>
-                    <span>{(selectedAchievement.progress || 0)}/{(selectedAchievement.target || 1)}</span>
+                    <div style={{
+                      textAlign: 'center',
+                      marginTop: '10px',
+                      fontSize: '0.9rem',
+                      color: '#718096',
+                      fontWeight: '500'
+                    }}>
+                      {Math.round(getProgressPercentage(selectedAchievement.progress || 0, selectedAchievement.target || 1))}% hoàn thành
+                    </div>
                   </div>
                 )}
               </div>
+
+              {selectedAchievement.unlocked && (
+                <div style={{
+                  textAlign: 'center',
+                  marginTop: '25px',
+                  padding: '15px',
+                  background: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+                  borderRadius: '12px',
+                  border: '1px solid #f59e0b40',
+                  animation: 'congratsPulse 3s ease-in-out infinite'
+                }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '5px' }}>🎊</div>
+                  <div style={{ fontWeight: '600', color: '#92400e' }}>
+                    Chúc mừng! Bạn đã mở khóa thành tích này!
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
+
+      {/* Add CSS animations */}
+      <style jsx>{`
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8) translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes iconBounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(-10px);
+          }
+          60% {
+            transform: translateY(-5px);
+          }
+        }
+
+        @keyframes iconGlow {
+          from { transform: scale(1); opacity: 0.6; }
+          to { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes statusPulse {
+          from { transform: scale(1); }
+          to { transform: scale(1.05); }
+        }
+
+        @keyframes successGlow {
+          from { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+          to { box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+        }
+
+        @keyframes progressShine {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        @keyframes congratsPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+
+        .modal-overlay {
+          animation-fill-mode: both;
+        }
+
+        .modal-content {
+          animation-fill-mode: both;
+        }
+
+        .detail-row:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-detail:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+          .modal-content {
+            width: 95% !important;
+            margin: 20px;
+          }
+
+          .modal-header {
+            padding: 20px !important;
+          }
+
+          .modal-body {
+            padding: 20px !important;
+          }
+
+          .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+          }
+        }
+      `}</style>
     </div>
   );
 };

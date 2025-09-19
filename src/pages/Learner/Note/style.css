@@ -355,3 +355,52 @@
 .new-note-form {
   animation: fadeInUp 0.3s ease-out;
 }
+/* Drag & Drop Styles */
+.sortable-note-card {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.sortable-note-card.dragging {
+  z-index: 1000;
+  transform: rotate(5deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.drag-handle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: grab;
+  color: #999;
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.drag-handle:hover {
+  color: #666;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.note-card:hover .drag-handle {
+  opacity: 1;
+}
+
+/* Hide drag handle by default, show on hover */
+.note-card .drag-handle {
+  opacity: 0;
+}
+
+/* For mobile */
+@media (max-width: 768px) {
+  .drag-handle {
+    opacity: 1;
+  }
+}

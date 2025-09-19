@@ -6,21 +6,81 @@ import {
   faTimes,
   faSave,
   faPlus,
+  faGripVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import "./style.css";
 
 // Import services
 import noteService from "../../../services/noteService";
+
+// Sortable Note Card Component
+const SortableNoteCard = ({ note, onEdit, onDelete, children }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: note.noteId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`sortable-note-card ${isDragging ? 'dragging' : ''}`}
+    >
+      <div className="drag-handle" {...attributes} {...listeners}>
+        <FontAwesomeIcon icon={faGripVertical} />
+      </div>
+      {children}
+    </div>
+  );
+};
 
 const Note = () => {
   // States
   const [notes, setNotes] = useState([]);
   const [userId, setUserId] = useState(null);
   const [showNewNoteForm, setShowNewNoteForm] = useState(false);
+  const [localOrder, setLocalOrder] = useState([]); // Thêm state để lưu thứ tự local
+
+  // DnD Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Form validation schema
   const noteFormSchema = Yup.object().shape({
@@ -61,18 +121,23 @@ const Note = () => {
       // Check if response has data property or is array directly
       const notesData = Array.isArray(response) ? response : response.data;
 
-      setNotes(
-        notesData.map((note) => ({
-          ...note,
-          noteId: note._id, // Map _id to noteId for consistency
-          editMode: false,
-        }))
-      );
+      const processedNotes = notesData.map((note) => ({
+        ...note,
+        noteId: note._id, // Map _id to noteId for consistency
+        editMode: false,
+      }));
+
+      setNotes(processedNotes);
+
+      // Khởi tạo local order nếu chưa có
+      if (localOrder.length === 0) {
+        setLocalOrder(processedNotes.map(note => note.noteId));
+      }
     } catch (error) {
       console.error("Lỗi khi tải ghi chú:", error);
       toast.error("Không thể tải ghi chú. Vui lòng thử lại sau.");
     }
-  }, [userId]);
+  }, [userId, localOrder.length]);
 
   useEffect(() => {
     // Fetch notes when userId is available
@@ -80,6 +145,39 @@ const Note = () => {
       getAllNotesByUserId();
     }
   }, [userId, getAllNotesByUserId]);
+
+  // Handle drag end - chỉ cập nhật local order
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setNotes((items) => {
+        const oldIndex = items.findIndex((item) => item.noteId === active.id);
+        const newIndex = items.findIndex((item) => item.noteId === over.id);
+
+        const newItems = arrayMove(items, oldIndex, newIndex);
+
+        // Cập nhật local order
+        const newOrder = newItems.map(note => note.noteId);
+        setLocalOrder(newOrder);
+
+        // Lưu vào localStorage để duy trì thứ tự trong session
+        localStorage.setItem(`noteOrder_${userId}`, JSON.stringify(newOrder));
+
+        return newItems;
+      });
+    }
+  };
+
+  // Load local order từ localStorage khi component mount
+  useEffect(() => {
+    if (userId) {
+      const savedOrder = localStorage.getItem(`noteOrder_${userId}`);
+      if (savedOrder) {
+        setLocalOrder(JSON.parse(savedOrder));
+      }
+    }
+  }, [userId]);
 
   // Toggle edit mode for a note
   const toggleEditMode = (note) => {
@@ -140,6 +238,23 @@ const Note = () => {
       }
     }
   };
+
+  // Sắp xếp notes theo local order
+  const sortedNotes = notes.sort((a, b) => {
+    const aIndex = localOrder.indexOf(a.noteId);
+    const bIndex = localOrder.indexOf(b.noteId);
+    
+    // Nếu chưa có trong localOrder, sắp xếp theo createdAt
+    if (aIndex === -1 && bIndex === -1) {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    
+    // Ưu tiên localOrder, sau đó theo thời gian
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    
+    return aIndex - bIndex;
+  });
 
   return (
     <div className="notes-container">
@@ -246,166 +361,183 @@ const Note = () => {
             </div>
           )}
 
-          {/* Notes Grid */}
-          <div className="row">
-            {notes.length === 0 ? (
-              <div className="col-12">
-                <div className="empty-state">
-                  <div className="empty-icon">
-                    <FontAwesomeIcon icon={faUserPen} />
-                  </div>
-                  <div className="empty-title">Chưa có ghi chú nào</div>
-                  <div className="empty-subtitle">
-                    Hãy tạo ghi chú đầu tiên của bạn để bắt đầu ghi lại những
-                    kiến thức quan trọng!
-                  </div>
-                </div>
-              </div>
-            ) : (
-              notes.map((note) => (
-                <div
-                  className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
-                  key={note.noteId}
-                >
-                  {!note.editMode ? (
-                    <div className="note-card">
-                      <div className="note-card-header">
-                        <div className="note-title">
-                          <FontAwesomeIcon
-                            icon={faUserPen}
-                            className="note-icon"
-                          />
-                          {note.title}
-                        </div>
-                        <div className="note-actions">
-                          <button
-                            type="button"
-                            className="action-btn edit-btn"
-                            onClick={() => toggleEditMode(note)}
-                            title="Chỉnh sửa"
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </button>
-                          <button
-                            type="button"
-                            className="action-btn delete-btn"
-                            onClick={() => deleteNote(note.noteId)}
-                            title="Xóa"
-                          >
-                            <FontAwesomeIcon icon={faTimes} />
-                          </button>
-                        </div>
+          {/* Notes Grid with Drag & Drop */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={sortedNotes.map(note => note.noteId)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="row">
+                {sortedNotes.length === 0 ? (
+                  <div className="col-12">
+                    <div className="empty-state">
+                      <div className="empty-icon">
+                        <FontAwesomeIcon icon={faUserPen} />
                       </div>
-                      <div className="note-content-wrapper">
-                        <p className="note-content">{note.content}</p>
-                      </div>
-                      <div className="note-footer">
-                        Cập nhật:{" "}
-                        {new Date(
-                          note.updatedAt || note.createdAt
-                        ).toLocaleDateString("vi-VN", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                      <div className="empty-title">Chưa có ghi chú nào</div>
+                      <div className="empty-subtitle">
+                        Hãy tạo ghi chú đầu tiên của bạn để bắt đầu ghi lại những
+                        kiến thức quan trọng!
                       </div>
                     </div>
-                  ) : (
-                    <div className="note-card-edit">
-                      <div className="edit-header">
-                        <FontAwesomeIcon icon={faEdit} className="me-2" />
-                        Chỉnh sửa ghi chú
-                      </div>
-                      <div className="edit-body">
-                        <Formik
-                          initialValues={{
-                            title: note.title,
-                            content: note.content,
-                          }}
-                          validationSchema={noteFormSchema}
-                          onSubmit={(values) => updateNote(values, note.noteId)}
-                        >
-                          {({ isSubmitting }) => (
-                            <Form>
-                              <div className="mb-3">
-                                <label
-                                  htmlFor={`title-${note.noteId}`}
-                                  className="form-label"
-                                >
-                                  Tiêu đề{" "}
-                                  <span className="required-field">*</span>
-                                </label>
-                                <Field
-                                  name="title"
-                                  type="text"
-                                  className="form-control form-input"
-                                  id={`title-${note.noteId}`}
+                  </div>
+                ) : (
+                  sortedNotes.map((note) => (
+                    <div
+                      className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
+                      key={note.noteId}
+                    >
+                      <SortableNoteCard
+                        note={note}
+                        onEdit={toggleEditMode}
+                        onDelete={deleteNote}
+                      >
+                        {!note.editMode ? (
+                          <div className="note-card">
+                            <div className="note-card-header">
+                              <div className="note-title">
+                                <FontAwesomeIcon
+                                  icon={faUserPen}
+                                  className="note-icon"
                                 />
-                                <ErrorMessage
-                                  name="title"
-                                  component="div"
-                                  className="error-feedback"
-                                />
+                                {note.title}
                               </div>
-
-                              <div className="mb-4">
-                                <label
-                                  htmlFor={`content-${note.noteId}`}
-                                  className="form-label"
-                                >
-                                  Nội dung{" "}
-                                  <span className="required-field">*</span>
-                                </label>
-                                <Field
-                                  as="textarea"
-                                  name="content"
-                                  className="form-control form-input"
-                                  id={`content-${note.noteId}`}
-                                  rows="4"
-                                />
-                                <ErrorMessage
-                                  name="content"
-                                  component="div"
-                                  className="error-feedback"
-                                />
-                              </div>
-
-                              <div className="d-flex justify-content-end gap-2">
+                              <div className="note-actions">
                                 <button
                                   type="button"
-                                  className="btn-cancel"
+                                  className="action-btn edit-btn"
                                   onClick={() => toggleEditMode(note)}
+                                  title="Chỉnh sửa"
                                 >
-                                  <FontAwesomeIcon
-                                    icon={faTimes}
-                                    className="me-1"
-                                  />
-                                  Hủy
+                                  <FontAwesomeIcon icon={faEdit} />
                                 </button>
                                 <button
-                                  type="submit"
-                                  className="btn-save"
-                                  disabled={isSubmitting}
+                                  type="button"
+                                  className="action-btn delete-btn"
+                                  onClick={() => deleteNote(note.noteId)}
+                                  title="Xóa"
                                 >
-                                  <FontAwesomeIcon
-                                    icon={faSave}
-                                    className="me-1"
-                                  />
-                                  {isSubmitting ? "Đang lưu..." : "Lưu"}
+                                  <FontAwesomeIcon icon={faTimes} />
                                 </button>
                               </div>
-                            </Form>
-                          )}
-                        </Formik>
-                      </div>
+                            </div>
+                            <div className="note-content-wrapper">
+                              <p className="note-content">{note.content}</p>
+                            </div>
+                            <div className="note-footer">
+                              Cập nhật:{" "}
+                              {new Date(
+                                note.updatedAt || note.createdAt
+                              ).toLocaleDateString("vi-VN", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="note-card-edit">
+                            <div className="edit-header">
+                              <FontAwesomeIcon icon={faEdit} className="me-2" />
+                              Chỉnh sửa ghi chú
+                            </div>
+                            <div className="edit-body">
+                              <Formik
+                                initialValues={{
+                                  title: note.title,
+                                  content: note.content,
+                                }}
+                                validationSchema={noteFormSchema}
+                                onSubmit={(values) => updateNote(values, note.noteId)}
+                              >
+                                {({ isSubmitting }) => (
+                                  <Form>
+                                    <div className="mb-3">
+                                      <label
+                                        htmlFor={`title-${note.noteId}`}
+                                        className="form-label"
+                                      >
+                                        Tiêu đề{" "}
+                                        <span className="required-field">*</span>
+                                      </label>
+                                      <Field
+                                        name="title"
+                                        type="text"
+                                        className="form-control form-input"
+                                        id={`title-${note.noteId}`}
+                                      />
+                                      <ErrorMessage
+                                        name="title"
+                                        component="div"
+                                        className="error-feedback"
+                                      />
+                                    </div>
+
+                                    <div className="mb-4">
+                                      <label
+                                        htmlFor={`content-${note.noteId}`}
+                                        className="form-label"
+                                      >
+                                        Nội dung{" "}
+                                        <span className="required-field">*</span>
+                                      </label>
+                                      <Field
+                                        as="textarea"
+                                        name="content"
+                                        className="form-control form-input"
+                                        id={`content-${note.noteId}`}
+                                        rows="4"
+                                      />
+                                      <ErrorMessage
+                                        name="content"
+                                        component="div"
+                                        className="error-feedback"
+                                      />
+                                    </div>
+
+                                    <div className="d-flex justify-content-end gap-2">
+                                      <button
+                                        type="button"
+                                        className="btn-cancel"
+                                        onClick={() => toggleEditMode(note)}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faTimes}
+                                          className="me-1"
+                                        />
+                                        Hủy
+                                      </button>
+                                      <button
+                                        type="submit"
+                                        className="btn-save"
+                                        disabled={isSubmitting}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faSave}
+                                          className="me-1"
+                                        />
+                                        {isSubmitting ? "Đang lưu..." : "Lưu"}
+                                      </button>
+                                    </div>
+                                  </Form>
+                                )}
+                              </Formik>
+                            </div>
+                          </div>
+                        )}
+                      </SortableNoteCard>
                     </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
+                  ))
+                )}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       </div>
     </div>

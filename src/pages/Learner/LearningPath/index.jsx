@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { 
-    Card, 
-    Button, 
-    Result, 
-    Spin, 
-    Typography, 
-    Row, 
+import {
+    Card,
+    Button,
+    Result,
+    Spin,
+    Typography,
+    Row,
     Col,
     Space,
     Progress,
@@ -24,10 +24,10 @@ import {
     Select,
     DatePicker as AntdDatePicker
 } from 'antd';
-import { 
-    BookOutlined, 
-    PlusOutlined, 
-    DashboardOutlined, 
+import {
+    BookOutlined,
+    PlusOutlined,
+    DashboardOutlined,
     TrophyOutlined,
     ClockCircleOutlined,
     CheckCircleOutlined,
@@ -39,8 +39,8 @@ import {
     DeleteOutlined,
     ExclamationCircleOutlined
 } from '@ant-design/icons';
-import '../../assets/css/aiLearningPath.css';
-import useAILearningPath from '../../hooks/useAILearningPath';
+import '../../../assets/css/aiLearningPath.css';
+import useAILearningPath from '../../../hooks/useAILearningPath';
 
 // Style constants
 const loadingBoxStyle = {
@@ -117,17 +117,17 @@ const LearningPathPage = () => {
 
     const userData = getUserData();
     const userId = userData.id;
-    
+
     // Set page title
     useEffect(() => {
-        document.title = 'Lộ trình học tập AI - TOEIC Learning Path';
+        document.title = 'Lộ trình học tập AI | TOEIC Learning Platform';
         return () => {
             document.title = 'TOEIC Admin'; // Reset title khi rời khỏi trang
         };
     }, []);
-    
+
     console.log('User data:', userData, 'User ID:', userId);
-    
+
     // Use AI Learning Path hook
     const {
         learningPaths,
@@ -144,7 +144,7 @@ const LearningPathPage = () => {
         hasLearningPaths,
         currentPathProgress
     } = useAILearningPath(userId);
-    
+
         const [activeTab, setActiveTab] = useState('dashboard');
         const [showCreateModal, setShowCreateModal] = useState(false);
         const [createForm] = Form.useForm();
@@ -157,7 +157,7 @@ const LearningPathPage = () => {
             console.error('No userId found for quick path creation');
             return;
         }
-        
+
         try {
             console.log('Creating quick path for userId:', userId);
             // Thêm ngày bắt đầu mặc định là ngày hôm nay
@@ -194,18 +194,18 @@ const LearningPathPage = () => {
     // Handle Activity Progress Update
     const handleActivityComplete = async (activityId, isCompleted) => {
         if (!currentPath) return;
-        
+
         try {
-            console.log('Completing activity:', { 
-                pathId: currentPath._id, 
-                activityId, 
-                isCompleted 
+            console.log('Completing activity:', {
+                pathId: currentPath._id,
+                activityId,
+                isCompleted
             });
 
             // Update local state immediately (optimistic update)
             const updatedPath = { ...currentPath };
             let activityFound = false;
-            
+
             if (updatedPath.weeklySchedule) {
                 updatedPath.weeklySchedule = updatedPath.weeklySchedule.map(week => ({
                     ...week,
@@ -224,7 +224,7 @@ const LearningPathPage = () => {
                 // Recalculate progress
                 let completedCount = 0;
                 let totalCount = 0;
-                
+
                 updatedPath.weeklySchedule.forEach(week => {
                     week.days.forEach(day => {
                         day.activities.forEach(activity => {
@@ -265,11 +265,11 @@ const LearningPathPage = () => {
             if (activityFound) {
                 // Update current path
                 setCurrentPath(updatedPath);
-                
+
                 // Update in learning paths list
-                setLearningPaths(prev => 
-                    prev.map(path => 
-                        path._id === currentPath._id 
+                setLearningPaths(prev =>
+                    prev.map(path =>
+                        path._id === currentPath._id
                             ? updatedPath
                             : path
                     )
@@ -378,19 +378,19 @@ const LearningPathPage = () => {
                 title="Chưa có lộ trình học tập nào"
                 subTitle="Hãy tạo lộ trình học tập AI đầu tiên để bắt đầu hành trình TOEIC của bạn!"
                 extra={[
-                    <Button 
+                    <Button
                         key="quick"
-                        type="primary" 
-                        icon={<RocketOutlined />} 
+                        type="primary"
+                        icon={<RocketOutlined />}
                         onClick={handleQuickPathCreate}
                         loading={loading}
                         size="large"
                     >
                         Tạo lộ trình nhanh 4 tuần
                     </Button>,
-                    <Button 
+                    <Button
                         key="custom"
-                        icon={<PlusOutlined />} 
+                        icon={<PlusOutlined />}
                         onClick={() => setShowCreateModal(true)}
                         size="large"
                     >
@@ -401,7 +401,7 @@ const LearningPathPage = () => {
         </div>
     ));
 
-    // Dashboard Component  
+    // Dashboard Component
     const [showAllDays, setShowAllDays] = useState(false);
     const LearningPathDashboard = () => {
         if (!hasLearningPaths) {
@@ -426,7 +426,7 @@ const LearningPathPage = () => {
                                             <TrophyOutlined /> {currentPath.title}
                                         </Title>
                                         <Text type="secondary">
-                                            Mục tiêu: {currentPath.targetScore} điểm | 
+                                            Mục tiêu: {currentPath.targetScore} điểm |
                                             Thời gian: {currentPath.estimatedDuration || currentPath.duration} tuần
                                         </Text>
                                     </div>
@@ -451,9 +451,9 @@ const LearningPathPage = () => {
                                         </Button>
                                     </Space>
                                 </div>
-                                
+
                                 <div className="progress-section">
-                                    <Progress 
+                                    <Progress
                                         percent={currentPathProgress}
                                         strokeColor={{
                                             '0%': '#108ee9',
@@ -472,57 +472,57 @@ const LearningPathPage = () => {
                                         </Title>
                                         {(() => {
                                             const todayDate = dayjs().format('YYYY-MM-DD');
-                                            
+
                                             // Tìm tuần chứa ngày hôm nay trước, nếu không có thì dùng logic cũ
                                             let weekData = null;
-                                            
+
                                             // Ưu tiên tìm tuần có chứa ngày hôm nay
-                                            weekData = currentPath.weeklySchedule.find(week => 
+                                            weekData = currentPath.weeklySchedule.find(week =>
                                                 week.days && week.days.some(day => day.date === todayDate)
                                             );
-                                            
+
                                             // Nếu không tìm thấy tuần chứa ngày hôm nay, dùng logic dựa trên ngày thực tế
                                             if (!weekData) {
                                                 // Tính tuần hiện tại dựa trên ngày bắt đầu lộ trình và ngày hôm nay
                                                 const pathStartDate = currentPath.startDate ? dayjs(currentPath.startDate) : null;
                                                 const today = dayjs();
-                                                
+
                                                 let currentWeek = 1; // Mặc định tuần 1
-                                                
+
                                                 if (pathStartDate) {
                                                     // Tính số ngày đã trải qua từ ngày bắt đầu
                                                     const daysPassed = today.diff(pathStartDate, 'day');
-                                                    
+
                                                     // Xác định startDate là thứ mấy trong tuần (0 = Chủ nhật, 1 = Thứ 2, ..., 6 = Thứ 7)
                                                     const startDayOfWeek = pathStartDate.day();
-                                                    
+
                                                     console.log('=== WEEK CALCULATION DEBUG ===');
                                                     console.log('Path start date:', pathStartDate.format('YYYY-MM-DD dddd'));
                                                     console.log('Start day of week:', startDayOfWeek, '(0=CN, 1=T2, 2=T3, 3=T4, 4=T5, 5=T6, 6=T7)');
                                                     console.log('Today:', today.format('YYYY-MM-DD dddd'));
                                                     console.log('Days passed:', daysPassed);
-                                                    
+
                                                     if (daysPassed >= 0) {
                                                         // Tính tuần hiện tại: mỗi 7 ngày = 1 tuần
                                                         currentWeek = Math.floor(daysPassed / 7) + 1;
                                                     }
-                                                    
+
                                                     console.log('Calculated current week:', currentWeek);
                                                     console.log('Logic: Tuần 1 bắt đầu từ', pathStartDate.format('DD/MM (dddd)'), 'và kéo dài 7 ngày');
                                                 }
-                                                
+
                                                 // Đảm bảo currentWeek không vượt quá số tuần có trong lộ trình
                                                 currentWeek = Math.min(currentWeek, currentPath.weeklySchedule.length);
-                                                
+
                                                 // Tìm tuần dựa trên currentWeek đã tính
                                                 weekData = currentPath.weeklySchedule.find(w => w.week === currentWeek);
-                                                
+
                                                 // Nếu tìm thấy tuần và còn hoạt động chưa hoàn thành trong tuần đó
                                                 if (weekData && weekData.days) {
-                                                    const hasIncompleteActivities = weekData.days.some(day => 
+                                                    const hasIncompleteActivities = weekData.days.some(day =>
                                                         day.activities && day.activities.some(activity => !activity.isCompleted)
                                                     );
-                                                    
+
                                                     // Nếu tuần hiện tại vẫn có hoạt động chưa hoàn thành, giữ nguyên
                                                     // Nếu tuần hiện tại đã hoàn thành hết, chuyển sang tuần tiếp theo (nếu có)
                                                     if (!hasIncompleteActivities && currentWeek < currentPath.weeklySchedule.length) {
@@ -533,51 +533,51 @@ const LearningPathPage = () => {
                                                     }
                                                 }
                                             }
-                                            
+
                                             // Nếu vẫn không tìm thấy, lấy tuần đầu tiên
                                             if (!weekData && currentPath.weeklySchedule.length > 0) {
                                                 weekData = currentPath.weeklySchedule[0];
                                             }
-                                            
+
                                             if (!weekData || !weekData.days) {
                                                 return <Text type="secondary">Không có hoạt động nào cho tuần này</Text>;
                                             }
-                                            
+
                                             // Tìm ngày đầu tiên chưa hoàn thành tất cả hoạt động (bỏ qua weekend)
                                             let firstIncompleteDay = null;
                                             let firstIncompleteDayIdx = -1;
-                                            
+
                                             for (let i = 0; i < weekData.days.length; i++) {
                                                 const day = weekData.days[i];
                                                 const isWeekend = dayjs(day.date).day() === 0 || dayjs(day.date).day() === 6;
-                                                
+
                                                 if (!isWeekend && day.activities.some(a => !a.isCompleted)) {
                                                     firstIncompleteDay = day;
                                                     firstIncompleteDayIdx = i;
                                                     break;
                                                 }
                                             }
-                                            
+
                                             // Xác định ngày nào được ưu tiên hiển thị lên đầu
                                             let priorityDay = null;
                                             let shouldShowAlert = false;
-                                            
+
                                             // Ưu tiên 1: Luôn ưu tiên ngày hôm nay nếu có trong tuần
                                             const todayInWeek = weekData.days.find(day => day.date === todayDate);
-                                            
+
                                             if (todayInWeek) {
                                                 // Có ngày hôm nay trong tuần -> luôn ưu tiên ngày hôm nay
                                                 priorityDay = todayInWeek;
                                             } else if (firstIncompleteDay) {
                                                 // Không có ngày hôm nay và có ngày chưa hoàn thành
                                                 const dayIndex = firstIncompleteDayIdx;
-                                                
+
                                                 // Kiểm tra tất cả ngày trước đã hoàn thành chưa
                                                 const allPreviousDaysCompleted = weekData.days.slice(0, dayIndex).every(prevDay => {
                                                     const isPrevWeekend = dayjs(prevDay.date).day() === 0 || dayjs(prevDay.date).day() === 6;
                                                     return isPrevWeekend || prevDay.activities.every(a => a.isCompleted);
                                                 });
-                                                
+
                                                 if (!allPreviousDaysCompleted) {
                                                     // Có ngày trước chưa hoàn thành -> ưu tiên ngày trước đó
                                                     for (let i = 0; i < dayIndex; i++) {
@@ -597,7 +597,7 @@ const LearningPathPage = () => {
                                                 // Tất cả ngày đã hoàn thành và không có ngày hôm nay -> hiển thị ngày gần nhất
                                                 priorityDay = weekData.days[weekData.days.length - 1];
                                             }
-                                            
+
                                             let daysToShow = [];
                                             if (showAllDays) {
                                                 // Hiển thị toàn bộ, đưa ngày ưu tiên lên đầu
@@ -644,20 +644,20 @@ const LearningPathPage = () => {
                                                             </div>
                                                         );
                                                     }
-                                                    
+
                                                     // Xác định trạng thái của ngày
                                                     const todayDate = dayjs().format('YYYY-MM-DD');
                                                     const isToday = day.date === todayDate;
                                                     const dayIndex = weekData.days.findIndex(d => d.date === day.date);
                                                     const allActivitiesDone = day.activities.every(a => a.isCompleted);
                                                     const isFuture = dayjs(day.date).isAfter(todayDate, 'day');
-                                                    
+
                                                     // Kiểm tra tất cả ngày trước đã hoàn thành chưa (bỏ qua weekend)
                                                     const allPreviousDaysCompleted = weekData.days.slice(0, dayIndex).every(prevDay => {
                                                         const isPrevWeekend = dayjs(prevDay.date).day() === 0 || dayjs(prevDay.date).day() === 6;
                                                         return isPrevWeekend || prevDay.activities.every(a => a.isCompleted);
                                                     });
-                                                    
+
                                                     // Logic disable checkbox và styling
                                                     let checkboxDisabled = true;
                                                     let backgroundColor = '#fafafa';
@@ -665,7 +665,7 @@ const LearningPathPage = () => {
                                                     let dayColor = '#aaa';
                                                     let borderStyle = '1px solid #f0f0f0';
                                                     let boxShadow = 'none';
-                                                    
+
                                                     if (disableAllCheckbox) {
                                                         // Chưa đến ngày bắt đầu lộ trình
                                                         checkboxDisabled = true;
@@ -708,7 +708,7 @@ const LearningPathPage = () => {
                                                         checkboxDisabled = true;
                                                         subLabel = 'Chưa đến ngày này';
                                                     }
-                                                    
+
                                                     return (
                                                         <div key={day.date} style={{
                                                             marginBottom: 16,
@@ -719,17 +719,17 @@ const LearningPathPage = () => {
                                                             boxShadow: boxShadow,
                                                             transition: 'all 0.3s ease'
                                                         }}>
-                                                            <div style={{ 
-                                                                fontWeight: 600, 
-                                                                marginBottom: 8, 
+                                                            <div style={{
+                                                                fontWeight: 600,
+                                                                marginBottom: 8,
                                                                 color: dayColor,
                                                                 fontSize: !checkboxDisabled ? 16 : 14
                                                             }}>
                                                                 {day.dayName} ({day.date})
                                                                 {subLabel && (
-                                                                    <span style={{ 
-                                                                        marginLeft: 8, 
-                                                                        color: allActivitiesDone ? '#52c41a' : (!checkboxDisabled ? '#1890ff' : '#faad14'), 
+                                                                    <span style={{
+                                                                        marginLeft: 8,
+                                                                        color: allActivitiesDone ? '#52c41a' : (!checkboxDisabled ? '#1890ff' : '#faad14'),
                                                                         fontWeight: 400,
                                                                         fontSize: 12
                                                                     }}>
@@ -747,7 +747,7 @@ const LearningPathPage = () => {
                                                                                 checked={activity.isCompleted}
                                                                                 disabled={checkboxDisabled}
                                                                                 onChange={(e) => handleActivityComplete(
-                                                                                    activity._id, 
+                                                                                    activity._id,
                                                                                     e.target.checked
                                                                                 )}
                                                                             >
@@ -937,14 +937,14 @@ const LearningPathPage = () => {
                     {/* Weekly Milestones */}
                     {currentPath && currentPath.milestones && (
                         <Col span={24}>
-                            <Card title={<><CalendarOutlined /> Cột mốc theo tuần</>}>
+                            <Card title={<><CalendarOutlined /> Cột mốc theo tuần</>} >
                                 <Timeline>
                                     {currentPath.milestones.map((milestone, index) => (
-                                        <Timeline.Item 
+                                        <Timeline.Item
                                             key={milestone._id}
                                             color={milestone.isCompleted ? 'green' : 'blue'}
-                                            dot={milestone.isCompleted ? 
-                                                <CheckCircleOutlined style={{ fontSize: '16px' }} /> : 
+                                            dot={milestone.isCompleted ?
+                                                <CheckCircleOutlined style={{ fontSize: '16px' }} /> :
                                                 <ClockCircleOutlined style={{ fontSize: '16px' }} />
                                             }
                                         >
@@ -983,7 +983,7 @@ const LearningPathPage = () => {
                                 <div>
                                     <Title level={4}>Lộ trình nhanh 4 tuần</Title>
                                     <Paragraph>
-                                        AI sẽ tự động tạo lộ trình học tập 4 tuần phù hợp với trình độ hiện tại của bạn, 
+                                        AI sẽ tự động tạo lộ trình học tập 4 tuần phù hợp với trình độ hiện tại của bạn,
                                         tập trung vào các kỹ năng cần thiết để cải thiện điểm số TOEIC. Lộ trình sẽ bắt đầu từ hôm nay.
                                     </Paragraph>
                                     <ul>
@@ -995,8 +995,8 @@ const LearningPathPage = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <Button 
-                                type="primary" 
+                            <Button
+                                type="primary"
                                 size="large"
                                 icon={<RocketOutlined />}
                                 onClick={handleQuickPathCreate}
@@ -1013,8 +1013,8 @@ const LearningPathPage = () => {
                         <Title level={4}>
                             <PlusOutlined /> Tạo lộ trình tùy chỉnh
                         </Title>
-                        <Button 
-                            type="default" 
+                        <Button
+                            type="default"
                             size="large"
                             onClick={() => setShowCreateModal(true)}
                         >
@@ -1049,15 +1049,15 @@ const LearningPathPage = () => {
                             <Card
                                 className={`path-card ${currentPath?._id === path._id ? 'active' : ''}`}
                                 actions={[
-                                    <Button 
-                                        type="text" 
+                                    <Button
+                                        type="text"
                                         onClick={() => setCurrentPath(path)}
                                         disabled={currentPath?._id === path._id}
                                     >
                                         {currentPath?._id === path._id ? 'Đang active' : 'Chọn'}
                                     </Button>,
-                                    <Button 
-                                        type="text" 
+                                    <Button
+                                        type="text"
                                         danger
                                         icon={<DeleteOutlined />}
                                         onClick={() => handleDeletePath(path._id)}
@@ -1081,9 +1081,9 @@ const LearningPathPage = () => {
                                             <p>Mục tiêu: {path.targetScore} điểm</p>
                                             <p>Thời gian: {path.estimatedDuration || path.duration} tuần</p>
                                             <p>Trạng thái: {path.isActive ? 'Đang hoạt động' : 'Không hoạt động'}</p>
-                                            <Progress 
-                                                percent={path.progress ? 
-                                                    Math.round((path.progress.completedActivities / path.progress.totalActivities) * 100) 
+                                            <Progress
+                                                percent={path.progress ?
+                                                    Math.round((path.progress.completedActivities / path.progress.totalActivities) * 100)
                                                     : 0
                                                 }
                                                 size="small"
@@ -1130,8 +1130,8 @@ const LearningPathPage = () => {
                 />
             )}
 
-            <Tabs 
-                activeKey={activeTab} 
+            <Tabs
+                activeKey={activeTab}
                 onChange={setActiveTab}
                 className="ai-learning-path-tabs"
             >
@@ -1349,8 +1349,8 @@ const LearningPathPage = () => {
                             }}>
                                 Hủy
                             </Button>
-                            <Button 
-                                type="primary" 
+                            <Button
+                                type="primary"
                                 htmlType="submit"
                                 loading={loading}
                                 icon={<BulbOutlined />}

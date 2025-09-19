@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Rate, message, Typography } from "antd";
-import feedbackService from "../../services/feedbackService";
+import feedbackService from "../../../services/feedbackService";
 import { CheckCircleTwoTone } from "@ant-design/icons";
 
 // Custom CSS cho ngôi sao đánh giá
@@ -25,6 +25,10 @@ const { TextArea } = Input;
 const Feedback = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    document.title = "Góp ý & Đánh giá | TOEIC Learning Platform";
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -57,16 +61,16 @@ const Feedback = () => {
           Hãy cho chúng tôi biết ý kiến, góp ý hoặc báo lỗi để nền tảng ngày càng hoàn thiện hơn!
         </Paragraph>
         <Form layout="vertical" onFinish={onFinish} autoComplete="off" form={form}>
-          <Form.Item name="name" label="Tên của bạn" rules={[{ required: true, message: "Vui lòng nhập tên" }]}> 
+          <Form.Item name="name" label="Tên của bạn" rules={[{ required: true, message: "Vui lòng nhập tên" }]}>
             <Input placeholder="Nhập tên của bạn" maxLength={50} />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[{ required: true, message: "Vui lòng nhập email hợp lệ", type: "email" }]}> 
+          <Form.Item name="email" label="Email" rules={[{ required: true, message: "Vui lòng nhập email hợp lệ", type: "email" }]}>
             <Input placeholder="Nhập email" maxLength={100} />
           </Form.Item>
-          <Form.Item name="review" label="Nội dung góp ý/đánh giá" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}> 
+          <Form.Item name="review" label="Nội dung góp ý/đánh giá" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}>
             <TextArea rows={5} placeholder="Mô tả chi tiết góp ý, báo lỗi hoặc đánh giá của bạn..." maxLength={1000} />
           </Form.Item>
-          <Form.Item name="rating" label="Đánh giá chất lượng (1-5 sao)" rules={[{ required: true, message: "Vui lòng chọn số sao đánh giá" }]}> 
+          <Form.Item name="rating" label="Đánh giá chất lượng (1-5 sao)" rules={[{ required: true, message: "Vui lòng chọn số sao đánh giá" }]}>
             <Rate allowClear />
           </Form.Item>
           <Form.Item>

@@ -785,7 +785,7 @@ const LearnerLayout = () => {
             <Button
               type="link"
               size="small"
-              onClick={() => markAllAsRead(info.id)}
+              onClick={() => dispatch(markAllAsRead(info.id))}
               style={{ 
                 padding: "4px 8px", 
                 fontSize: "12px",
@@ -1123,7 +1123,7 @@ const LearnerLayout = () => {
                 {item.children && !collapsed && (
                   <ul className={`nav-submenu ${openKeys.includes(item.key) ? 'expanded' : 'collapsed'}`}>
                     {item.children.map((sub, index) => (
-                      <li key={sub.key} style={{ animationDelay: `${index * 0.1}s` }}>
+                      <li key={sub.key}>
                         <div
                           className={`nav-link ${location.pathname === sub.key ? 'active' : ''}`}
                           onClick={() => window.location.pathname = sub.key}

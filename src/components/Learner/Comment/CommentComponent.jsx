@@ -158,10 +158,10 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
         marginBottom: "12px"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          {comment.user.image ? (
+          {comment.user?.image ? (
             <>
               <Avatar
-                src={comment.user.image}
+                src={comment.user?.image}
                 style={{ backgroundColor: "#1890ff", color: "#fff" }}
                 size={40}
               />
@@ -179,7 +179,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
           <div>
             <Text strong style={{ fontSize: "14px", color: "#262626" }}>
-              {comment.user.name || "Người dùng"}
+              {comment.user?.name || comment.userName || "Người dùng"}
             </Text>
             <br />
             <Text type="secondary" style={{ fontSize: "12px" }}>

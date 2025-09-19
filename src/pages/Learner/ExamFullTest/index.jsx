@@ -41,6 +41,8 @@ const ExamFullTest = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    document.title = "Bài thi TOEIC đầy đủ | TOEIC Learning Platform";
+
     const retrieveExams = async () => {
       try {
         setLoading(true);
