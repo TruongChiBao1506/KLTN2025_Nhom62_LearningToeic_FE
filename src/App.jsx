@@ -11,33 +11,31 @@ import LearnerRoutes from "./routes/LearnerRoutes";
 import AuthRoutes from "./routes/AuthRoutes";
 import NotFound from "./pages/NotFound";
 import AdminRoutes from "./routes/AdminRoutes";
-import { NotificationProvider } from "./contexts/NotificationContext";
 
 function App() {
   return (
-    <NotificationProvider>
-      <Router>
-        <Routes>
-          {/* Auth Routes */}
-          {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/auth/*" element={<AuthRoutes />} />
+    <Router>
+      <Routes>
+        {/* Auth Routes */}
+        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/auth/*" element={<AuthRoutes />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/*" element={<AdminRoutes />} />
+        {/* Admin Routes */}
+        <Route path="/admin/*" element={<AdminRoutes />} />
 
-          {/* Learner Routes */}
-          <Route path="/learner/*" element={<LearnerRoutes />} />
+        {/* Learner Routes */}
+        <Route path="/learner/*" element={<LearnerRoutes />} />
 
-          {/* Default Redirects */}
-          <Route path="/" element={<Navigate to="/auth/signin" replace />} />
+        {/* Default Redirects */}
+        <Route path="/" element={<Navigate to="/auth/signin" replace />} />
 
-          {/* 404 Page */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        {/* 404 Page */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
 
-        {/* Toast Notifications */}
-        <ToastContainer
-          position="top-right"
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -49,7 +47,7 @@ function App() {
           theme="light"
         />
       </Router>
-    </NotificationProvider>
+    
   );
 }
 

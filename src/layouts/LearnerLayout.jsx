@@ -36,7 +36,7 @@ import authService from "../services/authService";
 import sectionService from "../services/sectionsService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
 import { useAuthStore } from '../hooks/useAuthStore';
-import { useNotificationContext } from '../contexts/NotificationContext';
+import { fetchNotifications, markAsRead, markAllAsRead, addNotification } from '../store/notificationSlice.js';
 import socketService from '../services/socketService';
 
 import "./LearnerLayout.css";
@@ -53,7 +53,9 @@ const LearnerLayout = () => {
   // State for submenu open keys (for sidebar)
   const [openKeys, setOpenKeys] = useState([]);
   const { info } = useAuthStore();
-  const { notifications, markAsRead, markAllAsRead, unreadCount, addNotification, fetchNotifications } = useNotificationContext();
+  const dispatch = useDispatch();
+  const notifications = useSelector(state => state.notifications.notifications);
+  const unreadCount = useSelector(state => state.notifications.unreadCount);
 
   // Kết nối socket và setup listener khi LearnerLayout mount
   useEffect(() => {
@@ -64,18 +66,18 @@ const LearnerLayout = () => {
       // Setup listener cho notification
       const handleNewNotification = (notification) => {
         console.log('🔔 Real-time notification received in LearnerLayout:', notification);
-        addNotification(notification); // Thêm vào context
+        dispatch(addNotification(notification)); // Thêm vào Redux store
       };
       socketService.on('notification', handleNewNotification);
 
       // Fetch initial notifications
-      fetchNotifications(info.id);
+      dispatch(fetchNotifications(info.id));
 
       return () => {
         socketService.off('notification', handleNewNotification);
       };
     }
-  }, [info?.id, addNotification, fetchNotifications]);
+  }, [info?.id, dispatch]);
 
   // Toggle submenu open/close
   const handleToggleSubmenu = (keys) => {
@@ -99,7 +101,6 @@ const LearnerLayout = () => {
     setSearchQuery("");
   };
   const location = useLocation();
-  const dispatch = useDispatch();
 
   // States
   const [collapsed, setCollapsed] = useState(false);

@@ -1,5 +1,6 @@
 
 import { createSlice, configureStore } from '@reduxjs/toolkit';
+import notificationReducer from './notificationSlice.js';
 import {
   persistStore,
   persistReducer,
@@ -55,6 +56,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authSlice.reducer);
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    notifications: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

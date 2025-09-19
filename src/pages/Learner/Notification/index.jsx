@@ -1,10 +1,12 @@
 import React from "react";
-import { useNotificationContext } from '../../../contexts/NotificationContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { markAsRead, markAllAsRead } from '../../../store/notificationSlice.js';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import "./style.css";
 
 const Notification = () => {
-  const { notifications, markAsRead, markAllAsRead } = useNotificationContext();
+  const dispatch = useDispatch();
+  const notifications = useSelector(state => state.notifications.notifications);
   const { info } = useAuthStore();
 
   return (
@@ -12,10 +14,10 @@ const Notification = () => {
       <div className="notification-card">
         <div className="notification-header">
           <h2 className="notification-title">Thông báo của bạn</h2>
-          {notifications.length > 0 && (
+          {notifications.length > 0 && notifications.some(n => !n.isRead) && (
             <button
               className="mark-all-btn"
-              onClick={() => markAllAsRead(info.id)}
+              onClick={() => dispatch(markAllAsRead(info.id))}
             >
               <i className="fas fa-check-double"></i>
               Đánh dấu tất cả đã đọc
@@ -38,13 +40,20 @@ const Notification = () => {
                     </span>
                   </div>
                   <div className="notification-actions">
-                    <button
-                      className="mark-read-btn"
-                      onClick={() => markAsRead(notification.id || notification._id)}
-                    >
-                      <i className="fas fa-check"></i>
-                      Đánh dấu đã đọc
-                    </button>
+                    {!notification.isRead ? (
+                      <button
+                        className="mark-read-btn"
+                        onClick={() => dispatch(markAsRead(notification.id || notification._id))}
+                      >
+                        <i className="fas fa-check"></i>
+                        Đánh dấu đã đọc
+                      </button>
+                    ) : (
+                      <div className="read-status">
+                        <i className="fas fa-check-circle" style={{ color: '#28a745' }}></i>
+                        <span style={{ color: '#28a745', fontSize: '0.8rem', marginLeft: '4px' }}>Đã đọc</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
