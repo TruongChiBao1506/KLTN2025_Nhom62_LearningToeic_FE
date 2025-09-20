@@ -624,19 +624,22 @@ const Dictionary = () => {
 
   // Translation Tab Content
   const translationContent = (
-    <div style={{ padding: "16px 0" }}>
+    <div style={{ padding: "24px 0" }} className="fade-in-up">
       {/* Translation Mode Selector */}
       <Card
         size="small"
         style={{
-          marginBottom: "16px",
-          borderRadius: "8px",
-          border: "1px solid #d6e4ff",
+          marginBottom: "24px",
+          borderRadius: "16px",
+          border: "1px solid #e6f7ff",
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)",
+          boxShadow: "0 4px 12px rgba(24, 144, 255, 0.1)"
         }}
+        className="slide-in-left"
       >
         <Row align="middle" gutter={16}>
           <Col>
-            <Languages size={20} style={{ color: "#1890ff" }} />
+            <Languages size={24} style={{ color: "#1890ff" }} />
           </Col>
           <Col flex="auto">
             <Select
@@ -644,17 +647,21 @@ const Dictionary = () => {
               onChange={handleTranslationModeChange}
               style={{ width: "100%" }}
               size="large"
+              dropdownStyle={{
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+              }}
             >
               <Option value="en-vi">
                 <Space>
-                  <Globe size={16} />
-                  Tiếng Anh → Tiếng Việt
+                  <Globe size={18} />
+                  <span style={{ fontWeight: "500" }}>Tiếng Anh → Tiếng Việt</span>
                 </Space>
               </Option>
               <Option value="vi-en">
                 <Space>
-                  <Globe size={16} />
-                  Tiếng Việt → Tiếng Anh
+                  <Globe size={18} />
+                  <span style={{ fontWeight: "500" }}>Tiếng Việt → Tiếng Anh</span>
                 </Space>
               </Option>
             </Select>
@@ -663,17 +670,22 @@ const Dictionary = () => {
       </Card>
 
       {/* Translation Interface */}
-      <Row gutter={16}>
+      <Row gutter={24}>
         {/* Input Column */}
         <Col xs={24} md={12}>
           <Card
             title={
               <Space>
-                <FileText size={16} />
-                Văn bản gốc
+                <FileText size={18} />
+                <span style={{ fontWeight: "600", color: "#1890ff" }}>Văn bản gốc</span>
               </Space>
             }
-            style={{ borderRadius: "12px" }}
+            style={{ 
+              borderRadius: "16px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              border: "1px solid #f0f0f0"
+            }}
+            className="slide-in-left"
             extra={
               <Space>
                 <Select
@@ -692,7 +704,7 @@ const Dictionary = () => {
                   ghost
                   size="small"
                   icon={
-                    isTranslating ? <MicOff size={14} /> : <Mic size={14} />
+                    isTranslating ? <MicOff size={16} /> : <Mic size={16} />
                   }
                   onClick={
                     isTranslating
@@ -700,13 +712,15 @@ const Dictionary = () => {
                       : startTranslationSpeechRecognition
                   }
                   loading={isTranslating}
+                  style={{ borderRadius: "8px" }}
                 >
                   {isTranslating ? "Dừng" : "Ghi âm"}
                 </Button>
                 <Button
                   size="small"
-                  icon={<RotateCcw size={14} />}
+                  icon={<RotateCcw size={16} />}
                   onClick={clearTranslation}
+                  style={{ borderRadius: "8px" }}
                 >
                   Xóa
                 </Button>
@@ -722,11 +736,16 @@ const Dictionary = () => {
                 maxLength={5000}
                 style={{
                   resize: "none",
-                  borderColor: isListening ? "#ff4d4f" : undefined,
+                  borderColor: isListening ? "#ff4d4f" : "#d9d9d9",
                   borderWidth: isListening ? "2px" : "1px",
+                  borderRadius: "12px",
                   boxShadow: isListening
                     ? "0 0 10px rgba(255, 77, 79, 0.3)"
-                    : undefined,
+                    : "0 2px 8px rgba(0,0,0,0.08)",
+                  fontSize: "15px",
+                  lineHeight: "1.6",
+                  transition: "all 0.3s ease",
+                  background: "white"
                 }}
               />
               {isListening && (
@@ -781,24 +800,30 @@ const Dictionary = () => {
           <Card
             title={
               <Space>
-                <Languages size={16} />
-                Bản dịch
+                <Languages size={18} />
+                <span style={{ fontWeight: "600", color: "#52c41a" }}>Bản dịch</span>
                 {translating && <Spin size="small" />}
               </Space>
             }
-            style={{ borderRadius: "12px" }}
+            style={{ 
+              borderRadius: "16px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              border: "1px solid #f0f0f0"
+            }}
+            className="slide-in-right"
             extra={
               <Button
                 type={isPlaying ? "danger" : "primary"}
                 ghost
                 size="small"
-                icon={isPlaying ? <Pause size={14} /> : <Volume2 size={14} />}
+                icon={isPlaying ? <Pause size={16} /> : <Volume2 size={16} />}
                 onClick={
                   isPlaying
                     ? stopConvertedTextSpeech
                     : convertTranslatedTextToSpeech
                 }
                 disabled={!translatedTextTemp.trim()}
+                style={{ borderRadius: "8px" }}
               >
                 {isPlaying ? "Dừng" : "Nghe"}
               </Button>
@@ -811,18 +836,44 @@ const Dictionary = () => {
               readOnly
               style={{
                 resize: "none",
-                background: "#fafafa",
+                background: "linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)",
+                border: "1px solid #e6f7ff",
+                borderRadius: "12px",
+                fontSize: "15px",
+                lineHeight: "1.6",
+                color: "#262626",
+                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)"
               }}
             />
             {translating && (
               <div
                 style={{
-                  marginTop: "8px",
+                  marginTop: "16px",
                   textAlign: "center",
                   color: "#1890ff",
+                  background: "linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)",
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  border: "1px solid #d6e4ff",
+                  boxShadow: "0 4px 12px rgba(24, 144, 255, 0.1)"
                 }}
               >
-                <Spin size="small" /> Đang dịch...
+                <Spin size="small" style={{ color: "#1890ff" }} />
+                <div style={{ 
+                  marginTop: "8px", 
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#1890ff"
+                }}>
+                  Đang dịch văn bản...
+                </div>
+                <div style={{ 
+                  fontSize: "12px",
+                  color: "#8c8c8c",
+                  marginTop: "4px"
+                }}>
+                  Vui lòng đợi trong giây lát
+                </div>
               </div>
             )}
           </Card>
@@ -833,14 +884,17 @@ const Dictionary = () => {
 
   // Dictionary Tab Content
   const dictionaryContent = (
-    <div style={{ padding: "16px 0" }}>
+    <div style={{ padding: "24px 0" }} className="fade-in-up">
       {/* Search Box */}
       <Card
         style={{
-          marginBottom: "16px",
-          borderRadius: "12px",
-          border: "1px solid #d6e4ff",
+          marginBottom: "24px",
+          borderRadius: "16px",
+          border: "1px solid #e6f7ff",
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)",
+          boxShadow: "0 4px 12px rgba(24, 144, 255, 0.1)"
         }}
+        className="slide-in-left"
       >
         <Row gutter={12}>
           <Col flex="auto">
@@ -850,17 +904,30 @@ const Dictionary = () => {
               value={inputWord}
               onChange={(e) => setInputWord(e.target.value)}
               onPressEnter={() => searchWord()}
-              prefix={<Search size={16} style={{ color: "#8c8c8c" }} />}
+              prefix={<Search size={18} style={{ color: "#1890ff" }} />}
+              style={{
+                borderRadius: "12px",
+                border: "2px solid transparent",
+                background: "white",
+                transition: "all 0.3s ease",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+              }}
             />
           </Col>
           <Col>
             <Button
               type="primary"
               size="large"
-              icon={<Search size={16} />}
+              icon={<Search size={18} />}
               onClick={() => searchWord()}
               loading={searching}
-              style={{ borderRadius: "6px" }}
+              style={{ 
+                borderRadius: "12px",
+                height: "48px",
+                boxShadow: "0 4px 12px rgba(24, 144, 255, 0.3)",
+                transition: "all 0.3s ease"
+              }}
+              title="Tìm kiếm từ trong từ điển"
             >
               Tìm kiếm
             </Button>
@@ -875,31 +942,33 @@ const Dictionary = () => {
                 <div
                   style={{
                     background: "white",
-                    borderRadius: "8px",
-                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.12)",
-                    border: "1px solid #d9d9d9",
+                    borderRadius: "12px",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+                    border: "1px solid #f0f0f0",
                   }}
                 >
                   <Card
                     title={
                       <Space>
-                        <History size={16} />
-                        Lịch sử tìm kiếm
-                        <Badge count={searchHistory.length} />
+                        <History size={18} />
+                        <span style={{ fontWeight: "600" }}>Lịch sử tìm kiếm</span>
+                        <Badge count={searchHistory.length} style={{ backgroundColor: "#1890ff" }} />
                       </Space>
                     }
                     style={{
-                      width: 350,
-                      maxHeight: 400,
+                      width: 380,
+                      maxHeight: 420,
                       overflow: "auto",
                       border: "none",
+                      borderRadius: "12px"
                     }}
                     extra={
                       <Button
                         size="small"
-                        icon={<Trash2 size={14} />}
+                        icon={<Trash2 size={16} />}
                         onClick={clearHistory}
                         disabled={searchHistory.length === 0}
+                        style={{ borderRadius: "6px" }}
                       >
                         Xóa tất cả
                       </Button>
@@ -955,7 +1024,17 @@ const Dictionary = () => {
                     ) : (
                       <Empty
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description="Chưa có lịch sử tìm kiếm"
+                        description={
+                          <div>
+                            <div style={{ fontWeight: "500", color: "#8c8c8c" }}>
+                              Chưa có lịch sử tìm kiếm
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#bfbfbf", marginTop: "4px" }}>
+                              Bắt đầu tìm kiếm để xem lịch sử ở đây
+                            </div>
+                          </div>
+                        }
+                        style={{ padding: "20px" }}
                       />
                     )}
                   </Card>
@@ -967,10 +1046,15 @@ const Dictionary = () => {
                 type={showHistory ? "primary" : "default"}
                 icon={
                   <Badge count={searchHistory.length} size="small">
-                    <History size={16} />
+                    <History size={18} />
                   </Badge>
                 }
-                style={{ borderRadius: "6px" }}
+                style={{ 
+                  borderRadius: "12px",
+                  transition: "all 0.3s ease",
+                  boxShadow: showHistory ? "0 4px 12px rgba(24, 144, 255, 0.3)" : "none"
+                }}
+                title="Xem lịch sử tìm kiếm"
               >
                 Lịch sử
               </Button>
@@ -986,31 +1070,33 @@ const Dictionary = () => {
                 <div
                   style={{
                     background: "white",
-                    borderRadius: "8px",
-                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.12)",
-                    border: "1px solid #d9d9d9",
+                    borderRadius: "12px",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+                    border: "1px solid #f0f0f0",
                   }}
                 >
                   <Card
                     title={
                       <Space>
-                        <Heart size={16} />
-                        Từ yêu thích
-                        <Badge count={bookmarkedWords.length} />
+                        <Heart size={18} />
+                        <span style={{ fontWeight: "600" }}>Từ yêu thích</span>
+                        <Badge count={bookmarkedWords.length} style={{ backgroundColor: "#faad14" }} />
                       </Space>
                     }
                     style={{
-                      width: 350,
-                      maxHeight: 400,
+                      width: 380,
+                      maxHeight: 420,
                       overflow: "auto",
                       border: "none",
+                      borderRadius: "12px"
                     }}
                     extra={
                       <Button
                         size="small"
-                        icon={<Trash2 size={14} />}
+                        icon={<Trash2 size={16} />}
                         onClick={clearBookmarks}
                         disabled={bookmarkedWords.length === 0}
+                        style={{ borderRadius: "6px" }}
                       >
                         Xóa tất cả
                       </Button>
@@ -1063,7 +1149,17 @@ const Dictionary = () => {
                     ) : (
                       <Empty
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description="Chưa có từ yêu thích"
+                        description={
+                          <div>
+                            <div style={{ fontWeight: "500", color: "#8c8c8c" }}>
+                              Chưa có từ yêu thích
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#bfbfbf", marginTop: "4px" }}>
+                              Thêm từ vào danh sách yêu thích để xem ở đây
+                            </div>
+                          </div>
+                        }
+                        style={{ padding: "20px" }}
                       />
                     )}
                   </Card>
@@ -1075,10 +1171,15 @@ const Dictionary = () => {
                 type={showBookmarks ? "primary" : "default"}
                 icon={
                   <Badge count={bookmarkedWords.length} size="small">
-                    <Heart size={16} />
+                    <Heart size={18} />
                   </Badge>
                 }
-                style={{ borderRadius: "6px" }}
+                style={{ 
+                  borderRadius: "12px",
+                  transition: "all 0.3s ease",
+                  boxShadow: showBookmarks ? "0 4px 12px rgba(250, 173, 20, 0.3)" : "none"
+                }}
+                title="Xem danh sách từ yêu thích"
               >
                 Yêu thích
               </Button>
@@ -1087,9 +1188,13 @@ const Dictionary = () => {
           <Col>
             <Button
               size="large"
-              icon={<RotateCcw size={16} />}
+              icon={<RotateCcw size={18} />}
               onClick={clearDictionary}
-              style={{ borderRadius: "6px" }}
+              style={{ 
+                borderRadius: "12px",
+                transition: "all 0.3s ease"
+              }}
+              title="Xóa kết quả tìm kiếm hiện tại"
             >
               Xóa
             </Button>
@@ -1099,7 +1204,13 @@ const Dictionary = () => {
               size="large"
               type="dashed"
               onClick={addSampleData}
-              style={{ borderRadius: "6px", color: "#722ed1" }}
+              style={{ 
+                borderRadius: "12px", 
+                color: "#722ed1",
+                borderColor: "#722ed1",
+                transition: "all 0.3s ease"
+              }}
+              title="Thêm dữ liệu mẫu để test"
             >
               Test Data
             </Button>
@@ -1111,36 +1222,56 @@ const Dictionary = () => {
       {(lastSearchedWord || searching) && (
         <Card
           style={{
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            borderRadius: "16px",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+            border: "1px solid #f0f0f0",
+            background: "linear-gradient(145deg, #ffffff 0%, #fafbff 100%)"
           }}
+          className="fade-in-up"
         >
           {searching ? (
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <Spin size="large" />
-              <div style={{ marginTop: "16px", color: "#1890ff" }}>
+            <div style={{ textAlign: "center", padding: "60px 40px" }}>
+              <Spin size="large" style={{ color: "#1890ff" }} />
+              <div style={{ 
+                marginTop: "20px", 
+                color: "#1890ff",
+                fontSize: "16px",
+                fontWeight: "500"
+              }}>
                 Đang tìm kiếm từ điển...
+              </div>
+              <div style={{
+                marginTop: "12px",
+                color: "#8c8c8c",
+                fontSize: "14px"
+              }}>
+                Vui lòng đợi trong giây lát
               </div>
             </div>
           ) : (
             <>
               {/* Word Header */}
-              <div style={{ marginBottom: "20px" }}>
+              <div style={{ marginBottom: "24px", padding: "20px", background: "linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)", borderRadius: "12px", border: "1px solid #d6e4ff" }}>
                 <Row align="middle" justify="space-between">
                   <Col>
                     <Title
                       level={2}
                       style={{
                         margin: 0,
-                        color: "#1890ff",
+                        background: "linear-gradient(135deg, #1890ff 0%, #36cfc9 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
                         textTransform: "capitalize",
+                        fontWeight: "700",
+                        fontSize: "2.2rem"
                       }}
                     >
                       {lastSearchedWord}
                     </Title>
                   </Col>
                   <Col>
-                    <Space>
+                    <Space size="middle">
                       <Tooltip
                         title={
                           isBookmarked
@@ -1153,9 +1284,9 @@ const Dictionary = () => {
                           ghost={!isBookmarked}
                           icon={
                             isBookmarked ? (
-                              <Heart size={16} />
+                              <Heart size={18} style={{ fill: "#ff4d4f" }} />
                             ) : (
-                              <Heart size={16} />
+                              <Heart size={18} />
                             )
                           }
                           onClick={() =>
@@ -1165,7 +1296,11 @@ const Dictionary = () => {
                               phonetic
                             )
                           }
-                          style={{ borderRadius: "6px" }}
+                          style={{ 
+                            borderRadius: "12px",
+                            transition: "all 0.3s ease",
+                            boxShadow: isBookmarked ? "0 4px 12px rgba(255, 77, 79, 0.3)" : "none"
+                          }}
                         >
                           {isBookmarked ? "Đã yêu thích" : "Yêu thích"}
                         </Button>
@@ -1174,9 +1309,12 @@ const Dictionary = () => {
                         <Button
                           type="primary"
                           ghost
-                          icon={<Volume2 size={16} />}
+                          icon={<Volume2 size={18} />}
                           onClick={playSound}
-                          style={{ borderRadius: "6px" }}
+                          style={{ 
+                            borderRadius: "12px",
+                            transition: "all 0.3s ease"
+                          }}
                         >
                           Phát âm
                         </Button>
@@ -1306,22 +1444,54 @@ const Dictionary = () => {
 
                 {/* Phonetic and Part of Speech */}
                 {(phonetic || partOfSpeech) && (
-                  <div style={{ marginTop: "12px" }}>
+                  <div style={{ marginTop: "16px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
                     {phonetic && (
-                      <Tag color="green" style={{ marginRight: "8px" }}>
+                      <Tag 
+                        color="green" 
+                        style={{ 
+                          marginRight: "0", 
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                        }}
+                      >
+                        <Volume2 size={14} style={{ marginRight: "6px" }} />
                         {phonetic}
                       </Tag>
                     )}
-                    {partOfSpeech && <Tag color="blue">{partOfSpeech}</Tag>}
+                    {partOfSpeech && (
+                      <Tag 
+                        color="blue" 
+                        style={{ 
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                        }}
+                      >
+                        <BookOpen size={14} style={{ marginRight: "6px" }} />
+                        {partOfSpeech}
+                      </Tag>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Definitions */}
               {Array.isArray(definition) && definition.length > 0 && (
-                <div style={{ marginBottom: "20px" }}>
-                  <Title level={4} style={{ color: "#262626" }}>
-                    <BookOpen size={18} style={{ marginRight: "8px" }} />
+                <div style={{ marginBottom: "24px" }}>
+                  <Title 
+                    level={4} 
+                    style={{ 
+                      color: "#262626",
+                      marginBottom: "16px",
+                      fontWeight: "600"
+                    }}
+                  >
+                    <BookOpen size={20} style={{ marginRight: "10px", color: "#1890ff" }} />
                     Định nghĩa
                   </Title>
                   {definition.map((meaning, idx) => (
@@ -1329,17 +1499,23 @@ const Dictionary = () => {
                       key={idx}
                       size="small"
                       style={{
-                        marginBottom: "12px",
-                        border: "1px solid #f0f0f0",
-                        borderRadius: "8px",
+                        marginBottom: "16px",
+                        border: "1px solid #e6f7ff",
+                        borderRadius: "12px",
+                        background: "linear-gradient(135deg, #fafbff 0%, #f0f8ff 100%)",
+                        boxShadow: "0 4px 12px rgba(24, 144, 255, 0.08)",
+                        transition: "all 0.3s ease"
                       }}
+                      className="fade-in-up"
                     >
                       <Title
                         level={5}
                         style={{
                           color: "#1890ff",
-                          marginBottom: "8px",
+                          marginBottom: "12px",
                           textTransform: "capitalize",
+                          fontWeight: "600",
+                          fontSize: "1.1rem"
                         }}
                       >
                         {meaning.partOfSpeech}
@@ -1633,6 +1809,150 @@ const Dictionary = () => {
             0%, 40%, 100% { transform: scaleY(0.4); height: 8px; }
             20% { transform: scaleY(1); height: 20px; }
           }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+          }
+          
+          @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+          }
+          
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+          }
+          
+          @keyframes slideInLeft {
+            from {
+              opacity: 0;
+              transform: translateX(-30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          
+          .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+          }
+          
+          @keyframes slideInRight {
+            from {
+              opacity: 0;
+              transform: translateX(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          
+          .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+          }
+          
+          /* Responsive Design */
+          @media (max-width: 768px) {
+            .container-dictionary {
+              width: 95% !important;
+              margin: 20px auto !important;
+              padding: 20px 15px !important;
+            }
+            
+            .search-box {
+              flex-direction: column;
+              gap: 15px;
+            }
+            
+            .search-box input {
+              width: 100% !important;
+            }
+            
+            .search-box button {
+              width: 100% !important;
+            }
+            
+            .result h3 {
+              font-size: 24px !important;
+            }
+            
+            .word-meaning {
+              font-size: 13px !important;
+            }
+            
+            .word-example {
+              font-size: 13px !important;
+              padding-left: 15px !important;
+            }
+          }
+          
+          @media (max-width: 576px) {
+            .container-dictionary {
+              width: 98% !important;
+              padding: 15px 10px !important;
+            }
+            
+            .result h3 {
+              font-size: 20px !important;
+            }
+            
+            .result .word {
+              flex-direction: column;
+              align-items: flex-start !important;
+              gap: 10px;
+            }
+            
+            .result button {
+              width: 100%;
+              margin-top: 10px;
+            }
+          }
+          
+          /* Hover Effects */
+          .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+            transition: all 0.3s ease;
+          }
+          
+          .hover-scale:hover {
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+          }
+          
+          /* Custom Scrollbar */
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+          }
+          
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+          }
         `}
       </style>
       <div
@@ -1643,35 +1963,88 @@ const Dictionary = () => {
         }}
       >
         {/* Header */}
-        <div style={{ marginBottom: "24px", textAlign: "center" }}>
-          <Title
-            level={2}
-            style={{
-              marginBottom: "8px",
-              background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            <BookOpen
-              size={28}
-              style={{ marginRight: "12px", color: "rgb(102, 126, 234)" }}
-            />
-            Công cụ Dịch thuật & Từ điển
-          </Title>
-          <Text type="secondary" style={{ fontSize: "16px", background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text" }}>
-            Dịch văn bản và tra cứu từ điển tiếng Anh một cách dễ dàng
-          </Text>
+        <div style={{ marginBottom: "32px", textAlign: "center", position: "relative" }}>
+          <div style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            borderRadius: "20px",
+            padding: window.innerWidth <= 768 ? "30px 20px" : "40px 30px",
+            marginBottom: "24px",
+            boxShadow: "0 20px 40px rgba(102, 126, 234, 0.3)",
+            position: "relative",
+            overflow: "hidden"
+          }}>
+            {/* Background Pattern */}
+            <div style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%)",
+              animation: "float 6s ease-in-out infinite"
+            }}></div>
+            
+            <Title
+              level={2}
+              style={{
+                marginBottom: "12px",
+                color: "white",
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                fontWeight: "700",
+                fontSize: "2.5rem",
+                position: "relative",
+                zIndex: 1
+              }}
+            >
+              <BookOpen
+                size={32}
+                style={{ marginRight: "16px", color: "white", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}
+              />
+              Công cụ Dịch thuật & Từ điển
+            </Title>
+            <Text style={{ 
+              fontSize: "18px", 
+              color: "rgba(255,255,255,0.9)",
+              fontWeight: "400",
+              position: "relative",
+              zIndex: 1,
+              textShadow: "0 1px 2px rgba(0,0,0,0.2)"
+            }}>
+              Dịch văn bản và tra cứu từ điển tiếng Anh một cách dễ dàng
+            </Text>
+            
+            {/* Floating Elements */}
+            <div style={{
+              position: "absolute",
+              top: "20px",
+              right: "30px",
+              opacity: 0.6,
+              animation: "bounce 3s ease-in-out infinite"
+            }}>
+              <Languages size={24} style={{ color: "white" }} />
+            </div>
+            <div style={{
+              position: "absolute",
+              bottom: "20px",
+              left: "30px",
+              opacity: 0.6,
+              animation: "bounce 3s ease-in-out infinite 1s"
+            }}>
+              <Search size={20} style={{ color: "white" }} />
+            </div>
+          </div>
         </div>
 
         {/* Main Content */}
         <Card
           style={{
-            borderRadius: "16px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+            borderRadius: "20px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
             border: "none",
+            background: "linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%)",
+            overflow: "hidden"
           }}
+          className="fade-in-up"
         >
           <Tabs items={tabItems} size="large" centered type="card" />
         </Card>
