@@ -134,21 +134,21 @@ const Leaderboard = () => {
       </div>
 
       {/* Period Filter */}
-      <div className="period-filter">
+      <div className="leaderboard-period-filter">
         <button
-          className={`period-btn ${activePeriod === 'all' ? 'active' : ''}`}
+          className={`leaderboard-period-btn ${activePeriod === 'all' ? 'active' : ''}`}
           onClick={() => setActivePeriod('all')}
         >
           🏅 Tất cả
         </button>
         <button
-          className={`period-btn ${activePeriod === 'month' ? 'active' : ''}`}
+          className={`leaderboard-period-btn ${activePeriod === 'month' ? 'active' : ''}`}
           onClick={() => setActivePeriod('month')}
         >
           📅 Tháng này
         </button>
         <button
-          className={`period-btn ${activePeriod === 'week' ? 'active' : ''}`}
+          className={`leaderboard-period-btn ${activePeriod === 'week' ? 'active' : ''}`}
           onClick={() => setActivePeriod('week')}
         >
           📊 Tuần này
@@ -188,28 +188,28 @@ const Leaderboard = () => {
         <>
           {/* Top 3 Podium */}
           {topPlayers.length > 0 && (
-            <div className="top-players-podium">
+            <div className="leaderboard-top-players-podium">
               {topPlayers.slice(0, 3).map((player, index) => {
                 const rank = index + 1;
                 return (
-                  <div key={player._id || player.userId} className={`podium-item rank-${rank}`}>
-                    <div className="podium-avatar">
-                      <div className="avatar-circle">
+                  <div key={player._id || player.userId} className={`leaderboard-podium-item rank-${rank}`}>
+                    <div className="leaderboard-podium-avatar">
+                      <div className="leaderboard-avatar-circle">
                         {player.avatar ? (
                           <img src={player.avatar} alt={player.name || 'Player'} />
                         ) : (
-                          <div className="avatar-placeholder">
+                          <div className="leaderboard-avatar-placeholder">
                             {(player.name || 'Player').charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
-                      <div className="rank-badge" style={{ backgroundColor: getRankColor(rank) }}>
+                      <div className="leaderboard-rank-badge" style={{ backgroundColor: getRankColor(rank) }}>
                         {getRankIcon(rank)}
                       </div>
                     </div>
-                    <div className="podium-info">
+                    <div className="leaderboard-podium-info">
                       <h3>{player.name || 'Unknown Player'}</h3>
-                      <div className="podium-points">
+                      <div className="leaderboard-podium-points">
                         {player.achievementPoints || 0} XP
                       </div>
                     </div>
@@ -221,16 +221,16 @@ const Leaderboard = () => {
 
           {/* Current User Rank Card */}
           {userRank && (
-            <div className="user-rank-card">
-              <div className="user-rank-header">
-                <span className="rank-label">Thứ hạng của bạn</span>
-                <span className="rank-number" style={{ color: getRankColor(userRank.rank) }}>
+            <div className="leaderboard-user-rank-card">
+              <div className="leaderboard-user-rank-header">
+                <span className="leaderboard-rank-label">Thứ hạng của bạn</span>
+                <span className="leaderboard-rank-number" style={{ color: getRankColor(userRank.rank) }}>
                   {getRankIcon(userRank.rank)}
                 </span>
               </div>
-              <div className="user-rank-content">
-                <div className="user-rank-info">
-                  <div className="user-avatar">
+              <div className="leaderboard-user-rank-content">
+                <div className="leaderboard-user-rank-info">
+                  <div className="leaderboard-user-avatar">
                     {userRank.avatar ? (
                       <img src={userRank.avatar} alt={userRank.name || 'You'} />
                     ) : (
@@ -239,9 +239,9 @@ const Leaderboard = () => {
                       </div>
                     )}
                   </div>
-                  <div className="user-details">
+                  <div className="leaderboard-user-details">
                     <h4>{userRank.name || 'Bạn'}</h4>
-                    <div className="user-points">{userRank.achievementPoints || 0} XP</div>
+                    <div className="leaderboard-user-points">{userRank.achievementPoints || 0} XP</div>
                   </div>
                 </div>
               </div>
@@ -249,42 +249,42 @@ const Leaderboard = () => {
           )}
 
           {/* Leaderboard Table */}
-          <div className="leaderboard-table">
-            <div className="table-header">
+          <div className="leaderboard-leaderboard-table">
+            <div className="leaderboard-table-header">
               <span>Hạng</span>
               <span>Người chơi</span>
               <span>Điểm</span>
             </div>
-            <div className="table-body">
+            <div className="leaderboard-table-body">
               {leaderboard.map((player, index) => {
                 const rank = index + 1;
                 const isCurrentUser = info && player.userId === info.id;
 
                 return (
-                  <div key={player.userId} className={`table-row ${isCurrentUser ? 'current-user' : ''}`}>
-                    <div className="rank-cell">
-                      <span className="rank-number" style={{ color: getRankColor(rank) }}>
+                  <div key={player.userId} className={`leaderboard-table-row ${isCurrentUser ? 'current-user' : ''}`}>
+                    <div className="leaderboard-rank-cell">
+                      <span className="leaderboard-rank-number" style={{ color: getRankColor(rank) }}>
                         {getRankIcon(rank)}
                       </span>
                     </div>
-                    <div className="player-cell">
-                      <div className="player-avatar">
+                    <div className="leaderboard-player-cell">
+                      <div className="leaderboard-player-avatar">
                         {player.avatar ? (
                           <img src={player.avatar} alt={player.name || 'Player'} />
                         ) : (
-                          <div className="avatar-placeholder">
+                          <div className="leaderboard-avatar-placeholder">
                             {(player.name || 'Player').charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
-                      <div className="player-info">
-                        <div className="player-name">{player.name || 'Unknown Player'}</div>
-                        {isCurrentUser && <div className="current-user-badge">Bạn</div>}
+                      <div className="leaderboard-player-info">
+                        <div className="leaderboard-player-name">{player.name || 'Unknown Player'}</div>
+                        {isCurrentUser && <div className="leaderboard-current-user-badge">Bạn</div>}
                       </div>
                     </div>
-                    <div className="points-cell">
-                      <span className="points-value">{player.achievementPoints || 0}</span>
-                      <span className="points-label">XP</span>
+                    <div className="leaderboard-points-cell">
+                      <span className="leaderboard-points-value">{player.achievementPoints || 0}</span>
+                      <span className="leaderboard-points-label">XP</span>
                     </div>
                   </div>
                 );

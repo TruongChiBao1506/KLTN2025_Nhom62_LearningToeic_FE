@@ -682,14 +682,14 @@
   color: #475569;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0;
-  margin: 0;
+  border-radius: 6px;
+  margin: 2px 8px;
   position: relative;
   font-weight: 500;
   font-size: 15px;
   border-left: 4px solid transparent;
   background: transparent;
-  width: 100%;
+  width: calc(100% - 16px);
   border: none;
   cursor: pointer;
   text-align: left;
@@ -701,6 +701,8 @@
   border-left-color: #4f46e5;
   /* Removed translateX effect */
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 0 8px;
 }
 
 .nav-link.active {
@@ -709,6 +711,8 @@
   border-left-color: #4f46e5;
   font-weight: 600;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(79, 70, 229, 0.1);
+  border-radius: 8px;
+  margin: 0 8px;
 }
 
 .nav-link.active::after {
@@ -897,6 +901,9 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px;
+  margin: 1px 8px;
+  width: calc(100% - 16px);
 }
 
 .nav-submenu a::before {
@@ -1856,18 +1863,25 @@
 
 [data-theme="dark"] .nav-link {
   color: #cbd5e1;
+  border-radius: 6px;
+  margin: 2px 8px;
+  width: calc(100% - 16px);
 }
 
 [data-theme="dark"] .nav-link:hover {
   background: linear-gradient(90deg, rgba(79, 70, 229, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
   color: #60a5fa;
   border-left-color: #60a5fa;
+  border-radius: 8px;
+  margin: 0 8px;
 }
 
 [data-theme="dark"] .nav-link.active {
   background: linear-gradient(90deg, rgba(79, 70, 229, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
   color: #60a5fa;
   border-left-color: #60a5fa;
+  border-radius: 8px;
+  margin: 0 8px;
 }
 
 [data-theme="dark"] .nav-link.active::after {
@@ -1891,12 +1905,17 @@
 
 [data-theme="dark"] .nav-submenu a {
   color: #94a3b8;
+  border-radius: 6px;
+  margin: 1px 8px;
+  width: calc(100% - 16px);
 }
 
 [data-theme="dark"] .nav-submenu a:hover {
   background: linear-gradient(90deg, rgba(79, 70, 229, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
   color: #60a5fa;
   border-left-color: #60a5fa;
+  border-radius: 8px;
+  margin: 2px 8px;
 }
 
 [data-theme="dark"] .nav-submenu a.active {

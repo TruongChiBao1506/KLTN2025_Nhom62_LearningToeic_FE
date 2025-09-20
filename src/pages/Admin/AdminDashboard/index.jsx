@@ -199,15 +199,15 @@ const Dashboard = () => {
                         colors: [
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                stops: [ [0, '#4f8cff'], [1, '#a6c1ee'] ]
+                                stops: [[0, '#4f8cff'], [1, '#a6c1ee']]
                             },
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                stops: [ [0, '#43e97b'], [1, '#38f9d7'] ]
+                                stops: [[0, '#43e97b'], [1, '#38f9d7']]
                             },
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                stops: [ [0, '#fa709a'], [1, '#fee140'] ]
+                                stops: [[0, '#fa709a'], [1, '#fee140']]
                             }
                         ],
                         series: [{
@@ -356,15 +356,15 @@ const Dashboard = () => {
                         colors: [
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                                stops: [ [0, '#4f8cff'], [1, '#a6c1ee'] ]
+                                stops: [[0, '#4f8cff'], [1, '#a6c1ee']]
                             },
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                                stops: [ [0, '#43e97b'], [1, '#38f9d7'] ]
+                                stops: [[0, '#43e97b'], [1, '#38f9d7']]
                             },
                             {
                                 linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                                stops: [ [0, '#fa709a'], [1, '#fee140'] ]
+                                stops: [[0, '#fa709a'], [1, '#fee140']]
                             }
                         ],
                         series: [{
@@ -467,128 +467,140 @@ const Dashboard = () => {
                 </Breadcrumb>
             </div>
 
-            <div className="mt-3">
-                {/* Statistics Cards */}
-                <div className="row g-4 mb-4">
-                    {/* Card 1 - Learners */}
-                    <div
-                        className="col-md-3 col-6"
-                        data-aos="fade-right"
-                        data-aos-delay="100"
-                    >
+            <div className="admin-dashboard-body">
+                <div className="admin-dashboard-dashboard-bg">
+                    {/* Statistics Cards */}
+                    <div className="row g-4 mb-4">
+                        {/* Card 1 - Learners */}
                         <div
-                            className="dashboard-card stat-card stat-blue"
-                            onClick={toggleEffect}
+                            className="col-md-3 col-6"
+                            data-aos="fade-right"
+                            data-aos-delay="100"
                         >
-                            <div className="stat-icon">
-                                <FontAwesomeIcon icon={faUsers} />
-                            </div>
-                            <div>
-                                <div className="stat-label">Tổng số học viên</div>
-                                <div className="stat-value">
-                                    {isLoading ? '...' : countLearners}
+                            <div
+                                className="admin-dashboard-dashboard-card admin-dashboard-stat-card admin-dashboard-stat-blue"
+                                onClick={toggleEffect}
+                            >
+                                <div className="admin-dashboard-stat-icon">
+                                    <FontAwesomeIcon icon={faUsers} />
                                 </div>
-                                <div className="font-13 text-success">+2 từ tuần trước</div>
+                                <div>
+                                    <div className="admin-dashboard-stat-label">Tổng số học viên</div>
+                                    <div className="admin-dashboard-stat-value">
+                                        {isLoading ? '...' : countLearners}
+                                    </div>
+                                    <div className="admin-dashboard-font-13 admin-dashboard-text-success">+2 từ tuần trước</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {/* Card 2 - Exams */}
-                    <div
-                        className="col-md-3 col-6"
-                        data-aos="fade-right"
-                        data-aos-delay="200"
-                    >
-                        <div className="dashboard-card stat-card stat-green">
-                            <div className="stat-icon">
-                                <FontAwesomeIcon icon={faFolderOpen} />
-                            </div>
-                            <div>
-                                <div className="stat-label">Tổng số bài thi</div>
-                                <div className="stat-value">
-                                    {isLoading ? '...' : countExams}
-                                </div>
-                                <div className="font-13 text-success">+2 từ tuần trước</div>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Card 3 - Feedbacks */}
-                    <div
-                        className="col-md-3 col-6"
-                        data-aos="fade-right"
-                        data-aos-delay="300"
-                    >
-                        <div className="dashboard-card stat-card stat-pink">
-                            <div className="stat-icon">
-                                <FontAwesomeIcon icon={faComments} />
-                            </div>
-                            <div>
-                                <div className="stat-label">Tổng số đánh giá</div>
-                                <div className="stat-value">
-                                    {isLoading ? '...' : countFeedbacks}
-                                </div>
-                                <div className="font-13 text-danger">+5 từ tuần trước</div>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Card 4 - Free Materials */}
-                    <div
-                        className="col-md-3 col-6"
-                        data-aos="fade-right"
-                        data-aos-delay="400"
-                    >
-                        <div className="dashboard-card stat-card stat-yellow">
-                            <div className="stat-icon">
-                                <FontAwesomeIcon icon={faFile} />
-                            </div>
-                            <div>
-                                <div className="stat-label">Tổng số tài liệu</div>
-                                <div className="stat-value">
-                                    {isLoading ? '...' : countFreeMaterials}
-                                </div>
-                                <div className="font-13 text-warning">+2 từ tuần trước</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Charts */}
-                <div className="row g-4">
-                    {/* Column Chart */}
-                    <div
-                        className="col-md-6"
-                        data-aos="fade-up"
-                        data-aos-delay="600"
-                    >
-                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
-                            <div className="card-body custom-card-body-special">
-                                <div id="columnChartContainer"></div>
+                        {/* Card 2 - Exams */}
+                        <div
+                            className="col-md-3 col-6"
+                            data-aos="fade-right"
+                            data-aos-delay="200"
+                        >
+                            <div className="admin-dashboard-dashboard-card admin-dashboard-stat-card admin-dashboard-stat-green">
+                                <div className="admin-dashboard-stat-icon">
+                                    <FontAwesomeIcon icon={faFolderOpen} />
+                                </div>
+                                <div>
+                                    <div className="admin-dashboard-stat-label">Tổng số bài thi</div>
+                                    <div className="admin-dashboard-stat-value">
+                                        {isLoading ? '...' : countExams}
+                                    </div>
+                                    <div className="admin-dashboard-font-13 admin-dashboard-text-success">+2 từ tuần trước</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card 3 - Feedbacks */}
+                        <div
+                            className="col-md-3 col-6"
+                            data-aos="fade-right"
+                            data-aos-delay="300"
+                        >
+                            <div className="admin-dashboard-dashboard-card admin-dashboard-stat-card admin-dashboard-stat-pink">
+                                <div className="admin-dashboard-stat-icon">
+                                    <FontAwesomeIcon icon={faComments} />
+                                </div>
+                                <div>
+                                    <div className="admin-dashboard-stat-label">Tổng số đánh giá</div>
+                                    <div className="admin-dashboard-stat-value">
+                                        {isLoading ? '...' : countFeedbacks}
+                                    </div>
+                                    <div className="admin-dashboard-font-13 admin-dashboard-text-danger">+5 từ tuần trước</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card 4 - Free Materials */}
+                        <div
+                            className="col-md-3 col-6"
+                            data-aos="fade-right"
+                            data-aos-delay="400"
+                        >
+                            <div className="admin-dashboard-dashboard-card admin-dashboard-stat-card admin-dashboard-stat-yellow">
+                                <div className="admin-dashboard-stat-icon">
+                                    <FontAwesomeIcon icon={faFile} />
+                                </div>
+                                <div>
+                                    <div className="admin-dashboard-stat-label">Tổng số tài liệu</div>
+                                    <div className="admin-dashboard-stat-value">
+                                        {isLoading ? '...' : countFreeMaterials}
+                                    </div>
+                                    <div className="admin-dashboard-font-13 admin-dashboard-text-warning">+2 từ tuần trước</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {/* Pie Chart */}
-                    <div
-                        className="col-md-6"
-                        data-aos="fade-up"
-                        data-aos-delay="700"
-                    >
-                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
-                            <div className="card-body custom-card-body-special">
-                                <div id="pieChartContainer"></div>
+
+                    {/* Charts */}
+                    <div className="row g-4">
+                        {/* Column Chart */}
+                        <div
+                            className="col-md-6"
+                            data-aos="fade-up"
+                            data-aos-delay="600"
+                        >
+                            <div className="admin-dashboard-card admin-dashboard-custom-card admin-dashboard-border admin-dashboard-border-0 admin-dashboard-shadow-lg admin-dashboard-rounded-4">
+                                <div className="admin-dashboard-card-body admin-dashboard-custom-card-body-special">
+                                    <div id="columnChartContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pie Chart */}
+                        <div
+                            className="col-md-6"
+                            data-aos="fade-up"
+                            data-aos-delay="700"
+                        >
+                            <div className="admin-dashboard-card admin-dashboard-custom-card admin-dashboard-border admin-dashboard-border-0 admin-dashboard-shadow-lg admin-dashboard-rounded-4">
+                                <div className="admin-dashboard-card-body admin-dashboard-custom-card-body-special">
+                                    <div id="pieChartContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Line Chart */}
+                        <div
+                            className="col-md-12"
+                            data-aos="fade-up"
+                            data-aos-delay="800"
+                        >
+                            <div className="admin-dashboard-card admin-dashboard-custom-card admin-dashboard-border admin-dashboard-border-0 admin-dashboard-shadow-lg admin-dashboard-rounded-4">
+                                <div className="admin-dashboard-card-body admin-dashboard-custom-card-body-special">
+                                    <div id="lineChartContainer"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {/* Line Chart */}
-                    <div
-                        className="col-md-12"
-                        data-aos="fade-up"
-                        data-aos-delay="800"
-                    >
-                        <div className="card mb-4 custom-card border border-0 shadow-lg rounded-4">
-                            <div className="card-body custom-card-body-special">
-                                <div id="lineChartContainer"></div>
-                            </div>
-                        </div>
-                    </div>
+
+                    {/* Loading Spinner */}
+                    {isLoading && (
+                        <div className="admin-dashboard-loading-spinner"></div>
+                    )}
                 </div>
             </div>
         </div>

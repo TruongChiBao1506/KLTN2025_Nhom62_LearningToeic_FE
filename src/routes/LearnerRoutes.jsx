@@ -55,7 +55,7 @@ import Part4 from "../pages/Learner/Part4";
 import Part5 from "../pages/Learner/Part5";
 import Part6 from "../pages/Learner/Part6";
 import Part7 from "../pages/Learner/Part7";
-import SpeakingWriting from "../components/Learner/SpeakingWriting";
+import SpeakingWritingPage from "../pages/Learner/SpeakingWritingPage";
 
 
 const LearnerRoutes = () => {
@@ -226,22 +226,7 @@ const LearnerRoutes = () => {
           path="speaking-writing"
           element={
             <ProtectedRoute>
-              <div className="container-fluid py-4">
-                <div className="row justify-content-center">
-                  <div className="col-12">
-                    <div className="mb-4 text-center">
-                      <h1 className="display-5 mb-2">
-                        <span className="text-primary">Luyện thi TOEIC</span>{" "}
-                        <span className="text-info">Speaking & Writing</span>
-                      </h1>
-                      <p className="text-muted mb-4">
-                        Nâng cao kỹ năng nói và viết tiếng Anh với các bài luyện tập chuyên sâu
-                      </p>
-                    </div>
-                    <SpeakingWriting />
-                  </div>
-                </div>
-              </div>
+              <SpeakingWritingPage />
             </ProtectedRoute>
           }
         />

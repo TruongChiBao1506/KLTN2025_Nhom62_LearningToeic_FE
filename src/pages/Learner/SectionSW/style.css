@@ -1,77 +1,297 @@
-.overflow-ellipsis {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  -webkit-box-orient: vertical;
+﻿/* SectionSW Component Styles */
+
+.section-sw-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.section-sw-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.section-sw-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.section-sw-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.section-sw-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-sw-card {
+  height: 100%;
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 15px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-h1,
-h5 {
-  font-weight: 700;
-  color: #34447c;
+.section-sw-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.custom-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #052649;
+.section-sw-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.section-sw-card-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.section-sw-button {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.section-sw-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Test Cards */
+.test-card {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.test-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.test-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.test-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.test-icon {
+  color: #fff;
+  font-size: 18px;
+}
+
+.test-tag {
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+}
+
+.test-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.test-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  border: 1px solid #d1fae5;
+}
+
+.test-stat-item {
+  color: #059669;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.test-stat-item.participants {
+  color: #f59e0b;
+}
+
+.test-button {
+  margin-top: auto;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #10b981;
+  height: 44px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.test-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Sidebar Cards */
+.sidebar-card {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: #1e293b;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.sidebar-link:hover {
+  color: #667eea;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #5a67d8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-link:hover .sidebar-icon-wrapper {
+  background: linear-gradient(135deg, #5a67d8, #4c51bf);
+}
+
+.sidebar-icon {
   color: #fff;
   font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
 }
 
-.custom-button:hover {
-  background-color: #fff;
-  color: #052649;
+.sidebar-text {
+  flex: 1;
+  min-width: 0;
 }
 
-.custom-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.card-text {
-  flex-grow: 1;
-}
-
-.custom-card:hover {
-  color: #007aff;
-}
-
-.card {
-  position: relative;
-  transition: transform 0.3s;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(72, 87, 219, 0.1);
-  border-radius: 10px;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(26, 25, 128, 0.2);
-}
-
-.test-name {
-  font-size: 18px;
-  font-weight: bold;
-  color: #34447c;
-}
-
-.test-info {
+.sidebar-title {
+  margin: 0;
   font-size: 14px;
-  color: #666;
-  margin-top: 5px;
+  font-weight: 500;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.col-lg-2 {
-  flex: 0 0 20%;
-  max-width: 20%;
+/* Empty States */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-state-small {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section-sw-wrapper {
+    padding: 10px;
+  }
+
+  .section-sw-title {
+    font-size: 2rem;
+  }
+
+  .section-sw-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-sw-card-title {
+    font-size: 1.3rem;
+  }
+
+  .test-card-header {
+    margin-bottom: 12px;
+  }
+
+  .test-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .test-stats {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+  }
+
+  .sidebar-item {
+    gap: 8px;
+  }
+
+  .sidebar-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .sidebar-icon {
+    font-size: 14px;
+  }
+
+  .sidebar-title {
+    font-size: 13px;
+  }
 }

@@ -9,14 +9,13 @@ import {
   Typography,
   Divider,
   Empty,
-  Spin // Thêm Spin cho loading
+  Spin
 } from "antd";
 import { 
   SendOutlined, 
   MessageOutlined, 
   FilterOutlined,
-  UserOutlined,
-  LoadingOutlined // Thêm icon loading
+  UserOutlined
 } from "@ant-design/icons";
 import CommentComponent from "./CommentComponent";
 import commentService from "../../../services/commentService";
@@ -30,11 +29,13 @@ const { Option } = Select;
 const CommentsList = ({ examId }) => {
   const [filter, setFilter] = useState("all");
   const [comments, setComments] = useState([]);
-  const [visibleComments, setVisibleComments] = useState([]);
-  const [showLoadMoreButton, setShowLoadMoreButton] = useState(true);
   const [newCommentText, setNewCommentText] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false); // Loading state cho submit
-  const loadMoreComments = 10;
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  
   const { recordContributeContent } = useAchievementNotifications();
 
   // Function để normalize comment data
@@ -54,6 +55,21 @@ const CommentsList = ({ examId }) => {
       })) : []
     };
   }, []);
+
+  // Function để tính toán comments hiển thị dựa trên pagination
+  const getPaginatedComments = useCallback(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return comments.slice(startIndex, endIndex);
+  }, [comments, currentPage, pageSize]);
+
+  // Handler cho pagination change
+  const handlePageChange = (page, size) => {
+    setCurrentPage(page);
+    if (size !== pageSize) {
+      setPageSize(size);
+    }
+  };
 
   const retrieveComments = useCallback(async () => {
     try {
@@ -79,12 +95,12 @@ const CommentsList = ({ examId }) => {
         // Normalize comments để đảm bảo có user object
         const normalizedComments = fetchedComments.map(normalizeComment);
         setComments(normalizedComments);
-        setShowLoadMoreButton(normalizedComments.length > loadMoreComments);
-        setVisibleComments(normalizedComments.slice(0, loadMoreComments));
+        // Reset pagination khi load comments mới
+        setCurrentPage(1);
+        // Không cần set visibleComments nữa vì sẽ tính toán từ pagination
       } else {
         setComments([]);
-        setVisibleComments([]);
-        setShowLoadMoreButton(false);
+        setCurrentPage(1);
       }
     } catch (error) {
       console.error("Lỗi khi lấy bình luận:", error);
@@ -135,7 +151,7 @@ const CommentsList = ({ examId }) => {
 
       // Thêm vào UI ngay lập tức
       setComments(prev => [optimisticComment, ...prev]);
-      setVisibleComments(prev => [optimisticComment, ...prev.slice(0, loadMoreComments - 1)]);
+      // Không cần set visibleComments nữa vì sẽ tính toán từ pagination
       setNewCommentText(""); // Clear input ngay
 
       // Chạy API calls song song (parallel)
@@ -159,18 +175,12 @@ const CommentsList = ({ examId }) => {
             ? { ...normalizedResponse, isOptimistic: false, isSubmitting: false }
             : comment
         ));
-        setVisibleComments(prev => prev.map(comment => 
-          comment.commentId === optimisticComment.commentId 
-            ? { ...normalizedResponse, isOptimistic: false, isSubmitting: false }
-            : comment
-        ));
 
         toast.success("Đã thêm bình luận");
       } else {
         // API thất bại: Remove optimistic comment
         console.error("❌ Failed to create comment:", createResult.reason);
         setComments(prev => prev.filter(comment => comment.commentId !== optimisticComment.commentId));
-        setVisibleComments(prev => prev.filter(comment => comment.commentId !== optimisticComment.commentId));
         toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
       }
 
@@ -185,19 +195,9 @@ const CommentsList = ({ examId }) => {
       
       // Revert optimistic update nếu có lỗi unexpected
       setComments(prev => prev.filter(comment => comment.commentId !== `temp-${Date.now()}`));
-      setVisibleComments(prev => prev.filter(comment => comment.commentId !== `temp-${Date.now()}`));
     } finally {
       setIsSubmittingComment(false);
     }
-  };
-
-  const loadMore = () => {
-    if (visibleComments.length + loadMoreComments >= comments.length) {
-      setShowLoadMoreButton(false);
-    }
-    setVisibleComments(
-      comments.slice(0, visibleComments.length + loadMoreComments)
-    );
   };
 
   return (
@@ -272,7 +272,7 @@ const CommentsList = ({ examId }) => {
               }}>
                 <Button
                   type="primary"
-                  icon={isSubmittingComment ? <LoadingOutlined spin /> : <SendOutlined />}
+                  icon={isSubmittingComment ? null : <SendOutlined />}
                   onClick={addComment}
                   disabled={!newCommentText.trim() || isSubmittingComment}
                   loading={isSubmittingComment} // Hiển thị loading trên button
@@ -292,9 +292,9 @@ const CommentsList = ({ examId }) => {
 
       {/* Comments List */}
       <div className="comments-list">
-        {visibleComments.length > 0 ? (
+        {getPaginatedComments().length > 0 ? (
           <Space direction="vertical" style={{ width: "100%" }} size="large">
-            {visibleComments.map((comment) => (
+            {getPaginatedComments().map((comment) => (
               <div key={comment.commentId || comment._id} style={{ position: "relative" }}>
                 <CommentComponent
                   comment={comment}
@@ -342,24 +342,89 @@ const CommentsList = ({ examId }) => {
         )}
       </div>
 
-      {/* Load More Button */}
-      {showLoadMoreButton && visibleComments.length < comments.length && (
+      {/* Pagination */}
+      {comments.length > pageSize && (
         <div style={{ 
-          textAlign: "center", 
           marginTop: "24px",
-          padding: "16px"
+          padding: "20px",
+          background: "#fafafa",
+          borderRadius: "12px",
+          border: "1px solid #f0f0f0"
         }}>
-          <Button
-            onClick={loadMore}
-            size="large"
-            style={{ 
-              borderRadius: "8px",
-              height: "44px",
-              minWidth: "140px"
-            }}
-          >
-            Xem thêm bình luận
-          </Button>
+          {/* Pagination Info */}
+          <div className="d-flex justify-content-center mt-3 fw-lighter fst-italic mb-3">
+            <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+              {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, comments.length)} trên {comments.length} bình luận
+            </p>
+          </div>
+
+          {/* Pagination Controls */}
+          <nav aria-label="Page navigation">
+            <ul className="pagination justify-content-center" style={{ margin: 0 }}>
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(currentPage - 1, pageSize)}
+                  disabled={currentPage === 1}
+                  style={{
+                    borderRadius: currentPage === 1 ? '20px 0 0 20px' : '0',
+                    border: '1px solid #e9ecef',
+                    color: currentPage === 1 ? '#6c757d' : '#1890ff',
+                    backgroundColor: '#fff',
+                    padding: '8px 12px',
+                    transition: 'all 0.2s ease',
+                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  &laquo;
+                </button>
+              </li>
+
+              {Array.from({ length: Math.ceil(comments.length / pageSize) }, (_, i) => i + 1).map((pageNumber) => (
+                <li
+                  key={pageNumber}
+                  className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(pageNumber, pageSize)}
+                    style={{
+                      border: '1px solid #e9ecef',
+                      color: currentPage === pageNumber ? '#fff' : '#1890ff',
+                      backgroundColor: currentPage === pageNumber ? '#1890ff' : '#fff',
+                      borderLeft: pageNumber === 1 ? 'none' : '1px solid #e9ecef',
+                      borderRight: pageNumber === Math.ceil(comments.length / pageSize) ? 'none' : '1px solid #e9ecef',
+                      padding: '8px 12px',
+                      minWidth: '40px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {pageNumber}
+                  </button>
+                </li>
+              ))}
+
+              <li className={`page-item ${currentPage === Math.ceil(comments.length / pageSize) ? 'disabled' : ''}`}>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(currentPage + 1, pageSize)}
+                  disabled={currentPage === Math.ceil(comments.length / pageSize)}
+                  style={{
+                    borderRadius: currentPage === Math.ceil(comments.length / pageSize) ? '0 20px 20px 0' : '0',
+                    border: '1px solid #e9ecef',
+                    color: currentPage === Math.ceil(comments.length / pageSize) ? '#6c757d' : '#1890ff',
+                    backgroundColor: '#fff',
+                    padding: '8px 12px',
+                    transition: 'all 0.2s ease',
+                    cursor: currentPage === Math.ceil(comments.length / pageSize) ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  &raquo;
+                </button>
+              </li>
+            </ul>
+          </nav>
         </div>
       )}
     </div>

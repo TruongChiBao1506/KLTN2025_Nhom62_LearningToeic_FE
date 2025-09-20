@@ -1,13 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { markAsRead, markAllAsRead } from '../../../store/notificationSlice.js';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import "./style.css";
 
+// Import FontAwesome components
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faTrophy, 
+  faBell, 
+  faFileAlt, 
+  faBook, 
+  faCog, 
+  faClock,
+  faBellSlash,
+  faCheckDouble,
+  faCheck,
+  faCheckCircle
+} from '@fortawesome/free-solid-svg-icons';
+
 const Notification = () => {
   const dispatch = useDispatch();
   const notifications = useSelector(state => state.notifications.notifications);
   const { info } = useAuthStore();
+
+  // Function to get notification icon
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'achievement':
+        return faTrophy;
+      case 'exam':
+        return faFileAlt;
+      case 'course':
+        return faBook;
+      case 'system':
+        return faCog;
+      case 'reminder':
+        return faClock;
+      default:
+        return faBell;
+    }
+  };
+   useEffect(() => {
+      document.title = "Thông báo | TOEIC Learning Platform";
+    }, []);
 
   return (
     <div className="notification-container">
@@ -19,7 +55,7 @@ const Notification = () => {
               className="mark-all-btn"
               onClick={() => dispatch(markAllAsRead(info.id))}
             >
-              <i className="fas fa-check-double"></i>
+              <FontAwesomeIcon icon={faCheckDouble} />
               Đánh dấu tất cả đã đọc
             </button>
           )}
@@ -28,9 +64,13 @@ const Notification = () => {
           {notifications.length > 0 ? (
             <div className="notification-list">
               {notifications.map((notification) => (
-                <div key={notification.id || notification._id} className={`notification-item ${!notification.isRead ? 'unread' : ''}`}>
+                <div 
+                  key={notification.id || notification._id} 
+                  className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                  data-type={notification.type}
+                >
                   <div className="notification-icon">
-                    <i className={`fas ${notification.type === 'achievement' ? 'fa-trophy' : 'fa-bell'}`}></i>
+                    <FontAwesomeIcon icon={getNotificationIcon(notification.type)} />
                   </div>
                   <div className="notification-content">
                     <h4 className="notification-item-title">{notification.title}</h4>
@@ -45,12 +85,12 @@ const Notification = () => {
                         className="mark-read-btn"
                         onClick={() => dispatch(markAsRead(notification.id || notification._id))}
                       >
-                        <i className="fas fa-check"></i>
+                        <FontAwesomeIcon icon={faCheck} />
                         Đánh dấu đã đọc
                       </button>
                     ) : (
                       <div className="read-status">
-                        <i className="fas fa-check-circle" style={{ color: '#28a745' }}></i>
+                        <FontAwesomeIcon icon={faCheckCircle} style={{ color: '#28a745' }} />
                         <span style={{ color: '#28a745', fontSize: '0.8rem', marginLeft: '4px' }}>Đã đọc</span>
                       </div>
                     )}
@@ -61,7 +101,7 @@ const Notification = () => {
           ) : (
             <div className="empty-notification">
               <div className="empty-icon">
-                <i className="fas fa-bell-slash"></i>
+                <FontAwesomeIcon icon={faBellSlash} />
               </div>
               <h3>Không có thông báo mới</h3>
               <p>Bạn không có thông báo nào. Thông báo mới sẽ xuất hiện ở đây.</p>

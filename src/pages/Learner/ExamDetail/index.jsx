@@ -390,9 +390,22 @@ const ExamDetail = () => {
     }
   }, [currentQuestionIndex]);
 
+  // Set document title when exam data is loaded
+  useEffect(() => {
+    if (loading) {
+      document.title = "Đang tải bài thi... | TOEIC Learning Platform";
+    } else if (exam && exam.name) {
+      document.title = `${exam.name} | TOEIC Learning Platform`;
+    } else if (error) {
+      document.title = "Lỗi tải bài thi | TOEIC Learning Platform";
+    } else {
+      document.title = "Chi tiết bài thi | TOEIC Learning Platform";
+    }
+  }, [exam, error, loading]);
+
   const startExam = () => {
     setExamStarted(true);
-    document.title = `Đang làm bài thi: ${exam ? exam.name : "Bài thi TOEIC"}`;
+    document.title = `Đang làm: ${exam ? exam.name : "Bài thi TOEIC"} | TOEIC Learning Platform`;
     // Bắt đầu đếm ngược thời gian
     timerRef.current = setInterval(() => {
       setRemainingTime((prevTime) => {
@@ -568,6 +581,9 @@ const ExamDetail = () => {
       };
 
       setExamResult(resultData);
+      
+      // Update document title when exam is submitted
+      document.title = `Kết quả: ${exam ? exam.name : "Bài thi TOEIC"} | TOEIC Learning Platform`;
       
       // Ghi nhận hoàn thành bài test cho streak với notification
       try {

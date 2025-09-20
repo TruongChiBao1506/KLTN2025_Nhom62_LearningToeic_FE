@@ -47,18 +47,10 @@ const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
 const Profile = () => {
+  const [form] = Form.useForm();
   const [user, setUser] = useState(null);
   const [statistics, setStatistics] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [editedUser, setEditedUser] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    dateOfBirth: "",
-    gender: "",
-    address: "",
-    bio: "",
-  });
   const [editMode, setEditMode] = useState(false);
   const [changePasswordMode, setChangePasswordMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -74,6 +66,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    document.title = "Hồ sơ cá nhân | TOEIC Learning Platform";
     fetchUserProfile();
     fetchUserStatistics();
     fetchRecentActivity();
@@ -121,15 +114,6 @@ const Profile = () => {
         };
         console.log("Mapped user data:", mappedUser);
         setUser(mappedUser);
-        setEditedUser({
-          fullName: mappedUser.fullName,
-          email: mappedUser.email || "",
-          phone: mappedUser.phone,
-          dateOfBirth: mappedUser.dateOfBirth,
-          gender: mappedUser.gender,
-          address: mappedUser.address || "",
-          bio: mappedUser.bio,
-        });
       } else {
         setErrors({
           general: "Không thể tải thông tin người dùng. Vui lòng thử lại.",
@@ -185,15 +169,6 @@ const Profile = () => {
         };
         
         setUser(fallbackUser);
-        setEditedUser({
-          fullName: fallbackUser.fullName,
-          email: fallbackUser.email,
-          phone: fallbackUser.phone,
-          dateOfBirth: fallbackUser.dateOfBirth,
-          gender: fallbackUser.gender,
-          address: fallbackUser.address,
-          bio: fallbackUser.bio,
-        });
         
         setErrors({
           general: "Đang hoạt động offline. Một số tính năng có thể bị hạn chế."
@@ -242,21 +217,6 @@ const Profile = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedUser(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-    
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: null,
-      }));
-    }
-  };
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -279,53 +239,26 @@ const Profile = () => {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!editedUser.fullName?.trim()) {
-      newErrors.fullName = "Họ và tên không được để trống";
-    } else if (editedUser.fullName.trim().length < 2) {
-      newErrors.fullName = "Họ và tên phải có ít nhất 2 ký tự";
-    }
-
-    if (!editedUser.email?.trim()) {
-      newErrors.email = "Email không được để trống";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editedUser.email)) {
-      newErrors.email = "Email không hợp lệ";
-    }
-
-    if (editedUser.phone && !/^[0-9+\-\s()]{10,15}$/.test(editedUser.phone)) {
-      newErrors.phone = "Số điện thoại không hợp lệ";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+  const handleSubmit = async (values) => {
+    // Ant Design Form đã tự động validate qua rules, không cần validate manual nữa
 
     try {
       setLoading(true);
       setErrors({});
 
       const formData = new FormData();
-      
+
       // Map frontend field names to backend expected field names
       const backendData = {
-        name: editedUser.fullName,
-        email: editedUser.email,
-        phoneNumber: editedUser.phone,
-        dateOfBirth: editedUser.dateOfBirth,
-        gender: editedUser.gender === "male" ? 1 : editedUser.gender === "female" ? 2 : editedUser.gender === "other" ? 3 : editedUser.gender,
-        address: editedUser.address,
-        bio: editedUser.bio
+        name: values.fullName,
+        email: values.email,
+        phoneNumber: values.phone,
+        dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null,
+        gender: values.gender === "male" ? 1 : values.gender === "female" ? 2 : values.gender === "other" ? 3 : values.gender,
+        address: values.address,
+        bio: values.bio
       };
-      
+
       Object.keys(backendData).forEach((key) => {
         if (backendData[key] !== null && backendData[key] !== undefined && backendData[key] !== "") {
           formData.append(key, backendData[key]);
@@ -348,7 +281,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật profile:", error);
-      
+
       if (error?.response?.data?.message) {
         setErrors({
           general: error.response.data.message,
@@ -431,20 +364,12 @@ const Profile = () => {
     }
   };
 
-  const cancelEdit = () => {
+  const cancelEdit = (form) => {
     setEditMode(false);
     setErrors({});
     setImagePreview(null);
     setSelectedImage(null);
-    setEditedUser({
-      fullName: user?.fullName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      dateOfBirth: user?.dateOfBirth || "",
-      gender: user?.gender || "",
-      address: user?.address || "",
-      bio: user?.bio || "",
-    });
+    form.resetFields();
   };
 
   const refreshProfile = async () => {
@@ -618,61 +543,81 @@ const Profile = () => {
 
                 {/* Profile Information */}
                 {editMode ? (
-                  <Form layout="vertical" onFinish={handleSubmit}>
+                  <Form 
+                    form={form}
+                    layout="vertical" 
+                    onFinish={handleSubmit}
+                    initialValues={{
+                      fullName: user?.fullName || user?.name || "",
+                      email: user?.email || "",
+                      phone: user?.phone || "",
+                      dateOfBirth: user?.dateOfBirth ? dayjs(user.dateOfBirth) : null,
+                      gender: user?.gender === 1 ? "male" : user?.gender === 2 ? "female" : user?.gender === 3 ? "other" : user?.gender || "",
+                      address: user?.address || "",
+                      bio: user?.bio || "",
+                    }}
+                  >
                     <Form.Item 
                       label="Họ và tên"
+                      name="fullName"
                       validateStatus={errors.fullName ? "error" : ""}
                       help={errors.fullName}
+                      rules={[
+                        { required: true, message: "Họ và tên không được để trống" },
+                        { min: 2, message: "Họ và tên phải có ít nhất 2 ký tự" }
+                      ]}
                     >
                       <Input
-                        value={editedUser.fullName}
-                        onChange={(e) => handleChange({ target: { name: "fullName", value: e.target.value } })}
                         placeholder="Nhập họ và tên"
                       />
                     </Form.Item>
 
                     <Form.Item 
                       label="Email"
+                      name="email"
                       validateStatus={errors.email ? "error" : ""}
                       help={errors.email}
+                      rules={[
+                        { required: true, message: "Email không được để trống" },
+                        { type: "email", message: "Email không hợp lệ" }
+                      ]}
                     >
                       <Input
                         type="email"
-                        value={editedUser.email}
-                        onChange={(e) => handleChange({ target: { name: "email", value: e.target.value } })}
                         disabled={user?.emailVerified}
                         placeholder="Nhập email"
                         prefix={<MailOutlined />}
                       />
                     </Form.Item>
 
-                    <Form.Item label="Số điện thoại">
+                    <Form.Item 
+                      label="Số điện thoại"
+                      name="phone"
+                      rules={[
+                        { pattern: /^[0-9+\-\s()]{10,15}$/, message: "Số điện thoại không hợp lệ" }
+                      ]}
+                    >
                       <Input
-                        value={editedUser.phone}
-                        onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value } })}
                         placeholder="Nhập số điện thoại"
                         prefix={<PhoneOutlined />}
                       />
                     </Form.Item>
 
-                    <Form.Item label="Ngày sinh">
+                    <Form.Item 
+                      label="Ngày sinh"
+                      name="dateOfBirth"
+                    >
                       <DatePicker
                         style={{ width: "100%" }}
-                        value={editedUser.dateOfBirth ? dayjs(editedUser.dateOfBirth) : null}
-                        onChange={(date) => handleChange({ 
-                          target: { 
-                            name: "dateOfBirth", 
-                            value: date ? date.format("YYYY-MM-DD") : "" 
-                          } 
-                        })}
                         placeholder="Chọn ngày sinh"
                       />
                     </Form.Item>
 
-                    <Form.Item label="Giới tính">
+                    <Form.Item 
+                      label="Giới tính"
+                      name="gender"
+                    >
                       <Select
-                        value={editedUser.gender}
-                        onChange={(value) => handleChange({ target: { name: "gender", value } })}
                         placeholder="Chọn giới tính"
                       >
                         <Option value="male">Nam</Option>
@@ -681,20 +626,22 @@ const Profile = () => {
                       </Select>
                     </Form.Item>
 
-                    <Form.Item label="Địa chỉ">
+                    <Form.Item 
+                      label="Địa chỉ"
+                      name="address"
+                    >
                       <Input
-                        value={editedUser.address}
-                        onChange={(e) => handleChange({ target: { name: "address", value: e.target.value } })}
                         placeholder="Nhập địa chỉ"
                         prefix={<EnvironmentOutlined />}
                       />
                     </Form.Item>
 
-                    <Form.Item label="Giới thiệu">
+                    <Form.Item 
+                      label="Giới thiệu"
+                      name="bio"
+                    >
                       <Input.TextArea
                         rows={3}
-                        value={editedUser.bio}
-                        onChange={(e) => handleChange({ target: { name: "bio", value: e.target.value } })}
                         placeholder="Viết vài dòng giới thiệu về bản thân"
                       />
                     </Form.Item>
@@ -709,7 +656,7 @@ const Profile = () => {
                         >
                           Lưu thay đổi
                         </Button>
-                        <Button onClick={cancelEdit} icon={<CloseOutlined />}>
+                        <Button onClick={() => cancelEdit(form)} icon={<CloseOutlined />}>
                           Hủy
                         </Button>
                       </Space>

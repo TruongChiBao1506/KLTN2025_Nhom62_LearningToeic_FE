@@ -211,6 +211,7 @@
 
 .stat-label {
   font-size: 0.9rem;
+  color: #fff !important;
   opacity: 0.8;
 }
 
@@ -516,6 +517,7 @@
 
   .hero-description {
     font-size: 1rem;
+    color: #fff !important;
   }
 
   .hero-stats {
