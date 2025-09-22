@@ -61,6 +61,28 @@ const chatStyles = {
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     backdropFilter: "blur(8px)",
   },
+  floatingButton: {
+    background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #1890ff 100%)",
+    boxShadow: "0 4px 20px rgba(24, 144, 255, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1)",
+    border: "none",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    transform: "scale(1)",
+    "&:hover": {
+      transform: "scale(1.05)",
+      boxShadow: "0 6px 25px rgba(24, 144, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15)",
+    },
+  },
+  "@keyframes pulse": {
+    "0%": {
+      transform: "scale(1)",
+    },
+    "50%": {
+      transform: "scale(1.1)",
+    },
+    "100%": {
+      transform: "scale(1)",
+    },
+  },
 };
 
 // Loading indicator for AI responses
@@ -78,6 +100,7 @@ const LoadingMessage = () => (
         backgroundColor: "#1890ff",
         marginRight: "8px",
         marginTop: "4px",
+        flexShrink: 0,
       }}
       size="small"
     />
@@ -157,32 +180,37 @@ const ChatbotModal = ({ isOpen, onClose }) => {
 
       // Socket event listeners
       newSocket.on("chatbot-response", (data) => {
-        if (data.sessionId === sessionId) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              content: data.text,
-              isUser: false,
-              timestamp: new Date(data.timestamp),
-              source: data.source || "gemini",
-            },
-          ]);
+        console.log("Received chatbot-response:", data);
+
+        // Check if response is successful
+        if (data.success && data.data) {
+          const newMessage = {
+            content: data.data.text,
+            isUser: false,
+            timestamp: new Date(data.timestamp),
+            source: data.data.source || "gemini",
+          };
+          console.log("New message to add:", newMessage);
+
+          setMessages((prev) => [...prev, newMessage]);
           setIsLoading(false);
 
           // Add unread count if minimized
           if (isMinimized) {
             setUnreadCount((prev) => prev + 1);
           }
+        } else {
+          // Handle error response
+          console.error("Chatbot response error:", data.error);
+          message.error(data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại.");
+          setIsLoading(false);
         }
       });
 
       newSocket.on("chatbot-error", (data) => {
-        if (data.sessionId === sessionId) {
-          message.error(
-            "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại."
-          );
-          setIsLoading(false);
-        }
+        console.error("Chatbot error received:", data);
+        message.error(data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại.");
+        setIsLoading(false);
       });
 
       return () => {
@@ -234,7 +262,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
           history: messages,
         });
 
-        if (response.data.success) {
+        if (response.data.success && response.data.data) {
           const newMessage = {
             content: response.data.data.text,
             isUser: false,
@@ -249,7 +277,9 @@ const ChatbotModal = ({ isOpen, onClose }) => {
             setUnreadCount((prev) => prev + 1);
           }
         } else {
-          message.error("Đã xảy ra lỗi khi xử lý tin nhắn của bạn.");
+          // Handle error response
+          console.error("HTTP API error:", response.data.error);
+          message.error(response.data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn.");
         }
         setIsLoading(false);
       }
@@ -294,18 +324,12 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       <FloatButton
         icon={
           <Badge count={unreadCount} size="small">
-            <MessageOutlined />
+            <MessageOutlined style={{color: "#fff", fontSize: "20px"}}/>
           </Badge>
         }
         onClick={() => {
           onClose(); // This actually opens the chat (parent handles the toggle)
           setUnreadCount(0); // Clear unread count when opening
-        }}
-        style={{
-          right: isMobile ? 16 : 24,
-          bottom: isMobile ? 16 : 24,
-          width: isMobile ? 56 : 60,
-          height: isMobile ? 56 : 60,
         }}
         type="primary"
         tooltip="TOEIC AI Assistant"
@@ -430,6 +454,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                         backgroundColor: "#1890ff",
                         marginRight: "8px",
                         marginTop: "4px",
+                        flexShrink: 0,
                       }}
                       size="small"
                     />
@@ -476,6 +501,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                         backgroundColor: "#f56a00",
                         marginLeft: "8px",
                         marginTop: "4px",
+                        flexShrink: 0,
                       }}
                       size="small"
                     />
