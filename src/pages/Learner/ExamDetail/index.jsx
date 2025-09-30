@@ -163,6 +163,144 @@ const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 
 const ExamDetail = () => {
+  // Watermark component
+  const Watermark = ({ text }) => {
+    const userInfo = localStorage.getItem("learnerToken") ? JSON.parse(atob(localStorage.getItem("learnerToken").split('.')[1])) : {};
+    const dynamicText = `${text} | User: ${userInfo.email || 'Unknown'} | ${new Date().toLocaleString()}`;
+    
+    return (
+      <div
+        style={{
+          position: "absolute",
+          bottom: 12,
+          right: 12,
+          opacity: 0.7,
+          fontSize: "12px",
+          color: "#1890ff",
+          pointerEvents: "none",
+          zIndex: 2,
+          background: "rgba(255,255,255,0.8)",
+          padding: "4px 8px",
+          borderRadius: "6px",
+          fontWeight: "bold",
+          userSelect: "none",
+          transform: "rotate(-15deg)", // Xoay để khó xóa
+        }}
+      >
+        {dynamicText}
+      </div>
+    );
+  };
+
+  // Chặn copy/cut/chuột phải, kéo hình ảnh, làm mờ khi PrintScreen
+  useEffect(() => {
+    // Chặn copy/cut/chuột phải
+    const preventCopy = (e) => e.preventDefault();
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("cut", preventCopy);
+    document.addEventListener("contextmenu", preventCopy);
+
+    // Chặn kéo hình ảnh
+    const preventDrag = (e) => e.preventDefault();
+    document.addEventListener("dragstart", preventDrag);
+
+    // Chặn selection (lựa chọn văn bản)
+    const preventSelection = (e) => e.preventDefault();
+    document.addEventListener("selectstart", preventSelection);
+    document.addEventListener("selectionchange", preventSelection);
+
+    // Chặn paste
+    document.addEventListener("paste", preventCopy);
+
+    // Thêm CSS inline để vô hiệu hóa user-select toàn cục
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+      }
+      /* Cho phép select trên các phần cần thiết như input, nếu có */
+      input, textarea, [contenteditable] {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Làm mờ toàn bộ nội dung khi screenshot
+    const blurContent = () => {
+      document.body.style.filter = "blur(10px) grayscale(100%)";
+      document.body.style.pointerEvents = "none";
+      setTimeout(() => {
+        document.body.style.filter = "";
+        document.body.style.pointerEvents = "";
+      }, 2000); // Mờ trong 2 giây
+    };
+
+    // Phát hiện screenshot nâng cao
+    const handleKeyDown = (e) => {
+      if (e.key === "PrintScreen" || e.key === "PrtSc") {
+        blurContent();
+        // Ngăn chặn hành động mặc định nếu có thể
+        e.preventDefault();
+      }
+      // Phát hiện tổ hợp phím screenshot phổ biến
+      if ((e.ctrlKey || e.metaKey) && e.key === "PrintScreen") {
+        blurContent();
+        e.preventDefault();
+      }
+    };
+
+    // Phát hiện thay đổi kích thước cửa sổ (thường dùng cho screenshot)
+    const handleResize = () => {
+      blurContent();
+    };
+
+    // Phát hiện mất focus (có thể là chuyển sang công cụ screenshot)
+    const handleBlur = () => {
+      blurContent();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("blur", handleBlur);
+
+    // Thêm overlay mờ liên tục (tùy chọn, có thể tắt/bật)
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(1px);
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.05; /* Rất mờ, khó nhận biết nhưng làm khó screenshot */
+    `;
+    document.body.appendChild(overlay);
+
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("cut", preventCopy);
+      document.removeEventListener("contextmenu", preventCopy);
+      document.removeEventListener("dragstart", preventDrag);
+      document.removeEventListener("selectstart", preventSelection);
+      document.removeEventListener("selectionchange", preventSelection);
+      document.removeEventListener("paste", preventCopy);
+      document.head.removeChild(style);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("blur", handleBlur);
+      document.body.removeChild(overlay);
+    };
+  }, []);
   const { id } = useParams();
   const navigate = useNavigate();
   const [exam, setExam] = useState(null);
@@ -1582,6 +1720,25 @@ const ExamDetail = () => {
   }
 
   // ...existing code...
+  // Hiển thị hình ảnh với watermark nếu có
+  // (Chèn vào nơi render hình ảnh câu hỏi, ví dụ trong phần render của main exam view)
+  // Ví dụ:
+  // {currentQuestion.image && (
+  //   <div style={{ position: "relative", display: "inline-block" }}>
+  //     <img
+  //       src={currentQuestion.image}
+  //       alt="Hình ảnh câu hỏi"
+  //       style={{
+  //         maxWidth: "100%",
+  //         borderRadius: "8px",
+  //         maxHeight: "400px",
+  //         objectFit: "contain",
+  //       }}
+  //     />
+  //     <Watermark text={`© TOEIC | ${new Date().toLocaleString()}`} />
+  //   </div>
+  // )}
+  // ...existing code...
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#f5f7fa" }}>
@@ -2051,42 +2208,48 @@ const ExamDetail = () => {
                   style={{ width: "100%", marginBottom: "24px" }}
                 >
                   {currentQuestion.image && (
-                    <Card
-                      size="small"
-                      style={{
-                        background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "12px",
-                        overflow: "hidden",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                      }}
-                      bodyStyle={{ padding: "16px", textAlign: "center" }}
-                    >
-                      <Image
-                        src={currentQuestion.image}
-                        alt="Hình ảnh câu hỏi"
-                        style={{ 
-                          maxWidth: "100%", 
-                          borderRadius: "8px",
-                          maxHeight: "400px",
-                          objectFit: "contain",
+                    <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                      <Card
+                        size="small"
+                        style={{
+                          background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "12px",
+                          overflow: "hidden",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                         }}
-                        placeholder={
-                          <div
-                            style={{
-                              padding: "40px",
-                              textAlign: "center",
-                              background: "#f8fafc",
-                              borderRadius: "8px",
-                              color: "#64748b",
-                            }}
-                          >
-                            <Spin size="large" />
-                            <div style={{ marginTop: "16px" }}>Đang tải hình ảnh...</div>
-                          </div>
-                        }
-                      />
-                    </Card>
+                        bodyStyle={{ padding: "16px", textAlign: "center" }}
+                      >
+                        <Image
+                          src={currentQuestion.image}
+                          alt="Hình ảnh câu hỏi"
+                          style={{ 
+                            maxWidth: "100%", 
+                            borderRadius: "8px",
+                            maxHeight: "400px",
+                            objectFit: "contain",
+                            pointerEvents: "none", // Ngăn tương tác
+                          }}
+                          onContextMenu={(e) => e.preventDefault()} // Chặn right-click
+                          onDragStart={(e) => e.preventDefault()} // Chặn kéo
+                          placeholder={
+                            <div
+                              style={{
+                                padding: "40px",
+                                textAlign: "center",
+                                background: "#f8fafc",
+                                borderRadius: "8px",
+                                color: "#64748b",
+                              }}
+                            >
+                              <Spin size="large" />
+                              <div style={{ marginTop: "16px" }}>Đang tải hình ảnh...</div>
+                            </div>
+                          }
+                        />
+                        <Watermark text={`© TOEIC Exam | Protected Content`} />
+                      </Card>
+                    </div>
                   )}
 
                   {currentQuestion.audio && (
