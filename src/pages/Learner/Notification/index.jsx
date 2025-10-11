@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { markAsRead, markAllAsRead } from '../../../store/notificationSlice.js';
+import { markAsRead, markAllAsRead, addNotification } from '../../../store/notificationSlice.js';
 import { useAuthStore } from '../../../hooks/useAuthStore';
+import socketService from '../../../services/socketService';
 import "./style.css";
 
 // Import FontAwesome components
@@ -44,6 +45,41 @@ const Notification = () => {
    useEffect(() => {
       document.title = "Thông báo | TOEIC Learning Platform";
     }, []);
+
+  // Socket.IO setup for real-time notifications
+  useEffect(() => {
+    if (info?.id) {
+      // Connect socket với userId
+      socketService.connect(info.id);
+
+      // Lắng nghe event 'reminder' từ server
+      const handleReminder = (data) => {
+        console.log('📢 Nhận được reminder:', data);
+        
+        // Tạo notification object từ data reminder
+        const newNotification = {
+          id: `reminder_${Date.now()}`, // Tạo ID unique
+          type: data.type || 'reminder',
+          title: 'Nhắc nhở tiến độ học tập',
+          message: data.message,
+          createdAt: data.timestamp || new Date().toISOString(),
+          isRead: false,
+          userId: data.userId
+        };
+
+        // Dispatch action để thêm notification vào store
+        dispatch(addNotification(newNotification));
+      };
+
+      // Đăng ký listener
+      socketService.on('reminder', handleReminder);
+
+      // Cleanup khi component unmount
+      return () => {
+        socketService.off('reminder', handleReminder);
+      };
+    }
+  }, [info?.id, dispatch]);
 
   return (
     <div className="notification-container">

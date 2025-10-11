@@ -150,6 +150,18 @@ const LearningPathPage = () => {
         const [createForm] = Form.useForm();
         const [startDate, setStartDate] = useState(null);
 
+    useEffect(() => {
+        if (learningPaths && learningPaths.length > 0) {
+            console.log('=== LỘ TRÌNH HỌC TẬP ĐƯỢC LOAD ===');
+            console.log('Tất cả lộ trình:', learningPaths);
+            console.log('Lộ trình hiện tại:', currentPath);
+            console.log('Tiến độ lộ trình hiện tại:', currentPathProgress);
+            console.log('=====================================');
+        } else if (!loading) {
+            console.log('Không có lộ trình học tập nào được tìm thấy');
+        }
+    }, [learningPaths, currentPath, currentPathProgress, loading]);
+
     // Handle Quick Path Creation
     const handleQuickPathCreate = async () => {
         if (!userId) {

@@ -17,14 +17,14 @@ const StudySW = () => {
   const renderComponent = () => {
     switch (sectionId) {
       // Speaking
-      case "104":
+      case "6894cc50892a33de30593472":
         return <No1To2 testId={testId} />;
-      case "105":
+      case "6894cc50892a33de30593473":
         return <No3To4 testId={testId} />;
-      case "106":
+      case "6894cc50892a33de30593474":
         return <No5To7 testId={testId} />;
       // Writing
-      case "109":
+      case "6894cc50892a33de30593475":
         return <No1To5 testId={testId} />;
       // Các phần chưa cài đặt
       case "107":

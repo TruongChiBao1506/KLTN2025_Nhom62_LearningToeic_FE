@@ -185,6 +185,9 @@ const SignIn = () => {
 
   // Load remembered username
   useEffect(() => {
+
+    document.title = "Đăng nhập | TOEIC Learning";
+
     const rememberedUsername = localStorage.getItem("rememberedUsername");
     const isRemembered = localStorage.getItem("rememberMe");
 

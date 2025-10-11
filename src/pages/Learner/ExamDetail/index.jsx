@@ -46,6 +46,8 @@ import {
   TrendingUp,
   X,
   PenTool,
+  PanelLeftClose,
+  PanelRightClose,
 } from "lucide-react";
 import learnerExamService from "../../../services/learnerExamService";
 import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
@@ -317,6 +319,7 @@ const ExamDetail = () => {
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [savedProgress, setSavedProgress] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const timerRef = useRef(null);
   const eventHandlersRef = useRef({ beforeUnload: null, popState: null });
   const { recordCompleteTest } = useAchievementNotifications();
@@ -1749,9 +1752,12 @@ const ExamDetail = () => {
           padding: "12px 20px",
           color: "#fff",
           boxShadow: "0 4px 20px rgba(102, 126, 234, 0.3)",
-          position: "sticky",
+          position: "fixed",
           top: 0,
-          zIndex: 100,
+          left: 0,
+          right: 0,
+          width: "100%",
+          zIndex: 1000,
           height: "72px",
           display: "flex",
           alignItems: "center",
@@ -1868,20 +1874,40 @@ const ExamDetail = () => {
       </div>
 
       {/* Main Exam Content - Enhanced */}
-      <Content style={{ padding: "20px", minHeight: "calc(100vh - 72px)", overflow: "auto" }}>
+      <Content style={{ 
+        padding: "20px", 
+        paddingTop: "92px",
+        minHeight: "calc(100vh - 72px)", 
+        overflow: "auto" 
+      }}>
         <Row gutter={[20, 20]} style={{ minHeight: "100%" }}>
           {/* Enhanced Question Navigation Sidebar */}
-          <Col xs={24} lg={6} xl={5}>
+          <Col xs={24} lg={sidebarCollapsed ? 1 : 6} xl={sidebarCollapsed ? 1 : 5}>
             <Card
               title={
-                <Space>
-                  <HelpCircle size={16} />
-                  <span style={{ fontWeight: "600" }}>Danh sách câu hỏi</span>
+                <Space style={{ width: "100%", justifyContent: "space-between" }}>
+                  <Space>
+                    <HelpCircle size={16} />
+                    <span style={{ fontWeight: "600" }}>Câu hỏi theo Part</span>
+                  </Space>
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={sidebarCollapsed ? <PanelRightClose size={16} /> : <PanelLeftClose size={16} />}
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    style={{
+                      color: "#64748b",
+                      border: "none",
+                      boxShadow: "none",
+                      padding: "4px",
+                    }}
+                    title={sidebarCollapsed ? "Mở rộng danh sách câu hỏi" : "Thu gọn danh sách câu hỏi"}
+                  />
                 </Space>
               }
               style={{
                 height: "calc(100vh - 140px)",
-                display: window.innerWidth < 992 ? "none" : "block",
+                display: (window.innerWidth < 992 || sidebarCollapsed) ? "none" : "block",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                 borderRadius: "12px",
                 border: "1px solid #e8f4fd",
@@ -1959,7 +1985,7 @@ const ExamDetail = () => {
                 </Row>
               </div>
 
-              {/* Enhanced Question Grid */}
+              {/* Enhanced Question Grid Grouped by Parts */}
               <div style={{
                 flex: 1,
                 overflowY: "auto",
@@ -1967,142 +1993,409 @@ const ExamDetail = () => {
                 maxHeight: "calc(100vh - 350px)",
                 minHeight: "200px",
                 paddingRight: "4px",
+                scrollbarWidth: "thin",
+                scrollbarColor: "#cbd5e1 #f8fafc",
               }}>
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: exam.questions?.length > 60 ? "repeat(6, 1fr)" : "repeat(5, 1fr)",
-                  gap: "6px",
-                  padding: "4px"
+                <style>
+                  {`
+                    .question-grid::-webkit-scrollbar {
+                      width: 6px;
+                    }
+                    .question-grid::-webkit-scrollbar-track {
+                      background: #f8fafc;
+                      border-radius: 3px;
+                    }
+                    .question-grid::-webkit-scrollbar-thumb {
+                      background: #cbd5e1;
+                      border-radius: 3px;
+                    }
+                    .question-grid::-webkit-scrollbar-thumb:hover {
+                      background: #94a3b8;
+                    }
+                    @keyframes pulse {
+                      0%, 100% { opacity: 1; }
+                      50% { opacity: 0.5; }
+                    }
+                    @keyframes sidebarButtonPulse {
+                      0%, 100% { 
+                        opacity: 1; 
+                        transform: scale(1);
+                      }
+                      50% { 
+                        opacity: 0.8; 
+                        transform: scale(1.05);
+                      }
+                    }
+                  `}
+                </style>
+                <div className="question-grid" style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
                 }}>
-                  {exam.questions && exam.questions.map((q, index) => {
-                    const isActive = index === currentQuestionIndex;
-                    const isAnswered = userAnswers[q.id] !== undefined;
-                    const isFlagged = flaggedQuestions.includes(q.id);
-                    
-                    return (
-                      <button
-                        key={q.id}
-                        onClick={() => goToQuestion(index)}
-                        style={{
-                          width: "100%",
-                          height: "32px",
-                          border: `2px solid ${
-                            isFlagged ? "#faad14" : 
-                            isActive ? "#1890ff" : 
-                            isAnswered ? "#52c41a" : "#d1d5db"
-                          }`,
-                          background: isActive ? 
-                            "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)" : 
-                            isAnswered ? 
-                            "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)" : 
-                            "#ffffff",
-                          color: isActive || isAnswered ? "#fff" : "#374151",
-                          borderRadius: "6px",
-                          fontSize: "12px",
-                          fontWeight: "600",
+                  {/* Quick Stats Overview */}
+                  <div style={{
+                    background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #bae6fd",
+                    marginBottom: "8px",
+                  }}>
+                    <Row gutter={8} align="middle">
+                      <Col span={8}>
+                        <div style={{ textAlign: "center" }}>
+                          <div style={{
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#1890ff",
+                            marginBottom: "2px"
+                          }}>
+                            {currentQuestionIndex + 1}
+                          </div>
+                          <div style={{
+                            fontSize: "9px",
+                            color: "#64748b",
+                            fontWeight: "500",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px"
+                          }}>
+                            Hiện tại
+                          </div>
+                        </div>
+                      </Col>
+                      <Col span={8}>
+                        <div style={{ textAlign: "center" }}>
+                          <div style={{
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#52c41a",
+                            marginBottom: "2px"
+                          }}>
+                            {Object.keys(userAnswers).length}
+                          </div>
+                          <div style={{
+                            fontSize: "9px",
+                            color: "#64748b",
+                            fontWeight: "500",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px"
+                          }}>
+                            Đã làm
+                          </div>
+                        </div>
+                      </Col>
+                      <Col span={8}>
+                        <div style={{ textAlign: "center" }}>
+                          <div style={{
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#faad14",
+                            marginBottom: "2px"
+                          }}>
+                            {flaggedQuestions.length}
+                          </div>
+                          <div style={{
+                            fontSize: "9px",
+                            color: "#64748b",
+                            fontWeight: "500",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px"
+                          }}>
+                            Đánh dấu
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
+                    {/* Progress Bar */}
+                    <div style={{ marginTop: "8px" }}>
+                      <div style={{
+                        width: "100%",
+                        height: "4px",
+                        background: "#e2e8f0",
+                        borderRadius: "2px",
+                        overflow: "hidden",
+                      }}>
+                        <div style={{
+                          width: `${(Object.keys(userAnswers).length / (exam.questions?.length || 1)) * 100}%`,
+                          height: "100%",
+                          background: "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                          borderRadius: "2px",
+                          transition: "width 0.3s ease",
+                        }}></div>
+                      </div>
+                      <div style={{
+                        fontSize: "10px",
+                        color: "#64748b",
+                        textAlign: "center",
+                        marginTop: "4px",
+                        fontWeight: "500"
+                      }}>
+                        {Math.round((Object.keys(userAnswers).length / (exam.questions?.length || 1)) * 100)}% Hoàn thành
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Question Groups by Part */}
+                  {(() => {
+                    // Ranges cho TOEIC dựa trên loại bài thi
+                    const toeicRanges = exam.type === "full-test" ? [
+                      { id: 1, name: "Photographs", range: "1-6", description: "Mô tả hình ảnh", start: 0, end: 6 },
+                      { id: 2, name: "Question-Response", range: "7-31", description: "Hỏi đáp", start: 6, end: 31 },
+                      { id: 3, name: "Conversations", range: "32-70", description: "Đối thoại", start: 31, end: 70 },
+                      { id: 4, name: "Talks", range: "71-100", description: "Bài nói", start: 70, end: 100 },
+                      { id: 5, name: "Incomplete Sentences", range: "101-130", description: "Hoàn thành câu", start: 100, end: 130 },
+                      { id: 6, name: "Text Completion", range: "131-146", description: "Hoàn thành đoạn văn", start: 130, end: 146 },
+                      { id: 7, name: "Reading Comprehension", range: "147-200", description: "Đọc hiểu", start: 146, end: 200 },
+                    ] : [
+                      // Mini test: 100 câu (50 Listening + 50 Reading)
+                      { id: 1, name: "Photographs", range: "1-13", description: "Mô tả hình ảnh", start: 0, end: 13 },
+                      { id: 2, name: "Question-Response", range: "14-25", description: "Hỏi đáp", start: 13, end: 25 },
+                      { id: 3, name: "Conversations", range: "26-37", description: "Đối thoại", start: 25, end: 37 },
+                      { id: 4, name: "Talks", range: "38-50", description: "Bài nói", start: 37, end: 50 },
+                      { id: 5, name: "Incomplete Sentences", range: "51-62", description: "Hoàn thành câu", start: 50, end: 62 },
+                      { id: 6, name: "Text Completion", range: "63-75", description: "Hoàn thành đoạn văn", start: 62, end: 75 },
+                      { id: 7, name: "Reading Comprehension", range: "76-100", description: "Đọc hiểu", start: 75, end: 100 },
+                    ];
+
+                    const totalQuestions = exam.questions?.length || 0;
+                    const parts = toeicRanges.map(range => {
+                      // Điều chỉnh end nếu tổng câu ít hơn (cho bài thi mini)
+                      const adjustedEnd = Math.min(range.end, totalQuestions);
+                      const partQuestions = exam.questions?.slice(range.start, adjustedEnd) || [];
+
+                      if (partQuestions.length > 0) {
+                        const answeredInPart = partQuestions.filter(q => userAnswers[q.id] !== undefined).length;
+                        const flaggedInPart = partQuestions.filter(q => flaggedQuestions.includes(q.id)).length;
+                        const isCurrentPart = currentQuestionIndex >= range.start && currentQuestionIndex < adjustedEnd;
+
+                        return {
+                          id: range.id,
+                          name: `Part ${range.id}`,
+                          description: range.name,
+                          range: range.range,
+                          questions: partQuestions,
+                          startIndex: range.start,
+                          endIndex: adjustedEnd,
+                          answeredCount: answeredInPart,
+                          flaggedCount: flaggedInPart,
+                          isCurrentPart,
+                          progress: partQuestions.length > 0 ? (answeredInPart / partQuestions.length) * 100 : 0,
+                        };
+                      }
+                      return null;
+                    }).filter(part => part !== null); // Chỉ hiển thị part có câu
+
+                    return parts.map((part) => (
+                      <div key={part.id} style={{
+                        background: part.isCurrentPart
+                          ? "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)"
+                          : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                        borderRadius: "10px",
+                        border: part.isCurrentPart
+                          ? "2px solid #f59e0b"
+                          : "1px solid #e2e8f0",
+                        overflow: "hidden",
+                        boxShadow: part.isCurrentPart
+                          ? "0 4px 12px rgba(245, 158, 11, 0.15)"
+                          : "0 2px 4px rgba(0,0,0,0.04)",
+                        transition: "all 0.3s ease",
+                      }}>
+                        {/* Part Header */}
+                        <div style={{
+                          padding: "10px 12px",
+                          background: part.isCurrentPart
+                            ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                            : "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                          borderBottom: "1px solid #e2e8f0",
                           cursor: "pointer",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "0",
-                          boxShadow: isActive || isAnswered ? 
-                            "0 2px 8px rgba(0,0,0,0.15)" : 
-                            "0 1px 3px rgba(0,0,0,0.1)",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isActive) {
-                            e.target.style.transform = "scale(1.08) translateY(-1px)";
-                            e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = "scale(1) translateY(0)";
-                          e.target.style.boxShadow = isActive || isAnswered ? 
-                            "0 2px 8px rgba(0,0,0,0.15)" : 
-                            "0 1px 3px rgba(0,0,0,0.1)";
-                        }}
-                      >
-                        {index + 1}
-                        {isFlagged && (
-                          <Flag
-                            size={8}
-                            style={{
-                              position: "absolute",
-                              top: "-2px",
-                              right: "-2px",
-                              color: "#faad14",
-                              background: "#fff",
-                              borderRadius: "50%",
-                              padding: "1px",
-                              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                            }}
-                          />
-                        )}
-                      </button>
-                    );
-                  })}
+                        }}>
+                          <Row align="middle" gutter={8}>
+                            <Col flex="auto">
+                              <Space direction="vertical" size={0}>
+                                <div style={{
+                                  fontSize: "12px",
+                                  fontWeight: "700",
+                                  color: part.isCurrentPart ? "#fff" : "#1e293b",
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.5px",
+                                }}>
+                                  {part.name}
+                                </div>
+                                <div style={{
+                                  fontSize: "10px",
+                                  color: part.isCurrentPart ? "rgba(255,255,255,0.9)" : "#64748b",
+                                  fontWeight: "500",
+                                }}>
+                                  {part.description} • {part.questions.length} câu
+                                </div>
+                              </Space>
+                            </Col>
+                            <Col>
+                              <div style={{
+                                fontSize: "11px",
+                                fontWeight: "bold",
+                                color: part.isCurrentPart ? "#fff" : "#374151",
+                                background: part.isCurrentPart ? "rgba(255,255,255,0.2)" : "#f1f5f9",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                              }}>
+                                {part.answeredCount}/{part.questions.length}
+                              </div>
+                            </Col>
+                          </Row>
+
+                          {/* Part Progress Bar */}
+                          <div style={{ marginTop: "6px" }}>
+                            <div style={{
+                              width: "100%",
+                              height: "3px",
+                              background: part.isCurrentPart ? "rgba(255,255,255,0.3)" : "#e2e8f0",
+                              borderRadius: "2px",
+                              overflow: "hidden",
+                            }}>
+                              <div style={{
+                                width: `${part.progress}%`,
+                                height: "100%",
+                                background: part.isCurrentPart
+                                  ? "linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)"
+                                  : "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                                borderRadius: "2px",
+                                transition: "width 0.4s ease",
+                              }}></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Questions Grid */}
+                        <div style={{
+                          padding: "8px",
+                          background: part.isCurrentPart ? "rgba(245, 158, 11, 0.02)" : "transparent",
+                        }}>
+                          <div style={{
+                            display: "grid",
+                            gridTemplateColumns: part.questions.length > 15
+                              ? "repeat(5, 1fr)"
+                              : part.questions.length > 10
+                              ? "repeat(4, 1fr)"
+                              : "repeat(3, 1fr)",
+                            gap: "4px",
+                          }}>
+                            {part.questions.map((q, partIndex) => {
+                              const globalIndex = part.startIndex + partIndex;
+                              const isActive = globalIndex === currentQuestionIndex;
+                              const isAnswered = userAnswers[q.id] !== undefined;
+                              const isFlagged = flaggedQuestions.includes(q.id);
+
+                              return (
+                                <Tooltip
+                                  key={q.id}
+                                  title={
+                                    <div style={{ textAlign: "center" }}>
+                                      <div style={{ fontWeight: "600", marginBottom: "4px" }}>
+                                        Câu {globalIndex + 1}
+                                      </div>
+                                      <div style={{ fontSize: "12px", opacity: 0.9 }}>
+                                        {isAnswered ? "Đã trả lời" : "Chưa trả lời"}
+                                        {isFlagged && " • Đã đánh dấu"}
+                                      </div>
+                                    </div>
+                                  }
+                                  placement="top"
+                                >
+                                  <button
+                                    onClick={() => goToQuestion(globalIndex)}
+                                    style={{
+                                      width: "100%",
+                                      height: "28px",
+                                      border: `2px solid ${
+                                        isFlagged ? "#faad14" :
+                                        isActive ? "#1890ff" :
+                                        isAnswered ? "#52c41a" : "#d1d5db"
+                                      }`,
+                                      background: isActive ?
+                                        "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)" :
+                                        isAnswered ?
+                                        "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)" :
+                                        "#ffffff",
+                                      color: isActive || isAnswered ? "#fff" : "#374151",
+                                      borderRadius: "6px",
+                                      fontSize: "11px",
+                                      fontWeight: "700",
+                                      cursor: "pointer",
+                                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                                      position: "relative",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      padding: "0",
+                                      boxShadow: isActive || isAnswered ?
+                                        "0 2px 6px rgba(0,0,0,0.15)" :
+                                        "0 1px 2px rgba(0,0,0,0.08)",
+                                      transform: isActive ? "scale(1.1)" : "scale(1)",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (!isActive) {
+                                        e.target.style.transform = "scale(1.05) translateY(-1px)";
+                                        e.target.style.boxShadow = "0 3px 8px rgba(0,0,0,0.2)";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (!isActive) {
+                                        e.target.style.transform = "scale(1) translateY(0)";
+                                        e.target.style.boxShadow = isActive || isAnswered ?
+                                          "0 2px 6px rgba(0,0,0,0.15)" :
+                                          "0 1px 2px rgba(0,0,0,0.08)";
+                                      }
+                                    }}
+                                  >
+                                    {globalIndex + 1}
+                                    {isFlagged && (
+                                      <Flag
+                                        size={6}
+                                        style={{
+                                          position: "absolute",
+                                          top: "-1px",
+                                          right: "-1px",
+                                          color: "#faad14",
+                                          background: "#fff",
+                                          borderRadius: "50%",
+                                          padding: "1px",
+                                          boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                                          border: "1px solid #faad14",
+                                        }}
+                                      />
+                                    )}
+                                    {isActive && (
+                                      <div style={{
+                                        position: "absolute",
+                                        top: "-2px",
+                                        left: "-2px",
+                                        width: "8px",
+                                        height: "8px",
+                                        background: "#fff",
+                                        borderRadius: "50%",
+                                        border: "2px solid #1890ff",
+                                        animation: "pulse 2s infinite",
+                                      }}></div>
+                                    )}
+                                  </button>
+                                </Tooltip>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ));
+                  })()}
                 </div>
               </div>
 
-              {/* Enhanced Progress Summary */}
-              <div style={{
-                marginTop: "12px",
-                padding: "12px",
-                background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
-                borderRadius: "8px",
-                border: "1px solid #bae6fd",
-                flexShrink: 0,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
-              }}>
-                <Row gutter={8}>
-                  <Col span={8} style={{ textAlign: "center" }}>
-                    <div style={{ 
-                      fontSize: "16px", 
-                      fontWeight: "bold", 
-                      color: "#1890ff",
-                      marginBottom: "2px"
-                    }}>
-                      {currentQuestionIndex + 1}
-                    </div>
-                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
-                      Hiện tại
-                    </div>
-                  </Col>
-                  <Col span={8} style={{ textAlign: "center" }}>
-                    <div style={{ 
-                      fontSize: "16px", 
-                      fontWeight: "bold", 
-                      color: "#52c41a",
-                      marginBottom: "2px"
-                    }}>
-                      {Object.keys(userAnswers).length}
-                    </div>
-                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
-                      Đã làm
-                    </div>
-                  </Col>
-                  <Col span={8} style={{ textAlign: "center" }}>
-                    <div style={{ 
-                      fontSize: "16px", 
-                      fontWeight: "bold", 
-                      color: "#faad14",
-                      marginBottom: "2px"
-                    }}>
-                      {flaggedQuestions.length}
-                    </div>
-                    <div style={{ fontSize: "10px", color: "#64748b", fontWeight: "500" }}>
-                      Đánh dấu
-                    </div>
-                  </Col>
-                </Row>
-              </div>
+
             </Card>
           </Col>
 
           {/* Enhanced Question Content */}
-          <Col xs={24} lg={18} xl={19}>
+          <Col xs={24} lg={sidebarCollapsed ? 23 : 18} xl={sidebarCollapsed ? 23 : 19}>
             <Card
               style={{ 
                 minHeight: "calc(100vh - 140px)",
@@ -2621,6 +2914,38 @@ const ExamDetail = () => {
           </Col>
         </Row>
       </Content>
+
+      {/* Floating Button to Expand Sidebar */}
+      {sidebarCollapsed && window.innerWidth >= 992 && (
+        <Button
+          type="primary"
+          shape="circle"
+          size="large"
+          icon={<PanelRightClose size={20} />}
+          onClick={() => setSidebarCollapsed(false)}
+          style={{
+            position: "fixed",
+            top: "100px",
+            left: "20px",
+            zIndex: 1000,
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            border: "none",
+            boxShadow: "0 4px 20px rgba(102, 126, 234, 0.4)",
+            animation: "sidebarButtonPulse 2s infinite",
+            transform: "scale(1)",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "scale(1.1)";
+            e.target.style.boxShadow = "0 6px 25px rgba(102, 126, 234, 0.6)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+            e.target.style.boxShadow = "0 4px 20px rgba(102, 126, 234, 0.4)";
+          }}
+          title="Mở rộng danh sách câu hỏi"
+        />
+      )}
 
       {/* Enhanced Confirm Submit Modal */}
       <Modal
