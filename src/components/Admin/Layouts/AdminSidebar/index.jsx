@@ -9,7 +9,8 @@ import {
   TeamOutlined,
   FileOutlined,
   CommentOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
+  EditOutlined
 } from '@ant-design/icons';
 
 const Sidebar = ({ isToggled, isAnimating }) => {
@@ -32,6 +33,11 @@ const Sidebar = ({ isToggled, isAnimating }) => {
             key: '/admin/topic',
             icon: <BookOutlined />,
             label: 'Quản lý chủ đề',
+        },
+        {
+            key: '/admin/blog',
+            icon: <EditOutlined />,
+            label: 'Quản lý Blog',
         },
         {
             key: '/admin/grammar',

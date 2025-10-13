@@ -8,6 +8,8 @@ import AdminLayout from '../pages/Admin/AdminLayout';
 import AdminProfile from '../pages/Admin/AdminProfile';
 import Section from '../pages/Admin/Section';
 import Topic from '../pages/Admin/Topic';
+import Blog from '../pages/Admin/Blog';
+import BlogDetail from '../pages/Admin/Blog/BlogDetail';
 import Grammar from '../pages/Admin/Grammar';
 import Settings from '../pages/Admin/SettingPage';
 import Learner from '../pages/Admin/Learner';
@@ -46,6 +48,8 @@ const AdminRoutes = () => {
             <Route path="topic/:topicId/vocabulary" element={<VocabularyByTopic />} />
             <Route path="topic/:topicId/vocabulary-question" element={<VocabularyQuestion />} />
 
+            <Route path="blog" element={<Blog />} />
+            <Route path="blog/:blogId" element={<BlogDetail />} />
 
             {/* Protected Route */}
             <Route path="grammar" element={<Grammar />} />
