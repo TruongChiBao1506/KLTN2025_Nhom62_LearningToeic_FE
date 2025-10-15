@@ -7,7 +7,7 @@ class ExamQuestionService {
 
     async create(data) {
         try {
-            console.log('🚀 Creating exam question:', data);
+            console.log('ExamQuestionService: create');
             
             const isFormData = data instanceof FormData;
             const headers = isFormData ? {
@@ -17,42 +17,39 @@ class ExamQuestionService {
             };
             
             const response = await axiosClient.post(`${this.baseUrl}`, data, { headers });
-            console.log('  Exam question created:', response);
+            // success
             return response;
         } catch (error) {
-            console.error('❌ Error creating exam question:', error);
+            console.error('ExamQuestionService: create error', error);
             throw error;
         }
     }
 
     async all() {
         try {
-            console.log('🔍 Getting all exam questions');
+            // list all
             const response = await axiosClient.get(`${this.baseUrl}`);
-            console.log('  All exam questions retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting all exam questions:', error);
+            console.error('ExamQuestionService: all error', error);
             throw error;
         }
     }
 
     async get(id) {
         try {
-            console.log('🔍 Getting exam question with ID:', id);
+            console.log('ExamQuestionService: get', id);
             const response = await axiosClient.get(`${this.baseUrl}/${id}`);
-            console.log('  Exam question retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting exam question:', error);
+            console.error('ExamQuestionService: get error', error);
             throw error;
         }
     }
 
     async update(id, data) {
         try {
-            console.log('🔄 Updating exam question:', id);
-            console.log('🔄 Data to send:', data);
+            console.log('ExamQuestionService: update', id);
             
             const isFormData = data instanceof FormData;
             const headers = isFormData ? {
@@ -62,22 +59,20 @@ class ExamQuestionService {
             };
             
             const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, { headers });
-            console.log('  Exam question updated:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error updating exam question:', error);
+            console.error('ExamQuestionService: update error', error);
             throw error;
         }
     }
 
     async delete(id) {
         try {
-            console.log('🗑️ Deleting exam question:', id);
+            console.log('ExamQuestionService: delete', id);
             const response = await axiosClient.delete(`${this.baseUrl}/${id}`);
-            console.log('  Exam question deleted:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error deleting exam question:', error);
+            console.error('ExamQuestionService: delete error', error);
             throw error;
         }
     }
@@ -85,22 +80,14 @@ class ExamQuestionService {
     //   Main method used in component
     async getQuestionsByExamId(examId) {
         try {
-            console.log('🔍 Getting exam questions for exam:', examId);
+            console.log('ExamQuestionService: get by exam', examId);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}`);
-            console.log('  Exam questions retrieved:', response);
-            
-            //   Log để debug response structure
-            console.log('📊 Response structure:', {
-                hasExamQuestions: !!response.examQuestions,
-                questionsLength: response.examQuestions?.length || (Array.isArray(response) ? response.length : 0),
-                totalPages: response.totalPages,
-                currentPage: response.currentPage,
-                total: response.total
-            });
+            // minimal shape check for debugging
+            console.log('ExamQuestionService: get by exam ok, count=', Array.isArray(response?.examQuestions) ? response.examQuestions.length : (Array.isArray(response) ? response.length : 0));
             
             return response;
         } catch (error) {
-            console.error('❌ Error getting exam questions by exam ID:', error);
+            console.error('ExamQuestionService: get by exam error', error);
             
             // Handle 404 as empty data instead of error
             if (error.response?.status === 404) {
@@ -120,7 +107,7 @@ class ExamQuestionService {
     //   IMPORT + EXPORT methods
     async exportTemplate() {
         try {
-            console.log('📥 Exporting exam question template');
+            console.log('ExamQuestionService: export template');
             const response = await axiosClient.get(`${this.baseUrl}/download-template`, {
                 responseType: 'blob'
             });
@@ -140,19 +127,33 @@ class ExamQuestionService {
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
             
-            console.log('  Template exported successfully');
             return response;
         } catch (error) {
-            console.error('❌ Error exporting template:', error);
+            console.error('ExamQuestionService: export template error', error);
             throw error;
         }
     }
 
     async importTemplate(excelFile, examId) {
         try {
-            console.log('📋 Importing exam questions template for exam:', examId);
+            console.log('ExamQuestionService: import excel for exam', examId);
+
+            // Clone file into memory to avoid Chrome's net::ERR_UPLOAD_FILE_CHANGED
+            let filePart = excelFile;
+            try {
+                if (excelFile && typeof excelFile.arrayBuffer === 'function') {
+                    const buffer = await excelFile.arrayBuffer();
+                    const contentType = excelFile.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    const blob = new Blob([buffer], { type: contentType });
+                    filePart = new File([blob], excelFile.name || 'exam_questions.xlsx', { type: contentType });
+                }
+            } catch (cloneErr) {
+                console.warn('⚠️ Could not clone Excel file to memory, sending original File instead.', cloneErr);
+            }
+
             const formData = new FormData();
-            formData.append('file', excelFile);
+            // Use filename explicitly for broader backend compatibility
+            formData.append('file', filePart, filePart.name || 'exam_questions.xlsx');
             formData.append('examId', examId);
             
             const response = await axiosClient.post(`${this.baseUrl}/upload-excel`, formData, {
@@ -160,10 +161,10 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Import completed successfully:', response);
+            console.log('ExamQuestionService: import excel completed');
             return response;
         } catch (error) {
-            console.error('❌ Error importing template:', error);
+            console.error('ExamQuestionService: import excel error', error);
             throw error;
         }
     }
@@ -171,38 +172,40 @@ class ExamQuestionService {
     //   Upload methods
     async uploadExamQuestionImages(imageFiles) {
         try {
-            console.log('📸 Uploading exam question images:', imageFiles.name || imageFiles.length);
+            // NOTE: Backend expects the field name to be 'image' for single-image upload
+            console.log('ExamQuestionService: upload image', imageFiles?.name || '(no name)');
             const formData = new FormData();
-            formData.append('questionImage', imageFiles);
-            
+            formData.append('image', imageFiles);
+
             const response = await axiosClient.post(`${this.baseUrl}/upload-image`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Images uploaded successfully:', response);
+            // success
             return response;
         } catch (error) {
-            console.error('❌ Error uploading images:', error);
+            console.error('ExamQuestionService: upload image error', error);
             throw error;
         }
     }
 
     async uploadExamQuestionAudios(audioFiles) {
         try {
-            console.log('🔊 Uploading exam question audios:', audioFiles.name || audioFiles.length);
+            // NOTE: Backend expects the field name to be 'audio' for single-audio upload
+            console.log('ExamQuestionService: upload audio', audioFiles?.name || '(no name)');
             const formData = new FormData();
-            formData.append('questionAudio', audioFiles);
-            
+            formData.append('audio', audioFiles);
+
             const response = await axiosClient.post(`${this.baseUrl}/upload-audio`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Audios uploaded successfully:', response);
+            // success
             return response;
         } catch (error) {
-            console.error('❌ Error uploading audios:', error);
+            console.error('ExamQuestionService: upload audio error', error);
             throw error;
         }
     }
@@ -210,14 +213,13 @@ class ExamQuestionService {
     //   Status update method
     async updateStatus(examQuestionId, newStatus) {
         try {
-            console.log('🔄 Updating exam question status:', examQuestionId, newStatus);
+            console.log('ExamQuestionService: update status', examQuestionId, newStatus);
             const response = await axiosClient.put(`${this.baseUrl}/${examQuestionId}/status`, {
                 status: newStatus
             });
-            console.log('  Exam question status updated:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error updating exam question status:', error);
+            console.error('ExamQuestionService: update status error', error);
             throw error;
         }
     }
@@ -225,12 +227,11 @@ class ExamQuestionService {
     //   Delete all questions by exam ID
     async deleteExamQuestionsByExamId(examId) {
         try {
-            console.log('🗑️ Deleting all questions for exam:', examId);
+            console.log('ExamQuestionService: delete by exam', examId);
             const response = await axiosClient.delete(`${this.baseUrl}/delete-by-exam/${examId}`);
-            console.log('  All questions deleted successfully:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error deleting all questions:', error);
+            console.error('ExamQuestionService: delete by exam error', error);
             throw error;
         }
     }
@@ -238,12 +239,11 @@ class ExamQuestionService {
     //   Additional useful methods
     async getEnabledQuestionsByExamId(examId) {
         try {
-            console.log('🔍 Getting enabled exam questions for exam:', examId);
+            console.log('ExamQuestionService: get enabled by exam', examId);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/enabled`);
-            console.log('  Enabled exam questions retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting enabled exam questions:', error);
+            console.error('ExamQuestionService: get enabled by exam error', error);
             
             if (error.response?.status === 404) {
                 console.log('📝 No enabled exam questions found');
@@ -256,12 +256,11 @@ class ExamQuestionService {
 
     async getQuestionsByType(examId, questionType) {
         try {
-            console.log('🔍 Getting questions by type:', examId, questionType);
+            console.log('ExamQuestionService: get by type', examId, questionType);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/type/${questionType}`);
-            console.log('  Questions by type retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting questions by type:', error);
+            console.error('ExamQuestionService: get by type error', error);
             
             if (error.response?.status === 404) {
                 console.log('📝 No questions found for this type');
@@ -274,12 +273,11 @@ class ExamQuestionService {
 
     async getQuestionsByPart(examId, partNumber) {
         try {
-            console.log('🔍 Getting questions by part:', examId, partNumber);
+            console.log('ExamQuestionService: get by part', examId, partNumber);
             const response = await axiosClient.get(`${this.baseUrl}/by-exam/${examId}/part/${partNumber}`);
-            console.log('  Questions by part retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting questions by part:', error);
+            console.error('ExamQuestionService: get by part error', error);
             
             if (error.response?.status === 404) {
                 console.log('📝 No questions found for this part');
@@ -292,7 +290,7 @@ class ExamQuestionService {
 
     async uploadAudio(questionId, audioFile) {
         try {
-            console.log('📤 Uploading audio for question:', questionId);
+            console.log('ExamQuestionService: upload audio for question', questionId);
             const formData = new FormData();
             formData.append('audio', audioFile);
             
@@ -301,17 +299,16 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Audio uploaded successfully:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error uploading audio:', error);
+            console.error('ExamQuestionService: upload audio for question error', error);
             throw error;
         }
     }
 
     async uploadImage(questionId, imageFile) {
         try {
-            console.log('📤 Uploading image for question:', questionId);
+            console.log('ExamQuestionService: upload image for question', questionId);
             const formData = new FormData();
             formData.append('image', imageFile);
             
@@ -320,17 +317,16 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Image uploaded successfully:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error uploading image:', error);
+            console.error('ExamQuestionService: upload image for question error', error);
             throw error;
         }
     }
 
     async bulkImport(examId, file) {
         try {
-            console.log('📥 Bulk importing questions for exam:', examId);
+            console.log('ExamQuestionService: bulk import', examId);
             const formData = new FormData();
             formData.append('file', file);
             formData.append('examId', examId);
@@ -340,10 +336,9 @@ class ExamQuestionService {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('  Bulk import successful:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error bulk importing:', error);
+            console.error('ExamQuestionService: bulk import error', error);
             throw error;
         }
     }
@@ -351,27 +346,26 @@ class ExamQuestionService {
     //   Statistics methods
     async getExamStatistics(examId) {
         try {
-            console.log('📊 Getting exam statistics for:', examId);
+            console.log('ExamQuestionService: get exam stats', examId);
             const response = await axiosClient.get(`${this.baseUrl}/statistics/${examId}`);
-            console.log('  Exam statistics retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting exam statistics:', error);
+            console.error('ExamQuestionService: get exam stats error', error);
             throw error;
         }
     }
 
     async getQuestionStatistics() {
         try {
-            console.log('📊 Getting overall question statistics');
+            console.log('ExamQuestionService: get question stats');
             const response = await axiosClient.get(`${this.baseUrl}/statistics`);
-            console.log('  Question statistics retrieved:', response);
             return response;
         } catch (error) {
-            console.error('❌ Error getting question statistics:', error);
+            console.error('ExamQuestionService: get question stats error', error);
             throw error;
         }
     }
 }
 
-export default new ExamQuestionService();
+const examQuestionService = new ExamQuestionService();
+export default examQuestionService;

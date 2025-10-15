@@ -17,32 +17,9 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
     const audioInputRef = useRef(null);
     const excelInputRef = useRef(null);
 
-    // Validation schema - Có thể uncomment các rules khi cần
+    // Validation schema
     const validationSchema = Yup.object().shape({
-        // Hiện tại không có validation, có thể thêm sau
-        // questionImage: Yup.mixed()
-        //     .required("Vui lòng chọn tệp ảnh")
-        //     .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
-        //         if (!value || value.length === 0) return true;
-        //         const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
-        //         return Array.from(value).every(file => allowedFormats.includes(file.type));
-        //     })
-        //     .test("fileSize", "Tệp ảnh quá lớn (max 1MB)", (value) => {
-        //         if (!value || value.length === 0) return true;
-        //         return Array.from(value).every(file => file.size <= 1024 * 1024);
-        //     }),
-        // questionAudio: Yup.mixed()
-        //     .required("Vui lòng chọn tệp âm thanh"),
-        // file: Yup.mixed()
-        //     .required("Vui lòng chọn tệp Excel")
-        //     .test("fileType", "Chỉ chấp nhận tệp Excel (.xlsx, .xls)", (value) => {
-        //         if (!value) return true;
-        //         const allowedFormats = [
-        //             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        //             "application/vnd.ms-excel"
-        //         ];
-        //         return allowedFormats.includes(value.type);
-        //     })
+        // Có thể thêm validation sau nếu cần
     });
 
     // Formik setup
@@ -61,17 +38,17 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
     const addExamQuestion = async (values) => {
         try {
             setIsLoading(true);
-            console.log('🚀 Starting addExamQuestion with examId:', examId);
+            console.log('ExamQuestionAdd: start import, examId=', examId);
 
-            // Lấy tệp tin từ refs
-            const imageFiles = imageInputRef.current?.files;
-            const audioFiles = audioInputRef.current?.files;
-            const excelFile = excelInputRef.current?.files?.[0];
+            // Lấy tệp tin từ formik values thay vì refs
+            const imageFiles = formik.values.questionImage;
+            const audioFiles = formik.values.questionAudio;
+            const excelFile = formik.values.file;
 
-            console.log('📁 Files selected:', {
-                imageFiles: imageFiles?.length || 0,
-                audioFiles: audioFiles?.length || 0,
-                excelFile: !!excelFile
+            console.log('ExamQuestionAdd: selected counts', {
+                images: imageFiles?.length || 0,
+                audios: audioFiles?.length || 0,
+                hasExcel: !!excelFile
             });
 
             // Kiểm tra xem đã chọn ít nhất một tệp trong mỗi loại
@@ -97,12 +74,10 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
             }
 
             // Upload tất cả hình ảnh
-            console.log('📸 Processing image files...');
+            // start image uploads
             const imageUploadPromises = Array.from(imageFiles).map(async (imageFile, index) => {
-                console.log(`📸 Uploading image ${index + 1}:`, imageFile.name);
                 try {
                     const imageResponse = await ExamQuestionService.uploadExamQuestionImages(imageFile);
-                    console.log(`  Image ${index + 1} uploaded:`, imageResponse);
                     return imageResponse;
                 } catch (error) {
                     console.error(`❌ Error uploading image ${index + 1}:`, error);
@@ -111,12 +86,10 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
             });
 
             // Upload tất cả âm thanh
-            console.log('🔊 Processing audio files...');
+            // start audio uploads
             const audioUploadPromises = Array.from(audioFiles).map(async (audioFile, index) => {
-                console.log(`🔊 Uploading audio ${index + 1}:`, audioFile.name);
                 try {
                     const audioResponse = await ExamQuestionService.uploadExamQuestionAudios(audioFile);
-                    console.log(`  Audio ${index + 1} uploaded:`, audioResponse);
                     return audioResponse;
                 } catch (error) {
                     console.error(`❌ Error uploading audio ${index + 1}:`, error);
@@ -130,15 +103,12 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 Promise.all(audioUploadPromises)
             ]);
 
-            console.log('  All uploads completed:', {
-                images: imageResults.length,
-                audios: audioResults.length
-            });
+            console.log('ExamQuestionAdd: uploads completed', { images: imageResults.length, audios: audioResults.length });
 
             // Import Excel
-            console.log('📋 Importing Excel file:', excelFile.name);
-            const excelResponse = await ExamQuestionService.importTemplate(excelFile, examId);
-            console.log('  Excel import completed:', excelResponse);
+            console.log('ExamQuestionAdd: importing Excel', excelFile.name);
+            await ExamQuestionService.importTemplate(excelFile, examId);
+            console.log('ExamQuestionAdd: Excel import completed');
 
             // Refresh data
             if (retrieveExamQuestions) {
@@ -173,6 +143,14 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                 errorMessage = error.message;
             }
 
+            // Thân thiện hơn với một số lỗi thường gặp khi import Excel
+            if (/questionScript.*required/i.test(errorMessage)) {
+                errorMessage = 'File Excel thiếu cột bắt buộc "questionScript" hoặc có dòng trống. Vui lòng dùng đúng Template và đảm bảo cột này có dữ liệu cho mỗi câu hỏi.';
+            }
+            if (error.code === 'ERR_UPLOAD_FILE_CHANGED' || /ERR_UPLOAD_FILE_CHANGED|Network Error/i.test(error.message)) {
+                errorMessage = 'Không thể upload Excel do tệp bị thay đổi hoặc bị khóa bởi ứng dụng khác (ERR_UPLOAD_FILE_CHANGED). Hãy đóng file Excel nếu đang mở, chọn lại tệp và thử import lại.';
+            }
+
             toast.error(errorMessage, {
                 autoClose: 2000,
                 position: 'top-right',
@@ -190,10 +168,21 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
         if (excelInputRef.current) excelInputRef.current.value = '';
     };
 
-    // Handle file selection
+    // Handle file selection - Sửa lại để đồng bộ với formik
     const handleFileChange = (fieldName, files) => {
-        formik.setFieldValue(fieldName, files);
+        // Convert FileList to Array cho multiple files
+        const fileArray = files ? (fieldName === 'file' ? files : Array.from(files)) : null;
+        formik.setFieldValue(fieldName, fileArray);
         formik.setFieldTouched(fieldName, true);
+    };
+
+    // Tải template Excel chuẩn từ server
+    const handleDownloadTemplate = async () => {
+        try {
+            await ExamQuestionService.exportTemplate();
+        } catch (err) {
+            toast.error('Không thể tải template. Vui lòng thử lại.');
+        }
     };
 
     return (
@@ -256,9 +245,20 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
 
                     {/* Excel Import Field */}
                     <div className="form-group mb-3">
-                        <label htmlFor="excelInput" className="form-label">
-                            <FontAwesomeIcon icon={faFileExcel} className="me-2" />
-                            Import Excel<span className="required-field">*</span>
+                        <label htmlFor="excelInput" className="form-label d-flex align-items-center justify-content-between">
+                            <span>
+                                <FontAwesomeIcon icon={faFileExcel} className="me-2" />
+                                Import Excel<span className="required-field">*</span>
+                            </span>
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-primary rounded-5"
+                                onClick={handleDownloadTemplate}
+                                disabled={isLoading}
+                                title="Tải file mẫu đúng định dạng"
+                            >
+                                Tải template
+                            </button>
                         </label>
                         <input
                             name="file"
@@ -276,30 +276,30 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
                             <div className="error-feedback">{formik.errors.file}</div>
                         )}
                         <div className="form-text">
-                            Chọn tệp Excel chứa danh sách exam questions để import. Chấp nhận: .xlsx, .xls
+                            Chọn tệp Excel đúng theo template. Bắt buộc có các cột: questionScript, questionType, partNumber, optionA–D, correctAnswer, v.v. (Tải mẫu ở nút "Tải template"). Chấp nhận: .xlsx, .xls
                         </div>
                     </div>
 
-                    {/* File Selection Summary */}
+                    {/* File Selection Summary - Cập nhật để hiển thị từ formik values */}
                     <div className="file-selection-summary mt-3 p-3 bg-light rounded">
                         <h6 className="mb-2">Tệp đã chọn:</h6>
                         <div className="row">
                             <div className="col-md-4">
                                 <small className="text-muted">Hình ảnh:</small>
                                 <div className="fw-bold">
-                                    {imageInputRef.current?.files?.length || 0} tệp
+                                    {formik.values.questionImage?.length || 0} tệp
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <small className="text-muted">Âm thanh:</small>
                                 <div className="fw-bold">
-                                    {audioInputRef.current?.files?.length || 0} tệp
+                                    {formik.values.questionAudio?.length || 0} tệp
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <small className="text-muted">Excel:</small>
                                 <div className="fw-bold">
-                                    {excelInputRef.current?.files?.length || 0} tệp
+                                    {formik.values.file ? 1 : 0} tệp
                                 </div>
                             </div>
                         </div>

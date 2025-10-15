@@ -15,7 +15,9 @@ import {
     faSpinner,
     faExclamationTriangle,
     faRedo,
-    faCheck
+    faCheck,
+    faEye, // Add this icon
+    faCode // Add this icon
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -33,8 +35,9 @@ const BlogDetail = () => {
     const [content, setContent] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isPreviewMode, setIsPreviewMode] = useState(false); // Add preview mode state
 
-    // Initialize component
+    // ...existing code...
 
     // Load blog data
     useEffect(() => {
@@ -87,6 +90,8 @@ const BlogDetail = () => {
             navigate('/admin/blog');
         }
     }, [blogId, navigate]);
+
+    // ...existing form validation and other methods...
 
     // Form validation for editing metadata
     const blogFormSchema = Yup.object().shape({
@@ -539,10 +544,34 @@ const BlogDetail = () => {
                 {/* Content Management Card */}
                 <div className="card border-0 shadow-sm">
                     <div className="card-header bg-white border-bottom-0 pb-0">
-                        <h5 className="mb-0 d-flex align-items-center">
-                            <FontAwesomeIcon icon={faFileAlt} className="text-primary me-2" />
-                            Blog Content Management
-                        </h5>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <h5 className="mb-0 d-flex align-items-center">
+                                <FontAwesomeIcon icon={faFileAlt} className="text-primary me-2" />
+                                Blog Content Management
+                            </h5>
+                            
+                            {/* View Mode Toggle Buttons */}
+                            {content && !isEditing && (
+                                <div className="btn-group" role="group">
+                                    <button 
+                                        type="button" 
+                                        className={`btn ${!isPreviewMode ? 'btn-primary' : 'btn-outline-primary'} btn-sm`}
+                                        onClick={() => setIsPreviewMode(false)}
+                                    >
+                                        <FontAwesomeIcon icon={faCode} className="me-1" />
+                                        Raw HTML
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className={`btn ${isPreviewMode ? 'btn-primary' : 'btn-outline-primary'} btn-sm`}
+                                        onClick={() => setIsPreviewMode(true)}
+                                    >
+                                        <FontAwesomeIcon icon={faEye} className="me-1" />
+                                        Preview
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     
                     <div className="card-body">
@@ -687,18 +716,37 @@ const BlogDetail = () => {
                                         }}
                                     />
                                 ) : (
-                                    <div 
-                                        className="border rounded-3 p-4"
-                                        style={{ 
-                                            minHeight: '400px', 
-                                            whiteSpace: 'pre-wrap',
-                                            fontFamily: 'Georgia, "Times New Roman", serif',
-                                            lineHeight: '1.7',
-                                            fontSize: '15px',
-                                            background: '#fff'
-                                        }}
-                                    >
-                                        {content}
+                                    <div className="border rounded-3 p-4" style={{ minHeight: '400px', background: '#fff' }}>
+                                        {isPreviewMode ? (
+                                            // Preview Mode - Render HTML
+                                            <div 
+                                                className="blog-preview-content" 
+                                                dangerouslySetInnerHTML={{ __html: content }}
+                                                style={{
+                                                    fontFamily: 'Georgia, "Times New Roman", serif',
+                                                    lineHeight: '1.7',
+                                                    fontSize: '15px',
+                                                    color: '#333'
+                                                }}
+                                            />
+                                        ) : (
+                                            // Raw HTML Mode - Show HTML source
+                                            <pre 
+                                                style={{ 
+                                                    whiteSpace: 'pre-wrap',
+                                                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                                                    fontSize: '13px',
+                                                    lineHeight: '1.5',
+                                                    color: '#333',
+                                                    margin: 0,
+                                                    padding: 0,
+                                                    background: 'transparent',
+                                                    border: 'none'
+                                                }}
+                                            >
+                                                {content}
+                                            </pre>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -706,6 +754,89 @@ const BlogDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Add some CSS for better preview styling */}
+            <style jsx>{`
+                .blog-preview-content h1 {
+                    color: #1a73e8;
+                    font-size: 28px;
+                    font-weight: 700;
+                    margin-bottom: 16px;
+                    line-height: 1.3;
+                }
+                
+                .blog-preview-content h2 {
+                    color: #1a73e8;
+                    font-size: 22px;
+                    font-weight: 600;
+                    margin-top: 24px;
+                    margin-bottom: 8px;
+                }
+                
+                .blog-preview-content h3 {
+                    color: #1a73e8;
+                    font-size: 18px;
+                    font-weight: 600;
+                    margin-top: 20px;
+                    margin-bottom: 8px;
+                }
+                
+                .blog-preview-content p {
+                    margin: 12px 0;
+                    text-align: justify;
+                }
+                
+                .blog-preview-content ul, .blog-preview-content ol {
+                    padding-left: 24px;
+                    margin: 12px 0;
+                }
+                
+                .blog-preview-content li {
+                    margin-bottom: 8px;
+                }
+                
+                .blog-preview-content strong, .blog-preview-content b {
+                    font-weight: 600;
+                    color: #1a73e8;
+                }
+                
+                .blog-preview-content em, .blog-preview-content i {
+                    font-style: italic;
+                }
+                
+                .blog-preview-content code {
+                    background-color: #f5f5f5;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    font-family: 'Courier New', monospace;
+                    font-size: 14px;
+                }
+                
+                .blog-preview-content blockquote {
+                    border-left: 4px solid #1a73e8;
+                    margin: 16px 0;
+                    padding-left: 16px;
+                    font-style: italic;
+                    color: #666;
+                }
+                
+                .blog-preview-content table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 16px 0;
+                }
+                
+                .blog-preview-content th, .blog-preview-content td {
+                    border: 1px solid #ddd;
+                    padding: 8px 12px;
+                    text-align: left;
+                }
+                
+                .blog-preview-content th {
+                    background-color: #f8f9fa;
+                    font-weight: 600;
+                }
+            `}</style>
         </div>
     );
 };
