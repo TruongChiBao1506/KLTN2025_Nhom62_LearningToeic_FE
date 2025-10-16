@@ -127,7 +127,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:5000/images/${imageName}`;
+            return imageName;
         }
         return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsfjXYvk-1w7U3EVJgTlll6d6I0ntyjj18fg&s";
     };
@@ -277,7 +277,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                         <td>{topic.topicName}</td>
                                         <td>
                                             <img
-                                                src={getImageUrl(topic.image)}
+                                                src={getImageUrl(topic.topicImage)}
                                                 alt="Topic Image"
                                                 className="topic-image rounded-5"
                                             />

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import ExamAdd from '../../../../pages/Admin/Exam/ExamAdd';
 
-const AddExamModal = ({ show, onHide, retrieveExams }) => {
+const AddExamModal = ({ show, onHide, retrieveExams, setShowFullTest }) => {
     return (
         <Modal 
             show={show} 
@@ -25,6 +25,7 @@ const AddExamModal = ({ show, onHide, retrieveExams }) => {
                 <ExamAdd 
                     retrieveExams={retrieveExams} 
                     onClose={onHide}
+                    setShowFullTest={setShowFullTest}
                 />
             </Modal.Body>
         </Modal>

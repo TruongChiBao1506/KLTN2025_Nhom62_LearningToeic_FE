@@ -30,7 +30,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
             localStorage.removeItem('adminRefreshTokenExpirationTime');
 
             setIsAuthenticated(false);
-            navigate('/admin/signin');
+            navigate('/auth/admin/signin');
         } catch (error) {
             console.log('Sign out error:', error);
             localStorage.removeItem('adminRefreshToken');
@@ -38,7 +38,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
             localStorage.removeItem('adminAccessTokenExpirationTime');
             localStorage.removeItem('adminRefreshTokenExpirationTime');
             setIsAuthenticated(false);
-            navigate('/admin/signin');
+            navigate('/auth/admin/signin');
         }
     };
     const handleToggleClick = () => {
@@ -52,7 +52,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:5000/images/${imageName}`;
+            return imageName;
         }
         return "https://png.pngtree.com/png-vector/20190321/ourmid/pngtree-vector-users-icon-png-image_856952.jpg";
     };

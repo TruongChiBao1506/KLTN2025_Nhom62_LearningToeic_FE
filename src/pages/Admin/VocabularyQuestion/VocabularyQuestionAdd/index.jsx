@@ -120,9 +120,10 @@ const VocabularyQuestionAdd = ({ topicId, retrieveVocabularyQuestions, onClose }
             console.log('JSON Payload:', JSON.stringify(payload, null, 2));
 
             await VocabularyQuestionService.create(payload);
-            console.log('  Vocabulary question created successfully');
+            console.log('✅ Vocabulary question created successfully');
 
-            retrieveVocabularyQuestions();
+            // Wait for list to refresh before closing modal
+            await retrieveVocabularyQuestions();
 
             // Reset form and states
             resetForm();

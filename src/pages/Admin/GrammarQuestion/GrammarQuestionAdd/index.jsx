@@ -80,9 +80,10 @@ const GrammarQuestionAdd = ({ grammarId, retrieveGrammarQuestions, onClose }) =>
             console.log('📤 JSON data to send:', questionData);
 
             await GrammarQuestionService.create(questionData);
-            console.log('  Grammar question created successfully');
+            console.log('✅ Grammar question created successfully');
 
-            retrieveGrammarQuestions();
+            // Wait for list to refresh before closing modal
+            await retrieveGrammarQuestions();
 
             // Reset form và states
             resetForm();

@@ -107,9 +107,9 @@ const AddBlog = ({ retrieveBlogs, onClose }) => {
             // Reset form and close modal
             resetForm();
             
-            // Refresh blog list
+            // Refresh blog list - wait for it to complete
             if (retrieveBlogs) {
-                retrieveBlogs();
+                await retrieveBlogs();
             }
             
             // Close modal

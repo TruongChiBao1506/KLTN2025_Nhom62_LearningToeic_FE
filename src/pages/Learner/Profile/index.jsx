@@ -42,11 +42,14 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import userService from "../../../services/userService";
+import ProfileImageService from "../../../services/profileImageService";
+import { useAuthStore } from "../../../hooks/useAuthStore";
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
 const Profile = () => {
+  const { setInfo } = useAuthStore(); // Hook để update Redux store
   const [form] = Form.useForm();
   const [user, setUser] = useState(null);
   const [statistics, setStatistics] = useState(null);
@@ -58,7 +61,7 @@ const Profile = () => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [showProfileInfo, setShowProfileInfo] = useState(true); // Tab state like Admin
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -76,6 +79,7 @@ const Profile = () => {
     try {
       setLoading(true);
       setErrors({});
+      setImagePreview(null); // Clear preview when fetching new data
 
       const token = localStorage.getItem("token");
       if (!token) {
@@ -99,7 +103,8 @@ const Profile = () => {
           dateOfBirth: userData.dateOfBirth || "",
           gender: userData.gender === 1 ? "male" : userData.gender === 2 ? "female" : userData.gender === 3 ? "other" : userData.gender || "",
           bio: userData.bio || "",
-          profileImage: userData.profileImage || null,
+          // BE returns 'image' field, not 'profileImage'
+          profileImage: userData.image || userData.profileImage || userData.profileImageUrl || null,
           emailVerified: userData.emailVerified || Boolean(userData.status),
           // Add statistics fields if they exist
           totalExamsTaken: userData.totalExamsTaken || 0,
@@ -113,7 +118,19 @@ const Profile = () => {
           recentActivity: userData.recentActivity || []
         };
         console.log("Mapped user data:", mappedUser);
+        console.log("📷 Profile image from DB:", userData.image);
+        console.log("📷 Mapped profile image:", mappedUser.profileImage);
         setUser(mappedUser);
+        
+        // Update Redux store để avatar hiển thị ở LearnerLayout
+        setInfo({
+          id: userData.id,
+          username: userData.username,
+          email: userData.email,
+          name: userData.name || userData.fullName,
+          roles: userData.roles,
+          avatar: userData.image || userData.avatar, // Cập nhật avatar vào store
+        });
       } else {
         setErrors({
           general: "Không thể tải thông tin người dùng. Vui lòng thử lại.",
@@ -217,7 +234,7 @@ const Profile = () => {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -230,24 +247,59 @@ const Profile = () => {
         return;
       }
 
-      setSelectedImage(file);
+      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target.result);
       };
       reader.readAsDataURL(file);
+
+      // Upload immediately (like Admin Profile)
+      await updateProfileImage(file);
+    }
+  };
+
+  // Separate function to update profile image
+  const updateProfileImage = async (file) => {
+    try {
+      setLoading(true);
+      console.log('📤 Uploading profile image...');
+      
+      const imageFormData = new FormData();
+      imageFormData.append("profileImage", file, file.name);
+      
+      const imageResult = await ProfileImageService.updateMyProfile(imageFormData);
+      
+      if (imageResult.success) {
+        console.log('✅ Profile image uploaded successfully');
+        message.success('Cập nhật ảnh đại diện thành công!');
+        
+        // Refresh user data to get new image URL
+        await fetchUserProfile();
+        
+        // Clear preview to show actual uploaded image
+        setImagePreview(null);
+      } else {
+        console.error('❌ Failed to upload image:', imageResult.error);
+        message.error('Không thể tải lên ảnh đại diện');
+        setImagePreview(null);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      message.error('Có lỗi xảy ra khi tải lên ảnh');
+      setImagePreview(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (values) => {
-    // Ant Design Form đã tự động validate qua rules, không cần validate manual nữa
-
     try {
       setLoading(true);
       setErrors({});
 
-      const formData = new FormData();
-
+      console.log('📤 Updating profile information...');
+      
       // Map frontend field names to backend expected field names
       const backendData = {
         name: values.fullName,
@@ -259,41 +311,27 @@ const Profile = () => {
         bio: values.bio
       };
 
-      Object.keys(backendData).forEach((key) => {
-        if (backendData[key] !== null && backendData[key] !== undefined && backendData[key] !== "") {
-          formData.append(key, backendData[key]);
-        }
-      });
+      // Send as JSON (image is uploaded separately on change)
+      const response = await userService.updateProfile(backendData);
+      console.log('✅ Profile updated successfully:', response);
 
-      if (selectedImage) {
-        formData.append("profileImage", selectedImage);
-      }
-
-      const response = await userService.updateProfile(formData);
-
-      if (response?.data) {
-        setUser(response.data);
-        setEditMode(false);
-        setImagePreview(null);
-        setSelectedImage(null);
-        setSuccessMessage("Cập nhật thông tin thành công!");
-        setTimeout(() => setSuccessMessage(""), 3000);
-      }
+      // First: Turn off edit mode
+      setEditMode(false);
+      
+      // Second: Refresh to get latest data from server
+      await fetchUserProfile();
+      
+      // Third: Show success message (after data is refreshed)
+      message.success("Cập nhật thông tin thành công!", 2);
     } catch (error) {
       console.error("Lỗi khi cập nhật profile:", error);
 
       if (error?.response?.data?.message) {
-        setErrors({
-          general: error.response.data.message,
-        });
+        message.error(error.response.data.message);
       } else if (error?.response?.status === 400) {
-        setErrors({
-          general: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.",
-        });
+        message.error("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.");
       } else {
-        setErrors({
-          general: "Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại.",
-        });
+        message.error(error.message || "Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại.");
       }
     } finally {
       setLoading(false);
@@ -368,7 +406,6 @@ const Profile = () => {
     setEditMode(false);
     setErrors({});
     setImagePreview(null);
-    setSelectedImage(null);
     form.resetFields();
   };
 
@@ -378,7 +415,6 @@ const Profile = () => {
     try {
       setRefreshing(true);
       setErrors({});
-      setSuccessMessage("");
       
       await Promise.all([
         fetchUserProfile(),
@@ -386,13 +422,10 @@ const Profile = () => {
         fetchRecentActivity()
       ]);
       
-      setSuccessMessage("Dữ liệu đã được cập nhật!");
-      setTimeout(() => setSuccessMessage(""), 2000);
+      message.success("Dữ liệu đã được cập nhật!", 2);
     } catch (error) {
       console.error("Lỗi khi refresh profile:", error);
-      setErrors({
-        general: "Không thể làm mới dữ liệu. Vui lòng thử lại."
-      });
+      message.error("Không thể làm mới dữ liệu. Vui lòng thử lại.");
     } finally {
       setRefreshing(false);
     }
@@ -475,14 +508,6 @@ const Profile = () => {
                     disabled={loading || refreshing}
                   >
                     Làm mới
-                  </Button>,
-                  <Button
-                    type="text"
-                    icon={<EditOutlined />}
-                    onClick={() => setEditMode(true)}
-                    disabled={editMode || changePasswordMode}
-                  >
-                    Chỉnh sửa
                   </Button>
                 ]}
               >
@@ -491,40 +516,58 @@ const Profile = () => {
                   <div style={{ position: "relative", display: "inline-block" }}>
                     <Avatar 
                       size={120} 
-                      src={
-                        imagePreview ||
-                        (user?.profileImage && `http://localhost:5000/images/${user.profileImage}`) ||
-                        null
-                      }
+                      src={(() => {
+                        console.log('🖼️ Avatar render - imagePreview:', imagePreview);
+                        console.log('🖼️ Avatar render - user?.profileImage:', user?.profileImage);
+                        
+                        if (imagePreview) {
+                          return imagePreview;
+                        }
+                        
+                        if (user?.profileImage) {
+                          // Check if profileImage is already a full URL (from S3)
+                          const isFullUrl = user.profileImage.startsWith('http://') || user.profileImage.startsWith('https://');
+                          const finalUrl = isFullUrl 
+                            ? user.profileImage 
+                            : `http://localhost:5000/images/${user.profileImage}`;
+                          
+                          console.log('🖼️ Avatar final URL:', finalUrl);
+                          return finalUrl;
+                        }
+                        
+                        console.log('🖼️ Avatar - no image, showing default icon');
+                        return null;
+                      })()}
                       icon={<UserOutlined />}
                       style={{ 
                         border: "4px solid #fff",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
                       }}
                     />
-                    {editMode && (
-                      <Upload
-                        accept="image/*"
-                        showUploadList={false}
-                        beforeUpload={(file) => {
-                          handleImageChange({ target: { files: [file] } });
-                          return false;
+                    {/* Always show upload button (not just in edit mode) */}
+                    <Upload
+                      accept="image/*"
+                      showUploadList={false}
+                      beforeUpload={(file) => {
+                        handleImageChange({ target: { files: [file] } });
+                        return false;
+                      }}
+                      disabled={loading}
+                    >
+                      <Button
+                        type="primary"
+                        shape="circle"
+                        icon={<CameraOutlined />}
+                        size="small"
+                        loading={loading}
+                        style={{
+                          position: "absolute",
+                          bottom: "8px",
+                          right: "8px",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
                         }}
-                      >
-                        <Button
-                          type="primary"
-                          shape="circle"
-                          icon={<CameraOutlined />}
-                          size="small"
-                          style={{
-                            position: "absolute",
-                            bottom: "8px",
-                            right: "8px",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-                          }}
-                        />
-                      </Upload>
-                    )}
+                      />
+                    </Upload>
                   </div>
                   
                   <Title level={3} style={{ margin: "16px 0 8px 0" }}>
@@ -535,14 +578,59 @@ const Profile = () => {
                     <Tag color={user?.emailVerified || user?.status === 1 ? "green" : "orange"}>
                       {user?.emailVerified || user?.status === 1 ? "Đã xác thực" : "Chưa xác thực"}
                     </Tag>
-                    <Text type="secondary">
+                    {/* <Text type="secondary">
                       {user?.roles?.[0]?.name || "System Administrator"}
-                    </Text>
+                    </Text> */}
                   </Space>
                 </div>
 
-                {/* Profile Information */}
-                {editMode ? (
+                {/* Tabs Navigation - like Admin Profile */}
+                <div style={{ 
+                  display: "flex", 
+                  borderBottom: "2px solid #f0f0f0",
+                  marginBottom: "24px"
+                }}>
+                  <Button
+                    type="text"
+                    icon={<UserOutlined />}
+                    onClick={() => {
+                      setShowProfileInfo(true);
+                      setChangePasswordMode(false);
+                      setEditMode(false);
+                    }}
+                    style={{
+                      flex: 1,
+                      borderRadius: 0,
+                      borderBottom: showProfileInfo && !changePasswordMode ? "2px solid #1890ff" : "none",
+                      color: showProfileInfo && !changePasswordMode ? "#1890ff" : "#666",
+                      fontWeight: showProfileInfo && !changePasswordMode ? "600" : "normal"
+                    }}
+                  >
+                    Thông tin chung
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<LockOutlined />}
+                    onClick={() => {
+                      setShowProfileInfo(false);
+                      setChangePasswordMode(true);
+                      setEditMode(false);
+                    }}
+                    style={{
+                      flex: 1,
+                      borderRadius: 0,
+                      borderBottom: changePasswordMode ? "2px solid #1890ff" : "none",
+                      color: changePasswordMode ? "#1890ff" : "#666",
+                      fontWeight: changePasswordMode ? "600" : "normal"
+                    }}
+                  >
+                    Đổi mật khẩu
+                  </Button>
+                </div>
+
+                {/* Profile Information Tab */}
+                {showProfileInfo && !changePasswordMode && (
+                  editMode ? (
                   <Form 
                     form={form}
                     layout="vertical" 
@@ -654,9 +742,13 @@ const Profile = () => {
                           icon={<SaveOutlined />}
                           loading={loading}
                         >
-                          Lưu thay đổi
+                          {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
                         </Button>
-                        <Button onClick={() => cancelEdit(form)} icon={<CloseOutlined />}>
+                        <Button 
+                          onClick={() => cancelEdit(form)} 
+                          icon={<CloseOutlined />}
+                          disabled={loading}
+                        >
                           Hủy
                         </Button>
                       </Space>
@@ -718,34 +810,25 @@ const Profile = () => {
                         </div>
                       )}
                     </Space>
-
+                    
                     <Divider />
                     
                     <Button 
-                      block 
-                      icon={<LockOutlined />}
-                      onClick={() => setChangePasswordMode(true)}
-                      disabled={changePasswordMode}
+                      block
+                      type="primary"
+                      icon={<EditOutlined />}
+                      onClick={() => setEditMode(true)}
+                      style={{ borderRadius: "8px" }}
                     >
-                      Đổi mật khẩu
+                      Chỉnh sửa thông tin
                     </Button>
                   </div>
+                  )
                 )}
 
-                {/* Change Password Form */}
+                {/* Change Password Tab */}
                 {changePasswordMode && (
-                  <Card 
-                    title="Đổi mật khẩu" 
-                    size="small"
-                    style={{ marginTop: "16px" }}
-                    extra={
-                      <Button 
-                        type="text" 
-                        icon={<CloseOutlined />}
-                        onClick={() => setChangePasswordMode(false)}
-                      />
-                    }
-                  >
+                  <div>
                     <Form layout="vertical" onFinish={handlePasswordSubmit}>
                       <Form.Item label="Mật khẩu hiện tại">
                         <Input.Password
@@ -786,12 +869,13 @@ const Profile = () => {
                           htmlType="submit" 
                           block
                           loading={loading}
+                          icon={<LockOutlined />}
                         >
                           Cập nhật mật khẩu
                         </Button>
                       </Form.Item>
                     </Form>
-                  </Card>
+                  </div>
                 )}
               </Card>
             </Col>

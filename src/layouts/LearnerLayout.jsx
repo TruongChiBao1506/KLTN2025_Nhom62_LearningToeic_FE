@@ -57,6 +57,12 @@ const LearnerLayout = () => {
   const notifications = useSelector(state => state.notifications.notifications);
   const unreadCount = useSelector(state => state.notifications.unreadCount);
 
+  // Debug: Log info để kiểm tra avatar
+  useEffect(() => {
+    console.log('🎯 LearnerLayout - Current info from Redux:', info);
+    console.log('🖼️ LearnerLayout - Avatar value:', info?.avatar);
+  }, [info]);
+
   // Kết nối socket và setup listener khi LearnerLayout mount
   useEffect(() => {
     if (info?.id) {
@@ -1411,62 +1417,64 @@ const LearnerLayout = () => {
             </Dropdown>
 
             {/* User Profile */}
-            <Dropdown
-              menu={{ items: userMenuItems }}
-              trigger={["click"]}
-              placement="bottomRight"
-              overlayStyle={{
-                borderRadius: "12px",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                border: "1px solid rgba(0, 0, 0, 0.05)",
-                background: "#fff",
-                minWidth: "280px",
-                padding: "0",
-                overflow: "hidden"
-              }}
-              overlayClassName="custom-user-dropdown"
-            >
-              <Space
-                style={{
-                  cursor: "pointer",
-                  background: "rgba(255,255,255,0.15)",
-                  borderRadius: "18px",
-                  padding: "4px 12px 4px 8px",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  transition: "all 0.3s ease",
-                  height: 40,
-                  alignItems: 'center',
+            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+              <Dropdown
+                menu={{ items: userMenuItems }}
+                trigger={["click"]}
+                placement="bottomRight"
+                overlayStyle={{
+                  borderRadius: "12px",
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                  border: "1px solid rgba(0, 0, 0, 0.05)",
+                  background: "#fff",
+                  minWidth: "280px",
+                  padding: "0",
+                  overflow: "hidden"
                 }}
-                className="user-profile-hover"
+                overlayClassName="custom-user-dropdown"
               >
-                <Avatar
-                  size={32}
-                  src={info?.avatar}
+                <Space
                   style={{
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
-                    color: "#fff",
-                    border: "2px solid rgba(255,255,255,0.3)",
-                    display: 'flex',
+                    cursor: "pointer",
+                    background: "rgba(255,255,255,0.15)",
+                    borderRadius: "18px",
+                    padding: "4px 12px 4px 8px",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    transition: "all 0.3s ease",
+                    height: 40,
                     alignItems: 'center',
-                    justifyContent: 'center',
                   }}
+                  className="user-profile-hover"
                 >
-                  {info?.name?.charAt(0) || "U"}
-                </Avatar>
-                <Text
-                  style={{
-                    display: windowWidth > 768 ? "block" : "none",
-                    color: "#fff",
-                    fontWeight: "500",
-                    fontSize: "15px",
-                    marginLeft: 6,
-                  }}
-                >
-                  {info?.name || "User"}
-                </Text>
-              </Space>
-            </Dropdown>
+                  <Avatar
+                    size={32}
+                    src={info?.avatar}
+                    style={{
+                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      color: "#fff",
+                      border: "2px solid rgba(255,255,255,0.3)",
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {info?.name?.charAt(0) || "U"}
+                  </Avatar>
+                  <Text
+                    style={{
+                      display: windowWidth > 768 ? "block" : "none",
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: "15px",
+                      marginLeft: 6,
+                    }}
+                  >
+                    {info?.name || "User"}
+                  </Text>
+                </Space>
+              </Dropdown>
+            </div>
           </Space>
         </Header>
 

@@ -64,9 +64,10 @@ const AddLessonContent = ({ lessonId, retrieveLessonContents, onClose }) => {
             };
 
             await LessonContentService.create(lessonId, lessonContentData);
-            console.log('  Lesson content created successfully');
+            console.log('✅ Lesson content created successfully');
 
-            retrieveLessonContents();
+            // Wait for list to refresh before closing modal
+            await retrieveLessonContents();
 
             // Reset form
             resetForm();

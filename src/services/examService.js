@@ -42,7 +42,7 @@ class ExamService {
   async create(data) {
     const response = await axiosClient.post(`${this.baseUrl}`, data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
     return response;
@@ -52,7 +52,7 @@ class ExamService {
   async update(id, data) {
     const response = await axiosClient.put(`${this.baseUrl}/${id}`, data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
     return response;

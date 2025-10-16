@@ -163,6 +163,7 @@ const Exam = () => {
                         exams={exams}
                         retrieveExams={retrieveExams}
                         showFullTest={showFullTest}
+                        setShowFullTest={setShowFullTest}
                     />
                 )}
             </div>

@@ -103,9 +103,10 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
 
             console.log('📤 Sending request to server...');
             await TopicService.create(formData);
-            console.log('  Topic created successfully');
+            console.log('✅ Topic created successfully');
 
-            retrieveTopics();
+            // Wait for list to refresh before closing modal
+            await retrieveTopics();
 
             // Reset form
             resetForm();

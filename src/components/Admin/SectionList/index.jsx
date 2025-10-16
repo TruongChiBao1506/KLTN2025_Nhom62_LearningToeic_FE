@@ -131,7 +131,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:5000/images/${imageName}`;
+            return imageName;
         }
         return "http://localhost:5000/images/default-image.png";
     };

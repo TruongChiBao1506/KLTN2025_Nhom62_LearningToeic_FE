@@ -154,7 +154,11 @@ const Profile = () => {
             setUserId(userIdResult.userId);
 
             const data = await UserService.getUserById(userIdResult.userId);
-            console.log(data);
+            console.log('👤 User data received:', data);
+            
+            // BE might return different field names for profile image
+            const imageUrl = data.profileImage || data.profileImageUrl || data.image;
+            console.log('📷 Profile image URL:', imageUrl);
 
             // Update formik values
             profileFormik.setValues({
@@ -166,8 +170,8 @@ const Profile = () => {
             });
 
             setUser(data);
-            setProfileImage(data.image);
-            console.log(data.image);
+            setProfileImage(imageUrl);
+            console.log('🖼️ Profile image state set to:', imageUrl);
 
         } catch (error) {
             console.log(error);
@@ -178,6 +182,11 @@ const Profile = () => {
 
     const getImageUrl = (imageName) => {
         if (imageName) {
+            // Check if imageName is already a full URL (from S3)
+            if (imageName.startsWith('http://') || imageName.startsWith('https://')) {
+                return imageName;
+            }
+            // Otherwise, construct local URL
             return `http://localhost:5000/images/${imageName}`;
         }
         return "https://media.istockphoto.com/id/1223671392/vi/vec-to/%E1%BA%A3nh-h%E1%BB%93-s%C6%A1-m%E1%BA%B7c-%C4%91%E1%BB%8Bnh-h%C3%ACnh-%C4%91%E1%BA%A1i-di%E1%BB%87n-ch%E1%BB%97-d%C3%A0nh-s%E1%BA%B5n-cho-%E1%BA%A3nh-minh-h%E1%BB%8Da-vect%C6%A1.jpg?s=612x612&w=0&k=20&c=l9x3h9RMD16-z4kNjo3z7DXVEORzkxKCMn2IVwn9liI=";
@@ -208,10 +217,17 @@ const Profile = () => {
         try {
             const formData = new FormData();
             if (file) {
-                formData.append("image", file, file.name);
+                // BE expects 'profileImage' field name
+                formData.append("profileImage", file, file.name);
             }
             await ProfileImageService.update(userId, formData);
-            getUserById();
+            
+            // Wait for getUserById to complete to see updated image
+            await getUserById();
+            
+            // Clear preview to show the actual uploaded image from server
+            setImagePreview(null);
+            
             toast.success('Upload ảnh đại diện thành công', {
                 autoClose: 2000,
             });

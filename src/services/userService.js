@@ -38,8 +38,9 @@ class UserService {
 
   async changePassword(userId, data) {
     console.log(data);
+    // Change password for current logged-in user (uses token, not userId)
     const response = await axiosClient.put(
-      `${this.baseUrl}/change-password/${userId}`,
+      `${this.baseUrl}/change-password`,
       data
     );
     return response;
@@ -77,10 +78,15 @@ class UserService {
     }
   }
 
-  // Cập nhật profile người dùng
+  // Cập nhật profile người dùng (without image - image is handled by ProfileImageService)
   async updateProfile(profileData) {
     try {
-      const response = await axiosClient.put(`/learner/profile`, profileData);
+      // Use /users/profile endpoint (matches BE route)
+      const response = await axiosClient.put(`/users/profile`, profileData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       return response;
     } catch (error) {
       console.error("Lỗi khi cập nhật profile:", error);
@@ -88,13 +94,14 @@ class UserService {
     }
   }
 
-  // Upload ảnh đại diện
+  // Upload ảnh đại diện (deprecated - use ProfileImageService.updateMyProfile instead)
   async uploadProfileImage(imageFile) {
     try {
       const formData = new FormData();
       formData.append('profileImage', imageFile);
       
-      const response = await axiosClient.post(`/learner/profile/upload-image`, formData, {
+      // Use /users/profile endpoint
+      const response = await axiosClient.put(`/users/profile`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -109,9 +116,11 @@ class UserService {
   // Đổi mật khẩu
   async changeUserPassword(currentPassword, newPassword) {
     try {
-      const response = await axiosClient.put(`/learner/profile/change-password`, {
+      // Use /users/change-password endpoint (matches BE route)
+      const response = await axiosClient.put(`/users/change-password`, {
         currentPassword,
-        newPassword
+        newPassword,
+        confirmPassword: newPassword // BE expects confirmPassword
       });
       return response;
     } catch (error) {

@@ -107,9 +107,10 @@ const FreeMaterialAdd = ({ retrieveFreeMaterials, onClose }) => {
 
             console.log('📤 Sending request to server...');
             await FreeMaterialService.create(formData);
-            console.log('  Free Material created successfully');
+            console.log('✅ Free Material created successfully');
 
-            retrieveFreeMaterials();
+            // Wait for list to refresh before closing modal
+            await retrieveFreeMaterials();
 
             // Reset form
             resetForm();

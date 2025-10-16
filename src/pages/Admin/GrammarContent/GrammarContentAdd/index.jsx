@@ -52,9 +52,10 @@ const GrammarContentAdd = ({ grammarId, retrieveGrammarContents, onClose }) => {
             console.log('JSON Payload:', JSON.stringify(payload, null, 2));
 
             await GrammarContentService.create(payload);
-            console.log('  Grammar content created successfully');
+            console.log('✅ Grammar content created successfully');
             
-            retrieveGrammarContents();
+            // Wait for list to refresh before closing modal
+            await retrieveGrammarContents();
             
             // Reset form and states
             resetForm();

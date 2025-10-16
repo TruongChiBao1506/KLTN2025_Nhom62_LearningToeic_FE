@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ExamService from '../../../../services/examService';
 import './style.css';
 
-const AddExam = ({ retrieveExams, onClose }) => {
+const AddExam = ({ retrieveExams, onClose, setShowFullTest }) => {
     // Validation schema - Copy từ Vue
     const examFormSchema = Yup.object().shape({
         examName: Yup
@@ -42,9 +42,16 @@ const AddExam = ({ retrieveExams, onClose }) => {
             
             console.log('📤 Sending request to server...');
             await ExamService.create(formData);
-            console.log('  Exam created successfully');
+            console.log('✅ Exam created successfully');
             
-            retrieveExams();
+            // Switch to correct tab based on examType
+            // examType: "0" = MiniTest, "1" = FullTest
+            if (setShowFullTest) {
+                setShowFullTest(values.examType === "1");
+            }
+            
+            // Wait for list to refresh before closing modal
+            await retrieveExams();
             
             // Reset form
             resetForm();

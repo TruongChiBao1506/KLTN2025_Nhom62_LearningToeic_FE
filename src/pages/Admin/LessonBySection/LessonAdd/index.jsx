@@ -34,7 +34,9 @@ const LessonAdd = ({ sectionId, retrieveLessons, onClose }) => {
             };
 
             await LessonService.create(sectionId, lessonData);
-            retrieveLessons();
+            
+            // Wait for list to refresh before closing modal
+            await retrieveLessons();
             
             // Reset form
             resetForm();

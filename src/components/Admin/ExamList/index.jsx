@@ -16,7 +16,7 @@ import AddExamModal from './AddExamModal';
 import EditExamModal from './EditExamModal';
 import './style.css';
 
-const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
+const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) => {
     const [searchText, setSearchText] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(25);
     const [currentPage, setCurrentPage] = useState(1);
@@ -400,6 +400,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest }) => {
                 show={showAddModal}
                 onHide={handleCloseAddModal}
                 retrieveExams={retrieveExams}
+                setShowFullTest={setShowFullTest}
             />
 
             <EditExamModal

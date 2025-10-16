@@ -37,9 +37,10 @@ const GrammarAdd = ({ retrieveGrammars, onClose }) => {
             
             console.log('📤 Sending request to server...');
             await GrammarService.create(formData);
-            console.log('  Grammar created successfully');
+            console.log('✅ Grammar created successfully');
             
-            retrieveGrammars();
+            // Wait for list to refresh before closing modal
+            await retrieveGrammars();
             
             // Reset form
             resetForm();

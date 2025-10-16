@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import authService from "../../../services/authService";
 import { useAuthStore } from "../../../hooks/useAuthStore";
 import achievementService from "../../../services/achievementService";
+import userService from "../../../services/userService";
 import {
   Layout,
   Card,
@@ -71,6 +72,8 @@ const SignIn = () => {
       try {
         const response = await authService.signIn(values);
         console.log("🚀 ~ onSubmit: ~ response:", response);
+        console.log("🖼️ Image field from login response:", response.data?.image);
+        console.log("🖼️ Avatar field from login response:", response.data?.avatar);
 
         if (response && response.data && response.data.token) {
           const token = response.data.token;
@@ -85,7 +88,9 @@ const SignIn = () => {
             email: response.data.email,
             name: response.data.name,
             roles: response.data.roles,
+            avatar: response.data.image || response.data.avatar, // Lấy image từ BE
           };
+          console.log("👤 User object with avatar:", user);
 
           // Lưu token và thông tin vào localStorage (giữ nguyên)
           localStorage.setItem("learnerToken", token);
@@ -101,7 +106,7 @@ const SignIn = () => {
           localStorage.setItem("learnerAuthenticated", "true");
           localStorage.setItem("learnerUser", JSON.stringify(user));
 
-          // Lưu thông tin user vào Redux store
+          // Lưu thông tin user vào Redux store (tạm thời không có avatar)
           setInfo(user);
           setIsAuthenticated(true);
           setRole(
@@ -111,6 +116,26 @@ const SignIn = () => {
               ? "user"
               : null
           );
+
+          // Fetch full user profile to get avatar
+          try {
+            console.log("🔄 Fetching full user profile to get avatar...");
+            const userProfile = await userService.getCurrentUser();
+            console.log("👤 Full user profile with avatar:", userProfile);
+            
+            if (userProfile && userProfile.image) {
+              // Update Redux store with avatar
+              const updatedUser = {
+                ...user,
+                avatar: userProfile.image
+              };
+              setInfo(updatedUser);
+              console.log("✅ Avatar updated in Redux store:", userProfile.image);
+            }
+          } catch (profileError) {
+            console.warn("⚠️ Không thể tải avatar:", profileError);
+            // Không làm gián đoạn flow đăng nhập
+          }
 
           // Ghi nhận hoạt động đăng nhập cho streak
           try {

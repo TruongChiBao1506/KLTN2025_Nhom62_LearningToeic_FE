@@ -138,9 +138,10 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
 
             console.log('📤 Sending update request to server...');
             await TopicService.update(topicId, formData);
-            console.log('  Topic updated successfully');
+            console.log('✅ Topic updated successfully');
             
-            retrieveTopics();
+            // Wait for list to refresh before closing modal
+            await retrieveTopics();
 
             // Close modal
             if (onClose) {
