@@ -529,7 +529,7 @@ const Profile = () => {
                           const isFullUrl = user.profileImage.startsWith('http://') || user.profileImage.startsWith('https://');
                           const finalUrl = isFullUrl 
                             ? user.profileImage 
-                            : `http://localhost:5000/images/${user.profileImage}`;
+                            : `${process.env.LOCALHOST}/images/${user.profileImage}`;
                           
                           console.log('🖼️ Avatar final URL:', finalUrl);
                           return finalUrl;

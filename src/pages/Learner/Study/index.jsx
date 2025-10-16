@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Spin, Result } from "antd";
-import { ReloadOutlined, ArrowLeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  ReloadOutlined,
+  ArrowLeftOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import Swal from "sweetalert2";
 import TestService from "../../../services/testService";
 import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
@@ -35,9 +39,9 @@ const Study = () => {
       setLoading(true);
       setError(null);
       setNoQuestions(false);
-      
+
       const response = await TestService.getQuestionsByTestId(testId);
-      
+
       if (response && response.length > 0) {
         setQuestions(response);
       } else {
@@ -47,16 +51,19 @@ const Study = () => {
       }
     } catch (error) {
       console.log(error);
-      
+
       // Kiểm tra loại lỗi để hiển thị thông báo phù hợp
-      if (error.response?.status === 404 || 
-          error.response?.data?.message === "No questions found for this test") {
+      if (
+        error.response?.status === 404 ||
+        error.response?.data?.message === "No questions found for this test"
+      ) {
         setNoQuestions(true);
         setQuestions([]);
       } else {
         setError({
           status: error.response?.status || 500,
-          message: error.response?.data?.message || "Có lỗi xảy ra khi tải câu hỏi"
+          message:
+            error.response?.data?.message || "Có lỗi xảy ra khi tải câu hỏi",
         });
       }
     } finally {
@@ -129,18 +136,21 @@ const Study = () => {
     try {
       const learnerToken = localStorage.getItem("learnerToken");
       if (learnerToken) {
-        const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+        const decoded = JSON.parse(atob(learnerToken.split(".")[1]));
         const userId = decoded.id;
-        const skill = sectionId === "1" || sectionId === "2" ? "listening" : "reading";
-        
+        const skill =
+          sectionId === "1" || sectionId === "2" ? "listening" : "reading";
+
         // Ghi nhận từng câu hỏi đã trả lời đúng với notification
         for (let i = 0; i < correctCount; i++) {
-          recordCompleteQuestion(userId, 1, skill).catch(streakError => {
+          recordCompleteQuestion(userId, 1, skill).catch((streakError) => {
             console.warn("⚠️ Không thể ghi nhận streak câu hỏi:", streakError);
           });
         }
-        
-        console.log(`✅ Đã ghi nhận ${correctCount} câu hỏi đúng cho streak với notification`);
+
+        console.log(
+          `✅ Đã ghi nhận ${correctCount} câu hỏi đúng cho streak với notification`
+        );
       }
     } catch (error) {
       console.warn("⚠️ Lỗi khi ghi nhận hoàn thành câu hỏi:", error);
@@ -171,7 +181,7 @@ const Study = () => {
   // Lấy đường dẫn hình ảnh
   const getImageUrl = (imageName) => {
     if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
+      return `${process.env.LOCALHOST}/images/${imageName}`;
     }
     return "";
   };
@@ -179,7 +189,7 @@ const Study = () => {
   // Lấy đường dẫn âm thanh
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `http://localhost:5000/audios/${audioName}`;
+      return `${process.env.LOCALHOST}/audios/${audioName}`;
     }
     return "";
   };
@@ -315,73 +325,83 @@ const Study = () => {
       <div className="container-fluid">
         <div className="row mt-3">
           {loading ? (
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              minHeight: '60vh',
-              flexDirection: 'column'
-            }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "60vh",
+                flexDirection: "column",
+              }}
+            >
               <Spin size="large" />
-              <p style={{ marginTop: 16, color: '#666' }}>Đang tải câu hỏi...</p>
+              <p style={{ marginTop: 16, color: "#666" }}>
+                Đang tải câu hỏi...
+              </p>
             </div>
           ) : noQuestions ? (
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              minHeight: '60vh'
-            }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "60vh",
+              }}
+            >
               <Result
-                icon={<ExclamationCircleOutlined style={{ color: '#faad14' }} />}
+                icon={
+                  <ExclamationCircleOutlined style={{ color: "#faad14" }} />
+                }
                 title="Chưa có câu hỏi cho bài test này"
                 subTitle="Bài test này hiện tại chưa có câu hỏi nào. Vui lòng thử lại sau hoặc chọn bài test khác."
                 extra={[
-                  <Button 
-                    key="back" 
-                    icon={<ArrowLeftOutlined />} 
+                  <Button
+                    key="back"
+                    icon={<ArrowLeftOutlined />}
                     onClick={handleGoBack}
                   >
                     Quay lại
                   </Button>,
-                  <Button 
-                    key="retry" 
-                    type="primary" 
-                    icon={<ReloadOutlined />} 
+                  <Button
+                    key="retry"
+                    type="primary"
+                    icon={<ReloadOutlined />}
                     onClick={handleRetry}
                   >
                     Thử lại
-                  </Button>
+                  </Button>,
                 ]}
               />
             </div>
           ) : error ? (
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              minHeight: '60vh'
-            }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "60vh",
+              }}
+            >
               <Result
                 status="error"
                 title={`Lỗi ${error.status}`}
                 subTitle={error.message}
                 extra={[
-                  <Button 
-                    key="back" 
-                    icon={<ArrowLeftOutlined />} 
+                  <Button
+                    key="back"
+                    icon={<ArrowLeftOutlined />}
                     onClick={handleGoBack}
                   >
                     Quay lại
                   </Button>,
-                  <Button 
-                    key="retry" 
-                    type="primary" 
-                    icon={<ReloadOutlined />} 
+                  <Button
+                    key="retry"
+                    type="primary"
+                    icon={<ReloadOutlined />}
                     onClick={handleRetry}
                   >
                     Thử lại
-                  </Button>
+                  </Button>,
                 ]}
               />
             </div>

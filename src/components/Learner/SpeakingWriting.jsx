@@ -24,14 +24,13 @@ const SpeakingWriting = () => {
     fetchSections();
   }, []);
 
-
   // Lọc sections theo loại
   const noiSections = sections.filter((section) => section.type === 3);
   const vietSections = sections.filter((section) => section.type === 4);
 
   const getImageUrl = (imageName, sectionType) => {
     if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
+      return `${process.env.LOCALHOST}/images/${imageName}`;
     }
     // Fallback images based on section type
     if (sectionType === 3) {
@@ -78,7 +77,11 @@ const SpeakingWriting = () => {
   if (loading) {
     return (
       <div className="d-flex justify-content-center my-5">
-        <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
+        <div
+          className="spinner-border text-primary"
+          role="status"
+          style={{ width: "3rem", height: "3rem" }}
+        >
           <span className="visually-hidden">Đang tải...</span>
         </div>
       </div>
@@ -91,29 +94,32 @@ const SpeakingWriting = () => {
         to={`/learner/practice-sw/${section._id || section.id}`}
         className="card text-decoration-none w-100 shadow-sm border-0"
         style={{
-          borderRadius: '20px',
-          overflow: 'hidden',
-          transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-          background: 'white',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+          borderRadius: "20px",
+          overflow: "hidden",
+          transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          background: "white",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)';
+          e.currentTarget.style.transform = "translateY(-8px) scale(1.02)";
+          e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.15)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+          e.currentTarget.style.transform = "translateY(0) scale(1)";
+          e.currentTarget.style.boxShadow = "0 10px 30px rgba(0,0,0,0.1)";
         }}
       >
-        <div style={{
-          height: '180px',
-          overflow: 'hidden',
-          position: 'relative',
-          background: sectionType === 3
-            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-            : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-        }}>
+        <div
+          style={{
+            height: "180px",
+            overflow: "hidden",
+            position: "relative",
+            background:
+              sectionType === 3
+                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                : "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+          }}
+        >
           <img
             src={getImageUrl(section.image, sectionType)}
             className="card-img-top"
@@ -121,43 +127,48 @@ const SpeakingWriting = () => {
             loading="lazy"
             onError={(e) => handleImageError(e, sectionType)}
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'scale-down',
-              transition: 'transform 0.4s ease'
+              width: "100%",
+              height: "100%",
+              objectFit: "scale-down",
+              transition: "transform 0.4s ease",
             }}
           />
-          <div style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: 'rgba(255,255,255,0.9)',
-            borderRadius: '20px',
-            padding: '5px 12px',
-            fontSize: '0.8rem',
-            fontWeight: 'bold',
-            color: sectionType === 3 ? '#667eea' : '#f5576c'
-          }}>
-            {sectionType === 3 ? '🗣️ Nói' : '✍️ Viết'}
+          <div
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              background: "rgba(255,255,255,0.9)",
+              borderRadius: "20px",
+              padding: "5px 12px",
+              fontSize: "0.8rem",
+              fontWeight: "bold",
+              color: sectionType === 3 ? "#667eea" : "#f5576c",
+            }}
+          >
+            {sectionType === 3 ? "🗣️ Nói" : "✍️ Viết"}
           </div>
         </div>
-        <div className="card-body" style={{ padding: '1.5rem' }}>
-          <h5 className="card-title fw-bold mb-3" style={{
-            color: '#1e293b',
-            fontSize: '1.1rem',
-            lineHeight: '1.4'
-          }}>
+        <div className="card-body" style={{ padding: "1.5rem" }}>
+          <h5
+            className="card-title fw-bold mb-3"
+            style={{
+              color: "#1e293b",
+              fontSize: "1.1rem",
+              lineHeight: "1.4",
+            }}
+          >
             {section.name}
           </h5>
           <p
             className="card-text text-muted mb-3"
             style={{
-              fontSize: '0.9rem',
-              lineHeight: '1.5',
-              display: '-webkit-box',
-              WebkitLineClamp: '3',
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
+              fontSize: "0.9rem",
+              lineHeight: "1.5",
+              display: "-webkit-box",
+              WebkitLineClamp: "3",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
             title={section.description}
           >
@@ -168,14 +179,16 @@ const SpeakingWriting = () => {
               <i className="fas fa-clock me-1"></i>
               ~30 phút
             </small>
-            <div style={{
-              background: sectionType === 3 ? '#667eea' : '#f5576c',
-              color: 'white',
-              borderRadius: '15px',
-              padding: '4px 12px',
-              fontSize: '0.8rem',
-              fontWeight: 'bold'
-            }}>
+            <div
+              style={{
+                background: sectionType === 3 ? "#667eea" : "#f5576c",
+                color: "white",
+                borderRadius: "15px",
+                padding: "4px 12px",
+                fontSize: "0.8rem",
+                fontWeight: "bold",
+              }}
+            >
               Bắt đầu
             </div>
           </div>
@@ -190,23 +203,30 @@ const SpeakingWriting = () => {
       {noiSections.length > 0 && (
         <div className="mb-5">
           <div className="text-center mb-4">
-            <h2 className="fw-bold mb-3" style={{
-              color: '#2c3e50',
-              fontSize: '2.2rem',
-              background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
+            <h2
+              className="fw-bold mb-3"
+              style={{
+                color: "#2c3e50",
+                fontSize: "2.2rem",
+                background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
               🗣️ NÓI - Speaking Practice
             </h2>
-            <p className="text-muted" style={{ fontSize: '1.1rem' }}>
+            <p className="text-muted" style={{ fontSize: "1.1rem" }}>
               Phát triển kỹ năng giao tiếp và thuyết trình tiếng Anh
             </p>
           </div>
           <div className="row justify-content-center">
             {noiSections.map((section) => (
-              <SectionCard key={section.id || section._id} section={section} sectionType={3} />
+              <SectionCard
+                key={section.id || section._id}
+                section={section}
+                sectionType={3}
+              />
             ))}
           </div>
         </div>
@@ -216,23 +236,30 @@ const SpeakingWriting = () => {
       {vietSections.length > 0 && (
         <div className="mb-5">
           <div className="text-center mb-4">
-            <h2 className="fw-bold mb-3" style={{
-              color: '#2c3e50',
-              fontSize: '2.2rem',
-              background: 'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
+            <h2
+              className="fw-bold mb-3"
+              style={{
+                color: "#2c3e50",
+                fontSize: "2.2rem",
+                background: "linear-gradient(45deg, #f093fb 0%, #f5576c 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
               ✍️ VIẾT - Writing Practice
             </h2>
-            <p className="text-muted" style={{ fontSize: '1.1rem' }}>
+            <p className="text-muted" style={{ fontSize: "1.1rem" }}>
               Nâng cao khả năng viết và diễn đạt ý tưởng bằng tiếng Anh
             </p>
           </div>
           <div className="row justify-content-center">
             {vietSections.map((section) => (
-              <SectionCard key={section.id || section._id} section={section} sectionType={4} />
+              <SectionCard
+                key={section.id || section._id}
+                section={section}
+                sectionType={4}
+              />
             ))}
           </div>
         </div>
@@ -241,15 +268,19 @@ const SpeakingWriting = () => {
       {/* Empty State */}
       {noiSections.length === 0 && vietSections.length === 0 && (
         <div className="text-center py-5">
-          <div style={{
-            fontSize: '4rem',
-            marginBottom: '1rem',
-            opacity: '0.5'
-          }}>
+          <div
+            style={{
+              fontSize: "4rem",
+              marginBottom: "1rem",
+              opacity: "0.5",
+            }}
+          >
             📚
           </div>
           <h3 className="text-muted">Chưa có bài luyện tập nào</h3>
-          <p className="text-muted">Các bài luyện tập sẽ được cập nhật sớm. Vui lòng quay lại sau!</p>
+          <p className="text-muted">
+            Các bài luyện tập sẽ được cập nhật sớm. Vui lòng quay lại sau!
+          </p>
         </div>
       )}
     </div>

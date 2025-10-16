@@ -462,14 +462,14 @@ const ImproveStudy = () => {
 
   const getImageUrl = (imageName) => {
     if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
+      return `${process.env.LOCALHOST}/images/${imageName}`;
     }
     return "";
   };
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `http://localhost:5000/audios/${audioName}`;
+      return `${process.env.LOCALHOST}/audios/${audioName}`;
     }
     return "";
   };
@@ -613,7 +613,8 @@ const ImproveStudy = () => {
                     marginBottom: "8px",
                   }}
                 >
-                  Tập trung luyện tập từng loại câu hỏi cụ thể để khắc phục điểm yếu
+                  Tập trung luyện tập từng loại câu hỏi cụ thể để khắc phục điểm
+                  yếu
                 </Text>
                 <Tag
                   color="orange"
@@ -634,9 +635,18 @@ const ImproveStudy = () => {
                     size="small"
                     style={{ width: "100%" }}
                   >
-                    <Text>• <strong>Luyện cơ bản:</strong> Làm bài theo Part, câu hỏi ngẫu nhiên</Text>
-                    <Text>• <strong>Luyện chuyên đề:</strong> Tập trung vào loại câu hỏi cụ thể</Text>
-                    <Text>• <strong>Mục tiêu:</strong> Khắc phục điểm yếu, nâng cao kỹ năng từng phần</Text>
+                    <Text>
+                      • <strong>Luyện cơ bản:</strong> Làm bài theo Part, câu
+                      hỏi ngẫu nhiên
+                    </Text>
+                    <Text>
+                      • <strong>Luyện chuyên đề:</strong> Tập trung vào loại câu
+                      hỏi cụ thể
+                    </Text>
+                    <Text>
+                      • <strong>Mục tiêu:</strong> Khắc phục điểm yếu, nâng cao
+                      kỹ năng từng phần
+                    </Text>
                   </Space>
                 }
                 type="success"
@@ -823,7 +833,8 @@ const ImproveStudy = () => {
                 {(!selectedSection || !selectedQuestionType) && (
                   <div style={{ marginTop: "12px" }}>
                     <Text type="secondary" style={{ fontSize: "14px" }}>
-                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu luyện chuyên đề
+                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu luyện
+                      chuyên đề
                     </Text>
                   </div>
                 )}
