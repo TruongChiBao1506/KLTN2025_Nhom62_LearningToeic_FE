@@ -60,10 +60,10 @@ const LearnerLayout = () => {
 
 
   // Debug: Log info để kiểm tra avatar
-  // useEffect(() => {
-  //   console.log('🎯 LearnerLayout - Current info from Redux:', info);
-  //   console.log('🖼️ LearnerLayout - Avatar value:', info?.avatar);
-  // }, [info]);
+  useEffect(() => {
+    console.log('🎯 LearnerLayout - Current info from Redux:', info);
+    console.log('🖼️ LearnerLayout - Avatar value:', info?.avatar);
+  }, [info]);
 
   // Kết nối socket và setup listener khi LearnerLayout mount
   useEffect(() => {
