@@ -167,9 +167,13 @@ const { Title, Text, Paragraph } = Typography;
 const ExamDetail = () => {
   // Watermark component
   const Watermark = ({ text }) => {
-    const userInfo = localStorage.getItem("learnerToken") ? JSON.parse(atob(localStorage.getItem("learnerToken").split('.')[1])) : {};
-    const dynamicText = `${text} | User: ${userInfo.email || 'Unknown'} | ${new Date().toLocaleString()}`;
-    
+    const userInfo = localStorage.getItem("learnerToken")
+      ? JSON.parse(atob(localStorage.getItem("learnerToken").split(".")[1]))
+      : {};
+    const dynamicText = `${text} | User: ${
+      userInfo.email || "Unknown"
+    } | ${new Date().toLocaleString()}`;
+
     return (
       <div
         style={{
@@ -215,7 +219,7 @@ const ExamDetail = () => {
     document.addEventListener("paste", preventCopy);
 
     // Thêm CSS inline để vô hiệu hóa user-select toàn cục
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.innerHTML = `
       * {
         -webkit-user-select: none !important;
@@ -273,7 +277,7 @@ const ExamDetail = () => {
     window.addEventListener("blur", handleBlur);
 
     // Thêm overlay mờ liên tục (tùy chọn, có thể tắt/bật)
-    const overlay = document.createElement('div');
+    const overlay = document.createElement("div");
     overlay.style.cssText = `
       position: fixed;
       top: 0;
@@ -442,7 +446,8 @@ const ExamDetail = () => {
     const handleBeforeUnload = (e) => {
       // Only show warning if exam is started but not submitted and not exiting
       if (examStarted && !examSubmitted && !isExiting) {
-        const message = "Bạn đang làm bài thi. Dữ liệu có thể bị mất nếu rời khỏi trang này. Bạn có chắc chắn muốn rời khỏi không?";
+        const message =
+          "Bạn đang làm bài thi. Dữ liệu có thể bị mất nếu rời khỏi trang này. Bạn có chắc chắn muốn rời khỏi không?";
         e.preventDefault();
         e.returnValue = message; // Chrome requires returnValue to be set
         return message; // For other browsers
@@ -465,16 +470,16 @@ const ExamDetail = () => {
 
     if (examStarted && !examSubmitted) {
       // Add warning for programmatic navigation
-      window.addEventListener('beforeunload', handleBeforeUnload);
-      window.addEventListener('popstate', handlePopState);
-      
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      window.addEventListener("popstate", handlePopState);
+
       // Push initial state to handle back button
       window.history.pushState(null, "", window.location.href);
     }
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [examStarted, examSubmitted, isExiting, saveProgress]);
 
@@ -503,10 +508,10 @@ const ExamDetail = () => {
       }
     };
 
-    document.addEventListener('click', handleClick, true);
+    document.addEventListener("click", handleClick, true);
 
     return () => {
-      document.removeEventListener('click', handleClick, true);
+      document.removeEventListener("click", handleClick, true);
     };
   }, [examStarted, examSubmitted, isExiting, saveProgress]);
 
@@ -546,7 +551,9 @@ const ExamDetail = () => {
 
   const startExam = () => {
     setExamStarted(true);
-    document.title = `Đang làm: ${exam ? exam.name : "Bài thi TOEIC"} | TOEIC Learning Platform`;
+    document.title = `Đang làm: ${
+      exam ? exam.name : "Bài thi TOEIC"
+    } | TOEIC Learning Platform`;
     // Bắt đầu đếm ngược thời gian
     timerRef.current = setInterval(() => {
       setRemainingTime((prevTime) => {
@@ -579,13 +586,13 @@ const ExamDetail = () => {
   // Function to clean question text by removing redundant titles
   const cleanQuestionText = (text) => {
     if (!text) return "";
-    
+
     // Remove patterns like "Mini Test 1 - Question X" or "Test X - Question Y"
     const cleanedText = text
       .replace(/^(Mini\s+)?Test\s+\d+\s*-\s*Question\s+\d+\s*/i, "")
       .replace(/^Question\s+\d+\s*[:.-]\s*/i, "")
       .trim();
-    
+
     return cleanedText || text; // Return original if cleaning results in empty string
   };
 
@@ -722,27 +729,31 @@ const ExamDetail = () => {
       };
 
       setExamResult(resultData);
-      
+
       // Update document title when exam is submitted
-      document.title = `Kết quả: ${exam ? exam.name : "Bài thi TOEIC"} | TOEIC Learning Platform`;
-      
+      document.title = `Kết quả: ${
+        exam ? exam.name : "Bài thi TOEIC"
+      } | TOEIC Learning Platform`;
+
       // Ghi nhận hoàn thành bài test cho streak với notification
       try {
         const learnerToken = localStorage.getItem("learnerToken");
         if (learnerToken) {
-          const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
+          const decoded = JSON.parse(atob(learnerToken.split(".")[1]));
           const userId = decoded.id;
           const score = resultData.totalScore || 0;
-          const examType = exam?.examType || 'TOEIC';
-          
+          const examType = exam?.examType || "TOEIC";
+
           await recordCompleteTest(userId, score, examType);
-          console.log("✅ Đã ghi nhận hoàn thành bài test cho streak với notification");
+          console.log(
+            "✅ Đã ghi nhận hoàn thành bài test cho streak với notification"
+          );
         }
       } catch (streakError) {
         console.warn("⚠️ Không thể ghi nhận streak bài test:", streakError);
         // Không làm gián đoạn flow nộp bài nếu streak service lỗi
       }
-      
+
       setLoading(false);
     } catch (error) {
       console.error("Lỗi khi nộp bài thi:", error);
@@ -820,6 +831,8 @@ const ExamDetail = () => {
 
   // Exam results view when exam is submitted
   if (examSubmitted && examResult) {
+    console.log("🚀 ~ ExamDetail ~ examResult:", examResult);
+
     return (
       <Content style={{ padding: "24px", background: "#f5f5f5" }}>
         {/* Breadcrumb */}
@@ -1304,11 +1317,11 @@ const ExamDetail = () => {
                             message="Giải thích"
                             description={
                               <div id={`explanation-${question.id}`}>
-                                <TextHighlighter
+                                {/* <TextHighlighter
                                   containerId={`explanation-${question.id}`}
-                                >
-                                  {question.explanation}
-                                </TextHighlighter>
+                                > */}
+                                {question.explanation}
+                                {/* </TextHighlighter> */}
                               </div>
                             }
                             type="info"
@@ -1418,7 +1431,10 @@ const ExamDetail = () => {
         </Breadcrumb>
 
         {/* Exam Introduction - Compact Hero Section */}
-        <div className="exam-detail-container" style={{ border: "none", borderBottom: "none", borderTop: "none" }}>
+        <div
+          className="exam-detail-container"
+          style={{ border: "none", borderBottom: "none", borderTop: "none" }}
+        >
           <Card
             style={{
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -1430,146 +1446,159 @@ const ExamDetail = () => {
               overflow: "hidden",
             }}
             styles={{
-              body: { 
+              body: {
                 padding: "24px",
                 borderBottom: "none",
-                border: "none"
-              }
+                border: "none",
+              },
             }}
             bodyStyle={{
               border: "none",
               borderBottom: "none",
-              borderTop: "none"
+              borderTop: "none",
             }}
           >
-          {/* Background Pattern */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "150px",
-              height: "150px",
-              background: "radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
-              opacity: 0.3,
-            }}
-          />
-          
-          <Row align="middle" gutter={[24, 16]} style={{ position: "relative", zIndex: 1 }}>
-            <Col xs={24} md={16}>
-              <Space direction="vertical" size="small" style={{ width: "100%" }}>
-                <Title 
-                  level={2} 
-                  style={{ 
-                    color: "#fff", 
-                    marginBottom: "8px",
-                    fontSize: "1.8rem",
-                    fontWeight: "bold",
-                    borderBottom: "none",
-                    paddingBottom: "0"
-                  }}
+            {/* Background Pattern */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "150px",
+                height: "150px",
+                background:
+                  "radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+                opacity: 0.3,
+              }}
+            />
+
+            <Row
+              align="middle"
+              gutter={[24, 16]}
+              style={{ position: "relative", zIndex: 1 }}
+            >
+              <Col xs={24} md={16}>
+                <Space
+                  direction="vertical"
+                  size="small"
+                  style={{ width: "100%" }}
                 >
-                  {exam.name}
-                </Title>
-                
-                <Paragraph 
-                  style={{ 
-                    color: "rgba(255,255,255,0.9)", 
-                    fontSize: "16px",
-                    marginBottom: "16px",
-                    lineHeight: "1.4"
-                  }}
-                >
-                  {exam.description}
-                </Paragraph>
-                
-                <Space size="middle">
-                  <Tag
+                  <Title
+                    level={2}
                     style={{
-                      background: "rgba(255,255,255,0.2)",
-                      borderRadius: "20px",
-                      padding: "4px 12px",
-                      border: "none",
                       color: "#fff",
-                      backdropFilter: "blur(10px)"
+                      marginBottom: "8px",
+                      fontSize: "1.8rem",
+                      fontWeight: "bold",
+                      borderBottom: "none",
+                      paddingBottom: "0",
                     }}
                   >
-                    <Clock size={14} style={{ marginRight: "6px" }} />
-                    {exam.duration} phút
-                  </Tag>
-                  <Tag
+                    {exam.name}
+                  </Title>
+
+                  <Paragraph
                     style={{
-                      background: "rgba(255,255,255,0.2)",
-                      borderRadius: "20px",
-                      padding: "4px 12px",
-                      border: "none",
-                      color: "#fff",
-                      backdropFilter: "blur(10px)"
+                      color: "rgba(255,255,255,0.9)",
+                      fontSize: "16px",
+                      marginBottom: "16px",
+                      lineHeight: "1.4",
                     }}
                   >
-                    <HelpCircle size={14} style={{ marginRight: "6px" }} />
-                    {exam.questions ? exam.questions.length : 0} câu
-                  </Tag>
-                  <Tag
-                    style={{
-                      background: "rgba(255,255,255,0.2)",
-                      borderRadius: "20px",
-                      padding: "4px 12px",
-                      border: "none",
-                      color: "#fff",
-                      backdropFilter: "blur(10px)"
-                    }}
-                  >
-                    <Target size={14} style={{ marginRight: "6px" }} />
-                    {exam.type === "full-test" ? "Full Test" : "Mini Test"}
-                  </Tag>
+                    {exam.description}
+                  </Paragraph>
+
+                  <Space size="middle">
+                    <Tag
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: "20px",
+                        padding: "4px 12px",
+                        border: "none",
+                        color: "#fff",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <Clock size={14} style={{ marginRight: "6px" }} />
+                      {exam.duration} phút
+                    </Tag>
+                    <Tag
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: "20px",
+                        padding: "4px 12px",
+                        border: "none",
+                        color: "#fff",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <HelpCircle size={14} style={{ marginRight: "6px" }} />
+                      {exam.questions ? exam.questions.length : 0} câu
+                    </Tag>
+                    <Tag
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: "20px",
+                        padding: "4px 12px",
+                        border: "none",
+                        color: "#fff",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <Target size={14} style={{ marginRight: "6px" }} />
+                      {exam.type === "full-test" ? "Full Test" : "Mini Test"}
+                    </Tag>
+                  </Space>
                 </Space>
-              </Space>
-            </Col>
-            
-            <Col xs={24} md={8} style={{ textAlign: "center" }}>
-              <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={startExam}
-                  icon={<PlayCircle size={20} />}
-                  style={{
-                    width: "100%",
-                    height: "48px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    borderRadius: "24px",
-                    background: "rgba(255,255,255,0.9)",
-                    border: "none",
-                    color: "#667eea",
-                    boxShadow: "0 4px 16px rgba(255,255,255,0.3)"
-                  }}
+              </Col>
+
+              <Col xs={24} md={8} style={{ textAlign: "center" }}>
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%" }}
                 >
-                  {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
-                </Button>
-                
-                <Link to="/learner/exams">
                   <Button
-                    size="middle"
-                    icon={<ArrowLeft size={14} />}
+                    type="primary"
+                    size="large"
+                    onClick={startExam}
+                    icon={<PlayCircle size={20} />}
                     style={{
-                      background: "#fff",
-                      border: "2px solid rgba(255,255,255,0.8)",
+                      width: "100%",
+                      height: "48px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      borderRadius: "24px",
+                      background: "rgba(255,255,255,0.9)",
+                      border: "none",
                       color: "#667eea",
-                      borderRadius: "20px",
-                      fontWeight: "500",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                      boxShadow: "0 4px 16px rgba(255,255,255,0.3)",
                     }}
                   >
-                    Quay lại
+                    {savedProgress ? "Tiếp tục bài thi" : "Bắt đầu bài thi"}
                   </Button>
-                </Link>
-              </Space>
-            </Col>
-          </Row>
-        </Card>
+
+                  <Link to="/learner/exams">
+                    <Button
+                      size="middle"
+                      icon={<ArrowLeft size={14} />}
+                      style={{
+                        background: "#fff",
+                        border: "2px solid rgba(255,255,255,0.8)",
+                        color: "#667eea",
+                        borderRadius: "20px",
+                        fontWeight: "500",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                      }}
+                    >
+                      Quay lại
+                    </Button>
+                  </Link>
+                </Space>
+              </Col>
+            </Row>
+          </Card>
         </div>
 
         {/* Quick Instructions - Compact Version */}
@@ -1579,7 +1608,7 @@ const ExamDetail = () => {
               marginBottom: "24px",
               borderRadius: "12px",
               border: "2px solid #52c41a",
-              background: "linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)"
+              background: "linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)",
             }}
           >
             <Row align="middle" gutter={[16, 8]}>
@@ -1592,14 +1621,17 @@ const ExamDetail = () => {
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <PlayCircle size={20} style={{ color: "#fff" }} />
                 </div>
               </Col>
               <Col flex="auto">
-                <Title level={5} style={{ marginBottom: "4px", color: "#389e0d" }}>
+                <Title
+                  level={5}
+                  style={{ marginBottom: "4px", color: "#389e0d" }}
+                >
                   Tiếp tục bài thi đã lưu
                 </Title>
                 <Text style={{ fontSize: "14px", color: "#666" }}>
@@ -1616,16 +1648,29 @@ const ExamDetail = () => {
                 style={{
                   borderRadius: "12px",
                   border: "1px solid #e6f4ff",
-                  background: "#f0f7ff"
+                  background: "#f0f7ff",
                 }}
               >
                 <Space align="start">
-                  <BookOpen size={20} style={{ color: "#1890ff", marginTop: "2px" }} />
+                  <BookOpen
+                    size={20}
+                    style={{ color: "#1890ff", marginTop: "2px" }}
+                  />
                   <div>
-                    <Title level={5} style={{ marginBottom: "8px", color: "#1890ff" }}>
+                    <Title
+                      level={5}
+                      style={{ marginBottom: "8px", color: "#1890ff" }}
+                    >
                       Hướng dẫn làm bài
                     </Title>
-                    <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "14px", color: "#666" }}>
+                    <ul
+                      style={{
+                        margin: 0,
+                        paddingLeft: "16px",
+                        fontSize: "14px",
+                        color: "#666",
+                      }}
+                    >
                       <li>Đọc kỹ đề bài trước khi trả lời</li>
                       <li>Đánh dấu câu khó để xem lại</li>
                       <li>Lưu tiến trình thường xuyên</li>
@@ -1640,16 +1685,29 @@ const ExamDetail = () => {
                 style={{
                   borderRadius: "12px",
                   border: "1px solid #fff7e6",
-                  background: "#fff7e6"
+                  background: "#fff7e6",
                 }}
               >
                 <Space align="start">
-                  <Target size={20} style={{ color: "#fa8c16", marginTop: "2px" }} />
+                  <Target
+                    size={20}
+                    style={{ color: "#fa8c16", marginTop: "2px" }}
+                  />
                   <div>
-                    <Title level={5} style={{ marginBottom: "8px", color: "#fa8c16" }}>
+                    <Title
+                      level={5}
+                      style={{ marginBottom: "8px", color: "#fa8c16" }}
+                    >
                       Lưu ý quan trọng
                     </Title>
-                    <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "14px", color: "#666" }}>
+                    <ul
+                      style={{
+                        margin: 0,
+                        paddingLeft: "16px",
+                        fontSize: "14px",
+                        color: "#666",
+                      }}
+                    >
                       <li>Quản lý thời gian hợp lý</li>
                       <li>Kiểm tra kỹ trước khi nộp</li>
                       <li>Không thể sửa sau khi nộp bài</li>
@@ -1767,11 +1825,17 @@ const ExamDetail = () => {
         <Row justify="space-between" align="middle" style={{ width: "100%" }}>
           <Col flex="auto">
             <Space direction="vertical" size={0}>
-              <Title level={4} style={{ color: "#fff", margin: 0, fontWeight: "600" }}>
+              <Title
+                level={4}
+                style={{ color: "#fff", margin: 0, fontWeight: "600" }}
+              >
                 {exam.name}
               </Title>
-              <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px" }}>
-                Câu {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
+              <Text
+                style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px" }}
+              >
+                Câu {currentQuestionIndex + 1} /{" "}
+                {exam.questions ? exam.questions.length : 0}
               </Text>
             </Space>
           </Col>
@@ -1814,15 +1878,16 @@ const ExamDetail = () => {
                   </Space>
                 </div>
               </Tooltip>
-              
+
               {/* Enhanced Timer */}
               <div
                 style={{
-                  background: remainingTime < 300 ? 
-                    "linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)" :
-                    remainingTime < 900 ?
-                    "linear-gradient(135deg, #ffa726 0%, #ff9800 100%)" :
-                    "linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)",
+                  background:
+                    remainingTime < 300
+                      ? "linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)"
+                      : remainingTime < 900
+                      ? "linear-gradient(135deg, #ffa726 0%, #ff9800 100%)"
+                      : "linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)",
                   padding: "8px 16px",
                   borderRadius: "20px",
                   backdropFilter: "blur(10px)",
@@ -1857,7 +1922,9 @@ const ExamDetail = () => {
           message={
             <Space>
               <AlertCircle size={16} />
-              <span style={{ fontWeight: "600" }}>Bảo vệ tiến trình làm bài</span>
+              <span style={{ fontWeight: "600" }}>
+                Bảo vệ tiến trình làm bài
+              </span>
             </Space>
           }
           description="Hệ thống sẽ cảnh báo nếu bạn cố gắng rời khỏi trang hoặc chuyển tab khi đang làm bài. Nhấn 'Lưu tạm' để lưu tiến trình."
@@ -1874,18 +1941,26 @@ const ExamDetail = () => {
       </div>
 
       {/* Main Exam Content - Enhanced */}
-      <Content style={{ 
-        padding: "20px", 
-        paddingTop: "92px",
-        minHeight: "calc(100vh - 72px)", 
-        overflow: "auto" 
-      }}>
+      <Content
+        style={{
+          padding: "20px",
+          paddingTop: "92px",
+          minHeight: "calc(100vh - 72px)",
+          overflow: "auto",
+        }}
+      >
         <Row gutter={[20, 20]} style={{ minHeight: "100%" }}>
           {/* Enhanced Question Navigation Sidebar */}
-          <Col xs={24} lg={sidebarCollapsed ? 1 : 6} xl={sidebarCollapsed ? 1 : 5}>
+          <Col
+            xs={24}
+            lg={sidebarCollapsed ? 1 : 6}
+            xl={sidebarCollapsed ? 1 : 5}
+          >
             <Card
               title={
-                <Space style={{ width: "100%", justifyContent: "space-between" }}>
+                <Space
+                  style={{ width: "100%", justifyContent: "space-between" }}
+                >
                   <Space>
                     <HelpCircle size={16} />
                     <span style={{ fontWeight: "600" }}>Câu hỏi theo Part</span>
@@ -1893,7 +1968,13 @@ const ExamDetail = () => {
                   <Button
                     type="text"
                     size="small"
-                    icon={sidebarCollapsed ? <PanelRightClose size={16} /> : <PanelLeftClose size={16} />}
+                    icon={
+                      sidebarCollapsed ? (
+                        <PanelRightClose size={16} />
+                      ) : (
+                        <PanelLeftClose size={16} />
+                      )
+                    }
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                     style={{
                       color: "#64748b",
@@ -1901,13 +1982,20 @@ const ExamDetail = () => {
                       boxShadow: "none",
                       padding: "4px",
                     }}
-                    title={sidebarCollapsed ? "Mở rộng danh sách câu hỏi" : "Thu gọn danh sách câu hỏi"}
+                    title={
+                      sidebarCollapsed
+                        ? "Mở rộng danh sách câu hỏi"
+                        : "Thu gọn danh sách câu hỏi"
+                    }
                   />
                 </Space>
               }
               style={{
                 height: "calc(100vh - 140px)",
-                display: (window.innerWidth < 992 || sidebarCollapsed) ? "none" : "block",
+                display:
+                  window.innerWidth < 992 || sidebarCollapsed
+                    ? "none"
+                    : "block",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                 borderRadius: "12px",
                 border: "1px solid #e8f4fd",
@@ -1929,55 +2017,84 @@ const ExamDetail = () => {
               size="small"
             >
               {/* Enhanced Legend */}
-              <div style={{
-                background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                padding: "12px",
-                borderRadius: "8px",
-                marginBottom: "16px",
-                border: "1px solid #e2e8f0",
-                flexShrink: 0,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
-              }}>
+              <div
+                style={{
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  marginBottom: "16px",
+                  border: "1px solid #e2e8f0",
+                  flexShrink: 0,
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+                }}
+              >
                 <Row gutter={[8, 6]}>
                   <Col span={24}>
                     <Space size="small" style={{ marginBottom: "4px" }}>
-                      <div style={{
-                        width: "14px",
-                        height: "14px",
-                        background: "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
-                        borderRadius: "3px",
-                        boxShadow: "0 2px 4px rgba(24, 144, 255, 0.3)",
-                      }}></div>
-                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                      <div
+                        style={{
+                          width: "14px",
+                          height: "14px",
+                          background:
+                            "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
+                          borderRadius: "3px",
+                          boxShadow: "0 2px 4px rgba(24, 144, 255, 0.3)",
+                        }}
+                      ></div>
+                      <Text
+                        style={{
+                          fontSize: "12px",
+                          color: "#475569",
+                          fontWeight: "500",
+                        }}
+                      >
                         Câu hiện tại
                       </Text>
                     </Space>
                   </Col>
                   <Col span={12}>
                     <Space size="small">
-                      <div style={{
-                        width: "14px",
-                        height: "14px",
-                        background: "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)",
-                        borderRadius: "3px",
-                        boxShadow: "0 2px 4px rgba(82, 196, 26, 0.3)",
-                      }}></div>
-                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                      <div
+                        style={{
+                          width: "14px",
+                          height: "14px",
+                          background:
+                            "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)",
+                          borderRadius: "3px",
+                          boxShadow: "0 2px 4px rgba(82, 196, 26, 0.3)",
+                        }}
+                      ></div>
+                      <Text
+                        style={{
+                          fontSize: "12px",
+                          color: "#475569",
+                          fontWeight: "500",
+                        }}
+                      >
                         Đã làm
                       </Text>
                     </Space>
                   </Col>
                   <Col span={12}>
                     <Space size="small">
-                      <div style={{
-                        width: "14px",
-                        height: "14px",
-                        border: "2px solid #faad14",
-                        borderRadius: "3px",
-                        background: "#fff",
-                        boxShadow: "0 2px 4px rgba(250, 173, 20, 0.3)",
-                      }}></div>
-                      <Text style={{ fontSize: "12px", color: "#475569", fontWeight: "500" }}>
+                      <div
+                        style={{
+                          width: "14px",
+                          height: "14px",
+                          border: "2px solid #faad14",
+                          borderRadius: "3px",
+                          background: "#fff",
+                          boxShadow: "0 2px 4px rgba(250, 173, 20, 0.3)",
+                        }}
+                      ></div>
+                      <Text
+                        style={{
+                          fontSize: "12px",
+                          color: "#475569",
+                          fontWeight: "500",
+                        }}
+                      >
                         Đánh dấu
                       </Text>
                     </Space>
@@ -1986,16 +2103,18 @@ const ExamDetail = () => {
               </div>
 
               {/* Enhanced Question Grid Grouped by Parts */}
-              <div style={{
-                flex: 1,
-                overflowY: "auto",
-                overflowX: "hidden",
-                maxHeight: "calc(100vh - 350px)",
-                minHeight: "200px",
-                paddingRight: "4px",
-                scrollbarWidth: "thin",
-                scrollbarColor: "#cbd5e1 #f8fafc",
-              }}>
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  maxHeight: "calc(100vh - 350px)",
+                  minHeight: "200px",
+                  paddingRight: "4px",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#cbd5e1 #f8fafc",
+                }}
+              >
                 <style>
                   {`
                     .question-grid::-webkit-scrollbar {
@@ -2028,79 +2147,97 @@ const ExamDetail = () => {
                     }
                   `}
                 </style>
-                <div className="question-grid" style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}>
+                <div
+                  className="question-grid"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
                   {/* Quick Stats Overview */}
-                  <div style={{
-                    background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
-                    padding: "10px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid #bae6fd",
-                    marginBottom: "8px",
-                  }}>
+                  <div
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid #bae6fd",
+                      marginBottom: "8px",
+                    }}
+                  >
                     <Row gutter={8} align="middle">
                       <Col span={8}>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            color: "#1890ff",
-                            marginBottom: "2px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "#1890ff",
+                              marginBottom: "2px",
+                            }}
+                          >
                             {currentQuestionIndex + 1}
                           </div>
-                          <div style={{
-                            fontSize: "9px",
-                            color: "#64748b",
-                            fontWeight: "500",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "9px",
+                              color: "#64748b",
+                              fontWeight: "500",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
                             Hiện tại
                           </div>
                         </div>
                       </Col>
                       <Col span={8}>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            color: "#52c41a",
-                            marginBottom: "2px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "#52c41a",
+                              marginBottom: "2px",
+                            }}
+                          >
                             {Object.keys(userAnswers).length}
                           </div>
-                          <div style={{
-                            fontSize: "9px",
-                            color: "#64748b",
-                            fontWeight: "500",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "9px",
+                              color: "#64748b",
+                              fontWeight: "500",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
                             Đã làm
                           </div>
                         </div>
                       </Col>
                       <Col span={8}>
                         <div style={{ textAlign: "center" }}>
-                          <div style={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            color: "#faad14",
-                            marginBottom: "2px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "#faad14",
+                              marginBottom: "2px",
+                            }}
+                          >
                             {flaggedQuestions.length}
                           </div>
-                          <div style={{
-                            fontSize: "9px",
-                            color: "#64748b",
-                            fontWeight: "500",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px"
-                          }}>
+                          <div
+                            style={{
+                              fontSize: "9px",
+                              color: "#64748b",
+                              fontWeight: "500",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
                             Đánh dấu
                           </div>
                         </div>
@@ -2108,29 +2245,45 @@ const ExamDetail = () => {
                     </Row>
                     {/* Progress Bar */}
                     <div style={{ marginTop: "8px" }}>
-                      <div style={{
-                        width: "100%",
-                        height: "4px",
-                        background: "#e2e8f0",
-                        borderRadius: "2px",
-                        overflow: "hidden",
-                      }}>
-                        <div style={{
-                          width: `${(Object.keys(userAnswers).length / (exam.questions?.length || 1)) * 100}%`,
-                          height: "100%",
-                          background: "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "4px",
+                          background: "#e2e8f0",
                           borderRadius: "2px",
-                          transition: "width 0.3s ease",
-                        }}></div>
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${
+                              (Object.keys(userAnswers).length /
+                                (exam.questions?.length || 1)) *
+                              100
+                            }%`,
+                            height: "100%",
+                            background:
+                              "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                            borderRadius: "2px",
+                            transition: "width 0.3s ease",
+                          }}
+                        ></div>
                       </div>
-                      <div style={{
-                        fontSize: "10px",
-                        color: "#64748b",
-                        textAlign: "center",
-                        marginTop: "4px",
-                        fontWeight: "500"
-                      }}>
-                        {Math.round((Object.keys(userAnswers).length / (exam.questions?.length || 1)) * 100)}% Hoàn thành
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          color: "#64748b",
+                          textAlign: "center",
+                          marginTop: "4px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {Math.round(
+                          (Object.keys(userAnswers).length /
+                            (exam.questions?.length || 1)) *
+                            100
+                        )}
+                        % Hoàn thành
                       </div>
                     </div>
                   </div>
@@ -2138,107 +2291,240 @@ const ExamDetail = () => {
                   {/* Question Groups by Part */}
                   {(() => {
                     // Ranges cho TOEIC dựa trên loại bài thi
-                    const toeicRanges = exam.type === "full-test" ? [
-                      { id: 1, name: "Photographs", range: "1-6", description: "Mô tả hình ảnh", start: 0, end: 6 },
-                      { id: 2, name: "Question-Response", range: "7-31", description: "Hỏi đáp", start: 6, end: 31 },
-                      { id: 3, name: "Conversations", range: "32-70", description: "Đối thoại", start: 31, end: 70 },
-                      { id: 4, name: "Talks", range: "71-100", description: "Bài nói", start: 70, end: 100 },
-                      { id: 5, name: "Incomplete Sentences", range: "101-130", description: "Hoàn thành câu", start: 100, end: 130 },
-                      { id: 6, name: "Text Completion", range: "131-146", description: "Hoàn thành đoạn văn", start: 130, end: 146 },
-                      { id: 7, name: "Reading Comprehension", range: "147-200", description: "Đọc hiểu", start: 146, end: 200 },
-                    ] : [
-                      // Mini test: 100 câu (50 Listening + 50 Reading)
-                      { id: 1, name: "Photographs", range: "1-13", description: "Mô tả hình ảnh", start: 0, end: 13 },
-                      { id: 2, name: "Question-Response", range: "14-25", description: "Hỏi đáp", start: 13, end: 25 },
-                      { id: 3, name: "Conversations", range: "26-37", description: "Đối thoại", start: 25, end: 37 },
-                      { id: 4, name: "Talks", range: "38-50", description: "Bài nói", start: 37, end: 50 },
-                      { id: 5, name: "Incomplete Sentences", range: "51-62", description: "Hoàn thành câu", start: 50, end: 62 },
-                      { id: 6, name: "Text Completion", range: "63-75", description: "Hoàn thành đoạn văn", start: 62, end: 75 },
-                      { id: 7, name: "Reading Comprehension", range: "76-100", description: "Đọc hiểu", start: 75, end: 100 },
-                    ];
+                    const toeicRanges =
+                      exam.type === "full-test"
+                        ? [
+                            {
+                              id: 1,
+                              name: "Photographs",
+                              range: "1-6",
+                              description: "Mô tả hình ảnh",
+                              start: 0,
+                              end: 6,
+                            },
+                            {
+                              id: 2,
+                              name: "Question-Response",
+                              range: "7-31",
+                              description: "Hỏi đáp",
+                              start: 6,
+                              end: 31,
+                            },
+                            {
+                              id: 3,
+                              name: "Conversations",
+                              range: "32-70",
+                              description: "Đối thoại",
+                              start: 31,
+                              end: 70,
+                            },
+                            {
+                              id: 4,
+                              name: "Talks",
+                              range: "71-100",
+                              description: "Bài nói",
+                              start: 70,
+                              end: 100,
+                            },
+                            {
+                              id: 5,
+                              name: "Incomplete Sentences",
+                              range: "101-130",
+                              description: "Hoàn thành câu",
+                              start: 100,
+                              end: 130,
+                            },
+                            {
+                              id: 6,
+                              name: "Text Completion",
+                              range: "131-146",
+                              description: "Hoàn thành đoạn văn",
+                              start: 130,
+                              end: 146,
+                            },
+                            {
+                              id: 7,
+                              name: "Reading Comprehension",
+                              range: "147-200",
+                              description: "Đọc hiểu",
+                              start: 146,
+                              end: 200,
+                            },
+                          ]
+                        : [
+                            // Mini test: 100 câu (50 Listening + 50 Reading)
+                            {
+                              id: 1,
+                              name: "Photographs",
+                              range: "1-13",
+                              description: "Mô tả hình ảnh",
+                              start: 0,
+                              end: 13,
+                            },
+                            {
+                              id: 2,
+                              name: "Question-Response",
+                              range: "14-25",
+                              description: "Hỏi đáp",
+                              start: 13,
+                              end: 25,
+                            },
+                            {
+                              id: 3,
+                              name: "Conversations",
+                              range: "26-37",
+                              description: "Đối thoại",
+                              start: 25,
+                              end: 37,
+                            },
+                            {
+                              id: 4,
+                              name: "Talks",
+                              range: "38-50",
+                              description: "Bài nói",
+                              start: 37,
+                              end: 50,
+                            },
+                            {
+                              id: 5,
+                              name: "Incomplete Sentences",
+                              range: "51-62",
+                              description: "Hoàn thành câu",
+                              start: 50,
+                              end: 62,
+                            },
+                            {
+                              id: 6,
+                              name: "Text Completion",
+                              range: "63-75",
+                              description: "Hoàn thành đoạn văn",
+                              start: 62,
+                              end: 75,
+                            },
+                            {
+                              id: 7,
+                              name: "Reading Comprehension",
+                              range: "76-100",
+                              description: "Đọc hiểu",
+                              start: 75,
+                              end: 100,
+                            },
+                          ];
 
                     const totalQuestions = exam.questions?.length || 0;
-                    const parts = toeicRanges.map(range => {
-                      // Điều chỉnh end nếu tổng câu ít hơn (cho bài thi mini)
-                      const adjustedEnd = Math.min(range.end, totalQuestions);
-                      const partQuestions = exam.questions?.slice(range.start, adjustedEnd) || [];
+                    const parts = toeicRanges
+                      .map((range) => {
+                        // Điều chỉnh end nếu tổng câu ít hơn (cho bài thi mini)
+                        const adjustedEnd = Math.min(range.end, totalQuestions);
+                        const partQuestions =
+                          exam.questions?.slice(range.start, adjustedEnd) || [];
 
-                      if (partQuestions.length > 0) {
-                        const answeredInPart = partQuestions.filter(q => userAnswers[q.id] !== undefined).length;
-                        const flaggedInPart = partQuestions.filter(q => flaggedQuestions.includes(q.id)).length;
-                        const isCurrentPart = currentQuestionIndex >= range.start && currentQuestionIndex < adjustedEnd;
+                        if (partQuestions.length > 0) {
+                          const answeredInPart = partQuestions.filter(
+                            (q) => userAnswers[q.id] !== undefined
+                          ).length;
+                          const flaggedInPart = partQuestions.filter((q) =>
+                            flaggedQuestions.includes(q.id)
+                          ).length;
+                          const isCurrentPart =
+                            currentQuestionIndex >= range.start &&
+                            currentQuestionIndex < adjustedEnd;
 
-                        return {
-                          id: range.id,
-                          name: `Part ${range.id}`,
-                          description: range.name,
-                          range: range.range,
-                          questions: partQuestions,
-                          startIndex: range.start,
-                          endIndex: adjustedEnd,
-                          answeredCount: answeredInPart,
-                          flaggedCount: flaggedInPart,
-                          isCurrentPart,
-                          progress: partQuestions.length > 0 ? (answeredInPart / partQuestions.length) * 100 : 0,
-                        };
-                      }
-                      return null;
-                    }).filter(part => part !== null); // Chỉ hiển thị part có câu
+                          return {
+                            id: range.id,
+                            name: `Part ${range.id}`,
+                            description: range.name,
+                            range: range.range,
+                            questions: partQuestions,
+                            startIndex: range.start,
+                            endIndex: adjustedEnd,
+                            answeredCount: answeredInPart,
+                            flaggedCount: flaggedInPart,
+                            isCurrentPart,
+                            progress:
+                              partQuestions.length > 0
+                                ? (answeredInPart / partQuestions.length) * 100
+                                : 0,
+                          };
+                        }
+                        return null;
+                      })
+                      .filter((part) => part !== null); // Chỉ hiển thị part có câu
 
                     return parts.map((part) => (
-                      <div key={part.id} style={{
-                        background: part.isCurrentPart
-                          ? "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)"
-                          : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                        borderRadius: "10px",
-                        border: part.isCurrentPart
-                          ? "2px solid #f59e0b"
-                          : "1px solid #e2e8f0",
-                        overflow: "hidden",
-                        boxShadow: part.isCurrentPart
-                          ? "0 4px 12px rgba(245, 158, 11, 0.15)"
-                          : "0 2px 4px rgba(0,0,0,0.04)",
-                        transition: "all 0.3s ease",
-                      }}>
-                        {/* Part Header */}
-                        <div style={{
-                          padding: "10px 12px",
+                      <div
+                        key={part.id}
+                        style={{
                           background: part.isCurrentPart
-                            ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
-                            : "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                          borderBottom: "1px solid #e2e8f0",
-                          cursor: "pointer",
-                        }}>
+                            ? "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)"
+                            : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                          borderRadius: "10px",
+                          border: part.isCurrentPart
+                            ? "2px solid #f59e0b"
+                            : "1px solid #e2e8f0",
+                          overflow: "hidden",
+                          boxShadow: part.isCurrentPart
+                            ? "0 4px 12px rgba(245, 158, 11, 0.15)"
+                            : "0 2px 4px rgba(0,0,0,0.04)",
+                          transition: "all 0.3s ease",
+                        }}
+                      >
+                        {/* Part Header */}
+                        <div
+                          style={{
+                            padding: "10px 12px",
+                            background: part.isCurrentPart
+                              ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                              : "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                            borderBottom: "1px solid #e2e8f0",
+                            cursor: "pointer",
+                          }}
+                        >
                           <Row align="middle" gutter={8}>
                             <Col flex="auto">
                               <Space direction="vertical" size={0}>
-                                <div style={{
-                                  fontSize: "12px",
-                                  fontWeight: "700",
-                                  color: part.isCurrentPart ? "#fff" : "#1e293b",
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.5px",
-                                }}>
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    fontWeight: "700",
+                                    color: part.isCurrentPart
+                                      ? "#fff"
+                                      : "#1e293b",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
+                                  }}
+                                >
                                   {part.name}
                                 </div>
-                                <div style={{
-                                  fontSize: "10px",
-                                  color: part.isCurrentPart ? "rgba(255,255,255,0.9)" : "#64748b",
-                                  fontWeight: "500",
-                                }}>
-                                  {part.description} • {part.questions.length} câu
+                                <div
+                                  style={{
+                                    fontSize: "10px",
+                                    color: part.isCurrentPart
+                                      ? "rgba(255,255,255,0.9)"
+                                      : "#64748b",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {part.description} • {part.questions.length}{" "}
+                                  câu
                                 </div>
                               </Space>
                             </Col>
                             <Col>
-                              <div style={{
-                                fontSize: "11px",
-                                fontWeight: "bold",
-                                color: part.isCurrentPart ? "#fff" : "#374151",
-                                background: part.isCurrentPart ? "rgba(255,255,255,0.2)" : "#f1f5f9",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
-                              }}>
+                              <div
+                                style={{
+                                  fontSize: "11px",
+                                  fontWeight: "bold",
+                                  color: part.isCurrentPart
+                                    ? "#fff"
+                                    : "#374151",
+                                  background: part.isCurrentPart
+                                    ? "rgba(255,255,255,0.2)"
+                                    : "#f1f5f9",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                }}
+                              >
                                 {part.answeredCount}/{part.questions.length}
                               </div>
                             </Col>
@@ -2246,44 +2532,59 @@ const ExamDetail = () => {
 
                           {/* Part Progress Bar */}
                           <div style={{ marginTop: "6px" }}>
-                            <div style={{
-                              width: "100%",
-                              height: "3px",
-                              background: part.isCurrentPart ? "rgba(255,255,255,0.3)" : "#e2e8f0",
-                              borderRadius: "2px",
-                              overflow: "hidden",
-                            }}>
-                              <div style={{
-                                width: `${part.progress}%`,
-                                height: "100%",
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "3px",
                                 background: part.isCurrentPart
-                                  ? "linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)"
-                                  : "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                                  ? "rgba(255,255,255,0.3)"
+                                  : "#e2e8f0",
                                 borderRadius: "2px",
-                                transition: "width 0.4s ease",
-                              }}></div>
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: `${part.progress}%`,
+                                  height: "100%",
+                                  background: part.isCurrentPart
+                                    ? "linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)"
+                                    : "linear-gradient(90deg, #52c41a 0%, #389e0d 100%)",
+                                  borderRadius: "2px",
+                                  transition: "width 0.4s ease",
+                                }}
+                              ></div>
                             </div>
                           </div>
                         </div>
 
                         {/* Questions Grid */}
-                        <div style={{
-                          padding: "8px",
-                          background: part.isCurrentPart ? "rgba(245, 158, 11, 0.02)" : "transparent",
-                        }}>
-                          <div style={{
-                            display: "grid",
-                            gridTemplateColumns: part.questions.length > 15
-                              ? "repeat(5, 1fr)"
-                              : part.questions.length > 10
-                              ? "repeat(4, 1fr)"
-                              : "repeat(3, 1fr)",
-                            gap: "4px",
-                          }}>
+                        <div
+                          style={{
+                            padding: "8px",
+                            background: part.isCurrentPart
+                              ? "rgba(245, 158, 11, 0.02)"
+                              : "transparent",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns:
+                                part.questions.length > 15
+                                  ? "repeat(5, 1fr)"
+                                  : part.questions.length > 10
+                                  ? "repeat(4, 1fr)"
+                                  : "repeat(3, 1fr)",
+                              gap: "4px",
+                            }}
+                          >
                             {part.questions.map((q, partIndex) => {
                               const globalIndex = part.startIndex + partIndex;
-                              const isActive = globalIndex === currentQuestionIndex;
-                              const isAnswered = userAnswers[q.id] !== undefined;
+                              const isActive =
+                                globalIndex === currentQuestionIndex;
+                              const isAnswered =
+                                userAnswers[q.id] !== undefined;
                               const isFlagged = flaggedQuestions.includes(q.id);
 
                               return (
@@ -2291,11 +2592,23 @@ const ExamDetail = () => {
                                   key={q.id}
                                   title={
                                     <div style={{ textAlign: "center" }}>
-                                      <div style={{ fontWeight: "600", marginBottom: "4px" }}>
+                                      <div
+                                        style={{
+                                          fontWeight: "600",
+                                          marginBottom: "4px",
+                                        }}
+                                      >
                                         Câu {globalIndex + 1}
                                       </div>
-                                      <div style={{ fontSize: "12px", opacity: 0.9 }}>
-                                        {isAnswered ? "Đã trả lời" : "Chưa trả lời"}
+                                      <div
+                                        style={{
+                                          fontSize: "12px",
+                                          opacity: 0.9,
+                                        }}
+                                      >
+                                        {isAnswered
+                                          ? "Đã trả lời"
+                                          : "Chưa trả lời"}
                                         {isFlagged && " • Đã đánh dấu"}
                                       </div>
                                     </div>
@@ -2308,43 +2621,58 @@ const ExamDetail = () => {
                                       width: "100%",
                                       height: "28px",
                                       border: `2px solid ${
-                                        isFlagged ? "#faad14" :
-                                        isActive ? "#1890ff" :
-                                        isAnswered ? "#52c41a" : "#d1d5db"
+                                        isFlagged
+                                          ? "#faad14"
+                                          : isActive
+                                          ? "#1890ff"
+                                          : isAnswered
+                                          ? "#52c41a"
+                                          : "#d1d5db"
                                       }`,
-                                      background: isActive ?
-                                        "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)" :
-                                        isAnswered ?
-                                        "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)" :
-                                        "#ffffff",
-                                      color: isActive || isAnswered ? "#fff" : "#374151",
+                                      background: isActive
+                                        ? "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)"
+                                        : isAnswered
+                                        ? "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)"
+                                        : "#ffffff",
+                                      color:
+                                        isActive || isAnswered
+                                          ? "#fff"
+                                          : "#374151",
                                       borderRadius: "6px",
                                       fontSize: "11px",
                                       fontWeight: "700",
                                       cursor: "pointer",
-                                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                                      transition:
+                                        "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                                       position: "relative",
                                       display: "flex",
                                       alignItems: "center",
                                       justifyContent: "center",
                                       padding: "0",
-                                      boxShadow: isActive || isAnswered ?
-                                        "0 2px 6px rgba(0,0,0,0.15)" :
-                                        "0 1px 2px rgba(0,0,0,0.08)",
-                                      transform: isActive ? "scale(1.1)" : "scale(1)",
+                                      boxShadow:
+                                        isActive || isAnswered
+                                          ? "0 2px 6px rgba(0,0,0,0.15)"
+                                          : "0 1px 2px rgba(0,0,0,0.08)",
+                                      transform: isActive
+                                        ? "scale(1.1)"
+                                        : "scale(1)",
                                     }}
                                     onMouseEnter={(e) => {
                                       if (!isActive) {
-                                        e.target.style.transform = "scale(1.05) translateY(-1px)";
-                                        e.target.style.boxShadow = "0 3px 8px rgba(0,0,0,0.2)";
+                                        e.target.style.transform =
+                                          "scale(1.05) translateY(-1px)";
+                                        e.target.style.boxShadow =
+                                          "0 3px 8px rgba(0,0,0,0.2)";
                                       }
                                     }}
                                     onMouseLeave={(e) => {
                                       if (!isActive) {
-                                        e.target.style.transform = "scale(1) translateY(0)";
-                                        e.target.style.boxShadow = isActive || isAnswered ?
-                                          "0 2px 6px rgba(0,0,0,0.15)" :
-                                          "0 1px 2px rgba(0,0,0,0.08)";
+                                        e.target.style.transform =
+                                          "scale(1) translateY(0)";
+                                        e.target.style.boxShadow =
+                                          isActive || isAnswered
+                                            ? "0 2px 6px rgba(0,0,0,0.15)"
+                                            : "0 1px 2px rgba(0,0,0,0.08)";
                                       }
                                     }}
                                   >
@@ -2360,23 +2688,26 @@ const ExamDetail = () => {
                                           background: "#fff",
                                           borderRadius: "50%",
                                           padding: "1px",
-                                          boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                                          boxShadow:
+                                            "0 1px 2px rgba(0,0,0,0.3)",
                                           border: "1px solid #faad14",
                                         }}
                                       />
                                     )}
                                     {isActive && (
-                                      <div style={{
-                                        position: "absolute",
-                                        top: "-2px",
-                                        left: "-2px",
-                                        width: "8px",
-                                        height: "8px",
-                                        background: "#fff",
-                                        borderRadius: "50%",
-                                        border: "2px solid #1890ff",
-                                        animation: "pulse 2s infinite",
-                                      }}></div>
+                                      <div
+                                        style={{
+                                          position: "absolute",
+                                          top: "-2px",
+                                          left: "-2px",
+                                          width: "8px",
+                                          height: "8px",
+                                          background: "#fff",
+                                          borderRadius: "50%",
+                                          border: "2px solid #1890ff",
+                                          animation: "pulse 2s infinite",
+                                        }}
+                                      ></div>
                                     )}
                                   </button>
                                 </Tooltip>
@@ -2389,15 +2720,17 @@ const ExamDetail = () => {
                   })()}
                 </div>
               </div>
-
-
             </Card>
           </Col>
 
           {/* Enhanced Question Content */}
-          <Col xs={24} lg={sidebarCollapsed ? 23 : 18} xl={sidebarCollapsed ? 23 : 19}>
+          <Col
+            xs={24}
+            lg={sidebarCollapsed ? 23 : 18}
+            xl={sidebarCollapsed ? 23 : 19}
+          >
             <Card
-              style={{ 
+              style={{
                 minHeight: "calc(100vh - 140px)",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                 borderRadius: "12px",
@@ -2418,7 +2751,8 @@ const ExamDetail = () => {
                   paddingBottom: "16px",
                   borderBottom: "2px solid #f0f9ff",
                   flexShrink: 0,
-                  background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
                   margin: "-24px -24px 20px -24px",
                   padding: "16px 24px",
                   borderRadius: "12px 12px 0 0",
@@ -2427,11 +2761,21 @@ const ExamDetail = () => {
                 <Row justify="space-between" align="middle">
                   <Col>
                     <Space direction="vertical" size={0}>
-                      <Title level={4} style={{ margin: 0, color: "#1e293b", fontWeight: "600" }}>
-                        Câu {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
+                      <Title
+                        level={4}
+                        style={{
+                          margin: 0,
+                          color: "#1e293b",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Câu {currentQuestionIndex + 1} /{" "}
+                        {exam.questions ? exam.questions.length : 0}
                       </Title>
                       <Text style={{ color: "#64748b", fontSize: "13px" }}>
-                        {exam.type === "full-test" ? "TOEIC Full Test" : "Mini Test"}
+                        {exam.type === "full-test"
+                          ? "TOEIC Full Test"
+                          : "Mini Test"}
                       </Text>
                     </Space>
                   </Col>
@@ -2446,10 +2790,14 @@ const ExamDetail = () => {
                       icon={<Flag size={14} />}
                       onClick={() => toggleFlagQuestion(currentQuestion.id)}
                       style={{
-                        borderColor: flaggedQuestions.includes(currentQuestion.id)
+                        borderColor: flaggedQuestions.includes(
+                          currentQuestion.id
+                        )
                           ? "#faad14"
                           : "#d1d5db",
-                        background: flaggedQuestions.includes(currentQuestion.id)
+                        background: flaggedQuestions.includes(
+                          currentQuestion.id
+                        )
                           ? "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)"
                           : "#ffffff",
                         color: flaggedQuestions.includes(currentQuestion.id)
@@ -2487,13 +2835,15 @@ const ExamDetail = () => {
               </div>
 
               {/* Enhanced Scrollable Content Area */}
-              <div style={{ 
-                flex: 1, 
-                overflow: "visible", 
-                paddingRight: "8px",
-                scrollBehavior: "smooth",
-                minHeight: "400px",
-              }}>
+              <div
+                style={{
+                  flex: 1,
+                  overflow: "visible",
+                  paddingRight: "8px",
+                  scrollBehavior: "smooth",
+                  minHeight: "400px",
+                }}
+              >
                 {/* Enhanced Question Media */}
                 <Space
                   direction="vertical"
@@ -2501,11 +2851,18 @@ const ExamDetail = () => {
                   style={{ width: "100%", marginBottom: "24px" }}
                 >
                   {currentQuestion.image && (
-                    <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
                       <Card
                         size="small"
                         style={{
-                          background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                          background:
+                            "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
                           border: "1px solid #e2e8f0",
                           borderRadius: "12px",
                           overflow: "hidden",
@@ -2516,8 +2873,8 @@ const ExamDetail = () => {
                         <Image
                           src={currentQuestion.image}
                           alt="Hình ảnh câu hỏi"
-                          style={{ 
-                            maxWidth: "100%", 
+                          style={{
+                            maxWidth: "100%",
                             borderRadius: "8px",
                             maxHeight: "400px",
                             objectFit: "contain",
@@ -2536,11 +2893,12 @@ const ExamDetail = () => {
                               }}
                             >
                               <Spin size="large" />
-                              <div style={{ marginTop: "16px" }}>Đang tải hình ảnh...</div>
+                              <div style={{ marginTop: "16px" }}>
+                                Đang tải hình ảnh...
+                              </div>
                             </div>
                           }
                         />
-                        <Watermark text={`© TOEIC Exam | Protected Content`} />
                       </Card>
                     </div>
                   )}
@@ -2549,20 +2907,19 @@ const ExamDetail = () => {
                     <Card
                       size="small"
                       style={{
-                        background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                        background:
+                          "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
                         border: "1px solid #bae6fd",
                         borderRadius: "12px",
                         boxShadow: "0 2px 8px rgba(59, 130, 246, 0.1)",
                       }}
                       bodyStyle={{ padding: "16px" }}
                     >
-                      <Space direction="vertical" size="small" style={{ width: "100%" }}>
-                        <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
-                          <Volume2 size={16} style={{ color: "#3b82f6", marginRight: "8px" }} />
-                          <Text strong style={{ color: "#1e40af" }}>
-                            Audio cho câu hỏi này
-                          </Text>
-                        </div>
+                      <Space
+                        direction="vertical"
+                        size="small"
+                        style={{ width: "100%" }}
+                      >
                         <AudioPlayer
                           src={currentQuestion.audio}
                           questionId={currentQuestion.id}
@@ -2574,11 +2931,12 @@ const ExamDetail = () => {
                 </Space>
 
                 {/* Enhanced Question Text */}
-                {/* <div style={{ marginBottom: "28px" }}>
+                <div style={{ marginBottom: "28px" }}>
                   <Card
                     size="small"
                     style={{
-                      background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                      background:
+                        "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
                       border: "2px solid #e2e8f0",
                       borderRadius: "12px",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
@@ -2587,25 +2945,26 @@ const ExamDetail = () => {
                   >
                     <Title
                       level={4}
-                      style={{ 
-                        marginBottom: "0", 
+                      style={{
+                        marginBottom: "0",
                         color: "#1e293b",
                         lineHeight: "1.6",
                         fontSize: "16px",
                       }}
                       id="question-text"
                     >
-                      <TextHighlighter containerId="question-text">
-                        {cleanQuestionText(currentQuestion.text)}
-                      </TextHighlighter>
+                      {/* <TextHighlighter containerId="question-text"> */}
+                      {cleanQuestionText(currentQuestion.text)}
+                      {/* </TextHighlighter> */}
                     </Title>
                   </Card>
-                </div> */}
+                </div>
 
                 {/* Compact Answer Options */}
                 <div
                   style={{
-                    background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                    background:
+                      "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
                     borderRadius: "12px",
                     padding: "16px",
                     border: "1px solid #e2e8f0",
@@ -2614,12 +2973,18 @@ const ExamDetail = () => {
                   <div style={{ marginBottom: "12px" }}>
                     <Space>
                       <CheckCircle size={16} style={{ color: "#3b82f6" }} />
-                      <Text style={{ color: "#1e293b", fontWeight: "600", fontSize: "14px" }}>
+                      <Text
+                        style={{
+                          color: "#1e293b",
+                          fontWeight: "600",
+                          fontSize: "14px",
+                        }}
+                      >
                         Chọn đáp án
                       </Text>
                     </Space>
                   </div>
-                  
+
                   <Radio.Group
                     value={userAnswers[currentQuestion.id]}
                     onChange={(e) =>
@@ -2630,9 +2995,12 @@ const ExamDetail = () => {
                     <Row gutter={[8, 8]}>
                       {currentQuestion.options &&
                         currentQuestion.options.map((option, optionIndex) => {
-                          const optionLetter = String.fromCharCode(65 + optionIndex);
-                          const isSelected = userAnswers[currentQuestion.id] === option.id;
-                          
+                          const optionLetter = String.fromCharCode(
+                            65 + optionIndex
+                          );
+                          const isSelected =
+                            userAnswers[currentQuestion.id] === option.id;
+
                           return (
                             <Col xs={24} sm={12} key={option.id}>
                               <Radio
@@ -2642,12 +3010,14 @@ const ExamDetail = () => {
                                   padding: "8px 12px",
                                   borderRadius: "8px",
                                   border: "1px solid",
-                                  borderColor: isSelected ? "#3b82f6" : "#d1d5db",
-                                  background: isSelected 
+                                  borderColor: isSelected
+                                    ? "#3b82f6"
+                                    : "#d1d5db",
+                                  background: isSelected
                                     ? "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)"
                                     : "#ffffff",
                                   transition: "all 0.2s ease",
-                                  boxShadow: isSelected 
+                                  boxShadow: isSelected
                                     ? "0 2px 8px rgba(59, 130, 246, 0.15)"
                                     : "0 1px 2px rgba(0,0,0,0.05)",
                                   margin: 0,
@@ -2659,7 +3029,7 @@ const ExamDetail = () => {
                                       width: "24px",
                                       height: "24px",
                                       borderRadius: "6px",
-                                      background: isSelected 
+                                      background: isSelected
                                         ? "#3b82f6"
                                         : "#f1f5f9",
                                       color: isSelected ? "#ffffff" : "#64748b",
@@ -2674,7 +3044,7 @@ const ExamDetail = () => {
                                     {optionLetter}
                                   </div>
                                   <Text
-                                    style={{ 
+                                    style={{
                                       fontSize: "14px",
                                       color: isSelected ? "#1e40af" : "#374151",
                                       fontWeight: isSelected ? "500" : "400",
@@ -2701,67 +3071,84 @@ const ExamDetail = () => {
                   paddingTop: "20px",
                   borderTop: "2px solid #f0f9ff",
                   flexShrink: 0,
-                  background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
                   margin: "24px -24px 0 -24px",
                   padding: "20px 24px",
                   borderRadius: "0 0 12px 12px",
                   boxShadow: "0 -2px 8px rgba(0,0,0,0.02)",
                 }}
               >
-                <div 
-                  className={window.innerWidth < 576 ? "navigation-buttons-mobile" : ""}
-                  style={{ 
-                    display: "flex", 
-                    justifyContent: "space-between", 
+                <div
+                  className={
+                    window.innerWidth < 576 ? "navigation-buttons-mobile" : ""
+                  }
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
                     flexWrap: "wrap",
                     gap: "16px",
                     ...(window.innerWidth < 576 && {
                       flexDirection: "column",
-                      gap: "12px"
-                    })
+                      gap: "12px",
+                    }),
                   }}
                 >
                   {/* Previous Button */}
-                  <div style={{ 
-                    flex: window.innerWidth < 576 ? "1 1 100%" : "0 0 auto",
-                    width: window.innerWidth < 576 ? "100%" : "auto"
-                  }}>
+                  <div
+                    style={{
+                      flex: window.innerWidth < 576 ? "1 1 100%" : "0 0 auto",
+                      width: window.innerWidth < 576 ? "100%" : "auto",
+                    }}
+                  >
                     <Button
                       type="default"
                       onClick={goToPrevQuestion}
                       disabled={currentQuestionIndex === 0}
                       icon={<ChevronLeft size={18} />}
                       size="large"
-                      style={{ 
+                      style={{
                         minWidth: window.innerWidth < 576 ? "100%" : "140px",
                         width: window.innerWidth < 576 ? "100%" : "auto",
                         height: "48px",
                         borderRadius: "12px",
                         fontWeight: "600",
                         fontSize: "15px",
-                        border: currentQuestionIndex === 0 ? "2px solid #e5e7eb" : "2px solid #3b82f6",
-                        background: currentQuestionIndex === 0 ? 
-                          "#f9fafb" : 
-                          "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                        color: currentQuestionIndex === 0 ? "#9ca3af" : "#3b82f6",
+                        border:
+                          currentQuestionIndex === 0
+                            ? "2px solid #e5e7eb"
+                            : "2px solid #3b82f6",
+                        background:
+                          currentQuestionIndex === 0
+                            ? "#f9fafb"
+                            : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                        color:
+                          currentQuestionIndex === 0 ? "#9ca3af" : "#3b82f6",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        boxShadow: currentQuestionIndex === 0 ? "none" : "0 2px 8px rgba(59, 130, 246, 0.15)",
+                        boxShadow:
+                          currentQuestionIndex === 0
+                            ? "none"
+                            : "0 2px 8px rgba(59, 130, 246, 0.15)",
                       }}
                       onMouseEnter={(e) => {
                         if (currentQuestionIndex !== 0) {
-                          e.target.style.background = "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
+                          e.target.style.background =
+                            "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
                           e.target.style.color = "#ffffff";
                           e.target.style.transform = "translateY(-2px)";
-                          e.target.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.3)";
+                          e.target.style.boxShadow =
+                            "0 4px 16px rgba(59, 130, 246, 0.3)";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (currentQuestionIndex !== 0) {
-                          e.target.style.background = "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
+                          e.target.style.background =
+                            "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
                           e.target.style.color = "#3b82f6";
                           e.target.style.transform = "translateY(0)";
-                          e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.15)";
+                          e.target.style.boxShadow =
+                            "0 2px 8px rgba(59, 130, 246, 0.15)";
                         }
                       }}
                     >
@@ -2770,19 +3157,21 @@ const ExamDetail = () => {
                   </div>
 
                   {/* Center Buttons */}
-                  <div 
-                    className={window.innerWidth < 576 ? "navigation-center-mobile" : ""}
-                    style={{ 
-                      display: "flex", 
-                      gap: "12px", 
-                      flex: window.innerWidth < 576 ? "1 1 100%" : "1 1 auto", 
+                  <div
+                    className={
+                      window.innerWidth < 576 ? "navigation-center-mobile" : ""
+                    }
+                    style={{
+                      display: "flex",
+                      gap: "12px",
+                      flex: window.innerWidth < 576 ? "1 1 100%" : "1 1 auto",
                       justifyContent: "center",
                       flexWrap: "wrap",
                       width: window.innerWidth < 576 ? "100%" : "auto",
                       ...(window.innerWidth < 576 && {
                         flexDirection: "column",
-                        gap: "8px"
-                      })
+                        gap: "8px",
+                      }),
                     }}
                   >
                     <Button
@@ -2798,7 +3187,7 @@ const ExamDetail = () => {
                         fontWeight: "600",
                         fontSize: "15px",
                         border: "2px solid transparent",
-                        background: savedProgress 
+                        background: savedProgress
                           ? "linear-gradient(135deg, #10b981 0%, #047857 100%)"
                           : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
                         color: "#ffffff",
@@ -2836,7 +3225,8 @@ const ExamDetail = () => {
                         fontWeight: "700",
                         fontSize: "16px",
                         border: "2px solid transparent",
-                        background: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+                        background:
+                          "linear-gradient(135deg, #10b981 0%, #047857 100%)",
                         color: "#ffffff",
                         boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -2844,12 +3234,15 @@ const ExamDetail = () => {
                         overflow: "hidden",
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.transform = "translateY(-2px) scale(1.02)";
-                        e.target.style.boxShadow = "0 6px 20px rgba(16, 185, 129, 0.4)";
+                        e.target.style.transform =
+                          "translateY(-2px) scale(1.02)";
+                        e.target.style.boxShadow =
+                          "0 6px 20px rgba(16, 185, 129, 0.4)";
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.transform = "translateY(0) scale(1)";
-                        e.target.style.boxShadow = "0 4px 16px rgba(16, 185, 129, 0.3)";
+                        e.target.style.boxShadow =
+                          "0 4px 16px rgba(16, 185, 129, 0.3)";
                       }}
                     >
                       Nộp bài thi
@@ -2866,41 +3259,62 @@ const ExamDetail = () => {
                         currentQuestionIndex === exam.questions.length - 1
                       }
                       size="large"
-                      style={{ 
+                      style={{
                         minWidth: "140px",
                         height: "48px",
                         borderRadius: "12px",
                         fontWeight: "600",
                         fontSize: "15px",
-                        border: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
-                          "2px solid #e5e7eb" : "2px solid #3b82f6",
-                        background: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
-                          "#f9fafb" : 
-                          "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                        color: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
-                          "#9ca3af" : "#3b82f6",
+                        border:
+                          !exam.questions ||
+                          currentQuestionIndex === exam.questions.length - 1
+                            ? "2px solid #e5e7eb"
+                            : "2px solid #3b82f6",
+                        background:
+                          !exam.questions ||
+                          currentQuestionIndex === exam.questions.length - 1
+                            ? "#f9fafb"
+                            : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                        color:
+                          !exam.questions ||
+                          currentQuestionIndex === exam.questions.length - 1
+                            ? "#9ca3af"
+                            : "#3b82f6",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        boxShadow: (!exam.questions || currentQuestionIndex === exam.questions.length - 1) ? 
-                          "none" : "0 2px 8px rgba(59, 130, 246, 0.15)",
+                        boxShadow:
+                          !exam.questions ||
+                          currentQuestionIndex === exam.questions.length - 1
+                            ? "none"
+                            : "0 2px 8px rgba(59, 130, 246, 0.15)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "8px",
                       }}
                       onMouseEnter={(e) => {
-                        if (exam.questions && currentQuestionIndex !== exam.questions.length - 1) {
-                          e.target.style.background = "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
+                        if (
+                          exam.questions &&
+                          currentQuestionIndex !== exam.questions.length - 1
+                        ) {
+                          e.target.style.background =
+                            "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
                           e.target.style.color = "#ffffff";
                           e.target.style.transform = "translateY(-2px)";
-                          e.target.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.3)";
+                          e.target.style.boxShadow =
+                            "0 4px 16px rgba(59, 130, 246, 0.3)";
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (exam.questions && currentQuestionIndex !== exam.questions.length - 1) {
-                          e.target.style.background = "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
+                        if (
+                          exam.questions &&
+                          currentQuestionIndex !== exam.questions.length - 1
+                        ) {
+                          e.target.style.background =
+                            "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
                           e.target.style.color = "#3b82f6";
                           e.target.style.transform = "translateY(0)";
-                          e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.15)";
+                          e.target.style.boxShadow =
+                            "0 2px 8px rgba(59, 130, 246, 0.15)";
                         }
                       }}
                     >
@@ -2950,22 +3364,27 @@ const ExamDetail = () => {
       {/* Enhanced Confirm Submit Modal */}
       <Modal
         title={
-          <div style={{
-            textAlign: "center",
-            padding: "8px 0",
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "8px 0",
+            }}
+          >
             <Space direction="vertical" size="small">
-              <div style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto",
-                boxShadow: "0 4px 12px rgba(250, 173, 20, 0.3)",
-              }}>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                  boxShadow: "0 4px 12px rgba(250, 173, 20, 0.3)",
+                }}
+              >
                 <AlertCircle size={24} style={{ color: "#fff" }} />
               </div>
               <Title level={4} style={{ margin: 0, color: "#1e293b" }}>
@@ -2990,32 +3409,36 @@ const ExamDetail = () => {
           },
           body: {
             padding: "24px",
-          }
+          },
         }}
       >
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
           <div style={{ textAlign: "center", padding: "0 20px" }}>
-            <Text style={{ 
-              fontSize: "16px", 
-              color: "#64748b",
-              lineHeight: "1.6",
-              display: "block",
-              marginBottom: "8px"
-            }}>
+            <Text
+              style={{
+                fontSize: "16px",
+                color: "#64748b",
+                lineHeight: "1.6",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
               Bạn có chắc chắn muốn nộp bài thi không?
             </Text>
-            <Text style={{ 
-              fontSize: "14px", 
-              color: "#94a3b8",
-              lineHeight: "1.5"
-            }}>
+            <Text
+              style={{
+                fontSize: "14px",
+                color: "#94a3b8",
+                lineHeight: "1.5",
+              }}
+            >
               Bạn sẽ không thể thay đổi câu trả lời sau khi đã nộp bài.
             </Text>
           </div>
 
-          <Card 
-            size="small" 
-            style={{ 
+          <Card
+            size="small"
+            style={{
               background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
               border: "1px solid #e2e8f0",
               borderRadius: "12px",
@@ -3026,82 +3449,103 @@ const ExamDetail = () => {
             <Row gutter={[20, 16]}>
               <Col span={8}>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 8px auto",
-                    boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
-                  }}>
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 8px auto",
+                      boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                    }}
+                  >
                     <CheckCircle size={20} style={{ color: "#fff" }} />
                   </div>
                   <Statistic
-                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Đã trả lời</span>}
+                    title={
+                      <span style={{ color: "#64748b", fontSize: "12px" }}>
+                        Đã trả lời
+                      </span>
+                    }
                     value={Object.keys(userAnswers).length}
                     suffix={`/ ${exam.questions ? exam.questions.length : 0}`}
-                    valueStyle={{ 
-                      color: "#10b981", 
+                    valueStyle={{
+                      color: "#10b981",
                       fontWeight: "bold",
-                      fontSize: "18px"
+                      fontSize: "18px",
                     }}
                   />
                 </div>
               </Col>
               <Col span={8}>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 8px auto",
-                    boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
-                  }}>
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 8px auto",
+                      boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
+                    }}
+                  >
                     <XCircle size={20} style={{ color: "#fff" }} />
                   </div>
                   <Statistic
-                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Chưa trả lời</span>}
+                    title={
+                      <span style={{ color: "#64748b", fontSize: "12px" }}>
+                        Chưa trả lời
+                      </span>
+                    }
                     value={
                       (exam.questions ? exam.questions.length : 0) -
                       Object.keys(userAnswers).length
                     }
-                    valueStyle={{ 
-                      color: "#ef4444", 
+                    valueStyle={{
+                      color: "#ef4444",
                       fontWeight: "bold",
-                      fontSize: "18px"
+                      fontSize: "18px",
                     }}
                   />
                 </div>
               </Col>
               <Col span={8}>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 8px auto",
-                    boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
-                  }}>
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 8px auto",
+                      boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
+                    }}
+                  >
                     <Flag size={20} style={{ color: "#fff" }} />
                   </div>
                   <Statistic
-                    title={<span style={{ color: "#64748b", fontSize: "12px" }}>Đã đánh dấu</span>}
+                    title={
+                      <span style={{ color: "#64748b", fontSize: "12px" }}>
+                        Đã đánh dấu
+                      </span>
+                    }
                     value={flaggedQuestions.length}
-                    valueStyle={{ 
-                      color: "#f59e0b", 
+                    valueStyle={{
+                      color: "#f59e0b",
                       fontWeight: "bold",
-                      fontSize: "18px"
+                      fontSize: "18px",
                     }}
                   />
                 </div>
@@ -3149,8 +3593,9 @@ const ExamDetail = () => {
                 onClick={submitExam}
                 loading={loading}
                 icon={<CheckCircle size={16} />}
-                style={{ 
-                  background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                style={{
+                  background:
+                    "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                   borderColor: "#10b981",
                   borderRadius: "8px",
                   height: "48px",
@@ -3163,11 +3608,13 @@ const ExamDetail = () => {
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = "translateY(-1px)";
-                  e.target.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.4)";
+                  e.target.style.boxShadow =
+                    "0 4px 12px rgba(16, 185, 129, 0.4)";
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = "0 2px 8px rgba(16, 185, 129, 0.3)";
+                  e.target.style.boxShadow =
+                    "0 2px 8px rgba(16, 185, 129, 0.3)";
                 }}
               >
                 {loading ? "Đang nộp bài..." : "Nộp bài ngay"}
@@ -3190,8 +3637,8 @@ const ExamDetail = () => {
         open={showExitWarning}
         onCancel={() => setShowExitWarning(false)}
         footer={[
-          <Button 
-            key="stay" 
+          <Button
+            key="stay"
             onClick={() => setShowExitWarning(false)}
             style={{
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
@@ -3202,26 +3649,32 @@ const ExamDetail = () => {
           >
             Tiếp tục làm bài
           </Button>,
-          <Button 
-            key="save-exit" 
+          <Button
+            key="save-exit"
             onClick={async () => {
               setIsExiting(true);
               setShowExitWarning(false);
-              
+
               // Remove event listeners using stored references
               if (eventHandlersRef.current.beforeUnload) {
-                window.removeEventListener('beforeunload', eventHandlersRef.current.beforeUnload);
+                window.removeEventListener(
+                  "beforeunload",
+                  eventHandlersRef.current.beforeUnload
+                );
               }
               if (eventHandlersRef.current.popState) {
-                window.removeEventListener('popstate', eventHandlersRef.current.popState);
+                window.removeEventListener(
+                  "popstate",
+                  eventHandlersRef.current.popState
+                );
               }
-              
+
               try {
                 await saveProgress();
               } catch (error) {
                 console.error("Error saving progress:", error);
               }
-              
+
               // Navigate after a short delay
               setTimeout(() => {
                 navigate(-1);
@@ -3236,21 +3689,27 @@ const ExamDetail = () => {
           >
             Lưu và thoát
           </Button>,
-          <Button 
-            key="exit" 
-            danger 
+          <Button
+            key="exit"
+            danger
             onClick={() => {
               setIsExiting(true);
               setShowExitWarning(false);
-              
+
               // Remove event listeners using stored references
               if (eventHandlersRef.current.beforeUnload) {
-                window.removeEventListener('beforeunload', eventHandlersRef.current.beforeUnload);
+                window.removeEventListener(
+                  "beforeunload",
+                  eventHandlersRef.current.beforeUnload
+                );
               }
               if (eventHandlersRef.current.popState) {
-                window.removeEventListener('popstate', eventHandlersRef.current.popState);
+                window.removeEventListener(
+                  "popstate",
+                  eventHandlersRef.current.popState
+                );
               }
-              
+
               // Navigate after a short delay
               setTimeout(() => {
                 navigate(-1);
@@ -3261,7 +3720,7 @@ const ExamDetail = () => {
             }}
           >
             Thoát không lưu
-          </Button>
+          </Button>,
         ]}
         width={500}
         style={{ top: 50 }}
@@ -3274,13 +3733,38 @@ const ExamDetail = () => {
                 <p style={{ margin: "8px 0", color: "#4b5563" }}>
                   <strong>Tiến trình hiện tại:</strong>
                 </p>
-                <ul style={{ margin: "8px 0", paddingLeft: "20px", color: "#6b7280" }}>
-                  <li>Đã trả lời: <strong>{Object.keys(userAnswers).length}/{exam?.questions?.length || 0}</strong> câu</li>
-                  <li>Thời gian còn lại: <strong>{formatTime(remainingTime)}</strong></li>
-                  <li>Đã đánh dấu: <strong>{flaggedQuestions.length}</strong> câu</li>
+                <ul
+                  style={{
+                    margin: "8px 0",
+                    paddingLeft: "20px",
+                    color: "#6b7280",
+                  }}
+                >
+                  <li>
+                    Đã trả lời:{" "}
+                    <strong>
+                      {Object.keys(userAnswers).length}/
+                      {exam?.questions?.length || 0}
+                    </strong>{" "}
+                    câu
+                  </li>
+                  <li>
+                    Thời gian còn lại:{" "}
+                    <strong>{formatTime(remainingTime)}</strong>
+                  </li>
+                  <li>
+                    Đã đánh dấu: <strong>{flaggedQuestions.length}</strong> câu
+                  </li>
                 </ul>
-                <p style={{ margin: "12px 0 4px 0", color: "#dc2626", fontWeight: "500" }}>
-                  ⚠️ Nếu thoát mà không lưu, bạn sẽ mất toàn bộ tiến trình làm bài!
+                <p
+                  style={{
+                    margin: "12px 0 4px 0",
+                    color: "#dc2626",
+                    fontWeight: "500",
+                  }}
+                >
+                  ⚠️ Nếu thoát mà không lưu, bạn sẽ mất toàn bộ tiến trình làm
+                  bài!
                 </p>
               </div>
             }

@@ -21,8 +21,6 @@ const AudioPlayer = ({ src, style = {}, questionId }) => {
     const audio = audioRef.current;
     if (!audio || !questionId) return;
 
-    console.log("📝 AudioPlayer mounted/updated for question:", questionId);
-
     // Register this audio element with the registry
     audioRegistry.register(questionId, audio);
 
@@ -37,17 +35,13 @@ const AudioPlayer = ({ src, style = {}, questionId }) => {
 
   // Force update source when questionId or src changes
   useEffect(() => {
-    console.log("🔄 Question ID or src changed:", { questionId, src });
-
     const audio = audioRef.current;
     if (!audio) return;
 
     // Always stop all audio when questionId or src changes
-    console.log("🛑 Force stopping ALL audio due to question/source change");
     audioRegistry.stopAll();
 
     // Reset the audio element completely and force reload
-    console.log("🔄 Explicitly updating audio element src to:", src);
     audio.src = src;
     audio.load(); // Force reload with new source
 

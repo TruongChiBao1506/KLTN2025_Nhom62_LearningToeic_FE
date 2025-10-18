@@ -12,7 +12,6 @@ class AudioRegistry {
 
   log(...args) {
     if (this.debugMode) {
-      console.log("🔊 [AudioRegistry]", ...args);
     }
   }
 
@@ -43,7 +42,6 @@ class AudioRegistry {
     }
 
     this.audioMap.set(questionId, audioElement);
-    this.log(`Registered audio for question: ${questionId}`);
 
     // Add event listeners to track play/pause state
     this.addEventListeners(questionId, audioElement);
@@ -67,7 +65,6 @@ class AudioRegistry {
       }
 
       this.audioMap.delete(questionId);
-      this.log(`Unregistered audio for question: ${questionId}`);
     }
   }
 
@@ -84,17 +81,10 @@ class AudioRegistry {
 
     const audio = this.audioMap.get(questionId);
     if (!audio) {
-      this.log(
-        `Cannot play audio - no audio registered for question: ${questionId}`
-      );
       return false;
     }
 
     try {
-      this.log(
-        `Attempting to play audio for question: ${questionId}, source: ${audio.src}`
-      );
-
       // Kiểm tra và khắc phục nếu src bị mất
       if (
         !audio.src ||
@@ -105,9 +95,6 @@ class AudioRegistry {
         const sourceElements = audio.getElementsByTagName("source");
         if (sourceElements.length > 0) {
           const sourceSrc = sourceElements[0].src;
-          this.log(
-            `Found audio src from source element: ${sourceSrc}, applying to audio element`
-          );
           audio.src = sourceSrc;
         }
       }
@@ -115,9 +102,6 @@ class AudioRegistry {
       // Make sure audio is loaded before playing
       if (audio.readyState < 2) {
         // HAVE_CURRENT_DATA = 2
-        this.log(
-          `Audio not ready yet, forcing load for question: ${questionId}`
-        );
         audio.load();
       }
 
@@ -153,7 +137,6 @@ class AudioRegistry {
 
     const audio = this.audioMap.get(questionId);
     if (audio) {
-      this.log(`Stopping audio for question: ${questionId}`);
       audio.pause();
       audio.currentTime = 0;
 
@@ -167,11 +150,7 @@ class AudioRegistry {
    * Stop all audio players
    */
   stopAll() {
-    this.log("Stopping all audio");
-
     this.audioMap.forEach((audio, id) => {
-      this.log(`- Stopping audio for question: ${id}`);
-
       // Always pause and reset even if already paused
       try {
         // Some browsers might throw when pausing already paused audio
@@ -211,12 +190,10 @@ class AudioRegistry {
    */
   addEventListeners(questionId, audio) {
     const handlePlay = () => {
-      this.log(`Audio PLAY event for question: ${questionId}`);
       this.currentPlayingId = questionId;
     };
 
     const handlePauseOrEnd = () => {
-      this.log(`Audio PAUSE/END event for question: ${questionId}`);
       if (this.currentPlayingId === questionId) {
         this.currentPlayingId = null;
       }
