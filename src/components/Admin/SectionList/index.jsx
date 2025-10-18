@@ -133,7 +133,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
     if (imageName) {
       return imageName;
     }
-    return `${process.env.LOCALHOST}/images/default-image.png`;
+    return "http://localhost:5000/images/default-image.png";
   };
 
   const toggleStatus = async (sectionId, newStatus) => {

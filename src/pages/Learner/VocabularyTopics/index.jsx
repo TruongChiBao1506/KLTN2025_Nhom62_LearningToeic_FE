@@ -53,10 +53,10 @@ const VocabularyTopics = () => {
 
   useEffect(() => {
     document.title = "Chọn chủ đề từ vựng | TOEIC Learning Platform";
-
+    
     const loadTopicStats = async (topicList) => {
       const stats = {};
-
+      
       for (const topic of topicList) {
         try {
           const vocabularies = await vocabularyService.getByTopicId(topic._id);
@@ -74,14 +74,14 @@ const VocabularyTopics = () => {
           };
         }
       }
-
+      
       setTopicStats(stats);
     };
 
     const loadData = async () => {
       try {
         setLoading(true);
-
+        
         // Load topics
         const topicsResponse = await topicService.all();
         if (topicsResponse && topicsResponse.length > 0) {
@@ -113,12 +113,9 @@ const VocabularyTopics = () => {
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
-      case "Nâng cao":
-        return "red";
-      case "Trung bình":
-        return "orange";
-      default:
-        return "green";
+      case "Nâng cao": return "red";
+      case "Trung bình": return "orange";
+      default: return "green";
     }
   };
 
@@ -153,7 +150,7 @@ const VocabularyTopics = () => {
 
   // Function to handle image error
   const handleImageError = (topicId) => {
-    setImageErrors((prev) => new Set([...prev, topicId]));
+    setImageErrors(prev => new Set([...prev, topicId]));
   };
 
   const getImageUrl = (imageName) => {
@@ -169,17 +166,17 @@ const VocabularyTopics = () => {
 
     // If imageName starts with '/images/', use it directly
     if (imageName.startsWith("/images/")) {
-      return `${process.env.LOCALHOST}${imageName}`;
+      return `http://localhost:5000${imageName}`;
     }
 
     // Otherwise, assume it's just the filename
-    return `${process.env.LOCALHOST}/images/${imageName}`;
+    return `http://localhost:5000/images/${imageName}`;
   };
 
-  const filteredTopics = topics.filter((topic) => {
+  const filteredTopics = topics.filter(topic => {
     const searchTerm = (searchQuery || transcript).toLowerCase().trim();
     if (!searchTerm) return true;
-
+    
     return (
       topic.topicName.toLowerCase().includes(searchTerm) ||
       topic.description?.toLowerCase().includes(searchTerm)
@@ -187,9 +184,7 @@ const VocabularyTopics = () => {
   });
 
   // Filter to show only enabled topics
-  const enabledTopics = filteredTopics.filter(
-    (topic) => topic.topicStatus === 1
-  );
+  const enabledTopics = filteredTopics.filter(topic => topic.topicStatus === 1);
 
   // Filtered sections for reading and listening
   const docngheSections = sections.filter(
@@ -198,14 +193,12 @@ const VocabularyTopics = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "60vh",
-        }}
-      >
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        minHeight: "60vh" 
+      }}>
         <Spin size="large" />
       </div>
     );
@@ -234,8 +227,7 @@ const VocabularyTopics = () => {
           <div style={{ textAlign: "center" }}>
             <div
               style={{
-                background:
-                  "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%)",
+                background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%)",
                 borderRadius: "50%",
                 width: "64px",
                 height: "64px",
@@ -252,8 +244,7 @@ const VocabularyTopics = () => {
             <Title
               level={2}
               style={{
-                background:
-                  "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text",
+                background: "linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%) text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 marginBottom: "8px",
@@ -264,8 +255,7 @@ const VocabularyTopics = () => {
               HỌC TỪ VỰNG TOEIC THEO CHỦ ĐỀ
             </Title>
             <Text type="secondary" style={{ fontSize: "16px" }}>
-              Khám phá và học từ vựng TOEIC được phân loại theo chủ đề chuyên
-              sâu
+              Khám phá và học từ vựng TOEIC được phân loại theo chủ đề chuyên sâu
             </Text>
           </div>
         </Card>
@@ -338,19 +328,17 @@ const VocabularyTopics = () => {
             {/* Statistics - Compact */}
             <Row gutter={16} style={{ marginBottom: "16px" }}>
               <Col xs={24} sm={12}>
-                <Card
-                  style={{
-                    textAlign: "center",
-                    borderRadius: "12px",
-                    height: "100px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    background: "white",
-                    border: "1px solid rgba(0, 0, 0, 0.06)",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-                  }}
-                >
+                <Card style={{ 
+                  textAlign: "center", 
+                  borderRadius: "12px",
+                  height: "100px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  background: "white",
+                  border: "1px solid rgba(0, 0, 0, 0.06)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                }}>
                   <div style={{ color: "#1890ff", marginBottom: "6px" }}>
                     <BookOpen size={24} />
                   </div>
@@ -358,39 +346,30 @@ const VocabularyTopics = () => {
                     {enabledTopics.length}
                   </Text>
                   <div>
-                    <Text type="secondary" style={{ fontSize: "14px" }}>
-                      Chủ đề có sẵn
-                    </Text>
+                    <Text type="secondary" style={{ fontSize: "14px" }}>Chủ đề có sẵn</Text>
                   </div>
                 </Card>
               </Col>
               <Col xs={24} sm={12}>
-                <Card
-                  style={{
-                    textAlign: "center",
-                    borderRadius: "12px",
-                    height: "100px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    background: "white",
-                    border: "1px solid rgba(0, 0, 0, 0.06)",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-                  }}
-                >
+                <Card style={{ 
+                  textAlign: "center", 
+                  borderRadius: "12px",
+                  height: "100px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  background: "white",
+                  border: "1px solid rgba(0, 0, 0, 0.06)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                }}>
                   <div style={{ color: "#52c41a", marginBottom: "6px" }}>
                     <Target size={24} />
                   </div>
                   <Text strong style={{ fontSize: "24px", color: "#52c41a" }}>
-                    {Object.values(topicStats).reduce(
-                      (sum, stat) => sum + stat.totalVocabularies,
-                      0
-                    )}
+                    {Object.values(topicStats).reduce((sum, stat) => sum + stat.totalVocabularies, 0)}
                   </Text>
                   <div>
-                    <Text type="secondary" style={{ fontSize: "14px" }}>
-                      Tổng từ vựng
-                    </Text>
+                    <Text type="secondary" style={{ fontSize: "14px" }}>Tổng từ vựng</Text>
                   </div>
                 </Card>
               </Col>
@@ -440,10 +419,8 @@ const VocabularyTopics = () => {
                         Không tìm thấy chủ đề nào
                       </Title>
                       <Text type="secondary" style={{ fontSize: "16px" }}>
-                        {searchQuery || transcript
-                          ? `Không có chủ đề nào chứa từ khóa "${
-                              searchQuery || transcript
-                            }". Thử tìm kiếm với từ khóa khác.`
+                        {(searchQuery || transcript)
+                          ? `Không có chủ đề nào chứa từ khóa "${searchQuery || transcript}". Thử tìm kiếm với từ khóa khác.`
                           : "Hiện tại chưa có chủ đề nào được kích hoạt trong hệ thống."}
                       </Text>
                       {(searchQuery || transcript) && (
@@ -499,25 +476,12 @@ const VocabularyTopics = () => {
                   </div>
                   <Row gutter={[16, 16]}>
                     {enabledTopics.map((topic) => {
-                      const shouldShowFallback =
-                        imageErrors.has(topic._id) ||
-                        !topic.topicImage ||
-                        topic.topicImage.trim() === "";
+                      const shouldShowFallback = imageErrors.has(topic._id) || !topic.topicImage || topic.topicImage.trim() === "";
                       const stats = topicStats[topic._id] || {};
-                      const progressPercent = Math.min(
-                        (stats.totalVocabularies / 50) * 100,
-                        100
-                      );
-
+                      const progressPercent = Math.min((stats.totalVocabularies / 50) * 100, 100);
+                      
                       return (
-                        <Col
-                          xs={24}
-                          sm={12}
-                          md={8}
-                          lg={8}
-                          xl={6}
-                          key={topic._id}
-                        >
+                        <Col xs={24} sm={12} md={8} lg={8} xl={6} key={topic._id}>
                           <Card
                             hoverable
                             style={{
@@ -557,69 +521,62 @@ const VocabularyTopics = () => {
                                     onError={() => handleImageError(topic._id)}
                                   />
                                 ) : null}
-
+                                
                                 {/* Fallback image placeholder */}
                                 <div
                                   className="fallback-image"
                                   style={{
-                                    display: shouldShowFallback
-                                      ? "flex"
-                                      : "none",
+                                    display: shouldShowFallback ? "flex" : "none",
                                     width: "100%",
                                     height: "100%",
-                                    background:
-                                      "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #87d068 100%)",
+                                    background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #87d068 100%)",
                                     alignItems: "center",
                                     justifyContent: "center",
                                     flexDirection: "column",
                                     position: "relative",
                                   }}
                                 >
-                                  <BookOpen
-                                    style={{
-                                      width: "48px",
-                                      height: "48px",
+                                  <BookOpen 
+                                    style={{ 
+                                      width: "48px", 
+                                      height: "48px", 
                                       color: "white",
                                       marginBottom: "8px",
-                                      opacity: 0.9,
-                                    }}
+                                      opacity: 0.9
+                                    }} 
                                   />
-                                  <Text
-                                    style={{
-                                      color: "white",
-                                      fontSize: "14px",
+                                  <Text 
+                                    style={{ 
+                                      color: "white", 
+                                      fontSize: "14px", 
                                       fontWeight: "600",
                                       textAlign: "center",
                                       maxWidth: "120px",
-                                      lineHeight: "1.2",
+                                      lineHeight: "1.2"
                                     }}
                                   >
                                     {topic.topicName}
                                   </Text>
-
+                                  
                                   {/* Decorative elements */}
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      top: "10px",
-                                      right: "10px",
-                                      width: "30px",
-                                      height: "30px",
-                                      background: "rgba(255,255,255,0.2)",
-                                      borderRadius: "50%",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      bottom: "10px",
-                                      left: "10px",
-                                      width: "20px",
-                                      height: "20px",
-                                      background: "rgba(255,255,255,0.15)",
-                                      borderRadius: "50%",
-                                    }}
-                                  />
+                                  <div style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "30px",
+                                    height: "30px",
+                                    background: "rgba(255,255,255,0.2)",
+                                    borderRadius: "50%",
+                                  }} />
+                                  <div style={{
+                                    position: "absolute",
+                                    bottom: "10px",
+                                    left: "10px",
+                                    width: "20px",
+                                    height: "20px",
+                                    background: "rgba(255,255,255,0.15)",
+                                    borderRadius: "50%",
+                                  }} />
                                 </div>
 
                                 {/* Play overlay for both image and fallback */}
@@ -658,79 +615,48 @@ const VocabularyTopics = () => {
                           >
                             <Link
                               to={`/learner/topic/${topic._id}`}
-                              style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                              }}
+                              style={{ textDecoration: "none", color: "inherit" }}
                             >
                               <div style={{ padding: "16px" }}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "flex-start",
-                                    marginBottom: "8px",
-                                  }}
-                                >
-                                  <Title
-                                    level={5}
-                                    style={{
-                                      margin: 0,
-                                      color: "#1890ff",
-                                      fontSize: "16px",
-                                    }}
-                                  >
+                                <div style={{ 
+                                  display: "flex", 
+                                  justifyContent: "space-between", 
+                                  alignItems: "flex-start",
+                                  marginBottom: "8px"
+                                }}>
+                                  <Title level={5} style={{ margin: 0, color: "#1890ff", fontSize: "16px" }}>
                                     {topic.topicName}
                                   </Title>
-                                  <Tag
-                                    color={getDifficultyColor(stats.difficulty)}
-                                  >
+                                  <Tag color={getDifficultyColor(stats.difficulty)}>
                                     {stats.difficulty}
                                   </Tag>
                                 </div>
-
+                                
                                 {topic.description && (
-                                  <Text
-                                    type="secondary"
-                                    style={{
-                                      fontSize: "13px",
-                                      lineHeight: "1.4",
-                                      display: "block",
-                                      marginBottom: "12px",
-                                    }}
-                                  >
-                                    {topic.description.length > 80
-                                      ? `${topic.description.substring(
-                                          0,
-                                          80
-                                        )}...`
+                                  <Text type="secondary" style={{ fontSize: "13px", lineHeight: "1.4", display: "block", marginBottom: "12px" }}>
+                                    {topic.description.length > 80 
+                                      ? `${topic.description.substring(0, 80)}...` 
                                       : topic.description}
                                   </Text>
                                 )}
 
                                 {/* Progress */}
                                 <div style={{ marginBottom: "16px" }}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      marginBottom: "4px",
-                                    }}
-                                  >
-                                    <Text style={{ fontSize: "12px" }}>
-                                      Tiến độ nội dung
-                                    </Text>
-                                    <Text style={{ fontSize: "12px" }}>
-                                      {stats.totalVocabularies}/50
-                                    </Text>
+                                  <div style={{ 
+                                    display: "flex", 
+                                    justifyContent: "space-between", 
+                                    marginBottom: "4px" 
+                                  }}>
+                                    <Text style={{ fontSize: "12px" }}>Tiến độ nội dung</Text>
+                                    <Text style={{ fontSize: "12px" }}>{stats.totalVocabularies}/50</Text>
                                   </div>
-                                  <Progress
-                                    percent={progressPercent}
-                                    size="small"
+                                  <Progress 
+                                    percent={progressPercent} 
+                                    size="small" 
                                     showInfo={false}
                                     strokeColor={{
-                                      "0%": "#108ee9",
-                                      "100%": "#87d068",
+                                      '0%': '#108ee9',
+                                      '100%': '#87d068',
                                     }}
                                   />
                                 </div>
@@ -739,65 +665,27 @@ const VocabularyTopics = () => {
                                 <div style={{ marginBottom: "16px" }}>
                                   <Row gutter={8}>
                                     <Col span={12}>
-                                      <div
-                                        style={{
-                                          textAlign: "center",
-                                          padding: "8px",
-                                        }}
-                                      >
-                                        <div
-                                          style={{
-                                            color: "#1890ff",
-                                            marginBottom: "4px",
-                                          }}
-                                        >
+                                      <div style={{ textAlign: "center", padding: "8px" }}>
+                                        <div style={{ color: "#1890ff", marginBottom: "4px" }}>
                                           <BookOpen size={16} />
                                         </div>
-                                        <Text
-                                          strong
-                                          style={{
-                                            display: "block",
-                                            fontSize: "14px",
-                                          }}
-                                        >
+                                        <Text strong style={{ display: "block", fontSize: "14px" }}>
                                           {stats.totalVocabularies}
                                         </Text>
-                                        <Text
-                                          type="secondary"
-                                          style={{ fontSize: "11px" }}
-                                        >
+                                        <Text type="secondary" style={{ fontSize: "11px" }}>
                                           Từ vựng
                                         </Text>
                                       </div>
                                     </Col>
                                     <Col span={12}>
-                                      <div
-                                        style={{
-                                          textAlign: "center",
-                                          padding: "8px",
-                                        }}
-                                      >
-                                        <div
-                                          style={{
-                                            color: "#52c41a",
-                                            marginBottom: "4px",
-                                          }}
-                                        >
+                                      <div style={{ textAlign: "center", padding: "8px" }}>
+                                        <div style={{ color: "#52c41a", marginBottom: "4px" }}>
                                           <Clock size={16} />
                                         </div>
-                                        <Text
-                                          strong
-                                          style={{
-                                            display: "block",
-                                            fontSize: "14px",
-                                          }}
-                                        >
+                                        <Text strong style={{ display: "block", fontSize: "14px" }}>
                                           {stats.estimatedTime}m
                                         </Text>
-                                        <Text
-                                          type="secondary"
-                                          style={{ fontSize: "11px" }}
-                                        >
+                                        <Text type="secondary" style={{ fontSize: "11px" }}>
                                           Ước tính
                                         </Text>
                                       </div>
@@ -805,12 +693,7 @@ const VocabularyTopics = () => {
                                   </Row>
                                 </div>
 
-                                <Space
-                                  style={{
-                                    width: "100%",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
+                                <Space style={{ width: "100%", justifyContent: "space-between" }}>
                                   <Tag
                                     color="success"
                                     style={{
@@ -915,21 +798,14 @@ const VocabularyTopics = () => {
                   >
                     {docngheSections.map((section) => {
                       // Generate route path matching LearnerLayout logic
-                      let routePath = "";
-                      if (section.name.includes("Part 1"))
-                        routePath = "/learner/part-1";
-                      else if (section.name.includes("Part 2"))
-                        routePath = "/learner/part-2";
-                      else if (section.name.includes("Part 3"))
-                        routePath = "/learner/part-3";
-                      else if (section.name.includes("Part 4"))
-                        routePath = "/learner/part-4";
-                      else if (section.name.includes("Part 5"))
-                        routePath = "/learner/part-5";
-                      else if (section.name.includes("Part 6"))
-                        routePath = "/learner/part-6";
-                      else if (section.name.includes("Part 7"))
-                        routePath = "/learner/part-7";
+                      let routePath = '';
+                      if (section.name.includes('Part 1')) routePath = '/learner/part-1';
+                      else if (section.name.includes('Part 2')) routePath = '/learner/part-2';
+                      else if (section.name.includes('Part 3')) routePath = '/learner/part-3';
+                      else if (section.name.includes('Part 4')) routePath = '/learner/part-4';
+                      else if (section.name.includes('Part 5')) routePath = '/learner/part-5';
+                      else if (section.name.includes('Part 6')) routePath = '/learner/part-6';
+                      else if (section.name.includes('Part 7')) routePath = '/learner/part-7';
                       else routePath = `/learner/section/${section._id}`;
 
                       return (
@@ -949,86 +825,76 @@ const VocabularyTopics = () => {
                             to={routePath}
                             style={{ textDecoration: "none", color: "inherit" }}
                           >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
                             <div
                               style={{
                                 display: "flex",
                                 alignItems: "center",
-                                justifyContent: "space-between",
+                                gap: "8px",
                               }}
                             >
-                              <div
+                              <Avatar
+                                size="small"
                                 style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "8px",
+                                  background:
+                                    section.type === 1
+                                      ? "linear-gradient(135deg, #1890ff, #36cfc9)"
+                                      : "linear-gradient(135deg, #52c41a, #73d13d)",
+                                  border: "none",
                                 }}
-                              >
-                                <Avatar
-                                  size="small"
-                                  style={{
-                                    background:
-                                      section.type === 1
-                                        ? "linear-gradient(135deg, #1890ff, #36cfc9)"
-                                        : "linear-gradient(135deg, #52c41a, #73d13d)",
-                                    border: "none",
-                                  }}
-                                  icon={
-                                    section.type === 1 ? (
-                                      <Volume2
-                                        style={{
-                                          width: "12px",
-                                          height: "12px",
-                                        }}
-                                      />
-                                    ) : (
-                                      <FileText
-                                        style={{
-                                          width: "12px",
-                                          height: "12px",
-                                        }}
-                                      />
-                                    )
-                                  }
-                                />
-                                <div>
-                                  <Title
-                                    level={5}
-                                    style={{
-                                      fontSize: "12px",
-                                      margin: 0,
-                                      marginBottom: "2px",
-                                      color: "#1890ff",
-                                    }}
-                                  >
-                                    {section.name}
-                                  </Title>
-                                  <Tag
-                                    color={
-                                      section.type === 1 ? "blue" : "green"
-                                    }
-                                    style={{
-                                      fontSize: "10px",
-                                      margin: 0,
-                                      borderRadius: "3px",
-                                      padding: "1px 6px",
-                                    }}
-                                  >
-                                    {section.type === 1
-                                      ? "Listening"
-                                      : "Reading"}
-                                  </Tag>
-                                </div>
-                              </div>
-                              <ChevronRight
-                                style={{
-                                  width: "12px",
-                                  height: "12px",
-                                  color: "#999",
-                                }}
+                                icon={
+                                  section.type === 1 ? (
+                                    <Volume2
+                                      style={{ width: "12px", height: "12px" }}
+                                    />
+                                  ) : (
+                                    <FileText
+                                      style={{ width: "12px", height: "12px" }}
+                                    />
+                                  )
+                                }
                               />
+                              <div>
+                                <Title
+                                  level={5}
+                                  style={{
+                                    fontSize: "12px",
+                                    margin: 0,
+                                    marginBottom: "2px",
+                                    color: "#1890ff",
+                                  }}
+                                >
+                                  {section.name}
+                                </Title>
+                                <Tag
+                                  color={section.type === 1 ? "blue" : "green"}
+                                  style={{
+                                    fontSize: "10px",
+                                    margin: 0,
+                                    borderRadius: "3px",
+                                    padding: "1px 6px",
+                                  }}
+                                >
+                                  {section.type === 1 ? "Listening" : "Reading"}
+                                </Tag>
+                              </div>
                             </div>
-                          </Link>
-                        </Card>
+                            <ChevronRight
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                color: "#999",
+                              }}
+                            />
+                          </div>
+                        </Link>
+                      </Card>
                       );
                     })}
                   </Space>

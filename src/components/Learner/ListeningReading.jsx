@@ -30,9 +30,9 @@ const ListeningReading = () => {
 
   const getImageUrl = (imageName) => {
     if (imageName) {
-      return `${process.env.LOCALHOST}/images/${imageName}`;
+      return `http://localhost:5000/images/${imageName}`;
     }
-    return `${process.env.LOCALHOST}/images/default-image.png`;
+    return "http://localhost:5000/images/default-image.png";
   };
 
   if (loading) {
