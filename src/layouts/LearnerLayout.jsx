@@ -79,17 +79,10 @@ const LearnerLayout = () => {
   const unreadCount = useSelector((state) => state.notifications.unreadCount);
 
   // Debug: Log info để kiểm tra avatar
-<<<<<<< HEAD
-  // useEffect(() => {
-  //   console.log('🎯 LearnerLayout - Current info from Redux:', info);
-  //   console.log('🖼️ LearnerLayout - Avatar value:', info?.avatar);
-  // }, [info]);
-=======
   useEffect(() => {
     console.log("🎯 LearnerLayout - Current info from Redux:", info);
     console.log("🖼️ LearnerLayout - Avatar value:", info?.avatar);
   }, [info]);
->>>>>>> 2e258a97b54ab325cd823bd9c936363a6bf88f70
 
   // Kết nối socket và setup listener khi LearnerLayout mount
   useEffect(() => {
