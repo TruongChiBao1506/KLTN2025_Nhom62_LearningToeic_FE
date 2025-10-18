@@ -35,54 +35,76 @@ import { toast } from "react-toastify";
 import authService from "../services/authService";
 import sectionService from "../services/sectionsService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
-import { useAuthStore } from '../hooks/useAuthStore';
-import { fetchNotifications, markAsRead, markAllAsRead, addNotification } from '../store/notificationSlice.js';
-import socketService from '../services/socketService';
+import { useAuthStore } from "../hooks/useAuthStore";
+import {
+  fetchNotifications,
+  markAsRead,
+  markAllAsRead,
+  addNotification,
+} from "../store/notificationSlice.js";
+import socketService from "../services/socketService";
 
 import "./LearnerLayout.css";
 
-import { Layout, Typography, Button, Drawer, Space, Card, Input, Dropdown, Badge, Avatar, Row, Col, Divider, FloatButton, Menu } from "antd";
+import {
+  Layout,
+  Typography,
+  Button,
+  Drawer,
+  Space,
+  Card,
+  Input,
+  Dropdown,
+  Badge,
+  Avatar,
+  Row,
+  Col,
+  Divider,
+  FloatButton,
+  Menu,
+} from "antd";
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 const { RightOutlined, DownOutlined } = require("@ant-design/icons");
-
-
 
 const LearnerLayout = () => {
   // State for submenu open keys (for sidebar)
   const [openKeys, setOpenKeys] = useState([]);
   const { info } = useAuthStore();
   const dispatch = useDispatch();
-  const notifications = useSelector(state => state.notifications.notifications);
-  const unreadCount = useSelector(state => state.notifications.unreadCount);
-
-
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
 
   // Debug: Log info để kiểm tra avatar
   useEffect(() => {
-    console.log('🎯 LearnerLayout - Current info from Redux:', info);
-    console.log('🖼️ LearnerLayout - Avatar value:', info?.avatar);
+    console.log("🎯 LearnerLayout - Current info from Redux:", info);
+    console.log("🖼️ LearnerLayout - Avatar value:", info?.avatar);
   }, [info]);
 
   // Kết nối socket và setup listener khi LearnerLayout mount
   useEffect(() => {
     if (info?.id) {
-      console.log('🔌 Connecting socket in LearnerLayout for user:', info.id);
+      console.log("🔌 Connecting socket in LearnerLayout for user:", info.id);
       socketService.connect(info.id); // Connect socket với userId
 
       // Setup listener cho notification
       const handleNewNotification = (notification) => {
-        console.log('🔔 Real-time notification received in LearnerLayout:', notification);
+        console.log(
+          "🔔 Real-time notification received in LearnerLayout:",
+          notification
+        );
         dispatch(addNotification(notification)); // Thêm vào Redux store
       };
-      socketService.on('notification', handleNewNotification);
+      socketService.on("notification", handleNewNotification);
 
       // Fetch initial notifications
       dispatch(fetchNotifications(info.id));
 
       return () => {
-        socketService.off('notification', handleNewNotification);
+        socketService.off("notification", handleNewNotification);
       };
     }
   }, [info?.id, dispatch]);
@@ -96,7 +118,11 @@ const LearnerLayout = () => {
       setOpenKeys(keys);
 
       // Load sections when opening listening-reading submenu
-      if (keys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
+      if (
+        keys.includes("listening-reading") &&
+        !openKeys.includes("listening-reading") &&
+        sections.length === 0
+      ) {
         fetchSections();
       }
     }
@@ -127,7 +153,6 @@ const LearnerLayout = () => {
   const [lastSectionsUpdate, setLastSectionsUpdate] = useState(Date.now());
   const sectionsRef = useRef([]);
 
-
   // Load sections for dynamic menu
   const fetchSections = useCallback(async () => {
     try {
@@ -135,11 +160,11 @@ const LearnerLayout = () => {
       const response = await sectionService.getAllEnabled();
       // Handle both response formats for consistency
       const sectionsData = response.data || response;
-      
+
       // Only update if data actually changed
       const sectionsString = JSON.stringify(sectionsData);
       const currentSectionsString = JSON.stringify(sectionsRef.current);
-      
+
       if (sectionsString !== currentSectionsString) {
         setSections(sectionsData);
         sectionsRef.current = sectionsData;
@@ -176,7 +201,7 @@ const LearnerLayout = () => {
   }, [fetchSections]);
 
   const openKeysRef = useRef(openKeys);
-  
+
   // Keep ref in sync with state
   useEffect(() => {
     openKeysRef.current = openKeys;
@@ -188,31 +213,38 @@ const LearnerLayout = () => {
     const currentOpenKeys = openKeysRef.current;
     let newOpenKeys = [...currentOpenKeys];
     let shouldUpdate = false;
-    
+
     // Check if current path is in listening-reading submenu
-    if (path.startsWith('/learner/listening-reading/')) {
-      if (!newOpenKeys.includes('listening-reading')) {
-        newOpenKeys.push('listening-reading');
+    if (path.startsWith("/learner/listening-reading/")) {
+      if (!newOpenKeys.includes("listening-reading")) {
+        newOpenKeys.push("listening-reading");
         shouldUpdate = true;
       }
     }
-    
+
     // Check if current path is in learning submenu
-    if (path.startsWith('/learner/dictionary') || path.startsWith('/learner/grammar') || path.startsWith('/learner/topics')) {
-      if (!newOpenKeys.includes('learning')) {
-        newOpenKeys.push('learning');
+    if (
+      path.startsWith("/learner/dictionary") ||
+      path.startsWith("/learner/grammar") ||
+      path.startsWith("/learner/topics")
+    ) {
+      if (!newOpenKeys.includes("learning")) {
+        newOpenKeys.push("learning");
         shouldUpdate = true;
       }
     }
-    
+
     // Check if current path is in practice-tests submenu
-    if (path.startsWith('/learner/practice-tests/') || path === '/learner/practice-tests') {
-      if (!newOpenKeys.includes('practice-tests')) {
-        newOpenKeys.push('practice-tests');
+    if (
+      path.startsWith("/learner/practice-tests/") ||
+      path === "/learner/practice-tests"
+    ) {
+      if (!newOpenKeys.includes("practice-tests")) {
+        newOpenKeys.push("practice-tests");
         shouldUpdate = true;
       }
     }
-    
+
     if (shouldUpdate) {
       setOpenKeys(newOpenKeys);
     }
@@ -281,8 +313,8 @@ const LearnerLayout = () => {
 
   // Generate dynamic menu items for L&R sections
   const generateListeningReadingMenuItems = () => {
-    const listeningReadingSections = sections.filter(section =>
-      section.type === 1 || section.type === 2 // Listening and Reading
+    const listeningReadingSections = sections.filter(
+      (section) => section.type === 1 || section.type === 2 // Listening and Reading
     );
 
     // Sort sections by Part number for proper ordering
@@ -300,34 +332,36 @@ const LearnerLayout = () => {
     });
 
     // Always include "Luyện theo chuyên đề" item
-    const menuItems = [{
-      key: "/learner/improve",
-      icon: <Target size={16} />,
-      label: <Link to="/learner/improve">Luyện theo chuyên đề</Link>,
-    }];
+    const menuItems = [
+      {
+        key: "/learner/improve",
+        icon: <Target size={16} />,
+        label: <Link to="/learner/improve">Luyện theo chuyên đề</Link>,
+      },
+    ];
 
     // If sections are loading and we have no sections yet, show loading indicator
     if (sectionsLoading && listeningReadingSections.length === 0) {
       menuItems.unshift({
         key: "loading",
         icon: <FileText size={16} />,
-        label: <span style={{ color: '#999' }}>Đang tải...</span>,
+        label: <span style={{ color: "#999" }}>Đang tải...</span>,
         disabled: true,
       });
       return menuItems;
     }
 
     // Map sections to menu items and add them before "Luyện theo chuyên đề"
-    const sectionMenuItems = sortedSections.map(section => {
+    const sectionMenuItems = sortedSections.map((section) => {
       // Generate route based on section name for backward compatibility
-      let routePath = '';
-      if (section.name.includes('Part 1')) routePath = '/learner/part-1';
-      else if (section.name.includes('Part 2')) routePath = '/learner/part-2';
-      else if (section.name.includes('Part 3')) routePath = '/learner/part-3';
-      else if (section.name.includes('Part 4')) routePath = '/learner/part-4';
-      else if (section.name.includes('Part 5')) routePath = '/learner/part-5';
-      else if (section.name.includes('Part 6')) routePath = '/learner/part-6';
-      else if (section.name.includes('Part 7')) routePath = '/learner/part-7';
+      let routePath = "";
+      if (section.name.includes("Part 1")) routePath = "/learner/part-1";
+      else if (section.name.includes("Part 2")) routePath = "/learner/part-2";
+      else if (section.name.includes("Part 3")) routePath = "/learner/part-3";
+      else if (section.name.includes("Part 4")) routePath = "/learner/part-4";
+      else if (section.name.includes("Part 5")) routePath = "/learner/part-5";
+      else if (section.name.includes("Part 6")) routePath = "/learner/part-6";
+      else if (section.name.includes("Part 7")) routePath = "/learner/part-7";
       else routePath = `/learner/section/${section._id}`;
 
       return {
@@ -383,10 +417,9 @@ const LearnerLayout = () => {
       label: <Link to="/learner/speaking-writing">Luyện S&W</Link>,
     },
     {
-      key: "listening-reading",
+      key: "/learner/improve",
       icon: <Headphones size={18} />,
-      label: "Luyện L&R",
-      children: generateListeningReadingMenuItems(),
+      label: <Link to="/learner/improve">Cải thiện kỹ năng</Link>,
     },
     {
       key: "practice-tests",
@@ -426,7 +459,7 @@ const LearnerLayout = () => {
           label: <Link to="/learner/settings">Cài đặt</Link>,
         },
       ],
-    }
+    },
   ];
 
   // Get current menu key based on location
@@ -449,14 +482,14 @@ const LearnerLayout = () => {
     {
       key: "user-header",
       label: (
-        <div 
-          style={{ 
-            padding: "16px 20px 12px", 
+        <div
+          style={{
+            padding: "16px 20px 12px",
             borderBottom: "1px solid rgba(0,0,0,0.06)",
             background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
             borderRadius: "12px 12px 0 0",
             margin: "-8px -8px 12px",
-            color: "#1a202c"
+            color: "#1a202c",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -466,27 +499,31 @@ const LearnerLayout = () => {
               style={{
                 background: "linear-gradient(135deg, #667eea, #764ba2)",
                 border: "2px solid rgba(103, 126, 234, 0.1)",
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: "#fff"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
               }}
             >
               {info?.name?.charAt(0) || "U"}
             </Avatar>
             <div>
-              <div style={{ 
-                fontSize: "15px", 
-                fontWeight: "600", 
-                marginBottom: "2px",
-                color: "#1a202c"
-              }}>
+              <div
+                style={{
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  marginBottom: "2px",
+                  color: "#1a202c",
+                }}
+              >
                 {info?.name || "User"}
               </div>
-              <div style={{ 
-                fontSize: "12px", 
-                color: "#64748b"
-              }}>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#64748b",
+                }}
+              >
                 {info?.email || "user@example.com"}
               </div>
             </div>
@@ -498,8 +535,8 @@ const LearnerLayout = () => {
     {
       key: "profile",
       label: (
-        <Link 
-          to="/learner/profile" 
+        <Link
+          to="/learner/profile"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -514,28 +551,34 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(103, 126, 234, 0.15)"
+            border: "1px solid rgba(103, 126, 234, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #667eea, #764ba2)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #667eea, #764ba2)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <User size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Hồ sơ cá nhân</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Hồ sơ cá nhân
+          </span>
         </Link>
       ),
     },
     {
       key: "/learner/progress",
       label: (
-        <Link 
-          to="/learner/progress" 
+        <Link
+          to="/learner/progress"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -550,28 +593,34 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(16, 185, 129, 0.15)"
+            border: "1px solid rgba(16, 185, 129, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #10b981, #059669)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #10b981, #059669)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <TrendingUp size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Tiến độ học tập</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Tiến độ học tập
+          </span>
         </Link>
       ),
     },
     {
       key: "/learner/notes",
       label: (
-        <Link 
-          to="/learner/notes" 
+        <Link
+          to="/learner/notes"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -586,28 +635,34 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(245, 158, 11, 0.15)"
+            border: "1px solid rgba(245, 158, 11, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #f59e0b, #d97706)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #f59e0b, #d97706)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <StickyNote size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Ghi chú cá nhân</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Ghi chú cá nhân
+          </span>
         </Link>
       ),
     },
     {
       key: "/learner/vocabulary",
       label: (
-        <Link 
-          to="/learner/vocabulary" 
+        <Link
+          to="/learner/vocabulary"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -622,28 +677,34 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(239, 68, 68, 0.15)"
+            border: "1px solid rgba(239, 68, 68, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #ef4444, #dc2626)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Heart size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Từ vựng đã lưu</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Từ vựng đã lưu
+          </span>
         </Link>
       ),
     },
     {
       key: "/learner/achievements",
       label: (
-        <Link 
-          to="/learner/achievements" 
+        <Link
+          to="/learner/achievements"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -658,28 +719,34 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(139, 92, 246, 0.15)"
+            border: "1px solid rgba(139, 92, 246, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Star size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Thành tích</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Thành tích
+          </span>
         </Link>
       ),
     },
     {
       key: "settings",
       label: (
-        <Link 
-          to="/learner/settings" 
+        <Link
+          to="/learner/settings"
           className="dropdown-menu-item"
           style={{
             display: "flex",
@@ -694,34 +761,41 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(107, 114, 128, 0.15)"
+            border: "1px solid rgba(107, 114, 128, 0.15)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #6b7280, #4b5563)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #6b7280, #4b5563)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Settings size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}>Cài đặt</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+          >
+            Cài đặt
+          </span>
         </Link>
       ),
     },
     {
       type: "divider",
-      style: { 
+      style: {
         margin: "12px 8px",
-        background: "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)"
-      }
+        background:
+          "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)",
+      },
     },
     {
       key: "logout",
       label: (
-        <div 
+        <div
           onClick={handleLogout}
           className="dropdown-menu-item logout-item"
           style={{
@@ -737,20 +811,26 @@ const LearnerLayout = () => {
             position: "relative",
             overflow: "hidden",
             background: "#ffffff",
-            border: "1px solid rgba(239, 68, 68, 0.2)"
+            border: "1px solid rgba(239, 68, 68, 0.2)",
           }}
         >
-          <div style={{
-            background: "linear-gradient(135deg, #ef4444, #dc2626)",
-            borderRadius: "8px",
-            padding: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <LogOut size={16} style={{ color: "#fff" }} />
           </div>
-          <span style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}>Đăng xuất</span>
+          <span
+            style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}
+          >
+            Đăng xuất
+          </span>
         </div>
       ),
     },
@@ -761,10 +841,10 @@ const LearnerLayout = () => {
     {
       key: "header",
       label: (
-        <div 
+        <div
           className="notification-dropdown-header"
-          style={{ 
-            padding: "16px 20px 12px", 
+          style={{
+            padding: "16px 20px 12px",
             borderBottom: "1px solid rgba(0,0,0,0.06)",
             background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
             borderRadius: "12px 12px 0 0",
@@ -774,19 +854,34 @@ const LearnerLayout = () => {
             zIndex: 10,
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div style={{
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
-                borderRadius: "6px",
-                padding: "4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #667eea, #764ba2)",
+                  borderRadius: "6px",
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Bell size={14} style={{ color: "#fff" }} />
               </div>
-              <Text strong style={{ fontSize: "15px", fontWeight: "600", color: "#1a202c" }}>
+              <Text
+                strong
+                style={{
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  color: "#1a202c",
+                }}
+              >
                 Thông báo
               </Text>
             </div>
@@ -794,15 +889,15 @@ const LearnerLayout = () => {
               type="link"
               size="small"
               onClick={() => dispatch(markAllAsRead(info.id))}
-              style={{ 
-                padding: "4px 8px", 
+              style={{
+                padding: "4px 8px",
                 fontSize: "12px",
                 background: "rgba(103, 126, 234, 0.1)",
                 borderRadius: "6px",
                 color: "#667eea",
                 fontWeight: "500",
                 border: "none",
-                height: "auto"
+                height: "auto",
               }}
               className="mark-read-btn"
             >
@@ -815,146 +910,174 @@ const LearnerLayout = () => {
     },
     ...(notifications.length > 0
       ? notifications.map((notification, index) => ({
-        key: notification.id,
-        label: (
-          <div 
-            className="notification-dropdown-item"
-            style={{ 
-              padding: "14px 16px",
-              borderRadius: "8px",
-              margin: "4px 8px",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-              cursor: "pointer",
-              border: "1px solid transparent",
-              background: !notification.isRead 
-                ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
-                : "transparent",
-              position: "relative",
-              overflow: "hidden"
-            }}
-          >
-            {!notification.isRead && (
-              <div style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: "3px",
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
-                borderRadius: "0 2px 2px 0"
-              }} />
-            )}
-            <div style={{ 
-              display: "flex", 
-              alignItems: "flex-start", 
-              gap: "12px",
-              paddingLeft: !notification.isRead ? "8px" : "0"
-            }}>
-              <div style={{
-                background: !notification.isRead 
-                  ? "linear-gradient(135deg, #667eea, #764ba2)"
-                  : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
-                borderRadius: "8px",
-                padding: "6px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: "32px",
-                height: "32px",
-                marginTop: "2px"
-              }}>
-                <Bell size={14} style={{ 
-                  color: !notification.isRead ? "#fff" : "#64748b" 
-                }} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ 
-                  fontWeight: !notification.isRead ? "600" : "500",
-                  fontSize: "14px",
-                  color: !notification.isRead ? "#1a202c" : "#4a5568",
-                  marginBottom: "4px",
-                  lineHeight: "1.4",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden"
-                }}>
-                  {notification.title}
-                </div>
-                <div style={{ 
-                  fontSize: "13px", 
-                  color: "#64748b", 
-                  marginBottom: "6px",
-                  lineHeight: "1.4",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden"
-                }}>
-                  {notification.message}
-                </div>
-                <div style={{ 
-                  fontSize: "11px", 
-                  color: "#94a3b8",
-                  fontWeight: "500",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px"
-                }}>
-                  <Clock size={10} />
-                  {notification.timestamp ? new Date(notification.timestamp).toLocaleString('vi-VN') : notification.createdAt ? new Date(notification.createdAt).toLocaleString('vi-VN') : 'Vừa xong'}
-                </div>
-              </div>
-            </div>
-          </div>
-        ),
-      }))
-      : [
-        {
-          key: "empty",
+          key: notification.id,
           label: (
             <div
-              style={{ 
-                padding: "32px 20px", 
-                textAlign: "center",
-                color: "#94a3b8"
+              className="notification-dropdown-item"
+              style={{
+                padding: "14px 16px",
+                borderRadius: "8px",
+                margin: "4px 8px",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                cursor: "pointer",
+                border: "1px solid transparent",
+                background: !notification.isRead
+                  ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
+                  : "transparent",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              <div style={{
-                background: "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
-                borderRadius: "50%",
-                width: "48px",
-                height: "48px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 12px"
-              }}>
-                <Bell size={20} style={{ color: "#64748b" }} />
-              </div>
-              <div style={{ fontSize: "14px", fontWeight: "500", marginBottom: "4px" }}>
-                Không có thông báo nào
-              </div>
-              <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
-                Bạn sẽ nhận được thông báo tại đây
+              {!notification.isRead && (
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: "3px",
+                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                    borderRadius: "0 2px 2px 0",
+                  }}
+                />
+              )}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "12px",
+                  paddingLeft: !notification.isRead ? "8px" : "0",
+                }}
+              >
+                <div
+                  style={{
+                    background: !notification.isRead
+                      ? "linear-gradient(135deg, #667eea, #764ba2)"
+                      : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                    borderRadius: "8px",
+                    padding: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: "32px",
+                    height: "32px",
+                    marginTop: "2px",
+                  }}
+                >
+                  <Bell
+                    size={14}
+                    style={{
+                      color: !notification.isRead ? "#fff" : "#64748b",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontWeight: !notification.isRead ? "600" : "500",
+                      fontSize: "14px",
+                      color: !notification.isRead ? "#1a202c" : "#4a5568",
+                      marginBottom: "4px",
+                      lineHeight: "1.4",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {notification.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#64748b",
+                      marginBottom: "6px",
+                      lineHeight: "1.4",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {notification.message}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#94a3b8",
+                      fontWeight: "500",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    <Clock size={10} />
+                    {notification.timestamp
+                      ? new Date(notification.timestamp).toLocaleString("vi-VN")
+                      : notification.createdAt
+                      ? new Date(notification.createdAt).toLocaleString("vi-VN")
+                      : "Vừa xong"}
+                  </div>
+                </div>
               </div>
             </div>
           ),
-          disabled: true,
-        },
-      ]),
+        }))
+      : [
+          {
+            key: "empty",
+            label: (
+              <div
+                style={{
+                  padding: "32px 20px",
+                  textAlign: "center",
+                  color: "#94a3b8",
+                }}
+              >
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                    borderRadius: "50%",
+                    width: "48px",
+                    height: "48px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 12px",
+                  }}
+                >
+                  <Bell size={20} style={{ color: "#64748b" }} />
+                </div>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Không có thông báo nào
+                </div>
+                <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
+                  Bạn sẽ nhận được thông báo tại đây
+                </div>
+              </div>
+            ),
+            disabled: true,
+          },
+        ]),
     {
       type: "divider",
-      style: { 
+      style: {
         margin: "8px 0",
-        background: "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)"
-      }
+        background:
+          "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%)",
+      },
     },
     {
       key: "viewAll",
       label: (
-        <Link 
-          to="/learner/notifications" 
+        <Link
+          to="/learner/notifications"
           style={{
             display: "flex",
             alignItems: "center",
@@ -968,7 +1091,7 @@ const LearnerLayout = () => {
             fontWeight: "500",
             fontSize: "14px",
             transition: "all 0.3s ease",
-            gap: "6px"
+            gap: "6px",
           }}
           className="view-all-notifications"
         >
@@ -1054,39 +1177,51 @@ const LearnerLayout = () => {
       </Drawer>
 
       {/* Sidebar learner style giống admin, giữ submenu */}
-      <div className={`learner-sidebar ${collapsed ? '' : 'active'}`}> 
+      <div className={`learner-sidebar ${collapsed ? "" : "active"}`}>
         {/* Header Section */}
-        <div className="sidebar-header" style={{display: 'flex', alignItems: 'center'}}>
-          <div className="logo-container" style={{display: 'flex', alignItems: 'center'}}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              background: 'white',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: collapsed ? '0' : '12px',
-              flexShrink: 0
-            }}>
-              <GraduationCap size={24} style={{ color: '#764ba2' }} />
+        <div
+          className="sidebar-header"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <div
+            className="logo-container"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                background: "white",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: collapsed ? "0" : "12px",
+                flexShrink: 0,
+              }}
+            >
+              <GraduationCap size={24} style={{ color: "#764ba2" }} />
             </div>
             {!collapsed && (
-              <div style={{ overflow: 'hidden' }}>
-                <div style={{
-                  color: 'white',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  lineHeight: '1.2'
-                }}>
+              <div style={{ overflow: "hidden" }}>
+                <div
+                  style={{
+                    color: "white",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    lineHeight: "1.2",
+                  }}
+                >
                   TOEIC Learning
                 </div>
-                <div style={{
-                  color: 'rgba(255,255,255,0.8)',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  marginTop: '2px'
-                }}>
+                <div
+                  style={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    marginTop: "2px",
+                  }}
+                >
                   Learner Panel
                 </div>
               </div>
@@ -1096,20 +1231,26 @@ const LearnerLayout = () => {
         {/* Navigation Menu */}
         <div className="sidebar-nav">
           <ul className="nav-list">
-            {menuItems.map(item => (
+            {menuItems.map((item) => (
               <li key={item.key} className="nav-item">
                 <div
-                  className={`nav-link ${location.pathname === item.key ? 'active' : ''}`}
+                  className={`nav-link ${
+                    location.pathname === item.key ? "active" : ""
+                  }`}
                   onClick={() => {
                     if (item.children) {
                       // Toggle submenu for sidebar
                       const newOpenKeys = openKeys.includes(item.key)
-                        ? openKeys.filter(key => key !== item.key)
+                        ? openKeys.filter((key) => key !== item.key)
                         : [...openKeys, item.key];
                       setOpenKeys(newOpenKeys);
-                      
+
                       // Load sections when opening listening-reading submenu
-                      if (newOpenKeys.includes("listening-reading") && !openKeys.includes("listening-reading") && sections.length === 0) {
+                      if (
+                        newOpenKeys.includes("listening-reading") &&
+                        !openKeys.includes("listening-reading") &&
+                        sections.length === 0
+                      ) {
                         fetchSections();
                       }
                     } else {
@@ -1117,28 +1258,47 @@ const LearnerLayout = () => {
                     }
                   }}
                   data-tooltip={item.label?.props?.children || item.label}
-                  style={{ cursor: item.children ? 'pointer' : 'default' }}
+                  style={{ cursor: item.children ? "pointer" : "default" }}
                 >
                   <span className="nav-icon">{item.icon}</span>
-                  {!collapsed && <span className="nav-text">{item.label?.props?.children || item.label}</span>}
+                  {!collapsed && (
+                    <span className="nav-text">
+                      {item.label?.props?.children || item.label}
+                    </span>
+                  )}
                   {/* Arrow for submenu */}
                   {item.children && !collapsed && (
-                    <span className="nav-arrow" style={{ marginLeft: 8, transition: 'transform 0.3s' }}>
-                      {openKeys.includes(item.key) ? <DownOutlined /> : <RightOutlined />}
+                    <span
+                      className="nav-arrow"
+                      style={{ marginLeft: 8, transition: "transform 0.3s" }}
+                    >
+                      {openKeys.includes(item.key) ? (
+                        <DownOutlined />
+                      ) : (
+                        <RightOutlined />
+                      )}
                     </span>
                   )}
                 </div>
                 {item.children && !collapsed && (
-                  <ul className={`nav-submenu ${openKeys.includes(item.key) ? 'expanded' : 'collapsed'}`}>
+                  <ul
+                    className={`nav-submenu ${
+                      openKeys.includes(item.key) ? "expanded" : "collapsed"
+                    }`}
+                  >
                     {item.children.map((sub, index) => (
                       <li key={sub.key}>
                         <div
-                          className={`nav-link ${location.pathname === sub.key ? 'active' : ''}`}
-                          onClick={() => window.location.pathname = sub.key}
+                          className={`nav-link ${
+                            location.pathname === sub.key ? "active" : ""
+                          }`}
+                          onClick={() => (window.location.pathname = sub.key)}
                           data-tooltip={sub.label?.props?.children || sub.label}
                         >
                           <span className="nav-icon">{sub.icon}</span>
-                          <span className="nav-text">{sub.label?.props?.children || sub.label}</span>
+                          <span className="nav-text">
+                            {sub.label?.props?.children || sub.label}
+                          </span>
                         </div>
                       </li>
                     ))}
@@ -1150,7 +1310,12 @@ const LearnerLayout = () => {
         </div>
       </div>
 
-      <Layout style={{ marginLeft: collapsed ? '80px' : '280px', transition: 'margin-left 0.3s ease' }}>
+      <Layout
+        style={{
+          marginLeft: collapsed ? "80px" : "280px",
+          transition: "margin-left 0.3s ease",
+        }}
+      >
         {/* Header */}
         <Header
           style={{
@@ -1181,21 +1346,29 @@ const LearnerLayout = () => {
             }}
           />
 
-          <Space size={24} style={{ position: "relative", zIndex: 1, height: '100%', alignItems: 'center' }}>
+          <Space
+            size={24}
+            style={{
+              position: "relative",
+              zIndex: 1,
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
             {/* Sidebar Toggle Button - moved to header */}
             <button
               className="sidebar-toggle-btn"
               onClick={() => setCollapsed(!collapsed)}
               style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'white',
-                cursor: 'pointer',
-                fontSize: '22px',
-                marginRight: '12px',
-                padding: '4px 8px'
+                background: "transparent",
+                border: "none",
+                color: "white",
+                cursor: "pointer",
+                fontSize: "22px",
+                marginRight: "12px",
+                padding: "4px 8px",
               }}
-              aria-label={collapsed ? 'Mở rộng sidebar' : 'Thu nhỏ sidebar'}
+              aria-label={collapsed ? "Mở rộng sidebar" : "Thu nhỏ sidebar"}
             >
               {collapsed ? <MenuIcon size={22} /> : <MenuIcon size={22} />}
             </button>
@@ -1215,12 +1388,20 @@ const LearnerLayout = () => {
             />
 
             {/* Search */}
-            <div style={{ position: "relative", display: windowWidth > 768 ? 'flex' : 'none', height: '40px', alignItems: 'center' }}>
+            <div
+              style={{
+                position: "relative",
+                display: windowWidth > 768 ? "flex" : "none",
+                height: "40px",
+                alignItems: "center",
+              }}
+            >
               <Input
                 placeholder="Tìm kiếm..."
                 prefix={<Search size={14} style={{ color: "#8c8c8c" }} />}
                 style={{
-                  width: windowWidth > 1200 ? 220 : windowWidth > 992 ? 180 : 140,
+                  width:
+                    windowWidth > 1200 ? 220 : windowWidth > 992 ? 180 : 140,
                   borderRadius: "18px",
                   border: "none",
                   background: "rgba(255,255,255,0.96)",
@@ -1237,11 +1418,23 @@ const LearnerLayout = () => {
             </div>
           </Space>
 
-          <Space size={20} style={{ position: "relative", zIndex: 1, height: '100%', alignItems: 'center' }}>
+          <Space
+            size={20}
+            style={{
+              position: "relative",
+              zIndex: 1,
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
             {/* Study Stats */}
             <Space
               size={12}
-              style={{ display: windowWidth > 576 ? "flex" : "none", alignItems: 'center', height: '100%' }}
+              style={{
+                display: windowWidth > 576 ? "flex" : "none",
+                alignItems: "center",
+                height: "100%",
+              }}
             >
               <Card
                 size="small"
@@ -1254,12 +1447,17 @@ const LearnerLayout = () => {
                   transition: "all 0.3s ease",
                   minWidth: 60,
                   minHeight: 44,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onClick={updateStudyProgress}
-                bodyStyle={{ padding: "6px 10px", display: 'flex', alignItems: 'center', minHeight: 32 }}
+                bodyStyle={{
+                  padding: "6px 10px",
+                  display: "flex",
+                  alignItems: "center",
+                  minHeight: 32,
+                }}
                 hoverable
               >
                 <Space size="small">
@@ -1299,11 +1497,16 @@ const LearnerLayout = () => {
                   boxShadow: "0 2px 8px rgba(79, 172, 254, 0.2)",
                   minWidth: 60,
                   minHeight: 44,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                bodyStyle={{ padding: "6px 10px", display: 'flex', alignItems: 'center', minHeight: 32 }}
+                bodyStyle={{
+                  padding: "6px 10px",
+                  display: "flex",
+                  alignItems: "center",
+                  minHeight: 32,
+                }}
               >
                 <Space size="small">
                   <div
@@ -1361,27 +1564,35 @@ const LearnerLayout = () => {
               placement="bottomRight"
               overlayStyle={{
                 borderRadius: "12px",
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                boxShadow:
+                  "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                 border: "1px solid rgba(0, 0, 0, 0.05)",
                 background: "#fff",
                 minWidth: "360px",
                 maxWidth: "400px",
                 padding: "0",
-                overflow: "hidden"
+                overflow: "hidden",
               }}
               overlayClassName="custom-notification-dropdown"
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', position: 'relative' }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  position: "relative",
+                }}
+              >
                 <Button
                   type="text"
                   icon={<Bell size={18} />}
                   style={{
-                    background: unreadCount > 0
-                      ? "linear-gradient(135deg, #a8edea, #fed6e3)"
-                      : "rgba(255,255,255,0.15)",
-                    color: unreadCount > 0
-                      ? "#722ed1"
-                      : "#fff",
+                    background:
+                      unreadCount > 0
+                        ? "linear-gradient(135deg, #a8edea, #fed6e3)"
+                        : "rgba(255,255,255,0.15)",
+                    color: unreadCount > 0 ? "#722ed1" : "#fff",
                     border: "none",
                     borderRadius: "8px",
                     width: "36px",
@@ -1389,9 +1600,10 @@ const LearnerLayout = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    boxShadow: unreadCount > 0
-                      ? "0 2px 8px rgba(168, 237, 234, 0.3)"
-                      : "0 2px 8px rgba(0,0,0,0.08)",
+                    boxShadow:
+                      unreadCount > 0
+                        ? "0 2px 8px rgba(168, 237, 234, 0.3)"
+                        : "0 2px 8px rgba(0,0,0,0.08)",
                     transition: "all 0.3s ease",
                   }}
                 />
@@ -1407,9 +1619,9 @@ const LearnerLayout = () => {
                       boxShadow: "0 2px 8px rgba(255, 77, 79, 0.3)",
                       minWidth: 16,
                       height: 16,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       fontSize: 11,
                       padding: 0,
                     }}
@@ -1419,19 +1631,22 @@ const LearnerLayout = () => {
             </Dropdown>
 
             {/* User Profile */}
-            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            <div
+              style={{ display: "flex", alignItems: "center", height: "100%" }}
+            >
               <Dropdown
                 menu={{ items: userMenuItems }}
                 trigger={["click"]}
                 placement="bottomRight"
                 overlayStyle={{
                   borderRadius: "12px",
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                  boxShadow:
+                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                   border: "1px solid rgba(0, 0, 0, 0.05)",
                   background: "#fff",
                   minWidth: "280px",
                   padding: "0",
-                  overflow: "hidden"
+                  overflow: "hidden",
                 }}
                 overlayClassName="custom-user-dropdown"
               >
@@ -1445,7 +1660,7 @@ const LearnerLayout = () => {
                     border: "1px solid rgba(255,255,255,0.1)",
                     transition: "all 0.3s ease",
                     height: 40,
-                    alignItems: 'center',
+                    alignItems: "center",
                   }}
                   className="user-profile-hover"
                 >
@@ -1456,9 +1671,9 @@ const LearnerLayout = () => {
                       background: "linear-gradient(135deg, #667eea, #764ba2)",
                       color: "#fff",
                       border: "2px solid rgba(255,255,255,0.3)",
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     {info?.name?.charAt(0) || "U"}
@@ -1679,7 +1894,8 @@ const LearnerLayout = () => {
           padding: 0 !important;
           border-radius: 12px !important;
           background: #fff !important;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
           border: 1px solid rgba(0, 0, 0, 0.05) !important;
           overflow: hidden !important;
           animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -1699,7 +1915,11 @@ const LearnerLayout = () => {
 
         /* Notification dropdown specific styling */
         .custom-notification-dropdown .notification-dropdown-item:hover {
-          background: linear-gradient(135deg, rgba(103, 126, 234, 0.08) 0%, rgba(79, 172, 254, 0.08) 100%) !important;
+          background: linear-gradient(
+            135deg,
+            rgba(103, 126, 234, 0.08) 0%,
+            rgba(79, 172, 254, 0.08) 100%
+          ) !important;
           border-color: rgba(103, 126, 234, 0.1) !important;
           transform: translateX(2px) !important;
           box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
@@ -1716,20 +1936,20 @@ const LearnerLayout = () => {
           box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3) !important;
         }
 
-            /* User dropdown specific styling */
-            .custom-user-dropdown .dropdown-menu-item:hover {
-              background: rgba(248, 250, 252, 0.8) !important;
-              border-color: rgba(103, 126, 234, 0.2) !important;
-              transform: translateX(2px) !important;
-              box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
-            }
+        /* User dropdown specific styling */
+        .custom-user-dropdown .dropdown-menu-item:hover {
+          background: rgba(248, 250, 252, 0.8) !important;
+          border-color: rgba(103, 126, 234, 0.2) !important;
+          transform: translateX(2px) !important;
+          box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
+        }
 
-            .custom-user-dropdown .logout-item:hover {
-              background: rgba(254, 242, 242, 0.9) !important;
-              border-color: rgba(239, 68, 68, 0.25) !important;
-              transform: translateX(2px) !important;
-              box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
-            }        /* Enhanced dropdown item animations */
+        .custom-user-dropdown .logout-item:hover {
+          background: rgba(254, 242, 242, 0.9) !important;
+          border-color: rgba(239, 68, 68, 0.25) !important;
+          transform: translateX(2px) !important;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+        } /* Enhanced dropdown item animations */
         .custom-notification-dropdown .ant-dropdown-menu-item,
         .custom-user-dropdown .ant-dropdown-menu-item {
           padding: 0 !important;
@@ -1750,11 +1970,11 @@ const LearnerLayout = () => {
             min-width: 300px !important;
             max-width: 90vw !important;
           }
-          
+
           .custom-notification-dropdown {
             transform: translateX(-20px) !important;
           }
-          
+
           .custom-user-dropdown {
             transform: translateX(-10px) !important;
           }
@@ -1867,7 +2087,12 @@ const LearnerLayout = () => {
         .custom-notification-dropdown .ant-dropdown-menu-item-divider,
         .custom-user-dropdown .ant-dropdown-menu-item-divider {
           margin: 8px 0 !important;
-          background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%) !important;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.06) 50%,
+            transparent 100%
+          ) !important;
           height: 1px !important;
         }
 

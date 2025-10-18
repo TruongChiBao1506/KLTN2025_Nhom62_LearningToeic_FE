@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
-  Select,
   Button,
   Typography,
   Row,
@@ -13,6 +12,7 @@ import {
   Divider,
   Alert,
 } from "antd";
+
 import {
   BookOpen,
   Headphones,
@@ -39,8 +39,7 @@ import TestPart6 from "../../../components/Learner/TestPart6/index";
 import TestPart7Single from "../../../components/Learner/TestPart7Single/index";
 import "./style.css";
 
-const { Title, Text, Paragraph } = Typography;
-const { Option } = Select;
+const { Title, Text } = Typography;
 
 const ImproveStudy = () => {
   const [sections, setSections] = useState([]);
@@ -56,8 +55,6 @@ const ImproveStudy = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Cải thiện học tập | TOEIC Learning Platform";
-
     const fetchSections = async () => {
       try {
         const fetchedSections = await sectionsService.allEnable();
@@ -79,6 +76,41 @@ const ImproveStudy = () => {
         console.log("🚀 ~ fetchSections ~ setSections called");
       } catch (error) {
         console.error("Lỗi khi tải danh sách phần:", error);
+        // Fallback data
+        const fallbackSections = [
+          {
+            _id: "686ce171b614dda1fc08f1d0",
+            name: "Part 1: Photographs",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d1",
+            name: "Part 2: Question-Response",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d2",
+            name: "Part 3: Conversations",
+            status: 1,
+          },
+          { _id: "686ce171b614dda1fc08f1d3", name: "Part 4: Talks", status: 1 },
+          {
+            _id: "686ce171b614dda1fc08f1d4",
+            name: "Part 5: Incomplete Sentences",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d5",
+            name: "Part 6: Text Completion",
+            status: 1,
+          },
+          {
+            _id: "686ce171b614dda1fc08f1d6",
+            name: "Part 7: Reading Comprehension",
+            status: 1,
+          },
+        ];
+        setSections(fallbackSections);
       }
     };
 
@@ -342,18 +374,68 @@ const ImproveStudy = () => {
 
   const startPractice = async () => {
     if (selectedSection && selectedQuestionType) {
+      // Log section details for debugging
+      const selectedSectionData = sections.find(
+        (section) => section._id === selectedSection
+      );
+      console.log(
+        "🚀 ~ startPractice ~ selectedSectionData:",
+        selectedSectionData
+      );
+
+      // Map questionType to the format expected by backend
+      let mappedQuestionType;
+      if (selectedSectionData) {
+        const partMatch = selectedSectionData.name.match(/Part (\d+)/);
+        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+        // Parts 1-4 are listening, Parts 5-7 are reading
+        if (partNumber >= 1 && partNumber <= 4) {
+          mappedQuestionType = "listening";
+        } else if (partNumber >= 5 && partNumber <= 7) {
+          mappedQuestionType = "reading";
+        } else {
+          mappedQuestionType = selectedQuestionType; // fallback
+        }
+      } else {
+        mappedQuestionType = selectedQuestionType; // fallback
+      }
+
       const requestData = {
         sectionId: selectedSection,
-        questionType: selectedQuestionType,
+        questionType: mappedQuestionType,
       };
-      console.log("🚀 ~ startPractice ~ requestData:", requestData);
+
+      console.log("🚀 ~ startPractice ~ Request Data:", requestData);
+      console.log("🚀 ~ startPractice ~ selectedSection:", selectedSection);
+      console.log(
+        "🚀 ~ startPractice ~ selectedQuestionType:",
+        selectedQuestionType
+      );
+      console.log(
+        "🚀 ~ startPractice ~ mappedQuestionType:",
+        mappedQuestionType
+      );
+
       try {
+        console.log("🚀 ~ startPractice ~ Making API call...");
         const fetchedQuestions =
           await questionService.getQuestionsBySectionIdAndType(requestData);
+        console.log("🚀 ~ startPractice ~ fetchedQuestions:", fetchedQuestions);
+        console.log(
+          "🚀 ~ startPractice ~ fetchedQuestions type:",
+          typeof fetchedQuestions
+        );
+        console.log(
+          "🚀 ~ startPractice ~ fetchedQuestions length:",
+          fetchedQuestions?.length
+        );
+
         if (fetchedQuestions && fetchedQuestions.length > 0) {
           setQuestions(fetchedQuestions);
           setShowImproveTest(true);
         } else {
+          console.log("🚀 ~ startPractice ~ No questions returned from API");
           Swal.fire({
             icon: "info",
             title: "Thông báo",
@@ -361,14 +443,33 @@ const ImproveStudy = () => {
           });
         }
       } catch (error) {
-        console.error("Lỗi khi tải câu hỏi:", error);
+        console.error("🚀 ~ startPractice ~ Full error object:", error);
+        console.error("🚀 ~ startPractice ~ Error message:", error.message);
+        console.error("🚀 ~ startPractice ~ Error response:", error.response);
+        console.error(
+          "🚀 ~ startPractice ~ Error response data:",
+          error.response?.data
+        );
+        console.error(
+          "🚀 ~ startPractice ~ Error status:",
+          error.response?.status
+        );
+
         Swal.fire({
           icon: "error",
           title: "Lỗi!",
-          text: "Đã xảy ra lỗi khi tải câu hỏi. Vui lòng thử lại sau!",
+          text: `Đã xảy ra lỗi khi tải câu hỏi: ${
+            error.response?.data?.message || error.message
+          }`,
         });
       }
     } else {
+      console.log(
+        "🚀 ~ startPractice ~ Missing selection - selectedSection:",
+        selectedSection,
+        "selectedQuestionType:",
+        selectedQuestionType
+      );
       Swal.fire({
         icon: "warning",
         title: "Lưu ý",
@@ -423,22 +524,40 @@ const ImproveStudy = () => {
   const continueSubmit = () => {
     const updatedQuestions = [...questions].map((question) => {
       if (question.selectedOption) {
-        return { ...question, answered: true, isGraded: true };
+        // Convert selected option content to letter for comparison
+        let selectedLetter = null;
+
+        if (question.selectedOption === question.optionA) {
+          selectedLetter = "A";
+        } else if (question.selectedOption === question.optionB) {
+          selectedLetter = "B";
+        } else if (question.selectedOption === question.optionC) {
+          selectedLetter = "C";
+        } else if (question.selectedOption === question.optionD) {
+          selectedLetter = "D";
+        }
+
+        return {
+          ...question,
+          answered: true,
+          isGraded: true,
+          selectedLetter: selectedLetter, // Store both content and letter
+        };
       }
       return { ...question, isGraded: true };
     });
 
     setQuestions(updatedQuestions);
 
-    // Tính điểm
+    // Tính điểm - sử dụng selectedLetter để so sánh với correctOption
     const correctCount = updatedQuestions.filter(
       (question) =>
-        question.answered && question.selectedOption === question.correctOption
+        question.answered && question.selectedLetter === question.correctOption
     ).length;
 
     const incorrectCount = updatedQuestions.filter(
       (question) =>
-        question.answered && question.selectedOption !== question.correctOption
+        question.answered && question.selectedLetter !== question.correctOption
     ).length;
 
     // Hiển thị kết quả
@@ -454,6 +573,7 @@ const ImproveStudy = () => {
     const resetQuestions = [...questions].map((question) => ({
       ...question,
       selectedOption: null,
+      selectedLetter: null,
       answered: false,
       isGraded: false,
     }));
@@ -462,14 +582,107 @@ const ImproveStudy = () => {
 
   const getImageUrl = (imageName) => {
     if (imageName) {
-      return `${process.env.LOCALHOST}/images/${imageName}`;
+      // Check if imageName already includes full path
+      if (imageName.startsWith("http")) {
+        return imageName;
+      }
+
+      // Handle different path formats
+      let fileName = imageName;
+
+      // If it's a full path like "/images/toeic/part1/office_meeting.jpg", extract filename
+      if (imageName.startsWith("/images/")) {
+        fileName = imageName.split("/").pop();
+
+        // Try to map old path structure to new filenames
+        if (fileName === "office_meeting.jpg") {
+          fileName = "fulltest01_number1.png"; // Map to actual file
+        }
+        // Add more mappings as needed for other images
+      }
+
+      console.log("🖼️ Image URL Debug:", {
+        originalImageName: imageName,
+        finalFileName: fileName,
+        fullUrl: `http://localhost:5000/images/${fileName}`,
+      });
+
+      // Use the backend server on port 5000
+      return `http://localhost:5000/images/${fileName}`;
     }
     return "";
   };
 
   const getAudioUrl = (audioName) => {
     if (audioName) {
-      return `${process.env.LOCALHOST}/audios/${audioName}`;
+      // Extract filename from full path (e.g., "/audio/toeic/part4/announcement_01.mp3" -> "announcement_01.mp3")
+      let fileName = audioName.includes("/")
+        ? audioName.split("/").pop()
+        : audioName;
+
+      // Comprehensive mapping logic based on TOEIC structure
+      // Part 1: Questions 1-6 (Individual pictures)
+      if (fileName.includes("part1") || fileName.includes("001.mp3")) {
+        fileName = "fulltest01_number1.mp3"; // Single audio for Part 1
+      }
+
+      // Part 2: Questions 7-31 (Question-Response)
+      else if (
+        fileName.includes("part2") ||
+        fileName.includes("q001") ||
+        fileName.includes("q002") ||
+        fileName.includes("questions_01-05")
+      ) {
+        fileName = "fulltest01_number7.mp3"; // Single audio for Part 2 questions
+      }
+
+      // Part 3: Questions 32-70 (Conversations)
+      else if (
+        fileName.includes("part3") ||
+        fileName.includes("conversation_01")
+      ) {
+        fileName = "fulltest01_number32to34.mp3"; // First conversation group
+      }
+
+      // Part 4: Questions 71-100 (Talks/Announcements)
+      else if (
+        fileName.includes("part4") ||
+        fileName.includes("announcement_01")
+      ) {
+        fileName = "fulltest01_number71to73.mp3"; // First announcement group
+      }
+
+      // Additional specific mappings for other conversations/announcements
+      else if (fileName.includes("conversation_02")) {
+        fileName = "fulltest01_number35to37.mp3";
+      } else if (fileName.includes("conversation_03")) {
+        fileName = "fulltest01_number38to40.mp3";
+      } else if (fileName.includes("announcement_02")) {
+        fileName = "fulltest01_number74to76.mp3";
+      } else if (fileName.includes("announcement_03")) {
+        fileName = "fulltest01_number77to79.mp3";
+      }
+
+      // Fallback for unknown patterns
+      else {
+        console.warn(
+          "No mapping found for audio:",
+          fileName,
+          "using Part 1 fallback"
+        );
+        fileName = "fulltest01_number1.mp3";
+      }
+
+      const finalUrl = `http://localhost:5000/audios/${fileName}`;
+      console.log("Audio URL mapping:", {
+        original: audioName,
+        extracted: audioName.includes("/")
+          ? audioName.split("/").pop()
+          : audioName,
+        mapped: fileName,
+        finalUrl,
+      });
+      return finalUrl;
     }
     return "";
   };
@@ -516,14 +729,32 @@ const ImproveStudy = () => {
 
   const clearSelection = (question) => {
     const updatedQuestions = [...questions].map((q) =>
-      q._id === question._id ? { ...q, selectedOption: null } : q
+      q._id === question._id
+        ? { ...q, selectedOption: null, answered: false }
+        : q
     );
     setQuestions(updatedQuestions);
   };
 
-  const checkAnswer = (question, selectedOption) => {
+  const checkAnswer = (question, selectedOption = null) => {
+    // If no selectedOption passed, use the one already set on question object
+    const optionToSet = selectedOption || question.selectedOption;
+
+    console.log("🎯 checkAnswer Debug:", {
+      questionId: question._id,
+      selectedOption: optionToSet,
+      correctOption: question.correctOption,
+      optionA: question.optionA,
+      optionB: question.optionB,
+      optionC: question.optionC,
+      optionD: question.optionD,
+    });
+
+    // Store the content string for radio display, conversion happens during scoring
     const updatedQuestions = [...questions].map((q) =>
-      q._id === question._id ? { ...q, selectedOption, answered: true } : q
+      q._id === question._id
+        ? { ...q, selectedOption: optionToSet, answered: !!optionToSet }
+        : q
     );
     setQuestions(updatedQuestions);
   };
@@ -556,6 +787,7 @@ const ImproveStudy = () => {
 
   return (
     <div
+      className="improve-study-container"
       style={{
         minHeight: "100vh",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -571,8 +803,8 @@ const ImproveStudy = () => {
                 background: "rgba(255, 255, 255, 0.95)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
+                overflow: "visible",
                 boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
-                overflow: "hidden",
               }}
               bodyStyle={{ padding: "40px" }}
             >
@@ -603,7 +835,7 @@ const ImproveStudy = () => {
                     fontWeight: "700",
                   }}
                 >
-                  🎯 LUYỆN TẬP THEO CHUYÊN ĐỀ
+                  BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN
                 </Title>
                 <Text
                   style={{
@@ -613,14 +845,13 @@ const ImproveStudy = () => {
                     marginBottom: "8px",
                   }}
                 >
-                  Tập trung luyện tập từng loại câu hỏi cụ thể để khắc phục điểm
-                  yếu
+                  Nâng cao kỹ năng TOEIC của bạn với bài tập chuyên sâu
                 </Text>
                 <Tag
-                  color="orange"
+                  color="blue"
                   style={{ fontSize: "12px", padding: "4px 12px" }}
                 >
-                  Advanced Practice • Focused Training
+                  7 Parts • Listening & Reading
                 </Tag>
               </div>
 
@@ -628,39 +859,43 @@ const ImproveStudy = () => {
 
               {/* Instructions */}
               <Alert
-                message="Điểm khác biệt với luyện tập cơ bản"
+                message="Hướng dẫn sử dụng"
                 description={
                   <Space
                     direction="vertical"
                     size="small"
                     style={{ width: "100%" }}
                   >
+                    <Text>• Chọn phần bạn muốn luyện tập (Part 1-7)</Text>
                     <Text>
-                      • <strong>Luyện cơ bản:</strong> Làm bài theo Part, câu
-                      hỏi ngẫu nhiên
+                      • Chọn loại câu hỏi cụ thể để tập trung luyện tập
                     </Text>
-                    <Text>
-                      • <strong>Luyện chuyên đề:</strong> Tập trung vào loại câu
-                      hỏi cụ thể
-                    </Text>
-                    <Text>
-                      • <strong>Mục tiêu:</strong> Khắc phục điểm yếu, nâng cao
-                      kỹ năng từng phần
-                    </Text>
+                    <Text>• Bắt đầu làm bài và nhận phản hồi chi tiết</Text>
                   </Space>
                 }
-                type="success"
+                type="info"
                 showIcon
                 style={{
                   marginBottom: "32px",
                   borderRadius: "12px",
                   background:
-                    "linear-gradient(135deg, rgba(82, 196, 26, 0.1), rgba(135, 208, 104, 0.05))",
+                    "linear-gradient(135deg, rgba(24, 144, 255, 0.1), rgba(64, 169, 255, 0.05))",
                 }}
               />
 
               {/* Selection Form */}
               <Row gutter={[24, 24]}>
+                {/* Debug info */}
+                {process.env.NODE_ENV === "development" && (
+                  <Col xs={24}>
+                    <Alert
+                      message={`Debug: Sections loaded: ${sections.length}, Enabled: ${enabledSections.length}`}
+                      type="info"
+                      style={{ marginBottom: "16px" }}
+                    />
+                  </Col>
+                )}
+
                 <Col xs={24} md={12}>
                   <Card
                     size="small"
@@ -668,6 +903,7 @@ const ImproveStudy = () => {
                       borderRadius: "16px",
                       border: "2px solid #f0f0f0",
                       transition: "all 0.3s ease",
+                      overflow: "visible",
                       ":hover": {
                         borderColor: "#667eea",
                         boxShadow: "0 8px 24px rgba(102, 126, 234, 0.15)",
@@ -691,40 +927,36 @@ const ImproveStudy = () => {
                           Chọn phần thi
                         </Text>
                       </div>
-                      <Select
-                        size="large"
-                        placeholder="Chọn phần TOEIC"
-                        value={selectedSection}
-                        onChange={(value) => {
-                          console.log("🚀 ~ Section selected:", value);
-                          setSelectedSection(value);
-                          setSelectedQuestionType("");
-                        }}
-                        style={{ width: "100%" }}
-                        allowClear
-                      >
-                        <Option value="686ce171b614dda1fc08f1d0">
-                          Part 1: Photographs
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d1">
-                          Part 2: Question-Response
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d2">
-                          Part 3: Conversations
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d3">
-                          Part 4: Talks
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d4">
-                          Part 5: Incomplete Sentences
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d5">
-                          Part 6: Text Completion
-                        </Option>
-                        <Option value="686ce171b614dda1fc08f1d6">
-                          Part 7: Reading Comprehension
-                        </Option>
-                      </Select>
+                      <div style={{ width: "100%" }}>
+                        <select
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #d9d9d9",
+                            fontSize: "14px",
+                          }}
+                          value={selectedSection}
+                          onChange={(e) => {
+                            console.log(
+                              "🚀 ~ Section selected:",
+                              e.target.value
+                            );
+                            setSelectedSection(e.target.value);
+                            setSelectedQuestionType("");
+                          }}
+                        >
+                          <option value="">Chọn phần TOEIC</option>
+                          {enabledSections.map((section) => {
+                            return (
+                              <option key={section._id} value={section._id}>
+                                {section.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
                     </Space>
                   </Card>
                 </Col>
@@ -736,6 +968,7 @@ const ImproveStudy = () => {
                       borderRadius: "16px",
                       border: "2px solid #f0f0f0",
                       transition: "all 0.3s ease",
+                      overflow: "visible",
                       opacity: selectedSection ? 1 : 0.6,
                     }}
                   >
@@ -756,46 +989,35 @@ const ImproveStudy = () => {
                           Chọn loại câu hỏi
                         </Text>
                       </div>
-                      <Select
-                        size="large"
-                        placeholder="Chọn loại câu hỏi"
-                        value={selectedQuestionType}
-                        onChange={setSelectedQuestionType}
-                        style={{ width: "100%" }}
-                        disabled={!selectedSection}
-                        dropdownStyle={{
-                          borderRadius: "12px",
-                          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-                        }}
-                        notFoundContent={
-                          !selectedSection
-                            ? "Vui lòng chọn phần thi trước"
-                            : "Không có dữ liệu"
-                        }
-                        showSearch={false}
-                        allowClear
-                      >
-                        {questionTypeOptions.map((option, index) => (
-                          <Option
-                            key={index}
-                            value={option.value}
-                            style={{ padding: "8px 12px" }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <ChevronRight className="w-3 h-3 text-gray-400" />
-                              <span style={{ fontWeight: "500" }}>
-                                {option.text}
-                              </span>
-                            </div>
-                          </Option>
-                        ))}
-                      </Select>
+                      <div style={{ width: "100%" }}>
+                        <select
+                          style={{
+                            width: "100%",
+                            height: "40px",
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #d9d9d9",
+                            fontSize: "14px",
+                            opacity: selectedSection ? 1 : 0.6,
+                          }}
+                          value={selectedQuestionType}
+                          onChange={(e) =>
+                            setSelectedQuestionType(e.target.value)
+                          }
+                          disabled={!selectedSection}
+                        >
+                          <option value="">
+                            {!selectedSection
+                              ? "Vui lòng chọn phần thi trước"
+                              : "Chọn loại câu hỏi"}
+                          </option>
+                          {questionTypeOptions.map((option, index) => (
+                            <option key={index} value={option.value}>
+                              {option.text}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </Space>
                   </Card>
                 </Col>
@@ -827,14 +1049,13 @@ const ImproveStudy = () => {
                   }}
                   icon={<PlayCircle className="w-5 h-5" />}
                 >
-                  BẮT ĐẦU LUYỆN CHUYÊN ĐỀ
+                  BẮT ĐẦU LUYỆN TẬP
                 </Button>
 
                 {(!selectedSection || !selectedQuestionType) && (
                   <div style={{ marginTop: "12px" }}>
                     <Text type="secondary" style={{ fontSize: "14px" }}>
-                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu luyện
-                      chuyên đề
+                      Vui lòng chọn phần thi và loại câu hỏi để bắt đầu
                     </Text>
                   </div>
                 )}
@@ -872,10 +1093,10 @@ const ImproveStudy = () => {
                   <Col xs={24} sm={8} style={{ textAlign: "center" }}>
                     <Zap className="w-8 h-8 mx-auto mb-2 text-orange-500" />
                     <Text strong style={{ display: "block" }}>
-                      Luyện tập chuyên sâu
+                      Cải thiện kỹ năng
                     </Text>
                     <Text type="secondary" style={{ fontSize: "12px" }}>
-                      Tập trung khắc phục điểm yếu
+                      Tập trung vào điểm yếu
                     </Text>
                   </Col>
                 </Row>
