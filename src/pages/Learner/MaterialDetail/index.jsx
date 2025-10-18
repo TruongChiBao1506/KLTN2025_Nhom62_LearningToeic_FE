@@ -58,7 +58,7 @@ const MaterialDetailAntd = () => {
     if (!filePath) return null;
     return filePath.startsWith("http")
       ? filePath
-      : `${process.env.LOCALHOST}${filePath}`;
+      : `http://localhost:5000${filePath}`;
   };
 
   useEffect(() => {

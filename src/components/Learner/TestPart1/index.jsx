@@ -1,258 +1,115 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import "./style.css";
+.question-section {
+  margin-bottom: 20px;
+}
 
-const TestPart1 = ({
-  questions,
-  submitAnswers,
-  refreshPage,
-  isSubmited,
-  getImageUrl,
-  getAudioUrl,
-  translateText,
-  getOptions,
-  getOptionClass,
-  clearSelection,
-  checkAnswer,
-}) => {
-  const [showTranscript, setShowTranscript] = useState({});
+.question-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  const toggleTranscript = (index) => {
-    setShowTranscript({
-      ...showTranscript,
-      [index]: !showTranscript[index],
-    });
-  };
+.audio-container {
+  margin-bottom: 15px;
+}
 
-  const scrollToQuestion = (index) => {
-    const element = document.getElementById(`question-${index}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+.image-container {
+  margin-bottom: 15px;
+  text-align: center;
+}
 
-  const handleOptionChange = (question, option) => {
-    question.selectedOption = option;
-    checkAnswer(question);
-  };
+.form-check-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 100%;
+}
 
-  return (
-    <>
-      <div className="col-lg col-md col-sm">
-        <div className="card specific-card border-0 shadow-lg">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-lg col-md col-sm">
-                {/* Vòng lặp để hiển thị các câu hỏi */}
-                {questions.map((question, index) => (
-                  <div
-                    className="question-section"
-                    key={index}
-                    id={`question-${index}`}
-                  >
-                    <div className="card specific-card mb-3 border-0 shadow-lg">
-                      <div className="card-body">
-                        <span
-                          className="badge bg-secondary"
-                          style={{ fontSize: "14px" }}
-                        >
-                          {question.questionType}
-                        </span>
-                        {/* Audio */}
-                        <div className="audio-container mb-2">
-                          <audio controls style={{ width: "400px" }}>
-                            <source
-                              src={getAudioUrl(question.questionAudio)}
-                              type="audio/mpeg"
-                            />
-                            Trình duyệt của bạn không hỗ trợ phát âm thanh.
-                          </audio>
-                        </div>
-                        {/* Image */}
-                        <div className="image-container">
-                          <img
-                            src={getImageUrl(question.questionImage)}
-                            alt="Luyện thi Listening TOEIC"
-                            style={{ width: "400px", height: "300px" }}
-                            className="question-image"
-                            loading="lazy"
-                          />
-                        </div>
+.form-check-label:hover {
+  background-color: #f0f7ff;
+}
 
-                        <ul className="mt-5">
-                          <button
-                            className="btn mb-2"
-                            style={{
-                              backgroundColor: "#e8f2ff",
-                              color: "#35509a",
-                              width: "60px",
-                            }}
-                          >
-                            {index + 1}
-                          </button>
+.highlight-row {
+  background-color: #e8f2ff;
+}
 
-                          {getOptions(question).map((option, optionIndex) => (
-                            <li
-                              key={optionIndex}
-                              className={getOptionClass(question, option).join(
-                                " "
-                              )}
-                            >
-                              <label className="form-check-label">
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  value={option}
-                                  checked={question.selectedOption === option}
-                                  onChange={() =>
-                                    handleOptionChange(question, option)
-                                  }
-                                  disabled={question.isGraded}
-                                  name={`flexRadioDefault-${question.questionId}`}
-                                />
-                                {option}
-                                {question.isGraded &&
-                                  option === question.correctOption && (
-                                    <div className="result-icon">
-                                      <FontAwesomeIcon
-                                        icon={faCheck}
-                                        style={{ color: "green" }}
-                                      />
-                                    </div>
-                                  )}
-                                {question.isGraded &&
-                                  option === question.selectedOption &&
-                                  option !== question.correctOption && (
-                                    <div className="result-icon">
-                                      <FontAwesomeIcon
-                                        icon={faTimes}
-                                        style={{ color: "red" }}
-                                      />
-                                    </div>
-                                  )}
-                              </label>
-                            </li>
-                          ))}
-                          {!question.isGraded && (
-                            <button
-                              onClick={() => clearSelection(question)}
-                              className="btn btn-link text-decoration-none"
-                            >
-                              Xóa lựa chọn
-                            </button>
-                          )}
-                        </ul>
+.result-icon {
+  margin-left: 10px;
+}
 
-                        {question.isGraded && (
-                          <div className="feedback-section">
-                            <button
-                              onClick={() => toggleTranscript(index)}
-                              className="btn btn-link btn-sm mt-2 link-offset-3"
-                            >
-                              {showTranscript[index]
-                                ? "Ẩn đoạn văn"
-                                : "Hiển thị đoạn văn"}
-                            </button>
+.feedback-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
 
-                            {showTranscript[index] && (
-                              <div className="transcript">
-                                <div className="transcript-original">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: question.questionScript,
-                                    }}
-                                  ></div>
-                                </div>
-                                <div className="transcript-translation">
-                                  <span className="badge bg-success">
-                                    Bản dịch
-                                  </span>
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: question.translatedScript,
-                                    }}
-                                  ></div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+.transcript {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
 
-      <div className="col-lg-4 col-md-4 col-sm-4 text-decoration-none border-0">
-        <div
-          className="card specific-card border-0"
-          style={{ position: "sticky", top: "95px", zIndex: 1 }}
-        >
-          <div className="card-body border-0">
-            <div className="question-list-section">
-              <h5 className="fw-normal fs-5 text-center">Bảng câu hỏi</h5>
-              <div
-                className="question-buttons mb-5 mx-2 lesson-content"
-                style={{ display: "flex", flexWrap: "wrap" }}
-              >
-                {questions.map((q, index) => (
-                  <button
-                    key={index}
-                    onClick={() => scrollToQuestion(index)}
-                    className={`question-button ${
-                      q.answered && q.selectedOption === q.correctOption
-                        ? "correct"
-                        : ""
-                    } ${
-                      q.answered && q.selectedOption !== q.correctOption
-                        ? "incorrect"
-                        : ""
-                    } ${q.selectedOption !== null ? "selected" : ""} ${
-                      q.isGraded ? "graded" : ""
-                    }`}
-                    style={{
-                      backgroundColor: q.selectedOption
-                        ? q.isGraded
-                          ? q.selectedOption === q.correctOption
-                            ? "green"
-                            : "red"
-                          : "orange"
-                        : "",
-                      color: q.selectedOption ? "white" : "#052649",
-                    }}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
+.transcript-original {
+  margin-bottom: 10px;
+}
 
-              <div className="d-grid gap-2">
-                <button
-                  onClick={submitAnswers}
-                  className="btn btn-primary"
-                  type="button"
-                >
-                  Nộp bài
-                </button>
-                <button
-                  onClick={refreshPage}
-                  className="btn btn-secondary"
-                  type="button"
-                >
-                  Làm lại
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+.transcript-translation {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
 
-export default TestPart1;
+.question-list-section {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.question-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.question-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 5px;
+}
+
+.question-button:hover {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.question-button.selected {
+  background-color: orange;
+  color: white;
+}
+
+.question-button.correct {
+  background-color: green;
+  color: white;
+}
+
+.question-button.incorrect {
+  background-color: red;
+  color: white;
+}
+
+.question-button.graded {
+  border: 2px solid #007bff;
+}

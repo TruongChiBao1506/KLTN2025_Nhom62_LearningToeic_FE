@@ -62,17 +62,14 @@ const chatStyles = {
     backdropFilter: "blur(8px)",
   },
   floatingButton: {
-    background:
-      "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #1890ff 100%)",
-    boxShadow:
-      "0 4px 20px rgba(24, 144, 255, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1)",
+    background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #1890ff 100%)",
+    boxShadow: "0 4px 20px rgba(24, 144, 255, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1)",
     border: "none",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     transform: "scale(1)",
     "&:hover": {
       transform: "scale(1.05)",
-      boxShadow:
-        "0 6px 25px rgba(24, 144, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15)",
+      boxShadow: "0 6px 25px rgba(24, 144, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15)",
     },
   },
   "@keyframes pulse": {
@@ -176,7 +173,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
     if (isOpen) {
       const newSocket = io(
         window.location.hostname === "localhost"
-          ? `${process.env.LOCALHOST}`
+          ? "http://localhost:5000"
           : window.location.origin
       );
       setSocket(newSocket);
@@ -205,20 +202,14 @@ const ChatbotModal = ({ isOpen, onClose }) => {
         } else {
           // Handle error response
           console.error("Chatbot response error:", data.error);
-          message.error(
-            data.error ||
-              "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại."
-          );
+          message.error(data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại.");
           setIsLoading(false);
         }
       });
 
       newSocket.on("chatbot-error", (data) => {
         console.error("Chatbot error received:", data);
-        message.error(
-          data.error ||
-            "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại."
-        );
+        message.error(data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại.");
         setIsLoading(false);
       });
 
@@ -288,9 +279,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
         } else {
           // Handle error response
           console.error("HTTP API error:", response.data.error);
-          message.error(
-            response.data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn."
-          );
+          message.error(response.data.error || "Đã xảy ra lỗi khi xử lý tin nhắn của bạn.");
         }
         setIsLoading(false);
       }
@@ -335,7 +324,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       <FloatButton
         icon={
           <Badge count={unreadCount} size="small">
-            <MessageOutlined style={{ color: "#fff", fontSize: "20px" }} />
+            <MessageOutlined style={{color: "#fff", fontSize: "20px"}}/>
           </Badge>
         }
         onClick={() => {

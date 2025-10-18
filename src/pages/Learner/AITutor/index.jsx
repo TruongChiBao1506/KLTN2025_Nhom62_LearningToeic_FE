@@ -169,7 +169,7 @@ const AITutor = () => {
     // Setup socket connection
     const newSocket = io(
       window.location.hostname === "localhost"
-        ? process.env.LOCALHOST
+        ? "http://localhost:5000"
         : window.location.origin
     );
     setSocket(newSocket);

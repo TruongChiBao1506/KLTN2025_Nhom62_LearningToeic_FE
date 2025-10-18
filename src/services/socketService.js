@@ -1,4 +1,4 @@
-import io from "socket.io-client";
+import io from 'socket.io-client';
 
 // Socket service để quản lý kết nối Socket.io
 class SocketService {
@@ -15,42 +15,42 @@ class SocketService {
     }
 
     // Lấy API URL từ environment hoặc default
-    const API_URL = process.env.REACT_APP_URL || process.env.LOCALHOST;
+    const API_URL = process.env.REACT_APP_URL || 'http://localhost:5000';
 
     this.socket = io(API_URL, {
-      transports: ["websocket", "polling"],
+      transports: ['websocket', 'polling'],
       upgrade: true,
       rememberUpgrade: true,
       timeout: 20000,
     });
 
-    this.socket.on("connect", () => {
-      console.log("🔌 Connected to Socket.io server");
+    this.socket.on('connect', () => {
+      console.log('🔌 Connected to Socket.io server');
       this._isConnected = true;
 
       // Đăng ký user để nhận notifications
       if (userId) {
-        this.socket.emit("register", { userId });
-        console.log("👤 Registered user:", userId);
+        this.socket.emit('register', { userId });
+        console.log('👤 Registered user:', userId);
       }
 
       // Setup lại tất cả listeners đã đăng ký trước đó
-      console.log("🔄 Setting up existing listeners...");
+      console.log('🔄 Setting up existing listeners...');
       this.listeners.forEach((callbacks, event) => {
-        callbacks.forEach((callback) => {
+        callbacks.forEach(callback => {
           this.socket.on(event, callback);
           console.log(`✅ Listener setup for event: ${event}`);
         });
       });
     });
 
-    this.socket.on("disconnect", (reason) => {
-      console.log("🔌 Disconnected from Socket.io server:", reason);
+    this.socket.on('disconnect', (reason) => {
+      console.log('🔌 Disconnected from Socket.io server:', reason);
       this._isConnected = false;
     });
 
-    this.socket.on("connect_error", (error) => {
-      console.error("🔌 Socket connection error:", error);
+    this.socket.on('connect_error', (error) => {
+      console.error('🔌 Socket connection error:', error);
       this._isConnected = false;
     });
 
@@ -63,7 +63,7 @@ class SocketService {
       this.socket.disconnect();
       this.socket = null;
       this._isConnected = false;
-      console.log("🔌 Socket disconnected");
+      console.log('🔌 Socket disconnected');
     }
   }
 
@@ -72,7 +72,7 @@ class SocketService {
     if (this.socket?.connected) {
       this.socket.emit(event, data);
     } else {
-      console.warn("⚠️ Socket not connected, cannot emit:", event);
+      console.warn('⚠️ Socket not connected, cannot emit:', event);
     }
   }
 
