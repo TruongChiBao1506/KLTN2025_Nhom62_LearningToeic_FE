@@ -152,7 +152,7 @@ const VocabularyTopics = () => {
   const handleImageError = (topicId) => {
     setImageErrors(prev => new Set([...prev, topicId]));
   };
-
+  // Lấy hình ảnh
   const getImageUrl = (imageName) => {
     // Return null if no image name provided
     if (!imageName || imageName.trim() === "") {
