@@ -21,6 +21,7 @@ const No1To2 = ({ testId }) => {
   const [isRecording, setIsRecording] = useState([]);
   const [recordedAudios, setRecordedAudios] = useState([]);
   const [recordedText, setRecordedText] = useState([]);
+  const [showDetailedResult, setShowDetailedResult] = useState(false);
 
   const mediaRecorderRef = useRef(null);
   const preparationIntervalRef = useRef(null);
@@ -354,189 +355,376 @@ const No1To2 = ({ testId }) => {
   }, [testId]);
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12">
-          <div className="card mt-3" style={{ transform: "none" }}>
-            <div className="card-body">
-              <div className="d-flex justify-content-center">
-                <img
-                  src="https://www.vividsites.com/mm/images/Voice-UI.png"
-                  alt="Speaking"
-                  width="100px"
-                  height="100px"
-                />
+    <>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <div className="card mt-3" style={{ transform: "none" }}>
+              <div className="card-body">
+                <div className="d-flex justify-content-center">
+                  <img
+                    src="https://www.vividsites.com/mm/images/Voice-UI.png"
+                    alt="Speaking"
+                    width="100px"
+                    height="100px"
+                  />
+                </div>
+                <h2 className="text-center my-3">
+                  Speaking: Đọc to một đoạn văn
+                </h2>
+                <h5 className="card-title text-primary">Hướng dẫn:</h5>
+                <p className="card-text">
+                  Trong phần kiểm tra này, bạn sẽ đọc to văn bản trên màn hình.
+                  Bạn sẽ có <strong>45</strong> giây để chuẩn bị. Sau đó, bạn sẽ
+                  có <strong>45</strong> giây để đọc to văn bản.
+                </p>
+                <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
+                <span className="badge bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
+                  Phát âm, ngữ điệu, trọng âm.
+                </span>
               </div>
-              <h2 className="text-center my-3">
-                Speaking: Đọc to một đoạn văn
-              </h2>
-              <h5 className="card-title text-primary">Hướng dẫn:</h5>
-              <p className="card-text">
-                Trong phần kiểm tra này, bạn sẽ đọc to văn bản trên màn hình.
-                Bạn sẽ có <strong>45</strong> giây để chuẩn bị. Sau đó, bạn sẽ
-                có <strong>45</strong> giây để đọc to văn bản.
-              </p>
-              <h5 className="card-title text-primary">Tiêu chí đánh giá:</h5>
-              <span className="badge bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                Phát âm, ngữ điệu, trọng âm.
-              </span>
             </div>
-          </div>
 
-          <div className="card mt-3" style={{ transform: "none" }}>
-            <div className="card-body">
-              {!isReadyToTest ? (
-                <button className="button" onClick={startTest}>
-                  Sẵn sàng luyện tập
-                </button>
-              ) : (
-                <div>
-                  <button
-                    className="button bg-primary"
-                    onClick={refreshAllQuestions}
-                  >
-                    Làm lại
+            <div className="card mt-3" style={{ transform: "none" }}>
+              <div className="card-body">
+                {!isReadyToTest ? (
+                  <button className="button" onClick={startTest}>
+                    Sẵn sàng luyện tập
                   </button>
+                ) : (
+                  <div>
+                    <button
+                      className="button bg-primary"
+                      onClick={refreshAllQuestions}
+                    >
+                      Làm lại
+                    </button>
 
-                  <div className="word-item">
-                    <div className="mb-5">
-                      <div className="text-end" style={{ fontSize: "20px" }}>
-                        <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill">
-                          <span style={{ fontSize: "22px" }}>⏸</span>
-                          Chuẩn bị: {preparingCountdown[currentIndex]}s
-                        </span>
-                        <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                          <span style={{ fontSize: "22px" }}>⏸</span>
-                          Ghi âm: {recordingCountdown[currentIndex]}s
-                        </span>
-                      </div>
-
-                      {isRecording[currentIndex] === null && (
-                        <button
-                          className="btn mb-3"
-                          style={{ backgroundColor: "#052649" }}
-                          onClick={() => toggleReading(currentIndex)}
-                        >
-                          <FontAwesomeIcon
-                            icon={
-                              isReading[currentIndex] ? faStop : faHeadphones
-                            }
-                            className={
-                              isReading[currentIndex]
-                                ? "text-danger"
-                                : "text-white"
-                            }
-                          />
-                        </button>
-                      )}
-
-                      <div className="word-info">
-                        <button
-                          className="btn button5 my-2 me-3"
-                          style={{
-                            backgroundColor: "#e8f2ff",
-                            color: "#35509a",
-                            width: "40px",
-                          }}
-                        >
-                          {currentIndex + 1}
-                        </button>
-                        <br />
-                        <strong className="ms-3">Văn bản:</strong>
-                        <div
-                          className="ms-3"
-                          dangerouslySetInnerHTML={{
-                            __html: questions[currentIndex]?.questionText || "",
-                          }}
-                        ></div>
-                      </div>
-
-                      <div className="d-flex justify-content-center">
-                        {recordedAudios[currentIndex] && (
-                          <audio
-                            className="my-3"
-                            src={recordedAudios[currentIndex]}
-                            controls
-                          ></audio>
-                        )}
-                      </div>
-
-                      <div className="word-actions d-flex justify-content-center">
-                        {isRecording[currentIndex] === false && (
-                          <button
-                            className="btn"
-                            style={{ backgroundColor: "#052649" }}
-                            onClick={() => startRecording(currentIndex)}
-                          >
-                            <FontAwesomeIcon
-                              icon={faMicrophone}
-                              className="text-white"
-                            />
-                          </button>
-                        )}
-                        {isRecording[currentIndex] === true && (
-                          <button
-                            className="btn"
-                            style={{ backgroundColor: "#052649" }}
-                            onClick={() => stopRecording(currentIndex)}
-                          >
-                            <FontAwesomeIcon
-                              icon={faStop}
-                              className="text-danger"
-                            />
-                          </button>
-                        )}
-                        {isRecording[currentIndex] === null && (
-                          <button className="p-2 badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill ms-3">
-                            Đã hoàn thành{" "}
-                            <FontAwesomeIcon
-                              icon={faCircleCheck}
-                              className="text-success"
-                            />
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="mt-3">
-                        <div
-                          className="alert alert-light text-primary"
-                          role="alert"
-                        >
-                          <strong className="ms-3" style={{ color: "#052649" }}>
-                            Kết quả:
-                          </strong>{" "}
-                          {recordedText[currentIndex]}
+                    <div className="word-item">
+                      <div className="mb-5">
+                        <div className="text-end" style={{ fontSize: "20px" }}>
+                          <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill">
+                            <span style={{ fontSize: "22px" }}>⏸</span>
+                            Chuẩn bị: {preparingCountdown[currentIndex]}s
+                          </span>
+                          <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
+                            <span style={{ fontSize: "22px" }}>⏸</span>
+                            Ghi âm: {recordingCountdown[currentIndex]}s
+                          </span>
                         </div>
-                      </div>
 
-                      <div className="mt-5 d-flex justify-content-center">
-                        {currentIndex !== 0 && (
+                        {isRecording[currentIndex] === null && (
                           <button
-                            className="button d-flex"
-                            onClick={showPreviousQuestion}
+                            className="btn mb-3"
+                            style={{ backgroundColor: "#052649" }}
+                            onClick={() => toggleReading(currentIndex)}
                           >
-                            Câu trước
+                            <FontAwesomeIcon
+                              icon={
+                                isReading[currentIndex] ? faStop : faHeadphones
+                              }
+                              className={
+                                isReading[currentIndex]
+                                  ? "text-danger"
+                                  : "text-white"
+                              }
+                            />
                           </button>
                         )}
-                        {isRecording[currentIndex] === null &&
-                          currentIndex < questions.length - 1 && (
+
+                        <div className="word-info">
+                          <button
+                            className="btn button5 my-2 me-3"
+                            style={{
+                              backgroundColor: "#e8f2ff",
+                              color: "#35509a",
+                              width: "40px",
+                            }}
+                          >
+                            {currentIndex + 1}
+                          </button>
+                          <br />
+                          <strong className="ms-3">Văn bản:</strong>
+                          <div
+                            className="ms-3"
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                questions[currentIndex]?.questionText || "",
+                            }}
+                          ></div>
+                        </div>
+
+                        <div className="d-flex justify-content-center">
+                          {recordedAudios[currentIndex] && (
+                            <audio
+                              className="my-3"
+                              src={recordedAudios[currentIndex]}
+                              controls
+                            ></audio>
+                          )}
+                        </div>
+
+                        <div className="word-actions d-flex justify-content-center">
+                          {isRecording[currentIndex] === false && (
                             <button
-                              className="button ms-3"
-                              onClick={showNextQuestion}
+                              className="btn"
+                              style={{ backgroundColor: "#052649" }}
+                              onClick={() => startRecording(currentIndex)}
                             >
-                              Câu tiếp theo
+                              <FontAwesomeIcon
+                                icon={faMicrophone}
+                                className="text-white"
+                              />
                             </button>
                           )}
+                          {isRecording[currentIndex] === true && (
+                            <button
+                              className="btn"
+                              style={{ backgroundColor: "#052649" }}
+                              onClick={() => stopRecording(currentIndex)}
+                            >
+                              <FontAwesomeIcon
+                                icon={faStop}
+                                className="text-danger"
+                              />
+                            </button>
+                          )}
+                          {isRecording[currentIndex] === null && (
+                            <>
+                              <button className="p-2 badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill ms-3">
+                                Đã hoàn thành{" "}
+                                <FontAwesomeIcon
+                                  icon={faCircleCheck}
+                                  className="text-success"
+                                />
+                              </button>
+                              <button
+                                className="btn btn-outline-primary btn-sm ms-2"
+                                onClick={() => setShowDetailedResult(true)}
+                              >
+                                <i className="fas fa-eye me-1"></i>
+                                Xem chi tiết
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        <div className="mt-3">
+                          <div
+                            className="alert alert-light text-primary"
+                            role="alert"
+                          >
+                            <strong
+                              className="ms-3"
+                              style={{ color: "#052649" }}
+                            >
+                              Kết quả:
+                            </strong>{" "}
+                            {recordedText[currentIndex]}
+                          </div>
+                        </div>
+
+                        <div className="mt-5 d-flex justify-content-center">
+                          {currentIndex !== 0 && (
+                            <button
+                              className="button d-flex"
+                              onClick={showPreviousQuestion}
+                            >
+                              Câu trước
+                            </button>
+                          )}
+                          {isRecording[currentIndex] === null &&
+                            currentIndex < questions.length - 1 && (
+                              <button
+                                className="button ms-3"
+                                onClick={showNextQuestion}
+                              >
+                                Câu tiếp theo
+                              </button>
+                            )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Detailed Result Modal */}
+      {showDetailedResult && (
+        <div
+          className="modal fade show"
+          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+          onClick={() => setShowDetailedResult(false)}
+        >
+          <div
+            className="modal-dialog modal-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  <i className="fas fa-chart-line me-2"></i>
+                  Kết quả chi tiết - Câu {currentIndex + 1}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowDetailedResult(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                {/* Audio Player */}
+                <div className="mb-4">
+                  <h6>
+                    <i className="fas fa-volume-up me-2 text-primary"></i>Bản
+                    ghi âm:
+                  </h6>
+                  {recordedAudios[currentIndex] ? (
+                    <audio
+                      className="w-100"
+                      src={recordedAudios[currentIndex]}
+                      controls
+                    ></audio>
+                  ) : (
+                    <div className="alert alert-warning">
+                      <i className="fas fa-exclamation-triangle me-2"></i>
+                      Không có bản ghi âm
+                    </div>
+                  )}
+                </div>
+
+                {/* Analysis */}
+                <div className="mb-4">
+                  <h6>
+                    <i className="fas fa-chart-bar me-2 text-success"></i>Phân
+                    tích:
+                  </h6>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="card bg-light">
+                        <div className="card-body text-center">
+                          <h6>
+                            <i className="fas fa-microphone text-primary"></i>{" "}
+                            Chất lượng âm thanh
+                          </h6>
+                          <div className="badge bg-success fs-6">
+                            {recordedAudios[currentIndex] ? "Tốt" : "Chưa ghi"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="card bg-light">
+                        <div className="card-body text-center">
+                          <h6>
+                            <i className="fas fa-comment-dots text-info"></i>{" "}
+                            Nhận diện giọng nói
+                          </h6>
+                          <div className="badge bg-info fs-6">
+                            {recordedText[currentIndex]
+                              ? `${
+                                  recordedText[currentIndex].split(" ").length
+                                } từ`
+                              : "Chưa nhận diện"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Speech Recognition Result */}
+                {recordedText[currentIndex] && (
+                  <div className="mb-4">
+                    <h6>
+                      <i className="fas fa-comment me-2 text-info"></i>Nội dung
+                      nhận diện được:
+                    </h6>
+                    <div className="card border-info">
+                      <div className="card-body">
+                        <blockquote className="blockquote mb-0">
+                          <p>"{recordedText[currentIndex]}"</p>
+                          <footer className="blockquote-footer">
+                            <small>
+                              Độ dài: {recordedText[currentIndex].length} ký tự
+                              | Số từ:{" "}
+                              {recordedText[currentIndex].split(" ").length}
+                            </small>
+                          </footer>
+                        </blockquote>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Feedback */}
+                <div className="mb-4">
+                  <h6>
+                    <i className="fas fa-lightbulb me-2 text-warning"></i>Gợi ý
+                    cải thiện:
+                  </h6>
+                  <div className="alert alert-primary">
+                    {recordedText[currentIndex] ? (
+                      recordedText[currentIndex].length < 30 ? (
+                        <>
+                          <i className="fas fa-arrow-up me-2"></i>
+                          <strong>Nên nói dài hơn:</strong> Câu trả lời ngắn.
+                          Hãy thêm chi tiết và ví dụ cụ thể.
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-thumbs-up me-2"></i>
+                          <strong>Rất tốt:</strong> Bạn đã có câu trả lời đầy đủ
+                          và chi tiết.
+                        </>
+                      )
+                    ) : (
+                      <>
+                        <i className="fas fa-microphone-slash me-2"></i>
+                        <strong>Cần cải thiện:</strong> Hãy nói rõ ràng hơn và
+                        kiểm tra microphone.
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-warning me-2"
+                  onClick={() => {
+                    setShowDetailedResult(false);
+                    // Reset để ghi lại
+                    const newIsRecording = [...isRecording];
+                    const newRecordedAudios = [...recordedAudios];
+                    const newRecordedText = [...recordedText];
+
+                    newIsRecording[currentIndex] = false;
+                    newRecordedAudios[currentIndex] = null;
+                    newRecordedText[currentIndex] = "";
+
+                    setIsRecording(newIsRecording);
+                    setRecordedAudios(newRecordedAudios);
+                    setRecordedText(newRecordedText);
+                  }}
+                >
+                  <i className="fas fa-redo me-2"></i>Ghi lại
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => setShowDetailedResult(false)}
+                >
+                  <i className="fas fa-check me-2"></i>Xác nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
