@@ -366,6 +366,11 @@ const Sidebar = ({ isToggled, isAnimating }) => {
             icon: <CommentOutlined />,
             label: 'Quản lý phản hồi',
         },
+                {
+            key: '/admin/blog',
+            icon: <EditOutlined />,
+            label: 'Quản lý Blog',
+        },
     ];
 
     // TEACHER MENU - Quản lý tất cả nội dung
@@ -384,11 +389,6 @@ const Sidebar = ({ isToggled, isAnimating }) => {
             key: '/admin/topic',
             icon: <BookOutlined />,
             label: 'Quản lý Topic',
-        },
-        {
-            key: '/admin/blog',
-            icon: <EditOutlined />,
-            label: 'Quản lý Blog',
         },
         {
             key: '/admin/grammar',
