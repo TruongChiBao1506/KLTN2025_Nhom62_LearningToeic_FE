@@ -1,4 +1,4 @@
-.overflow-ellipsis {
+﻿.overflow-ellipsis {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   /* Số dòng hiển thị */
@@ -16,8 +16,8 @@ h5 {
 .custom-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #052649;
-  color: #fff;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
   font-size: 16px;
   font-weight: bold;
   text-decoration: none;
@@ -26,8 +26,8 @@ h5 {
 }
 
 .custom-button:hover {
-  background-color: #fff;
-  color: #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
 }
 
 .custom-card {
@@ -66,8 +66,8 @@ h5 {
 }
 
 .test-info {
-  font-size: 14px;
-  color: #666;
+  font-size: 12px;
+  color: var(--color-text-secondary);
   margin-top: 5px;
 }
 

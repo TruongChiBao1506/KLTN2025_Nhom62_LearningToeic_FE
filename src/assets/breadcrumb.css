@@ -1,4 +1,4 @@
-a {
+﻿a {
     color: #96c03d;
     text-decoration: none;
 }
@@ -139,7 +139,7 @@ a {
 
     .cd-breadcrumb.triangle li.current>* {
         /* selected step */
-        color: #ffffff;
+        color: var(--color-bg-primary)fff;
         background-color: #96c03d;
         border-color: #96c03d;
     }
@@ -177,7 +177,7 @@ a {
         -ms-transform: translateX(4px);
         -o-transform: translateX(4px);
         transform: translateX(4px);
-        border-left-color: #ffffff;
+        border-left-color: var(--color-bg-primary)fff;
         /* reset style */
         margin: 0;
     }

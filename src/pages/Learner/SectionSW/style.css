@@ -2,7 +2,7 @@
 
 .section-sw-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   padding: 20px;
 }
 
@@ -16,14 +16,14 @@
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #fff;
+  color: var(--color-bg-primary);
 }
 
 .section-sw-subtitle {
   font-size: 1.2rem;
   opacity: 0.9;
   margin-bottom: 20px;
-  color: #fff;
+  color: var(--color-bg-primary);
 }
 
 .section-sw-content {
@@ -48,12 +48,12 @@
 .section-sw-card-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
 }
 
 .section-sw-card-description {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -101,7 +101,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #27AE60;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +109,7 @@
 }
 
 .test-icon {
-  color: #fff;
+  color: var(--color-bg-primary);
   font-size: 18px;
 }
 
@@ -140,7 +140,7 @@
 
 .test-stat-item {
   color: #059669;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -153,7 +153,7 @@
 .test-button {
   margin-top: auto;
   border-radius: 8px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #27AE60;
   border-color: #10b981;
   height: 44px;
   font-weight: 500;
@@ -188,7 +188,7 @@
 }
 
 .sidebar-link:hover {
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .sidebar-item {
@@ -201,7 +201,7 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #667eea, #5a67d8);
+  background: linear-gradient(135deg, var(--color-primary), #5a67d8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,7 +214,7 @@
 }
 
 .sidebar-icon {
-  color: #fff;
+  color: var(--color-bg-primary);
   font-size: 16px;
 }
 
@@ -225,7 +225,7 @@
 
 .sidebar-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.4;
   overflow: hidden;
@@ -267,7 +267,7 @@
   }
 
   .test-title {
-    font-size: 15px;
+    font-size: 12px;
     margin-bottom: 12px;
   }
 
@@ -288,10 +288,10 @@
   }
 
   .sidebar-icon {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .sidebar-title {
-    font-size: 13px;
+    font-size: 12px;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faTrash,
@@ -152,13 +152,13 @@ const FeedbackList = ({ feedbacks = [], retrieveFeedbacks }) => {
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,

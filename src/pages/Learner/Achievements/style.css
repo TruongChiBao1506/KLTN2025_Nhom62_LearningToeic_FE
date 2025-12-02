@@ -1,4 +1,4 @@
-/* Achievements Styles */
+﻿/* Achievements Styles */
 .achievements-container {
   padding: 24px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
@@ -92,7 +92,7 @@
 
 /* User Level Card */
 .user-level-card {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  background: #2C5F8D;
   border-radius: 20px;
   padding: 32px;
   color: white;
@@ -334,7 +334,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #52c41a;
+  background: var(--color-success);
   color: white;
   width: 24px;
   height: 24px;
@@ -378,7 +378,7 @@
 }
 
 .achievement-content p {
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0 0 16px 0;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -406,7 +406,7 @@
 
 .progress-text {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
@@ -1006,7 +1006,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: #F8F9FA;
   border-radius: 16px;
   margin: 20px 0;
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -1077,7 +1077,7 @@ body {
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1101,7 +1101,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: #F8F9FA;
   border-radius: 16px;
   margin: 20px 0;
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -1132,7 +1132,7 @@ body {
 
 .empty-action {
   color: #3b82f6;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   text-decoration: none;
   padding: 8px 16px;
@@ -1165,7 +1165,7 @@ body {
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   color: white;
   padding: 20px;
   border-radius: 12px;

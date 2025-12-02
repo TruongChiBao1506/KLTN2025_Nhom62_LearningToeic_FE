@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMicrophone,
@@ -402,11 +402,11 @@ const No1To2 = ({ testId }) => {
                     <div className="mb-5">
                       <div className="text-end" style={{ fontSize: "20px" }}>
                         <span className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill">
-                          <span style={{ fontSize: "22px" }}>⏸</span>
+                          <span style={{ fontSize: "20px" }}>⏸</span>
                           Chuẩn bị: {preparingCountdown[currentIndex]}s
                         </span>
                         <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                          <span style={{ fontSize: "22px" }}>⏸</span>
+                          <span style={{ fontSize: "20px" }}>⏸</span>
                           Ghi âm: {recordingCountdown[currentIndex]}s
                         </span>
                       </div>
@@ -414,7 +414,7 @@ const No1To2 = ({ testId }) => {
                       {isRecording[currentIndex] === null && (
                         <button
                           className="btn mb-3"
-                          style={{ backgroundColor: "#052649" }}
+                          style={{ backgroundColor: "var(--color-brand-navy)" }}
                           onClick={() => toggleReading(currentIndex)}
                         >
                           <FontAwesomeIcon
@@ -465,7 +465,7 @@ const No1To2 = ({ testId }) => {
                         {isRecording[currentIndex] === false && (
                           <button
                             className="btn"
-                            style={{ backgroundColor: "#052649" }}
+                            style={{ backgroundColor: "var(--color-brand-navy)" }}
                             onClick={() => startRecording(currentIndex)}
                           >
                             <FontAwesomeIcon
@@ -477,7 +477,7 @@ const No1To2 = ({ testId }) => {
                         {isRecording[currentIndex] === true && (
                           <button
                             className="btn"
-                            style={{ backgroundColor: "#052649" }}
+                            style={{ backgroundColor: "var(--color-brand-navy)" }}
                             onClick={() => stopRecording(currentIndex)}
                           >
                             <FontAwesomeIcon
@@ -502,7 +502,7 @@ const No1To2 = ({ testId }) => {
                           className="alert alert-light text-primary"
                           role="alert"
                         >
-                          <strong className="ms-3" style={{ color: "#052649" }}>
+                          <strong className="ms-3" style={{ color: "var(--color-brand-navy)" }}>
                             Kết quả:
                           </strong>{" "}
                           {recordedText[currentIndex]}

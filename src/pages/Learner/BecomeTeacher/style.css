@@ -1,0 +1,52 @@
+﻿.become-teacher-container {
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
+}
+
+.become-teacher-card {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.become-teacher-card .ant-card-body {
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .become-teacher-container {
+    padding: 16px;
+  }
+
+  .become-teacher-card .ant-card-body {
+    padding: 24px;
+  }
+}
+
+/* Custom Upload Button */
+.become-teacher-card .ant-upload-list {
+  margin-top: 16px;
+}
+
+/* Steps */
+.become-teacher-card .ant-steps {
+  margin: 24px 0;
+}
+
+/* Alert spacing */
+.become-teacher-card .ant-alert {
+  margin-bottom: 16px;
+}
+
+/* Form items */
+.become-teacher-card .ant-form-item {
+  margin-bottom: 24px;
+}
+
+/* Character counter warning */
+.become-teacher-card .ant-input-textarea-show-count::after {
+  float: right;
+  color: rgba(0, 0, 0, 0.45);
+}

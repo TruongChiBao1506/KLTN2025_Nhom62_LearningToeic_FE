@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import FreeMaterialList from '../../../components/Admin/FreeMaterialList';
@@ -83,7 +83,7 @@ const FreeMaterial = () => {
                                     boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                                 }}
                             >
-                                <FontAwesomeIcon icon={faLayerGroup} color="#fff" />
+                                <FontAwesomeIcon icon={faLayerGroup} color="var(--color-bg-primary)" />
                             </span>
                             <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
                                 Free Material

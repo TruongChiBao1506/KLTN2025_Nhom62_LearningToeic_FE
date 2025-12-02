@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+﻿import React, { useState, useMemo } from "react";
 import {
   Row,
   Col,
@@ -159,20 +159,20 @@ const TestPart7Double = ({
     return {
       border: `2px solid ${
         isCorrect
-          ? "#52c41a"
+          ? "var(--color-success)"
           : isWrong
-          ? "#ff4d4f"
+          ? "var(--color-danger)"
           : isSelected
-          ? "#1890ff"
+          ? "var(--color-primary)"
           : "#f0f0f0"
       }`,
       backgroundColor: isCorrect
-        ? "#f6ffed"
+        ? "var(--color-success-bg)"
         : isWrong
-        ? "#fff2f0"
+        ? "var(--color-danger-bg)"
         : isSelected
-        ? "#e6f7ff"
-        : "#fafafa",
+        ? "var(--color-info-bg)"
+        : "var(--color-bg-hover)",
     };
   };
 
@@ -196,7 +196,7 @@ const TestPart7Double = ({
                       <Card
                         size="small"
                         style={{
-                          backgroundColor: "#f8f9fa",
+                          backgroundColor: "var(--color-bg-secondary)",
                           borderRadius: "8px",
                         }}
                       >
@@ -226,11 +226,11 @@ const TestPart7Double = ({
                                   style={{
                                     marginBottom: 12,
                                     padding: "8px 12px",
-                                    backgroundColor: "#e6f7ff",
+                                    backgroundColor: "var(--color-info-bg)",
                                     borderRadius: "6px",
-                                    fontSize: "14px",
+                                    fontSize: "12px",
                                     fontWeight: "bold",
-                                    color: "#1890ff",
+                                    color: "var(--color-primary)",
                                   }}
                                 >
                                   {groupQuestions[0].questionText}
@@ -243,7 +243,7 @@ const TestPart7Double = ({
                                 }}
                                 style={{
                                   lineHeight: "1.6",
-                                  fontSize: "15px",
+                                  fontSize: "12px",
                                   whiteSpace: "pre-line",
                                 }}
                               />
@@ -298,7 +298,7 @@ const TestPart7Double = ({
                                         ) + 1
                                       }
                                       style={{
-                                        backgroundColor: "#1890ff",
+                                        backgroundColor: "var(--color-primary)",
                                         color: "white",
                                         fontSize: "12px",
                                         fontWeight: "bold",
@@ -308,7 +308,7 @@ const TestPart7Double = ({
                                       text={question.questionType}
                                       style={{
                                         backgroundColor: "#f0f0f0",
-                                        color: "#666",
+                                        color: "var(--color-text-secondary)",
                                         fontSize: "11px",
                                       }}
                                     />
@@ -316,7 +316,7 @@ const TestPart7Double = ({
 
                                   <Text
                                     style={{
-                                      fontSize: "15px",
+                                      fontSize: "12px",
                                       lineHeight: "1.5",
                                     }}
                                   >
@@ -400,7 +400,7 @@ const TestPart7Double = ({
                                               {isCorrect && (
                                                 <CheckCircle
                                                   size={16}
-                                                  color="#52c41a"
+                                                  color="var(--color-success)"
                                                   style={{
                                                     position: "absolute",
                                                     right: "8px",
@@ -413,7 +413,7 @@ const TestPart7Double = ({
                                               {isWrong && (
                                                 <XCircle
                                                   size={16}
-                                                  color="#ff4d4f"
+                                                  color="var(--color-danger)"
                                                   style={{
                                                     position: "absolute",
                                                     right: "8px",
@@ -489,7 +489,7 @@ const TestPart7Double = ({
                                           size="small"
                                           style={{
                                             marginTop: 12,
-                                            backgroundColor: "#fafafa",
+                                            backgroundColor: "var(--color-bg-hover)",
                                             border: "1px solid #e8e8e8",
                                           }}
                                         >
@@ -506,7 +506,7 @@ const TestPart7Double = ({
                                               <Badge
                                                 text="Bản dịch"
                                                 style={{
-                                                  backgroundColor: "#52c41a",
+                                                  backgroundColor: "var(--color-success)",
                                                   color: "white",
                                                   fontSize: "10px",
                                                   marginBottom: 8,
@@ -577,17 +577,17 @@ const TestPart7Double = ({
                       const questionNumber =
                         calculateQuestionNumber(parseInt(groupId), index) + 1;
                       let backgroundColor = "#f0f0f0";
-                      let color = "#666";
+                      let color = "var(--color-text-secondary)";
 
                       if (question.selectedOption) {
                         if (question.isGraded) {
                           backgroundColor =
                             question.selectedLetter === question.correctOption
-                              ? "#52c41a"
-                              : "#ff4d4f";
+                              ? "var(--color-success)"
+                              : "var(--color-danger)";
                           color = "white";
                         } else {
-                          backgroundColor = "#fa8c16";
+                          backgroundColor = "var(--color-chart-6)";
                           color = "white";
                         }
                       }
@@ -626,15 +626,15 @@ const TestPart7Double = ({
                     justifyContent: "center",
                     gap: 16,
                     padding: "16px",
-                    backgroundColor: "#fafafa",
+                    backgroundColor: "var(--color-bg-hover)",
                     borderRadius: "8px",
                   }}
                 >
                   <div
                     style={{ display: "flex", alignItems: "center", gap: 4 }}
                   >
-                    <CheckCircle size={16} style={{ color: "#52c41a" }} />
-                    <Text strong style={{ color: "#52c41a" }}>
+                    <CheckCircle size={16} style={{ color: "var(--color-success)" }} />
+                    <Text strong style={{ color: "var(--color-success)" }}>
                       {
                         questions.filter(
                           (q) =>
@@ -649,8 +649,8 @@ const TestPart7Double = ({
                   <div
                     style={{ display: "flex", alignItems: "center", gap: 4 }}
                   >
-                    <XCircle size={16} style={{ color: "#ff4d4f" }} />
-                    <Text strong style={{ color: "#ff4d4f" }}>
+                    <XCircle size={16} style={{ color: "var(--color-danger)" }} />
+                    <Text strong style={{ color: "var(--color-danger)" }}>
                       {
                         questions.filter(
                           (q) =>

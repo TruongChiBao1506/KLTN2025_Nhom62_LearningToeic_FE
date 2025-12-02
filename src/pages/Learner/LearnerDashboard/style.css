@@ -1,4 +1,4 @@
-/* Learner Dashboard Specific Styles - Scoped trong container */
+﻿/* Learner Dashboard Specific Styles - Scoped trong container */
 .learner-dashboard-container {
   padding: 10px 0;
 }
@@ -37,7 +37,7 @@
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   list-style: none;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 0.25rem;
   display: flex;
   align-items: center;
@@ -63,7 +63,7 @@
 
 /* Breadcrumb */
 .learner-dashboard-container .breadcrumb-container {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   padding: 10px 20px;
   margin-bottom: 20px;
@@ -77,12 +77,12 @@
 
 /* Welcome Banner */
 .learner-dashboard-container .welcome-banner {
-  background: linear-gradient(90deg, #6a82fb 0%, #786fa6 100%);
+  background: var(--color-primary);
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 20px;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .learner-dashboard-container .welcome-banner h2 {
@@ -135,24 +135,24 @@
 }
 
 .learner-dashboard-container .bg-primary {
-  background-color: #17a2b8 !important;
+  background-color: var(--color-primary) !important;
 }
 
 .learner-dashboard-container .bg-success {
-  background-color: #28a745 !important;
+  background-color: var(--color-success) !important;
 }
 
 .learner-dashboard-container .bg-info {
-  background-color: #0dcaf0 !important;
+  background-color: var(--color-info) !important;
 }
 
 .learner-dashboard-container .bg-warning {
-  background-color: #ffc107 !important;
+  background-color: var(--color-warning) !important;
 }
 
 .learner-dashboard-container .stat-card-info h5 {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 5px;
 }
 
@@ -165,7 +165,7 @@
 
 .learner-dashboard-container .stat-card-info p {
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--color-draft);
   margin-top: 5px;
   margin-bottom: 0;
 }
@@ -216,12 +216,12 @@
 }
 
 .learner-dashboard-container .recent-exam-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
 }
 
 .learner-dashboard-container .exam-date {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--color-draft);
   width: 30%;
 }
 
@@ -265,7 +265,7 @@
 }
 
 .learner-dashboard-container .recommendation-card {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
   padding: 20px;
   height: 100%;
@@ -278,7 +278,7 @@
 
 .learner-dashboard-container .recommendation-card p {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 15px;
 }
 
@@ -296,7 +296,7 @@
   justify-content: center;
   align-items: center;
   height: 300px;
-  color: #6c757d;
+  color: var(--color-draft);
   text-align: center;
   padding: 0 20px;
 }
@@ -404,11 +404,11 @@
 }
 
 .learner-dashboard-container .btn-primary {
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .learner-dashboard-container .btn-primary:hover {
-  background-color: #138496;
-  border-color: #138496;
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }

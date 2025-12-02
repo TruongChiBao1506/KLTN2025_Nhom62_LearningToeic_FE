@@ -1,10 +1,10 @@
-.table-section-no8 th {
-    color: #052649;
+﻿.table-section-no8 th {
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 .table-section-no8 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 .table-section-no8 .table-row.shadow-on-hover:hover {
@@ -24,7 +24,7 @@
     border-radius: 10px;
 }
 .table-section-no8 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 .table-section-no8 audio {
     width: 100%;

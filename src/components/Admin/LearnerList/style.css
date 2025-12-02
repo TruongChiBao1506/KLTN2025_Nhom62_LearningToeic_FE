@@ -1,16 +1,16 @@
-@import "../../../assets/breadcrumb.css";
+﻿@import "../../../assets/breadcrumb.css";
 
 .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
 
 th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
@@ -43,32 +43,32 @@ td {
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Custom pagination button styles */
 .page-link {
     border: none;
     background: none;
-    color: #052649;
+    color: var(--color-brand-navy);
 }
 
 .page-link:hover {
-    background-color: #f8f9fa;
-    color: #052649;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-brand-navy);
 }
 
 .page-item.active .page-link {
-    background-color: #052649;
-    border-color: #052649;
+    background-color: var(--color-brand-navy);
+    border-color: var(--color-brand-navy);
     color: white;
 }
 
@@ -78,7 +78,7 @@ td {
 }
 
 .btn-white:hover {
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
 }
 
 /* Badge styles */
@@ -93,7 +93,7 @@ td {
 }
 
 .text-bg-danger {
-    background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
     color: white !important;
 }
 

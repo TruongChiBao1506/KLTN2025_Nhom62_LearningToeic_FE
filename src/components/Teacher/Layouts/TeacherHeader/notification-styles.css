@@ -1,0 +1,149 @@
+﻿/* Custom notification dropdown styles */
+.custom-notification-dropdown .ant-dropdown-menu,
+.custom-admin-dropdown .ant-dropdown-menu {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  background: var(--color-bg-primary) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  overflow: hidden !important;
+  animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: top right !important;
+}
+
+/* Limit notification dropdown height and add scrollbar */
+.custom-notification-dropdown .ant-dropdown-menu {
+  max-height: 600px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Custom scrollbar for notification dropdown */
+.custom-notification-dropdown .ant-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-notification-dropdown .ant-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+}
+
+.custom-notification-dropdown .ant-dropdown-menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-brand-purple-dark));
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.custom-notification-dropdown .ant-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-brand-purple-dark), var(--color-primary));
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Notification dropdown item hover effects */
+.custom-notification-dropdown .notification-dropdown-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(103, 126, 234, 0.08) 0%,
+    rgba(79, 172, 254, 0.08) 100%
+  ) !important;
+  border-color: rgba(103, 126, 234, 0.1) !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
+}
+
+.custom-notification-dropdown .mark-read-btn:hover {
+  background: rgba(103, 126, 234, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.custom-notification-dropdown .view-all-notifications:hover {
+  background: linear-gradient(135deg, var(--color-brand-purple-dark), var(--color-primary)) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3) !important;
+}
+
+/* User dropdown item hover effects */
+.custom-admin-dropdown .dropdown-menu-item:hover {
+  background: rgba(248, 250, 252, 0.8) !important;
+  border-color: rgba(103, 126, 234, 0.2) !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(103, 126, 234, 0.1) !important;
+}
+
+.custom-admin-dropdown .logout-item:hover {
+  background: rgba(254, 242, 242, 0.9) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Dropdown item base styles */
+.custom-notification-dropdown .ant-dropdown-menu-item,
+.custom-admin-dropdown .ant-dropdown-menu-item {
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.custom-notification-dropdown .ant-dropdown-menu-item:hover,
+.custom-admin-dropdown .ant-dropdown-menu-item:hover {
+  background: transparent !important;
+}
+
+/* Divider styles */
+.custom-notification-dropdown .ant-dropdown-menu-item-divider,
+.custom-admin-dropdown .ant-dropdown-menu-item-divider {
+  margin: 8px 0 !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.06) 50%,
+    transparent 100%
+  ) !important;
+  height: 1px !important;
+}
+
+/* Badge animation */
+.ant-badge-count {
+  animation: badgePulse 2s ease-in-out infinite !important;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 6px rgba(255, 77, 79, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0);
+  }
+}
+
+/* Remove text decoration from dropdown links */
+.ant-dropdown-menu .ant-dropdown-menu-item a,
+.ant-dropdown-menu .ant-dropdown-menu-submenu-title a,
+.ant-dropdown a,
+.ant-dropdown-menu a {
+  text-decoration: none !important;
+}
+
+.ant-dropdown a:hover,
+.ant-dropdown-menu a:hover {
+  text-decoration: none !important;
+}

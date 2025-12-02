@@ -1,4 +1,4 @@
-.settings-container {
+﻿.settings-container {
     padding: 20px;
     background-color: #bcd9f5;
     min-height: 100vh;
@@ -117,7 +117,7 @@ ul {
 .ccontent li .wrapp p {
     font-weight: 360;
     margin-bottom: 0.5rem;
-    color: #666;
+    color: var(--color-text-secondary);
 }
 
 .ccontent li:hover {
@@ -142,7 +142,7 @@ ul {
     }
     
     .nav-link {
-        font-size: 14px;
+        font-size: 12px;
         padding: 8px 12px;
     }
     

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { HomeOutlined, BookOutlined, FileTextOutlined } from '@ant-design/icons';
@@ -80,7 +80,7 @@ const LessonContent = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -93,9 +93,9 @@ const LessonContent = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <HomeOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/section" style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
+                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -109,9 +109,9 @@ const LessonContent = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <BookOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to={`/admin/section/${sectionId}/lesson`} style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Lesson</Link>
+                        <Link to={`/admin/section/${sectionId}/lesson`} style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Lesson</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -125,9 +125,9 @@ const LessonContent = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <FileTextOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Lesson Content</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Lesson Content</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

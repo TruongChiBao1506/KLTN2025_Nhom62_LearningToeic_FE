@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Layout,
@@ -197,6 +197,7 @@ const HomePage = () => {
                   </Button>
                   <Button
                     type="primary"
+                    className="signup-btn"
                     onClick={() => navigate('/auth/signup')}
                     icon={<UserAddOutlined />}
                   >
@@ -254,6 +255,7 @@ const HomePage = () => {
                         navigate('/auth/signup');
                         setMobileMenuVisible(false);
                       }}
+                      style={{color:"#1677ff"}}
                     >
                       Đăng ký
                     </Button>
@@ -325,7 +327,7 @@ const HomePage = () => {
                   <div className="floating-cards">
                     <Card className="floating-card card-1">
                       <Space>
-                        <TrophyOutlined style={{ color: '#52c41a', fontSize: '24px' }} />
+                        <TrophyOutlined style={{ color: 'var(--color-success)', fontSize: '24px' }} />
                         <div>
                           <Text strong>TOEIC 850</Text>
                           <br />
@@ -335,7 +337,7 @@ const HomePage = () => {
                     </Card>
                     <Card className="floating-card card-2">
                       <Space>
-                        <BookOutlined style={{ color: '#1890ff', fontSize: '24px' }} />
+                        <BookOutlined style={{ color: 'var(--color-primary)', fontSize: '24px' }} />
                         <div>
                           <Text strong>120 bài học</Text>
                           <br />
@@ -345,7 +347,7 @@ const HomePage = () => {
                     </Card>
                     <Card className="floating-card card-3">
                       <Space>
-                        <TeamOutlined style={{ color: '#722ed1', fontSize: '24px' }} />
+                        <TeamOutlined style={{ color: 'var(--color-chart-4)', fontSize: '24px' }} />
                         <div>
                           <Text strong>2,500+</Text>
                           <br />
@@ -406,7 +408,7 @@ const HomePage = () => {
                     <Statistic
                       value={stat.value}
                       title={stat.label}
-                      valueStyle={{ color: '#1890ff', fontSize: '2rem', fontWeight: 'bold' }}
+                      valueStyle={{ color: 'var(--color-primary)', fontSize: '2rem', fontWeight: 'bold' }}
                     />
                   </div>
                 </Col>
@@ -434,7 +436,7 @@ const HomePage = () => {
                   <Card className="testimonial-card">
                     <div className="testimonial-rating">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <StarOutlined key={i} style={{ color: '#faad14' }} />
+                        <StarOutlined key={i} style={{ color: 'var(--color-warning)' }} />
                       ))}
                     </div>
                     <Paragraph className="testimonial-content">
@@ -512,7 +514,7 @@ const HomePage = () => {
               </div>
             </Col>
 
-            <Col xs={24} sm={8} md={4}>
+            <Col xs={12} sm={8} md={5}>
               <div className="footer-links">
                 <Title level={5}>Sản phẩm</Title>
                 <ul>
@@ -524,19 +526,7 @@ const HomePage = () => {
               </div>
             </Col>
 
-            <Col xs={24} sm={8} md={4}>
-              <div className="footer-links">
-                <Title level={5}>Công ty</Title>
-                <ul>
-                  <li><a href="#about">Giới thiệu</a></li>
-                  <li><a href="#careers">Tuyển dụng</a></li>
-                  <li><a href="#press">Báo chí</a></li>
-                  <li><a href="#contact">Liên hệ</a></li>
-                </ul>
-              </div>
-            </Col>
-
-            <Col xs={24} sm={8} md={4}>
+            <Col xs={12} sm={8} md={5}>
               <div className="footer-links">
                 <Title level={5}>Hỗ trợ</Title>
                 <ul>
@@ -548,13 +538,13 @@ const HomePage = () => {
               </div>
             </Col>
 
-            <Col xs={24} sm={24} md={4}>
-              <div className="footer-links">
+            <Col xs={12} sm={24} md={5}>
+              <div className="footer-links footer-contact">
                 <Title level={5}>Liên hệ</Title>
                 <ul>
-                  <li>Email: support@toeic.vn</li>
-                  <li>Phone: 1900 XXX XXX</li>
-                  <li>Address: TP.HCM, Việt Nam</li>
+                  <li><strong>Email:</strong> support@toeic.vn</li>
+                  <li><strong>Phone:</strong> 1900 XXX XXX</li>
+                  <li><strong>Address:</strong> TP.HCM, Việt Nam</li>
                 </ul>
               </div>
             </Col>

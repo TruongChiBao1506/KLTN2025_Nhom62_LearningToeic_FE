@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
@@ -269,13 +269,13 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -315,7 +315,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                 title="Tải template mẫu Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -334,7 +334,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                 title="Import từ vựng từ file Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -364,7 +364,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                 title="Thêm từ vựng mới"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,

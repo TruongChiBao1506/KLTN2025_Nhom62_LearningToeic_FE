@@ -1,7 +1,7 @@
-/* Focus Mode Styles */
+﻿/* Focus Mode Styles */
 .focus-mode-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   padding: 20px;
 }
 
@@ -47,7 +47,7 @@
 
 .setup-card h3, .settings-card h3 {
   margin-bottom: 20px;
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 1.3rem;
 }
 
@@ -73,7 +73,7 @@
 
 .activity-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -100,7 +100,7 @@
 .start-focus-btn {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-brand-purple-dark));
   color: white;
   border: none;
   border-radius: 12px;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -184,7 +184,7 @@ const Flashcards = () => {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "var(--color-bg-secondary)",
         }}
       >
         <Spin size="large" tip="Đang tải flashcards..." />
@@ -196,7 +196,7 @@ const Flashcards = () => {
     return (
       <div
         style={{
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "var(--color-bg-secondary)",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -218,13 +218,13 @@ const Flashcards = () => {
               size={64}
               style={{ color: "#bfbfbf", marginBottom: "24px" }}
             />
-            <Title level={3} style={{ color: "#333", marginBottom: "16px" }}>
+            <Title level={3} style={{ color: "var(--color-text-primary)", marginBottom: "16px" }}>
               Chưa có từ vựng
             </Title>
             <Text
               style={{
                 fontSize: "16px",
-                color: "#666",
+                color: "var(--color-text-secondary)",
                 marginBottom: "32px",
                 display: "block",
               }}
@@ -258,7 +258,7 @@ const Flashcards = () => {
     return (
       <div
         style={{
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "var(--color-bg-secondary)",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -278,18 +278,18 @@ const Flashcards = () => {
           <div style={{ padding: "40px" }}>
             <div style={{ marginBottom: "24px" }}>
               {percentage >= 70 ? (
-                <Trophy size={64} style={{ color: "#52c41a" }} />
+                <Trophy size={64} style={{ color: "var(--color-success)" }} />
               ) : (
-                <Target size={64} style={{ color: "#1890ff" }} />
+                <Target size={64} style={{ color: "var(--color-primary)" }} />
               )}
             </div>
-            <Title level={2} style={{ color: "#333", marginBottom: "8px" }}>
+            <Title level={2} style={{ color: "var(--color-text-primary)", marginBottom: "8px" }}>
               {percentage >= 70 ? "🎉 Xuất sắc!" : "💪 Tiếp tục cố gắng!"}
             </Title>
             <Title
               level={1}
               style={{
-                color: percentage >= 70 ? "#52c41a" : "#1890ff",
+                color: percentage >= 70 ? "var(--color-success)" : "var(--color-primary)",
                 fontSize: "48px",
                 margin: "16px 0",
               }}
@@ -300,13 +300,13 @@ const Flashcards = () => {
             <Text
               style={{
                 fontSize: "18px",
-                color: "#666",
+                color: "var(--color-text-secondary)",
                 marginBottom: "32px",
                 display: "block",
               }}
             >
               Bạn đã trả lời đúng{" "}
-              <Text strong style={{ color: "#52c41a", fontSize: "20px" }}>
+              <Text strong style={{ color: "var(--color-success)", fontSize: "20px" }}>
                 {progress.correct}
               </Text>{" "}
               /{" "}
@@ -371,7 +371,7 @@ const Flashcards = () => {
   return (
     <div
       style={{
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "var(--color-bg-secondary)",
         minHeight: "100vh",
         padding: "24px 16px",
       }}
@@ -396,16 +396,16 @@ const Flashcards = () => {
                 </Link>
               </Col>
               <Col style={{ textAlign: "center" }}>
-                <Title level={4} style={{ margin: "0 0 4px 0", color: "#333" }}>
+                <Title level={4} style={{ margin: "0 0 4px 0", color: "var(--color-text-primary)" }}>
                   {topic.topicName}
                 </Title>
-                <Text style={{ color: "#666" }}>Flashcards</Text>
+                <Text style={{ color: "var(--color-text-secondary)" }}>Flashcards</Text>
               </Col>
               <Col>
                 <Badge
                   count={`${currentIndex + 1}/${vocabularies.length}`}
                   style={{
-                    backgroundColor: "#1890ff",
+                    backgroundColor: "var(--color-primary)",
                     borderRadius: "12px",
                   }}
                 />
@@ -461,11 +461,11 @@ const Flashcards = () => {
                     position: "absolute",
                     top: "20px",
                     right: "24px",
-                    background: "#1890ff",
+                    background: "var(--color-primary)",
                     color: "white",
                     padding: "6px 16px",
                     borderRadius: "12px",
-                    fontSize: "13px",
+                    fontSize: "12px",
                     fontWeight: "bold",
                   }}
                 >
@@ -475,7 +475,7 @@ const Flashcards = () => {
                 <Title
                   level={1}
                   style={{
-                    color: "#1890ff",
+                    color: "var(--color-primary)",
                     fontSize: "48px",
                     marginBottom: "24px",
                     textAlign: "center",
@@ -500,7 +500,7 @@ const Flashcards = () => {
                   >
                     <Text
                       style={{
-                        color: "#1890ff",
+                        color: "var(--color-primary)",
                         fontSize: "20px",
                         marginRight: "16px",
                         fontWeight: "500",
@@ -518,8 +518,8 @@ const Flashcards = () => {
                         playPronunciation(currentVocab.word);
                       }}
                       style={{
-                        color: "#1890ff",
-                        backgroundColor: "#ffffff",
+                        color: "var(--color-primary)",
+                        backgroundColor: "var(--color-bg-primary)",
                         border: "1px solid #d6e4ff",
                         boxShadow: "0 2px 4px rgba(24, 144, 255, 0.1)",
                         width: "48px",
@@ -542,7 +542,7 @@ const Flashcards = () => {
                     style={{
                       width: "8px",
                       height: "8px",
-                      backgroundColor: "#52c41a",
+                      backgroundColor: "var(--color-success)",
                       borderRadius: "50%",
                       animation: "pulse 2s infinite",
                     }}
@@ -575,11 +575,11 @@ const Flashcards = () => {
                     position: "absolute",
                     top: "20px",
                     right: "24px",
-                    background: "#52c41a",
+                    background: "var(--color-success)",
                     color: "white",
                     padding: "6px 16px",
                     borderRadius: "12px",
-                    fontSize: "13px",
+                    fontSize: "12px",
                     fontWeight: "bold",
                   }}
                 >
@@ -589,7 +589,7 @@ const Flashcards = () => {
                 <Title
                   level={2}
                   style={{
-                    color: "#52c41a",
+                    color: "var(--color-success)",
                     fontSize: "36px",
                     marginBottom: "24px",
                     textAlign: "center",
@@ -602,7 +602,7 @@ const Flashcards = () => {
 
                 {currentVocab?.wordType && (
                   <Badge
-                    color="#722ed1"
+                    color="var(--color-chart-4)"
                     text={currentVocab.wordType}
                     style={{
                       marginBottom: "24px",
@@ -615,7 +615,7 @@ const Flashcards = () => {
                 {currentVocab?.exampleSentence && (
                   <div
                     style={{
-                      backgroundColor: "#fff7e6",
+                      backgroundColor: "var(--color-warning-bg)",
                       padding: "24px",
                       borderRadius: "16px",
                       border: "1px solid #ffd591",
@@ -626,7 +626,7 @@ const Flashcards = () => {
                     <Text
                       strong
                       style={{
-                        color: "#fa8c16",
+                        color: "var(--color-chart-6)",
                         fontSize: "16px",
                         display: "block",
                         marginBottom: "12px",
@@ -661,7 +661,7 @@ const Flashcards = () => {
                     style={{
                       width: "8px",
                       height: "8px",
-                      backgroundColor: "#1890ff",
+                      backgroundColor: "var(--color-primary)",
                       borderRadius: "50%",
                       animation: "pulse 2s infinite",
                     }}
@@ -684,14 +684,14 @@ const Flashcards = () => {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
               }}
             >
-              <Title level={5} style={{ margin: "0 0 16px 0", color: "#333" }}>
+              <Title level={5} style={{ margin: "0 0 16px 0", color: "var(--color-text-primary)" }}>
                 Tiến độ
               </Title>
               <Progress
                 percent={Math.round(
                   ((currentIndex + 1) / vocabularies.length) * 100
                 )}
-                strokeColor="#1890ff"
+                strokeColor="var(--color-primary)"
                 trailColor="#f0f0f0"
                 strokeWidth={8}
                 style={{ marginBottom: "16px" }}
@@ -699,16 +699,16 @@ const Flashcards = () => {
               <Row justify="space-between">
                 <Col>
                   <Space>
-                    <Check size={16} style={{ color: "#52c41a" }} />
-                    <Text style={{ color: "#52c41a", fontWeight: "500" }}>
+                    <Check size={16} style={{ color: "var(--color-success)" }} />
+                    <Text style={{ color: "var(--color-success)", fontWeight: "500" }}>
                       Đúng: {progress.correct}
                     </Text>
                   </Space>
                 </Col>
                 <Col>
                   <Space>
-                    <X size={16} style={{ color: "#ff4d4f" }} />
-                    <Text style={{ color: "#ff4d4f", fontWeight: "500" }}>
+                    <X size={16} style={{ color: "var(--color-danger)" }} />
+                    <Text style={{ color: "var(--color-danger)", fontWeight: "500" }}>
                       Sai: {progress.total - progress.correct}
                     </Text>
                   </Space>
@@ -730,7 +730,7 @@ const Flashcards = () => {
                 <Text
                   style={{
                     color: "#d46b08",
-                    fontSize: "14px",
+                    fontSize: "12px",
                     fontWeight: "500",
                   }}
                 >
@@ -752,7 +752,7 @@ const Flashcards = () => {
                     height: "56px",
                     fontSize: "16px",
                     fontWeight: "600",
-                    background: "#ff4d4f",
+                    background: "var(--color-danger)",
                     border: "none",
                     boxShadow: "0 4px 12px rgba(255, 77, 79, 0.25)",
                     color: "white",
@@ -777,7 +777,7 @@ const Flashcards = () => {
                     height: "56px",
                     fontSize: "16px",
                     fontWeight: "600",
-                    background: "#52c41a",
+                    background: "var(--color-success)",
                     border: "none",
                     boxShadow: "0 4px 12px rgba(82, 196, 26, 0.25)",
                     color: "white",
@@ -850,8 +850,8 @@ const Flashcards = () => {
                     size="large"
                     onClick={flipCard}
                     style={{
-                      backgroundColor: "#f0f2f5",
-                      color: "#1890ff",
+                      backgroundColor: "var(--color-bg-tertiary)",
+                      color: "var(--color-primary)",
                       width: "48px",
                       height: "48px",
                       marginBottom: "8px",
@@ -863,7 +863,7 @@ const Flashcards = () => {
                 <div>
                   <Text
                     style={{
-                      fontSize: "14px",
+                      fontSize: "12px",
                       color: "#8c8c8c",
                       fontWeight: "500",
                     }}

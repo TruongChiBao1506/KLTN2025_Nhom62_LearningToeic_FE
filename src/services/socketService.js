@@ -5,14 +5,25 @@ class SocketService {
   constructor() {
     this.socket = null;
     this._isConnected = false;
-    this.listeners = new Map(); // Map<event, Array<callback>>
+    this.listeners = new Map(); // Map<event, Set<callback>> - Use Set to prevent duplicates
+    this.currentUserId = null; // Track current user to prevent duplicate connections
   }
 
   // Khởi tạo kết nối Socket.io
   connect(userId) {
-    if (this.socket?.connected) {
+    // 🔧 FIXED: Prevent duplicate connections for same user
+    if (this.socket?.connected && this.currentUserId === userId) {
+      console.log('🔌 Already connected for user:', userId);
       return this.socket;
     }
+
+    // If different user, disconnect previous connection
+    if (this.socket?.connected && this.currentUserId !== userId) {
+      console.log('🔌 Disconnecting previous user:', this.currentUserId);
+      this.disconnect();
+    }
+
+    this.currentUserId = userId;
 
     // Lấy API URL từ environment hoặc default
     const API_URL = process.env.REACT_APP_URL || 'http://localhost:5000';
@@ -34,13 +45,80 @@ class SocketService {
         console.log('👤 Registered user:', userId);
       }
 
-      // Setup lại tất cả listeners đã đăng ký trước đó
-      console.log('🔄 Setting up existing listeners...');
-      this.listeners.forEach((callbacks, event) => {
-        callbacks.forEach(callback => {
-          this.socket.on(event, callback);
-          console.log(`✅ Listener setup for event: ${event}`);
-        });
+      // 🔧 FIXED: Setup handlers only once using a dedicated method
+      this._setupSocketHandlers();
+
+      // ==================== NOTIFICATION LISTENER ====================
+      // 🔧 FIXED: Backend emit event 'notification', không phải 'new_notification'
+      this.socket.on('notification', (data) => {
+        console.log('🔔 New notification received:', data);
+        console.log('   Type:', data.type); // achievement/system/reminder
+        console.log('   Original Type:', data.data?.originalType); // teacher_approved, etc.
+        
+        // 🔧 FIXED: originalType nằm trong data.originalType, không phải notification.data.originalType
+        const originalType = data.data?.originalType;
+        
+        if (originalType) {
+          switch(originalType) {
+            // ==================== TEACHER REQUEST NOTIFICATIONS ====================
+            case 'teacher_request':
+              this._emitToListeners('new_teacher_request', data);
+              this._emitToListeners('new_pending_content', data); // Update sidebar badge
+              break;
+            case 'teacher_approved':
+              this._emitToListeners('teacher_request_approved', data);
+              break;
+            case 'teacher_rejected':
+              this._emitToListeners('teacher_request_rejected', data);
+              break;
+            
+            // ==================== CONTENT APPROVAL NOTIFICATIONS ====================
+            case 'content_pending':
+              this._emitToListeners('new_pending_content', data);
+              this._emitToListeners('content_pending', data);
+              break;
+            case 'content_approved':
+              this._emitToListeners('content_approved', data);
+              this._emitToListeners('new_pending_content', data); // Update sidebar badge (decrement)
+              break;
+            case 'content_rejected':
+              this._emitToListeners('content_rejected', data);
+              this._emitToListeners('new_pending_content', data); // Update sidebar badge (decrement)
+              break;
+            
+            // ==================== USER ROLE NOTIFICATIONS ====================
+            case 'role_promoted':
+              this._emitToListeners('role_promoted', data);
+              this._emitToListeners('user_role_changed', data);
+              break;
+            case 'role_demoted':
+              this._emitToListeners('role_demoted', data);
+              this._emitToListeners('user_role_changed', data);
+              break;
+            
+            default:
+              console.log('Unknown notification originalType:', originalType);
+          }
+        }
+        
+        // Check mapped type (achievement/system/reminder)
+        if (data.type === 'achievement') {
+          this._emitToListeners('new_achievement', data);
+        } else if (data.type === 'system') {
+          this._emitToListeners('system_notification', data);
+        } else if (data.type === 'reminder') {
+          this._emitToListeners('reminder_notification', data);
+        }
+        
+        // Always emit the generic new_notification event
+        this._emitToListeners('new_notification', data);
+      });
+
+      // ==================== OTHER BACKEND EVENTS ====================
+      
+      // Backend có thể emit 'registered' để confirm registration
+      this.socket.on('registered', (data) => {
+        console.log('✅ Registration confirmed by server:', data);
       });
     });
 
@@ -63,7 +141,13 @@ class SocketService {
       this.socket.disconnect();
       this.socket = null;
       this._isConnected = false;
+      this.currentUserId = null;
       console.log('🔌 Socket disconnected');
+      
+      // 🔧 FIXED: Clear all listeners on disconnect
+      this.listeners.forEach((callbacks, event) => {
+        console.log(`🧹 Clearing ${callbacks.size} listener(s) for event: ${event}`);
+      });
     }
   }
 
@@ -78,10 +162,21 @@ class SocketService {
 
   // Lắng nghe event
   on(event, callback) {
+    // 🔧 FIXED: Use Set instead of Array to prevent duplicate callbacks
     if (!this.listeners.has(event)) {
-      this.listeners.set(event, []);
+      this.listeners.set(event, new Set());
     }
-    this.listeners.get(event).push(callback);
+    
+    const callbacks = this.listeners.get(event);
+    
+    // Check if callback already exists
+    if (callbacks.has(callback)) {
+      console.log(`⚠️ Callback already registered for event: ${event}`);
+      return;
+    }
+    
+    callbacks.add(callback);
+    console.log(`➕ Registered callback for event: ${event} (total: ${callbacks.size})`);
 
     // Nếu socket đã kết nối, setup listener ngay
     if (this.socket?.connected) {
@@ -94,13 +189,41 @@ class SocketService {
   off(event, callback) {
     const eventListeners = this.listeners.get(event);
     if (eventListeners) {
-      const index = eventListeners.indexOf(callback);
-      if (index > -1) {
-        eventListeners.splice(index, 1);
+      eventListeners.delete(callback);
+      console.log(`➖ Removed callback for event: ${event} (remaining: ${eventListeners.size})`);
+      if (this.socket?.connected) {
+        this.socket.off(event, callback);
+      }
+    }
+  }
+
+  // 🔧 NEW: Remove all listeners for an event
+  offAll(event) {
+    const eventListeners = this.listeners.get(event);
+    if (eventListeners) {
+      console.log(`🧹 Removing all ${eventListeners.size} listener(s) for event: ${event}`);
+      eventListeners.forEach(callback => {
         if (this.socket?.connected) {
           this.socket.off(event, callback);
         }
-      }
+      });
+      this.listeners.delete(event);
+    }
+  }
+
+  // Internal method to emit events to registered listeners
+  _emitToListeners(event, data) {
+    const eventListeners = this.listeners.get(event);
+    if (eventListeners) {
+      // 🔧 FIXED: Use .size instead of .length for Set
+      console.log(`📢 Emitting to ${eventListeners.size} listener(s) for event: ${event}`);
+      eventListeners.forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error(`Error in listener for ${event}:`, error);
+        }
+      });
     }
   }
 
@@ -112,6 +235,29 @@ class SocketService {
   // Lấy socket instance
   getSocket() {
     return this.socket;
+  }
+
+  // 🔧 NEW: Setup socket event handlers (called once on connect)
+  _setupSocketHandlers() {
+    if (!this.socket) return;
+
+    // Setup lại tất cả listeners đã đăng ký trước đó
+    console.log('🔄 Setting up existing listeners...');
+    this.listeners.forEach((callbacks, event) => {
+      callbacks.forEach(callback => {
+        this.socket.on(event, callback);
+      });
+      console.log(`✅ Setup ${callbacks.size} listener(s) for event: ${event}`);
+    });
+  }
+
+  // 🔧 NEW: Debug helper to check listener counts
+  getListenerCounts() {
+    const counts = {};
+    this.listeners.forEach((callbacks, event) => {
+      counts[event] = callbacks.size;
+    });
+    return counts;
   }
 }
 

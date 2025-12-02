@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faUserCheck,
@@ -62,6 +62,119 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
         }
     };
 
+    // Check if user is admin
+    const isAdmin = (learner) => {
+        return learner.roles && learner.roles.some(role => role.name?.includes("ROLE_ADMIN"));
+    };
+
+    // Check if user is pure learner (only has learner role, no teacher/admin)
+    const isLearner = (learner) => {
+        if (!learner.roles || learner.roles.length === 0) return false;
+        
+        const hasAdminRole = learner.roles.some(role => role.name?.includes("ROLE_ADMIN"));
+        const hasTeacherRole = learner.roles.some(role => role.name?.includes("ROLE_TEACHER"));
+        const hasLearnerRole = learner.roles.some(role => role.name?.includes("ROLE_LEARNER"));
+        
+        // Chỉ có role learner, không có admin/teacher
+        return hasLearnerRole && !hasAdminRole && !hasTeacherRole;
+    };
+
+    // Handle promote learner to teacher
+    const handlePromoteToTeacher = async (userId, userName) => {
+        const result = await Swal.fire({
+            title: 'Promote lên Teacher',
+            html: `
+                <div style="text-align: left;">
+                    <p>Bạn có chắc muốn <strong>promote</strong> learner này lên teacher?</p>
+                    <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                        <strong style="color: #0c5460;">ℹ️ Quyền Teacher:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #0c5460;">
+                            <li>Có thể tạo nội dung học tập</li>
+                            <li>Quản lý bài học và bài tập</li>
+                            <li>Truy cập các tính năng teacher</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                        <strong>Learner:</strong> ${userName}
+                    </div>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--color-approved)',
+            cancelButtonColor: 'var(--color-draft)',
+            confirmButtonText: '✓ Promote lên Teacher',
+            cancelButtonText: 'Hủy',
+            width: 500
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await UserService.promoteToTeacher(userId);
+                
+                toast.success('✓ Promote lên teacher thành công!', {
+                    autoClose: 1500,
+                });
+                
+                // Reload data
+                getAllLearners();
+            } catch (error) {
+                console.error('Promote error:', error);
+                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi promote learner!', {
+                    autoClose: 2000,
+                });
+            }
+        }
+    };
+
+    // Handle demote teacher to learner
+    const handleDemoteTeacher = async (userId, userName) => {
+        const result = await Swal.fire({
+            title: 'Demote Teacher',
+            html: `
+                <div style="text-align: left;">
+                    <p>Bạn có chắc muốn <strong>demote</strong> teacher này về learner?</p>
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                        <strong style="color: #856404;">⚠️ Lưu ý:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #856404;">
+                            <li>User sẽ mất quyền Teacher</li>
+                            <li>Không thể tạo nội dung mới</li>
+                            <li>Nội dung cũ vẫn được giữ lại</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                        <strong>Teacher:</strong> ${userName}
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: 'var(--color-draft)',
+            confirmButtonText: '✓ Demote về Learner',
+            cancelButtonText: 'Hủy',
+            width: 500
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await UserService.demoteToLearner(userId);
+                
+                toast.success('✓ Demote teacher thành công!', {
+                    autoClose: 1500,
+                });
+                
+                // Reload data
+                getAllLearners();
+            } catch (error) {
+                console.error('Demote error:', error);
+                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi demote teacher!', {
+                    autoClose: 2000,
+                });
+            }
+        }
+    };
+
     // Handle delete learner
     const handleDeleteLearner = async (learnerId, learnerName) => {
         const result = await Swal.fire({
@@ -95,13 +208,9 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
         try {
             // Tìm learner theo id
             const learner = learners.find(l => (l._id || l.userId) === learnerId);
+            
             // Kiểm tra nếu là admin thì không cho chặn
-            if (
-                learner &&
-                learner.roles &&
-                learner.roles.some(role => role.name?.includes("ROLE_ADMIN")) &&
-                newStatus === 0 // chỉ kiểm tra khi muốn chặn
-            ) {
+            if (isAdmin(learner) && newStatus === 0) {
                 toast.warn('Không thể chặn tài khoản có quyền Admin!', {
                     position: "top-right",
                     autoClose: 2000,
@@ -118,11 +227,11 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
             const action = isBlocking ? 'chặn' : 'bỏ chặn';
 
             const result = await Swal.fire({
-                title: `Bạn muốn ${action} learner này?`,
+                title: `Bạn muốn ${action} user này?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: isBlocking ? '#d33' : '#3085d6',
-                cancelButtonColor: '#6c757d',
+                cancelButtonColor: 'var(--color-draft)',
                 confirmButtonText: action.charAt(0).toUpperCase() + action.slice(1),
                 cancelButtonText: 'Hủy',
             });
@@ -193,13 +302,12 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredLearners.length);
 
-    console.log('Filtered Learners:', filteredLearners);
     return (
         <div className="page-heading">
             <div className="section">
                 <div className="card border-0">
                     <div className="row align-items-center p-3">
-                        {/* Items per page selector cải tiến */}
+                        {/* Items per page selector */}
                         <div className="col-3">
                             <div className="d-flex align-items-center px-3 py-2 rounded-4">
                                 <label className="fw-semibold me-2 mb-0" htmlFor="itemsPerPageSelect">
@@ -229,13 +337,13 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -256,7 +364,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                     className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm theo username, email..."
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -266,7 +374,6 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                             </div>
                         </div>
 
-                        {/* Không có add button cho learner */}
                         <div className="col-3 d-flex justify-content-end"></div>
                     </div>
 
@@ -309,16 +416,85 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                     <span>
                                                         {learner.roles.map((role, idx) => {
                                                             let badgeClass = "badge me-1 ";
-                                                            if (role.name?.toLowerCase().includes("admin")) {
-                                                                badgeClass += "bg-warning";
-                                                            } else if (role.name?.toLowerCase().includes("learner")) {
+                                                            let icon = "";
+                                                            const isTeacherRole = role.name?.toLowerCase().includes("teacher");
+                                                            const isAdminRole = role.name?.toLowerCase().includes("admin");
+                                                            const isLearnerRole = role.name?.toLowerCase().includes("learner");
+                                                            
+                                                            if (isAdminRole) {
+                                                                badgeClass += "bg-warning text-dark";
+                                                                icon = "👨‍💼";
+                                                            } else if (isTeacherRole) {
+                                                                badgeClass += "bg-success";
+                                                                icon = "👨‍🏫";
+                                                            } else if (isLearnerRole) {
                                                                 badgeClass += "bg-primary";
+                                                                icon = "👨‍🎓";
                                                             } else {
                                                                 badgeClass += "bg-secondary";
                                                             }
+                                                            
+                                                            // Make teacher badge clickable (not admin) - for demote
+                                                            if (isTeacherRole && !isAdmin(learner)) {
+                                                                return (
+                                                                    <span 
+                                                                        key={idx} 
+                                                                        className={badgeClass}
+                                                                        onClick={() => handleDemoteTeacher(
+                                                                            learner._id || learner.userId,
+                                                                            learner.username || learner.name
+                                                                        )}
+                                                                        style={{ 
+                                                                            cursor: 'pointer',
+                                                                            transition: 'all 0.2s ease'
+                                                                        }}
+                                                                        onMouseEnter={(e) => {
+                                                                            e.currentTarget.style.opacity = '0.8';
+                                                                            e.currentTarget.style.transform = 'scale(1.05)';
+                                                                        }}
+                                                                        onMouseLeave={(e) => {
+                                                                            e.currentTarget.style.opacity = '1';
+                                                                            e.currentTarget.style.transform = 'scale(1)';
+                                                                        }}
+                                                                        title="Click để demote về Learner"
+                                                                    >
+                                                                        {icon} {role.name}
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            
+                                                            // Make learner badge clickable (pure learner only) - for promote
+                                                            if (isLearnerRole && isLearner(learner)) {
+                                                                return (
+                                                                    <span 
+                                                                        key={idx} 
+                                                                        className={badgeClass}
+                                                                        onClick={() => handlePromoteToTeacher(
+                                                                            learner._id || learner.userId,
+                                                                            learner.username || learner.name
+                                                                        )}
+                                                                        style={{ 
+                                                                            cursor: 'pointer',
+                                                                            transition: 'all 0.2s ease'
+                                                                        }}
+                                                                        onMouseEnter={(e) => {
+                                                                            e.currentTarget.style.opacity = '0.8';
+                                                                            e.currentTarget.style.transform = 'scale(1.05)';
+                                                                        }}
+                                                                        onMouseLeave={(e) => {
+                                                                            e.currentTarget.style.opacity = '1';
+                                                                            e.currentTarget.style.transform = 'scale(1)';
+                                                                        }}
+                                                                        title="Click để promote lên Teacher"
+                                                                    >
+                                                                        {icon} {role.name}
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            
                                                             return (
                                                                 <span key={idx} className={badgeClass}>
-                                                                    {role.name}
+                                                                    {icon} {role.name}
                                                                 </span>
                                                             );
                                                         })}
@@ -332,7 +508,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                     <span
                                                         onClick={() => toggleUserStatus(
                                                             learner._id,
-                                                            1, // unblock (change status to 1)
+                                                            1,
                                                             learner.username || learner.name
                                                         )}
                                                         className="btn badge text-bg-danger rounded-5"
@@ -346,7 +522,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                     <span
                                                         onClick={() => toggleUserStatus(
                                                             learner._id,
-                                                            0, // block (change status to 0)
+                                                            0,
                                                             learner.username || learner.name
                                                         )}
                                                         className="btn badge text-bg-success rounded-5"
@@ -360,26 +536,28 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                             </td>
                                             <td>{formatDate(learner.createdAt || learner.created_at)}</td>
                                             <td>
-                                                <div className="d-flex justify-content-center">
-                                                    {/* Delete button */}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDeleteLearner(
-                                                            learner._id || learner.userId,
-                                                            learner.username || learner.name
-                                                        )}
-                                                        className="btn btn-white border-0"
-                                                        title={`Xóa [${learner.username || learner.name}]`}
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrash} className="text-danger" />
-                                                    </button>
+                                                <div className="d-flex justify-content-center gap-2">
+                                                    {/* Delete button - Cannot delete admin */}
+                                                    {!isAdmin(learner) && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleDeleteLearner(
+                                                                learner._id || learner.userId,
+                                                                learner.username || learner.name
+                                                            )}
+                                                            className="btn btn-white border-0"
+                                                            title={`Xóa [${learner.username || learner.name}]`}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} className="text-danger" />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr key="no-data">
-                                        <td colSpan="7">No data available</td>
+                                        <td colSpan="8">No data available</td>
                                     </tr>
                                 )}
                             </tbody>

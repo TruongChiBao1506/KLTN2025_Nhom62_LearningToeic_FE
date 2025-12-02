@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faQuestion, faEdit, faTrash, faSearch, faFileExcel, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
@@ -325,13 +325,13 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -371,7 +371,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                 title="Tải template mẫu Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -390,7 +390,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                 title="Import câu hỏi từ file Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -410,7 +410,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                 title="Export tất cả câu hỏi ra file Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px',
                                     whiteSpace: 'nowrap',
                                     flexShrink: 0,
@@ -431,7 +431,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                 title="Thêm vocabulary question mới"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -469,19 +469,20 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                 {/* Show table if there are questions */}
                                 {vocabularyQuestions.length > 0 ? (
                                     <>
-                                        <table className="table text-center table-hover shadow">
+                                        <div className="table-responsive">
+                                            <table className="table text-center table-hover shadow">
                                             <thead className="shadow">
                                                 <tr className="align-middle">
-                                                    <td><button className="btn btn-primary rounded-5 disabled">No.</button></td>
-                                                    <th>CONTENT</th>
-                                                    <th>OPT A</th>
-                                                    <th>OPT B</th>
-                                                    <th>OPT C</th>
-                                                    <th>OPT D</th>
-                                                    <th>CORRECT OPT</th>
-                                                    <th>EXPLANATION</th>
-                                                    <th>STATUS</th>
-                                                    <th>ACTION</th>
+                                                    <td style={{ width: '50px' }}><button className="btn btn-primary rounded-5 disabled">No.</button></td>
+                                                    <th style={{ width: '20%', minWidth: '150px' }}>CONTENT</th>
+                                                    <th style={{ width: '12%' }}>OPT A</th>
+                                                    <th style={{ width: '12%' }}>OPT B</th>
+                                                    <th style={{ width: '12%' }}>OPT C</th>
+                                                    <th style={{ width: '12%' }}>OPT D</th>
+                                                    <th style={{ width: '10%' }}>CORRECT</th>
+                                                    <th style={{ width: '15%' }}>EXPLANATION</th>
+                                                    <th style={{ width: '80px' }}>STATUS</th>
+                                                    <th style={{ width: '90px' }}>ACTION</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -492,41 +493,41 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                                     >
                                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                         <td>
-                                                            <div title={vocabularyQuestion.questionContent}>
-                                                                {truncateText(vocabularyQuestion.questionContent, 40)}
+                                                            <div className="text-wrap" title={vocabularyQuestion.questionContent}>
+                                                                {vocabularyQuestion.questionContent}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div title={vocabularyQuestion.optionA}>
-                                                                {truncateText(vocabularyQuestion.optionA, 25)}
+                                                            <div className="text-wrap" title={vocabularyQuestion.optionA}>
+                                                                {vocabularyQuestion.optionA}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div title={vocabularyQuestion.optionB}>
-                                                                {truncateText(vocabularyQuestion.optionB, 25)}
+                                                            <div className="text-wrap" title={vocabularyQuestion.optionB}>
+                                                                {vocabularyQuestion.optionB}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div title={vocabularyQuestion.optionC}>
-                                                                {truncateText(vocabularyQuestion.optionC, 25)}
+                                                            <div className="text-wrap" title={vocabularyQuestion.optionC}>
+                                                                {vocabularyQuestion.optionC}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div title={vocabularyQuestion.optionD}>
-                                                                {truncateText(vocabularyQuestion.optionD, 25)}
+                                                            <div className="text-wrap" title={vocabularyQuestion.optionD}>
+                                                                {vocabularyQuestion.optionD}
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div
+                                                                className="text-wrap fw-bold text-success"
                                                                 title={vocabularyQuestion.correctOption}
-                                                                className="fw-bold text-success"
                                                             >
-                                                                {truncateText(vocabularyQuestion.correctOption, 25)}
+                                                                {vocabularyQuestion.correctOption}
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div title={stripHtml(vocabularyQuestion.questionExplanation)}>
-                                                                {truncateText(stripHtml(vocabularyQuestion.questionExplanation), 30)}
+                                                            <div className="text-wrap small" title={stripHtml(vocabularyQuestion.questionExplanation)}>
+                                                                {stripHtml(vocabularyQuestion.questionExplanation)}
                                                             </div>
                                                         </td>
                                                         <td>
@@ -581,7 +582,8 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                                     </tr>
                                                 )}
                                             </tbody>
-                                        </table>
+                                            </table>
+                                        </div>
 
                                         {/* Pagination */}
                                         {filteredVocabularyQuestions.length > 0 && (

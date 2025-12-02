@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Card,
   Row,
@@ -49,7 +49,7 @@ const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
 const Profile = () => {
-  const { setInfo } = useAuthStore(); // Hook để update Redux store
+  const { info, setInfo } = useAuthStore(); // ✅ Get info to preserve roles
   const [form] = Form.useForm();
   const [user, setUser] = useState(null);
   const [statistics, setStatistics] = useState(null);
@@ -81,7 +81,13 @@ const Profile = () => {
       setErrors({});
       setImagePreview(null); // Clear preview when fetching new data
 
-      const token = localStorage.getItem("token");
+      // ✅ Check sessionStorage for tokens (support multi-role users)
+      const learnerToken = sessionStorage.getItem("learnerToken");
+      const adminToken = sessionStorage.getItem("adminToken");
+      const teacherToken = sessionStorage.getItem("teacherToken");
+      
+      const token = learnerToken || adminToken || teacherToken;
+      
       if (!token) {
         setErrors({
           general: "Không tìm thấy token xác thực. Vui lòng đăng nhập lại.",
@@ -122,14 +128,34 @@ const Profile = () => {
         console.log("📷 Mapped profile image:", mappedUser.profileImage);
         setUser(mappedUser);
         
-        // Update Redux store để avatar hiển thị ở LearnerLayout
+        // ✅ CRITICAL: Update Redux store, but PRESERVE roles from existing store or localStorage
+        // If API doesn't return roles field, we must preserve existing roles to prevent losing multi-role access
+        const existingRoles = info?.roles || (() => {
+          // Fallback: try to get roles from localStorage (where login saved user data)
+          const learnerUser = localStorage.getItem('learnerUser');
+          const adminUser = localStorage.getItem('user');
+          const userStr = learnerUser || adminUser;
+          if (userStr) {
+            try {
+              const user = JSON.parse(userStr);
+              return user.roles || [];
+            } catch (e) {
+              console.warn("⚠️ Failed to parse user roles from localStorage");
+              return [];
+            }
+          }
+          return [];
+        })();
+        
+        console.log("🔄 Updating Redux store with roles:", userData.roles || existingRoles);
+        
         setInfo({
           id: userData.id,
           username: userData.username,
           email: userData.email,
           name: userData.name || userData.fullName,
-          roles: userData.roles,
-          avatar: userData.image || userData.avatar, // Cập nhật avatar vào store
+          roles: userData.roles || existingRoles, // ✅ Preserve roles if API doesn't return them
+          avatar: userData.image || userData.avatar,
         });
       } else {
         setErrors({
@@ -602,7 +628,7 @@ const Profile = () => {
                       flex: 1,
                       borderRadius: 0,
                       borderBottom: showProfileInfo && !changePasswordMode ? "2px solid #1890ff" : "none",
-                      color: showProfileInfo && !changePasswordMode ? "#1890ff" : "#666",
+                      color: showProfileInfo && !changePasswordMode ? "var(--color-primary)" : "var(--color-text-secondary)",
                       fontWeight: showProfileInfo && !changePasswordMode ? "600" : "normal"
                     }}
                   >
@@ -620,7 +646,7 @@ const Profile = () => {
                       flex: 1,
                       borderRadius: 0,
                       borderBottom: changePasswordMode ? "2px solid #1890ff" : "none",
-                      color: changePasswordMode ? "#1890ff" : "#666",
+                      color: changePasswordMode ? "var(--color-primary)" : "var(--color-text-secondary)",
                       fontWeight: changePasswordMode ? "600" : "normal"
                     }}
                   >
@@ -900,48 +926,48 @@ const Profile = () => {
                     <Statistic
                       title="Bài kiểm tra đã làm"
                       value={statistics?.totalExamsTaken || user?.totalExamsTaken || 0}
-                      prefix={<BookOutlined style={{ color: "#1890ff" }} />}
-                      valueStyle={{ color: "#1890ff" }}
+                      prefix={<BookOutlined style={{ color: "var(--color-primary)" }} />}
+                      valueStyle={{ color: "var(--color-primary)" }}
                     />
                   </Col>
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Giờ học tập"
                       value={statistics?.studyHours || user?.studyHours || 0}
-                      prefix={<ClockCircleOutlined style={{ color: "#52c41a" }} />}
-                      valueStyle={{ color: "#52c41a" }}
+                      prefix={<ClockCircleOutlined style={{ color: "var(--color-success)" }} />}
+                      valueStyle={{ color: "var(--color-success)" }}
                     />
                   </Col>
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Điểm cao nhất"
                       value={statistics?.highestScore || user?.highestScore || 0}
-                      prefix={<TrophyOutlined style={{ color: "#faad14" }} />}
-                      valueStyle={{ color: "#faad14" }}
+                      prefix={<TrophyOutlined style={{ color: "var(--color-warning)" }} />}
+                      valueStyle={{ color: "var(--color-warning)" }}
                     />
                   </Col>
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Bài học hoàn thành"
                       value={statistics?.completedLessons || user?.completedLessons || 0}
-                      prefix={<StarOutlined style={{ color: "#722ed1" }} />}
-                      valueStyle={{ color: "#722ed1" }}
+                      prefix={<StarOutlined style={{ color: "var(--color-chart-4)" }} />}
+                      valueStyle={{ color: "var(--color-chart-4)" }}
                     />
                   </Col>
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Điểm trung bình"
                       value={Math.round(statistics?.averageScore || user?.averageScore || 0)}
-                      prefix={<FireOutlined style={{ color: "#eb2f96" }} />}
-                      valueStyle={{ color: "#eb2f96" }}
+                      prefix={<FireOutlined style={{ color: "var(--color-chart-5)" }} />}
+                      valueStyle={{ color: "var(--color-chart-5)" }}
                     />
                   </Col>
                   <Col xs={12} lg={8}>
                     <Statistic
                       title="Chứng chỉ đạt được"
                       value={statistics?.certificatesEarned || user?.certificatesEarned || 0}
-                      prefix={<TrophyOutlined style={{ color: "#fa8c16" }} />}
-                      valueStyle={{ color: "#fa8c16" }}
+                      prefix={<TrophyOutlined style={{ color: "var(--color-chart-6)" }} />}
+                      valueStyle={{ color: "var(--color-chart-6)" }}
                     />
                   </Col>
                 </Row>
@@ -966,11 +992,11 @@ const Profile = () => {
                             width: "40px",
                             height: "40px",
                             borderRadius: "8px",
-                            background: active ? "#52c41a" : "#f0f0f0",
+                            background: active ? "var(--color-success)" : "#f0f0f0",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: active ? "white" : "#999",
+                            color: active ? "white" : "var(--color-text-disabled)",
                             fontSize: "12px",
                             fontWeight: "500"
                           }}

@@ -1,11 +1,11 @@
-/* Existing styles... */
+﻿/* Existing styles... */
 
 .image-preview-container {
-    border: 2px dashed #dee2e6;
+    border: 2px dashed var(--color-border);
     border-radius: 8px;
     padding: 10px;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
 }
 
 .image-preview {
@@ -22,7 +22,7 @@
 }
 
 .form-control[type="file"]::-webkit-file-upload-button {
-    background-color: #6c757d;
+    background-color: var(--color-draft);
     color: white;
     border: none;
     padding: 6px 12px;
@@ -50,14 +50,14 @@ textarea.form-control {
 
 /* Error feedback styling */
 .error-feedback {
-    color: #dc3545;
-    font-size: 13px;
+    color: var(--color-danger);
+    font-size: 12px;
     margin-top: 0.25rem;
 }
 
 .required-field {
-    color: #dc3545;
-    font-size: 14px;
+    color: var(--color-danger);
+    font-size: 12px;
     margin-left: 4px;
 }
 

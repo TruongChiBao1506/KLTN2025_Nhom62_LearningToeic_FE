@@ -1,4 +1,4 @@
-.not-implemented-container {
+﻿.not-implemented-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,7 @@
 }
 
 .not-implemented-features {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 30px;
@@ -83,8 +83,8 @@
 
 .not-implemented-features li {
   padding: 8px 0;
-  border-bottom: 1px solid #e9ecef;
-  color: #495057;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-primary);
   position: relative;
   padding-left: 25px;
 }
@@ -121,7 +121,7 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   color: white;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: var(--color-draft);
   color: white;
 }
 

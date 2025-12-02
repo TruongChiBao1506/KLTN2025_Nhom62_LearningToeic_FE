@@ -1,14 +1,14 @@
-.question-edit-no11-page label {
+﻿.question-edit-no11-page label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 .question-edit-no11-page .error-feedback {
     color: red;
-    font-size: 13px;
+    font-size: 12px;
 }
 .question-edit-no11-page .required-field {
     color: red;
-    font-size: 14px;
+    font-size: 12px;
     margin-left: 4px;
 }

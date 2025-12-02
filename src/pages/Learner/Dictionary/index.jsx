@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
   Typography,
@@ -639,7 +639,7 @@ const Dictionary = () => {
       >
         <Row align="middle" gutter={16}>
           <Col>
-            <Languages size={24} style={{ color: "#1890ff" }} />
+            <Languages size={24} style={{ color: "var(--color-primary)" }} />
           </Col>
           <Col flex="auto">
             <Select
@@ -677,7 +677,7 @@ const Dictionary = () => {
             title={
               <Space>
                 <FileText size={18} />
-                <span style={{ fontWeight: "600", color: "#1890ff" }}>Văn bản gốc</span>
+                <span style={{ fontWeight: "600", color: "var(--color-primary)" }}>Văn bản gốc</span>
               </Space>
             }
             style={{ 
@@ -736,13 +736,13 @@ const Dictionary = () => {
                 maxLength={5000}
                 style={{
                   resize: "none",
-                  borderColor: isListening ? "#ff4d4f" : "#d9d9d9",
+                  borderColor: isListening ? "var(--color-danger)" : "var(--color-border)",
                   borderWidth: isListening ? "2px" : "1px",
                   borderRadius: "12px",
                   boxShadow: isListening
                     ? "0 0 10px rgba(255, 77, 79, 0.3)"
                     : "0 2px 8px rgba(0,0,0,0.08)",
-                  fontSize: "15px",
+                  fontSize: "12px",
                   lineHeight: "1.6",
                   transition: "all 0.3s ease",
                   background: "white"
@@ -754,7 +754,7 @@ const Dictionary = () => {
                     position: "absolute",
                     top: "10px",
                     left: "10px",
-                    background: "#ff4d4f",
+                    background: "var(--color-danger)",
                     color: "white",
                     padding: "4px 8px",
                     borderRadius: "4px",
@@ -778,7 +778,7 @@ const Dictionary = () => {
                   padding: "2px 6px",
                   borderRadius: "4px",
                   fontSize: "12px",
-                  color: characterCount > 4000 ? "#ff4d4f" : "#8c8c8c",
+                  color: characterCount > 4000 ? "var(--color-danger)" : "#8c8c8c",
                 }}
               >
                 {characterCount}/5000
@@ -788,7 +788,7 @@ const Dictionary = () => {
               <Progress
                 percent={(characterCount / 5000) * 100}
                 size="small"
-                strokeColor="#ff4d4f"
+                strokeColor="var(--color-danger)"
                 style={{ marginTop: "8px" }}
               />
             )}
@@ -801,7 +801,7 @@ const Dictionary = () => {
             title={
               <Space>
                 <Languages size={18} />
-                <span style={{ fontWeight: "600", color: "#52c41a" }}>Bản dịch</span>
+                <span style={{ fontWeight: "600", color: "var(--color-success)" }}>Bản dịch</span>
                 {translating && <Spin size="small" />}
               </Space>
             }
@@ -839,7 +839,7 @@ const Dictionary = () => {
                 background: "linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)",
                 border: "1px solid #e6f7ff",
                 borderRadius: "12px",
-                fontSize: "15px",
+                fontSize: "12px",
                 lineHeight: "1.6",
                 color: "#262626",
                 boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)"
@@ -850,7 +850,7 @@ const Dictionary = () => {
                 style={{
                   marginTop: "16px",
                   textAlign: "center",
-                  color: "#1890ff",
+                  color: "var(--color-primary)",
                   background: "linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)",
                   padding: "12px 20px",
                   borderRadius: "12px",
@@ -858,12 +858,12 @@ const Dictionary = () => {
                   boxShadow: "0 4px 12px rgba(24, 144, 255, 0.1)"
                 }}
               >
-                <Spin size="small" style={{ color: "#1890ff" }} />
+                <Spin size="small" style={{ color: "var(--color-primary)" }} />
                 <div style={{ 
                   marginTop: "8px", 
-                  fontSize: "14px",
+                  fontSize: "12px",
                   fontWeight: "500",
-                  color: "#1890ff"
+                  color: "var(--color-primary)"
                 }}>
                   Đang dịch văn bản...
                 </div>
@@ -904,7 +904,7 @@ const Dictionary = () => {
               value={inputWord}
               onChange={(e) => setInputWord(e.target.value)}
               onPressEnter={() => searchWord()}
-              prefix={<Search size={18} style={{ color: "#1890ff" }} />}
+              prefix={<Search size={18} style={{ color: "var(--color-primary)" }} />}
               style={{
                 borderRadius: "12px",
                 border: "2px solid transparent",
@@ -952,7 +952,7 @@ const Dictionary = () => {
                       <Space>
                         <History size={18} />
                         <span style={{ fontWeight: "600" }}>Lịch sử tìm kiếm</span>
-                        <Badge count={searchHistory.length} style={{ backgroundColor: "#1890ff" }} />
+                        <Badge count={searchHistory.length} style={{ backgroundColor: "var(--color-primary)" }} />
                       </Space>
                     }
                     style={{
@@ -988,7 +988,7 @@ const Dictionary = () => {
                             }}
                             onClick={() => searchFromList(item.word)}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f5f5f5";
+                              e.currentTarget.style.backgroundColor = "var(--color-bg-secondary)";
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.backgroundColor =
@@ -1009,7 +1009,7 @@ const Dictionary = () => {
                           >
                             <List.Item.Meta
                               avatar={
-                                <Clock size={16} style={{ color: "#1890ff" }} />
+                                <Clock size={16} style={{ color: "var(--color-primary)" }} />
                               }
                               title={<Text strong>{item.word}</Text>}
                               description={
@@ -1080,7 +1080,7 @@ const Dictionary = () => {
                       <Space>
                         <Heart size={18} />
                         <span style={{ fontWeight: "600" }}>Từ yêu thích</span>
-                        <Badge count={bookmarkedWords.length} style={{ backgroundColor: "#faad14" }} />
+                        <Badge count={bookmarkedWords.length} style={{ backgroundColor: "var(--color-warning)" }} />
                       </Space>
                     }
                     style={{
@@ -1116,7 +1116,7 @@ const Dictionary = () => {
                             }}
                             onClick={() => searchFromList(item.word)}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f5f5f5";
+                              e.currentTarget.style.backgroundColor = "var(--color-bg-secondary)";
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.backgroundColor =
@@ -1134,7 +1134,7 @@ const Dictionary = () => {
                           >
                             <List.Item.Meta
                               avatar={
-                                <Star size={16} style={{ color: "#faad14" }} />
+                                <Star size={16} style={{ color: "var(--color-warning)" }} />
                               }
                               title={<Text strong>{item.word}</Text>}
                               description={
@@ -1206,8 +1206,8 @@ const Dictionary = () => {
               onClick={addSampleData}
               style={{ 
                 borderRadius: "12px", 
-                color: "#722ed1",
-                borderColor: "#722ed1",
+                color: "var(--color-chart-4)",
+                borderColor: "var(--color-chart-4)",
                 transition: "all 0.3s ease"
               }}
               title="Thêm dữ liệu mẫu để test"
@@ -1231,10 +1231,10 @@ const Dictionary = () => {
         >
           {searching ? (
             <div style={{ textAlign: "center", padding: "60px 40px" }}>
-              <Spin size="large" style={{ color: "#1890ff" }} />
+              <Spin size="large" style={{ color: "var(--color-primary)" }} />
               <div style={{ 
                 marginTop: "20px", 
-                color: "#1890ff",
+                color: "var(--color-primary)",
                 fontSize: "16px",
                 fontWeight: "500"
               }}>
@@ -1243,7 +1243,7 @@ const Dictionary = () => {
               <div style={{
                 marginTop: "12px",
                 color: "#8c8c8c",
-                fontSize: "14px"
+                fontSize: "12px"
               }}>
                 Vui lòng đợi trong giây lát
               </div>
@@ -1284,7 +1284,7 @@ const Dictionary = () => {
                           ghost={!isBookmarked}
                           icon={
                             isBookmarked ? (
-                              <Heart size={18} style={{ fill: "#ff4d4f" }} />
+                              <Heart size={18} style={{ fill: "var(--color-danger)" }} />
                             ) : (
                               <Heart size={18} />
                             )
@@ -1452,7 +1452,7 @@ const Dictionary = () => {
                           marginRight: "0", 
                           padding: "6px 12px",
                           borderRadius: "8px",
-                          fontSize: "14px",
+                          fontSize: "12px",
                           fontWeight: "500",
                           boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
                         }}
@@ -1467,7 +1467,7 @@ const Dictionary = () => {
                         style={{ 
                           padding: "6px 12px",
                           borderRadius: "8px",
-                          fontSize: "14px",
+                          fontSize: "12px",
                           fontWeight: "500",
                           boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
                         }}
@@ -1491,7 +1491,7 @@ const Dictionary = () => {
                       fontWeight: "600"
                     }}
                   >
-                    <BookOpen size={20} style={{ marginRight: "10px", color: "#1890ff" }} />
+                    <BookOpen size={20} style={{ marginRight: "10px", color: "var(--color-primary)" }} />
                     Định nghĩa
                   </Title>
                   {definition.map((meaning, idx) => (
@@ -1511,7 +1511,7 @@ const Dictionary = () => {
                       <Title
                         level={5}
                         style={{
-                          color: "#1890ff",
+                          color: "var(--color-primary)",
                           marginBottom: "12px",
                           textTransform: "capitalize",
                           fontWeight: "600",
@@ -1550,7 +1550,7 @@ const Dictionary = () => {
                   <Row gutter={16}>
                     {synonyms.length > 0 && (
                       <Col xs={24} md={12}>
-                        <Title level={5} style={{ color: "#52c41a" }}>
+                        <Title level={5} style={{ color: "var(--color-success)" }}>
                           Từ đồng nghĩa
                         </Title>
                         <div>
@@ -1576,7 +1576,7 @@ const Dictionary = () => {
 
                     {antonyms.length > 0 && (
                       <Col xs={24} md={12}>
-                        <Title level={5} style={{ color: "#ff4d4f" }}>
+                        <Title level={5} style={{ color: "var(--color-danger)" }}>
                           Từ trái nghĩa
                         </Title>
                         <div>
@@ -1675,7 +1675,7 @@ const Dictionary = () => {
                 }
               >
                 <div style={{ textAlign: "center", marginBottom: "16px" }}>
-                  <Title level={3} style={{ color: "#1890ff" }}>
+                  <Title level={3} style={{ color: "var(--color-primary)" }}>
                     {searchHistory.length}
                   </Title>
                   <Text type="secondary">Từ đã tìm kiếm</Text>
@@ -1692,7 +1692,7 @@ const Dictionary = () => {
                       >
                         <List.Item.Meta
                           avatar={
-                            <Clock size={16} style={{ color: "#1890ff" }} />
+                            <Clock size={16} style={{ color: "var(--color-primary)" }} />
                           }
                           title={item.word}
                           description={`${item.searchCount} lần - ${new Date(
@@ -1736,7 +1736,7 @@ const Dictionary = () => {
                 }
               >
                 <div style={{ textAlign: "center", marginBottom: "16px" }}>
-                  <Title level={3} style={{ color: "#faad14" }}>
+                  <Title level={3} style={{ color: "var(--color-warning)" }}>
                     {bookmarkedWords.length}
                   </Title>
                   <Text type="secondary">Từ yêu thích</Text>
@@ -1753,7 +1753,7 @@ const Dictionary = () => {
                       >
                         <List.Item.Meta
                           avatar={
-                            <Star size={16} style={{ color: "#faad14" }} />
+                            <Star size={16} style={{ color: "var(--color-warning)" }} />
                           }
                           title={item.word}
                           description={new Date(
@@ -1892,11 +1892,11 @@ const Dictionary = () => {
             }
             
             .word-meaning {
-              font-size: 13px !important;
+              font-size: 12px !important;
             }
             
             .word-example {
-              font-size: 13px !important;
+              font-size: 12px !important;
               padding-left: 15px !important;
             }
           }
@@ -1946,7 +1946,7 @@ const Dictionary = () => {
           }
           
           .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2C5F8D;
             border-radius: 3px;
           }
           
@@ -1965,7 +1965,7 @@ const Dictionary = () => {
         {/* Header */}
         <div style={{ marginBottom: "32px", textAlign: "center", position: "relative" }}>
           <div style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "#2C5F8D",
             borderRadius: "20px",
             padding: window.innerWidth <= 768 ? "30px 20px" : "40px 30px",
             marginBottom: "24px",

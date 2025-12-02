@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Breadcrumb } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 import GrammarList from '../../../components/Admin/GammarList';
@@ -9,7 +9,6 @@ import './style.css';
 
 const Grammar = () => {
     const [grammars, setGrammars] = useState([]);
-    const [activeIndex, setActiveIndex] = useState(-1);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -71,7 +70,7 @@ const Grammar = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -84,9 +83,9 @@ const Grammar = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <BookOutlined style={{ color: '#fff', fontSize: 22 }} />
+                            <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Grammar</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Grammar</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

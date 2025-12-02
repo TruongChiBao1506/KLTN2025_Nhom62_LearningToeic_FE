@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+﻿import React, { useState, useMemo } from "react";
 import {
   Card,
   Button,
@@ -161,8 +161,8 @@ const TestPart4 = ({
   const getQuestionButtonStyle = (question) => {
     if (!question.selectedOption) {
       return {
-        backgroundColor: "#f5f5f5",
-        color: "#666",
+        backgroundColor: "var(--color-bg-secondary)",
+        color: "var(--color-text-secondary)",
         border: "1px solid #d9d9d9",
       };
     }
@@ -170,13 +170,13 @@ const TestPart4 = ({
     if (question.isGraded) {
       if (question.selectedLetter === question.correctOption) {
         return {
-          backgroundColor: "#52c41a",
+          backgroundColor: "var(--color-success)",
           color: "white",
           border: "1px solid #52c41a",
         };
       } else {
         return {
-          backgroundColor: "#ff4d4f",
+          backgroundColor: "var(--color-danger)",
           color: "white",
           border: "1px solid #ff4d4f",
         };
@@ -184,7 +184,7 @@ const TestPart4 = ({
     }
 
     return {
-      backgroundColor: "#fa8c16",
+      backgroundColor: "var(--color-chart-6)",
       color: "white",
       border: "1px solid #fa8c16",
     };
@@ -221,7 +221,7 @@ const TestPart4 = ({
                     gap: "12px",
                   }}
                 >
-                  <Volume2 size={20} color="#1890ff" />
+                  <Volume2 size={20} color="var(--color-primary)" />
                   <div style={{ flex: 1 }}>
                     {/* Debug logs before audio element */}
                     {(() => {
@@ -317,7 +317,7 @@ const TestPart4 = ({
                     <Col xs={24} md={12}>
                       <div
                         style={{
-                          background: "#f8f9fa",
+                          background: "var(--color-bg-secondary)",
                           padding: "16px",
                           borderRadius: "8px",
                           textAlign: "center",
@@ -352,7 +352,7 @@ const TestPart4 = ({
                             id={`question-${groupId}-${index}`}
                             size="small"
                             style={{
-                              backgroundColor: "#fafafa",
+                              backgroundColor: "var(--color-bg-hover)",
                               border: "1px solid #f0f0f0",
                             }}
                           >
@@ -368,8 +368,8 @@ const TestPart4 = ({
                                   shape="circle"
                                   size="small"
                                   style={{
-                                    backgroundColor: "#1890ff",
-                                    borderColor: "#1890ff",
+                                    backgroundColor: "var(--color-primary)",
+                                    borderColor: "var(--color-primary)",
                                     fontWeight: "bold",
                                   }}
                                 >
@@ -388,7 +388,7 @@ const TestPart4 = ({
 
                               {/* Question Content */}
                               <Text
-                                style={{ fontSize: "14px", marginLeft: "32px" }}
+                                style={{ fontSize: "12px", marginLeft: "32px" }}
                               >
                                 {question.questionContent}
                               </Text>
@@ -438,20 +438,20 @@ const TestPart4 = ({
                                               borderRadius: "6px",
                                               border: `2px solid ${
                                                 isCorrect
-                                                  ? "#52c41a"
+                                                  ? "var(--color-success)"
                                                   : isWrong
-                                                  ? "#ff4d4f"
+                                                  ? "var(--color-danger)"
                                                   : isSelected
-                                                  ? "#1890ff"
+                                                  ? "var(--color-primary)"
                                                   : "#f0f0f0"
                                               }`,
                                               backgroundColor: isCorrect
-                                                ? "#f6ffed"
+                                                ? "var(--color-success-bg)"
                                                 : isWrong
-                                                ? "#fff2f0"
+                                                ? "var(--color-danger-bg)"
                                                 : isSelected
-                                                ? "#e6f7ff"
-                                                : "#fafafa",
+                                                ? "var(--color-info-bg)"
+                                                : "var(--color-bg-hover)",
                                               position: "relative",
                                             }}
                                           >
@@ -477,7 +477,7 @@ const TestPart4 = ({
                                             {isCorrect && (
                                               <Check
                                                 size={16}
-                                                color="#52c41a"
+                                                color="var(--color-success)"
                                                 style={{
                                                   position: "absolute",
                                                   right: "8px",
@@ -489,7 +489,7 @@ const TestPart4 = ({
                                             {isWrong && (
                                               <X
                                                 size={16}
-                                                color="#ff4d4f"
+                                                color="var(--color-danger)"
                                                 style={{
                                                   position: "absolute",
                                                   right: "8px",
@@ -538,7 +538,7 @@ const TestPart4 = ({
                         key={index}
                         id={`question-${groupId}-${index}`}
                         style={{
-                          backgroundColor: "#fafafa",
+                          backgroundColor: "var(--color-bg-hover)",
                           border: "1px solid #f0f0f0",
                         }}
                       >
@@ -554,8 +554,8 @@ const TestPart4 = ({
                               shape="circle"
                               size="large"
                               style={{
-                                backgroundColor: "#1890ff",
-                                borderColor: "#1890ff",
+                                backgroundColor: "var(--color-primary)",
+                                borderColor: "var(--color-primary)",
                                 fontWeight: "bold",
                               }}
                             >
@@ -621,20 +621,20 @@ const TestPart4 = ({
                                           borderRadius: "8px",
                                           border: `2px solid ${
                                             isCorrect
-                                              ? "#52c41a"
+                                              ? "var(--color-success)"
                                               : isWrong
-                                              ? "#ff4d4f"
+                                              ? "var(--color-danger)"
                                               : isSelected
-                                              ? "#1890ff"
+                                              ? "var(--color-primary)"
                                               : "#f0f0f0"
                                           }`,
                                           backgroundColor: isCorrect
-                                            ? "#f6ffed"
+                                            ? "var(--color-success-bg)"
                                             : isWrong
-                                            ? "#fff2f0"
+                                            ? "var(--color-danger-bg)"
                                             : isSelected
-                                            ? "#e6f7ff"
-                                            : "#fafafa",
+                                            ? "var(--color-info-bg)"
+                                            : "var(--color-bg-hover)",
                                           position: "relative",
                                         }}
                                       >
@@ -651,7 +651,7 @@ const TestPart4 = ({
                                         {isCorrect && (
                                           <Check
                                             size={20}
-                                            color="#52c41a"
+                                            color="var(--color-success)"
                                             style={{
                                               position: "absolute",
                                               right: "12px",
@@ -663,7 +663,7 @@ const TestPart4 = ({
                                         {isWrong && (
                                           <X
                                             size={20}
-                                            color="#ff4d4f"
+                                            color="var(--color-danger)"
                                             style={{
                                               position: "absolute",
                                               right: "12px",
@@ -855,14 +855,14 @@ const TestPart4 = ({
               <div style={{ textAlign: "center" }}>
                 <Space size="large">
                   <Space>
-                    <Check size={20} color="#52c41a" />
-                    <Text strong style={{ color: "#52c41a" }}>
+                    <Check size={20} color="var(--color-success)" />
+                    <Text strong style={{ color: "var(--color-success)" }}>
                       {getCorrectCount}/{questions.length}
                     </Text>
                   </Space>
                   <Space>
-                    <X size={20} color="#ff4d4f" />
-                    <Text strong style={{ color: "#ff4d4f" }}>
+                    <X size={20} color="var(--color-danger)" />
+                    <Text strong style={{ color: "var(--color-danger)" }}>
                       {getIncorrectCount}/{questions.length}
                     </Text>
                   </Space>

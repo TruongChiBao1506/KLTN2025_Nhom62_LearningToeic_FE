@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   Card,
@@ -352,7 +352,7 @@ const Quiz = () => {
           <Spin size="large" />
           <Typography.Title
             level={4}
-            style={{ marginTop: "16px", marginBottom: "8px", color: "#1890ff" }}
+            style={{ marginTop: "16px", marginBottom: "8px", color: "var(--color-primary)" }}
           >
             Đang tải dữ liệu quiz...
           </Typography.Title>
@@ -398,7 +398,7 @@ const Quiz = () => {
           </Typography.Title>
           <Typography.Text
             type="secondary"
-            style={{ fontSize: "14px", marginBottom: "24px", display: "block" }}
+            style={{ fontSize: "12px", marginBottom: "24px", display: "block" }}
           >
             {vocabularies.length === 0
               ? "Chủ đề này chưa có từ vựng nào để kiểm tra."
@@ -495,7 +495,7 @@ const Quiz = () => {
                     percent={percentage}
                     size={120}
                     strokeWidth={8}
-                    strokeColor={percentage >= 70 ? "#52c41a" : "#ff4d4f"}
+                    strokeColor={percentage >= 70 ? "var(--color-success)" : "var(--color-danger)"}
                     trailColor="#f0f0f0"
                     format={() => (
                       <div style={{ textAlign: "center" }}>
@@ -503,12 +503,12 @@ const Quiz = () => {
                           style={{
                             fontSize: "28px",
                             fontWeight: "bold",
-                            color: percentage >= 70 ? "#52c41a" : "#ff4d4f",
+                            color: percentage >= 70 ? "var(--color-success)" : "var(--color-danger)",
                           }}
                         >
                           {percentage}
                         </div>
-                        <div style={{ fontSize: "14px", color: "#8c8c8c" }}>
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
                           %
                         </div>
                       </div>
@@ -551,7 +551,7 @@ const Quiz = () => {
                     >
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#52c41a" }}
+                        style={{ margin: 0, color: "var(--color-success)" }}
                       >
                         {score}
                       </Typography.Title>
@@ -573,7 +573,7 @@ const Quiz = () => {
                     >
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#ff4d4f" }}
+                        style={{ margin: 0, color: "var(--color-danger)" }}
                       >
                         {questions.length - score}
                       </Typography.Title>
@@ -595,7 +595,7 @@ const Quiz = () => {
                     >
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#1890ff" }}
+                        style={{ margin: 0, color: "var(--color-primary)" }}
                       >
                         {questions.length}
                       </Typography.Title>
@@ -643,7 +643,7 @@ const Quiz = () => {
                       style={{
                         borderRadius: "8px",
                         height: "40px",
-                        background: "#fff7e6",
+                        background: "var(--color-warning-bg)",
                         borderColor: "#ffd591",
                       }}
                     >
@@ -681,7 +681,7 @@ const Quiz = () => {
                           border: `1px solid ${
                             answer?.isCorrect ? "#d9f7be" : "#ffccc7"
                           }`,
-                          background: answer?.isCorrect ? "#f6ffed" : "#fff2f0",
+                          background: answer?.isCorrect ? "var(--color-success-bg)" : "var(--color-danger-bg)",
                         }}
                       >
                         <Row justify="space-between" align="middle">
@@ -689,7 +689,7 @@ const Quiz = () => {
                             <div style={{ marginBottom: "4px" }}>
                               <Typography.Text
                                 strong
-                                style={{ fontSize: "14px" }}
+                                style={{ fontSize: "12px" }}
                               >
                                 {questions[index]?.word}
                               </Typography.Text>
@@ -712,8 +712,8 @@ const Quiz = () => {
                               <Typography.Text
                                 style={{
                                   color: answer?.isCorrect
-                                    ? "#52c41a"
-                                    : "#ff4d4f",
+                                    ? "var(--color-success)"
+                                    : "var(--color-danger)",
                                   fontWeight: "500",
                                   fontSize: "12px",
                                 }}
@@ -728,7 +728,7 @@ const Quiz = () => {
                                 </Typography.Text>
                                 <Typography.Text
                                   style={{
-                                    color: "#52c41a",
+                                    color: "var(--color-success)",
                                     fontWeight: "500",
                                     fontSize: "12px",
                                   }}
@@ -744,8 +744,8 @@ const Quiz = () => {
                                 width: "28px",
                                 height: "28px",
                                 background: answer?.isCorrect
-                                  ? "#52c41a"
-                                  : "#ff4d4f",
+                                  ? "var(--color-success)"
+                                  : "var(--color-danger)",
                                 borderRadius: "50%",
                                 display: "flex",
                                 alignItems: "center",
@@ -817,7 +817,7 @@ const Quiz = () => {
                 <Typography.Title
                   level={5}
                   style={{
-                    color: "#1890ff",
+                    color: "var(--color-primary)",
                     marginBottom: "20px",
                     background:
                       "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
@@ -841,11 +841,11 @@ const Quiz = () => {
                       }}
                     >
                       <div style={{ marginBottom: "4px" }}>
-                        <HelpCircle size={18} style={{ color: "#1890ff" }} />
+                        <HelpCircle size={18} style={{ color: "var(--color-primary)" }} />
                       </div>
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#1890ff" }}
+                        style={{ margin: 0, color: "var(--color-primary)" }}
                       >
                         {questions.length}
                       </Typography.Title>
@@ -868,11 +868,11 @@ const Quiz = () => {
                       }}
                     >
                       <div style={{ marginBottom: "4px" }}>
-                        <Clock size={18} style={{ color: "#fa8c16" }} />
+                        <Clock size={18} style={{ color: "var(--color-chart-6)" }} />
                       </div>
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#fa8c16" }}
+                        style={{ margin: 0, color: "var(--color-chart-6)" }}
                       >
                         {formatTime(timeLeft)}
                       </Typography.Title>
@@ -895,11 +895,11 @@ const Quiz = () => {
                       }}
                     >
                       <div style={{ marginBottom: "4px" }}>
-                        <Star size={18} style={{ color: "#52c41a" }} />
+                        <Star size={18} style={{ color: "var(--color-success)" }} />
                       </div>
                       <Typography.Title
                         level={5}
-                        style={{ margin: 0, color: "#52c41a" }}
+                        style={{ margin: 0, color: "var(--color-success)" }}
                       >
                         70%
                       </Typography.Title>
@@ -917,7 +917,7 @@ const Quiz = () => {
                   size="small"
                   style={{
                     borderRadius: "8px",
-                    background: "#fafafa",
+                    background: "var(--color-bg-hover)",
                     border: "1px solid #e8e8e8",
                     marginBottom: "20px",
                   }}
@@ -927,22 +927,22 @@ const Quiz = () => {
                   </Typography.Title>
                   <div style={{ textAlign: "left" }}>
                     <Typography.Paragraph
-                      style={{ margin: "4px 0", fontSize: "13px" }}
+                      style={{ margin: "4px 0", fontSize: "12px" }}
                     >
                       • Chọn nghĩa đúng cho từ vựng được hiển thị
                     </Typography.Paragraph>
                     <Typography.Paragraph
-                      style={{ margin: "4px 0", fontSize: "13px" }}
+                      style={{ margin: "4px 0", fontSize: "12px" }}
                     >
                       • Mỗi câu hỏi có 30 giây để trả lời
                     </Typography.Paragraph>
                     <Typography.Paragraph
-                      style={{ margin: "4px 0", fontSize: "13px" }}
+                      style={{ margin: "4px 0", fontSize: "12px" }}
                     >
                       • Bạn cần đạt 70% để vượt qua bài kiểm tra
                     </Typography.Paragraph>
                     <Typography.Paragraph
-                      style={{ margin: "4px 0", fontSize: "13px" }}
+                      style={{ margin: "4px 0", fontSize: "12px" }}
                     >
                       • Có thể làm lại nhiều lần
                     </Typography.Paragraph>
@@ -1030,7 +1030,7 @@ const Quiz = () => {
               </Typography.Text>
               <Typography.Title
                 level={5}
-                style={{ margin: 0, color: "#1890ff" }}
+                style={{ margin: 0, color: "var(--color-primary)" }}
               >
                 {currentQuestion + 1}/{questions.length}
               </Typography.Title>
@@ -1041,7 +1041,7 @@ const Quiz = () => {
               percent={Math.round(
                 ((currentQuestion + 1) / questions.length) * 100
               )}
-              strokeColor="#1890ff"
+              strokeColor="var(--color-primary)"
               trailColor="#f0f0f0"
               strokeWidth={6}
               showInfo={false}
@@ -1049,7 +1049,7 @@ const Quiz = () => {
             />
             <Typography.Text
               strong
-              style={{ color: "#1890ff", fontSize: "12px" }}
+              style={{ color: "var(--color-primary)", fontSize: "12px" }}
             >
               {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
             </Typography.Text>
@@ -1066,14 +1066,14 @@ const Quiz = () => {
               <Clock
                 size={16}
                 style={{
-                  color: timeLeft <= 30 ? "#ff4d4f" : "#1890ff",
+                  color: timeLeft <= 30 ? "var(--color-danger)" : "var(--color-primary)",
                 }}
               />
               <Typography.Text
                 strong
                 style={{
-                  color: timeLeft <= 30 ? "#ff4d4f" : "#1890ff",
-                  fontSize: "14px",
+                  color: timeLeft <= 30 ? "var(--color-danger)" : "var(--color-primary)",
+                  fontSize: "12px",
                 }}
               >
                 {formatTime(timeLeft)}
@@ -1132,7 +1132,7 @@ const Quiz = () => {
                     level={2}
                     style={{
                       margin: "12px 0",
-                      color: "#1890ff",
+                      color: "var(--color-primary)",
                       fontSize: "36px",
                       fontWeight: "700",
                     }}
@@ -1151,7 +1151,7 @@ const Quiz = () => {
                       }}
                     >
                       <Typography.Text
-                        style={{ color: "#1890ff", fontSize: "14px" }}
+                        style={{ color: "var(--color-primary)", fontSize: "12px" }}
                       >
                         {question.ipa}
                       </Typography.Text>
@@ -1163,8 +1163,8 @@ const Quiz = () => {
                         onClick={() => playPronunciation(question.word)}
                         disabled={!question.word}
                         style={{
-                          color: "#1890ff",
-                          backgroundColor: "#ffffff",
+                          color: "var(--color-primary)",
+                          backgroundColor: "var(--color-bg-primary)",
                           border: "1px solid #d6e4ff",
                           boxShadow: "0 2px 4px rgba(24, 144, 255, 0.1)",
                         }}
@@ -1186,7 +1186,7 @@ const Quiz = () => {
                     >
                       <Typography.Text
                         strong
-                        style={{ color: "#fa8c16", fontSize: "12px" }}
+                        style={{ color: "var(--color-chart-6)", fontSize: "12px" }}
                       >
                         Ví dụ:
                       </Typography.Text>
@@ -1222,7 +1222,7 @@ const Quiz = () => {
                         background:
                           selectedAnswer === option
                             ? "linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%)"
-                            : "#ffffff",
+                            : "var(--color-bg-primary)",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
@@ -1242,7 +1242,7 @@ const Quiz = () => {
                           width: "20px",
                           height: "20px",
                           background:
-                            selectedAnswer === option ? "#1890ff" : "#f0f0f0",
+                            selectedAnswer === option ? "var(--color-primary)" : "#f0f0f0",
                           borderRadius: "50%",
                           display: "flex",
                           alignItems: "center",
@@ -1257,11 +1257,11 @@ const Quiz = () => {
                       <Typography.Text
                         style={{
                           color:
-                            selectedAnswer === option ? "#1890ff" : "#262626",
+                            selectedAnswer === option ? "var(--color-primary)" : "#262626",
                           fontWeight: selectedAnswer === option ? "600" : "400",
                           textAlign: "center",
                           paddingTop: "12px",
-                          fontSize: "13px",
+                          fontSize: "12px",
                         }}
                       >
                         {option}
@@ -1274,7 +1274,7 @@ const Quiz = () => {
                             right: "8px",
                           }}
                         >
-                          <Check size={14} style={{ color: "#1890ff" }} />
+                          <Check size={14} style={{ color: "var(--color-primary)" }} />
                         </div>
                       )}
                     </Button>
@@ -1294,7 +1294,7 @@ const Quiz = () => {
                     height: "40px",
                     paddingLeft: "20px",
                     paddingRight: "20px",
-                    fontSize: "14px",
+                    fontSize: "12px",
                     fontWeight: "600",
                     background: selectedAnswer
                       ? "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)"

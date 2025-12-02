@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import achievementService from '../../../services/achievementService';
@@ -172,7 +172,7 @@ const Achievements = () => {
           <div style={{ color: '#4f46e5', fontSize: '1.2rem', fontWeight: '600' }}>
             Đang tải dữ liệu thành tích...
           </div>
-          <div style={{ color: '#666', marginTop: '10px' }}>
+          <div style={{ color: 'var(--color-text-secondary)', marginTop: '10px' }}>
             Vui lòng đợi trong giây lát
           </div>
         </div>
@@ -258,7 +258,7 @@ const Achievements = () => {
                 <div style={{ fontSize: '3rem', marginBottom: '20px' }}>
                   {activeTab === 'unlocked' ? '🏆' : '🔒'}
                 </div>
-                <div style={{ color: '#666', fontSize: '1.1rem' }}>
+                <div style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem' }}>
                   {activeTab === 'unlocked'
                     ? 'Bạn chưa mở khóa thành tích nào trong danh mục này'
                     : 'Không có thành tích nào trong danh mục này'
@@ -338,7 +338,7 @@ const Achievements = () => {
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: '#ffffff', // Solid white background
+              background: 'var(--color-bg-primary)', // Solid white background
               borderRadius: '20px',
               boxShadow: selectedAchievement.unlocked
                 ? `0 25px 50px rgba(${getRarityColor(selectedAchievement.rarity || 'common').slice(1, 3)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(3, 5)}, ${getRarityColor(selectedAchievement.rarity || 'common').slice(5, 7)}, 0.3)`
@@ -428,7 +428,7 @@ const Achievements = () => {
                     </span>
                     {selectedAchievement.unlocked && (
                       <span style={{
-                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                        background: '#27AE60',
                         color: 'white',
                         padding: '4px 12px',
                         borderRadius: '20px',
@@ -459,7 +459,7 @@ const Achievements = () => {
                   justifyContent: 'center',
                   cursor: 'pointer',
                   fontSize: '1.5rem',
-                  color: '#666',
+                  color: 'var(--color-text-secondary)',
                   transition: 'all 0.3s ease',
                   zIndex: 2
                 }}

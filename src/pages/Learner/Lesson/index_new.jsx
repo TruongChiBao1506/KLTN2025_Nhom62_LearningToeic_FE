@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
@@ -308,9 +308,9 @@ const Lesson = () => {
                           borderRadius: "12px",
                           padding: "16px",
                           background: isCurrentLesson 
-                            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                            ? "#2C5F8D" 
                             : "rgba(255, 255, 255, 0.8)",
-                          color: isCurrentLesson ? "#ffffff" : "#64748b",
+                          color: isCurrentLesson ? "var(--color-bg-primary)" : "#64748b",
                           border: isCurrentLesson ? "2px solid #667eea" : "1px solid #e2e8f0",
                           transition: "all 0.3s ease",
                           display: "block",
@@ -319,7 +319,7 @@ const Lesson = () => {
                         onMouseEnter={(e) => {
                           if (!isCurrentLesson) {
                             e.currentTarget.style.background = "rgba(102, 126, 234, 0.1)";
-                            e.currentTarget.style.color = "#667eea";
+                            e.currentTarget.style.color = "var(--color-brand-purple)";
                             e.currentTarget.style.transform = "translateX(4px)";
                           }
                         }}
@@ -344,7 +344,7 @@ const Lesson = () => {
                               alignItems: "center",
                               justifyContent: "center",
                               marginRight: "12px",
-                              fontSize: "14px"
+                              fontSize: "12px"
                             }}
                           >
                             <i className={`fas ${isCurrentLesson ? 'fa-play' : 'fa-book'}`}></i>
@@ -354,7 +354,7 @@ const Lesson = () => {
                             title={lesson.lessonName || lesson.name}
                             style={{
                               fontWeight: isCurrentLesson ? "600" : "500",
-                              fontSize: "14px"
+                              fontSize: "12px"
                             }}
                           >
                             {lesson.lessonName || lesson.name}

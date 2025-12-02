@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // Import services
@@ -111,7 +111,7 @@ const SpeakingWriting = () => {
           overflow: 'hidden',
           position: 'relative',
           background: sectionType === 3
-            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            ? '#2C5F8D'
             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
         }}>
           <img
@@ -136,7 +136,7 @@ const SpeakingWriting = () => {
             padding: '5px 12px',
             fontSize: '0.8rem',
             fontWeight: 'bold',
-            color: sectionType === 3 ? '#667eea' : '#f5576c'
+            color: sectionType === 3 ? 'var(--color-brand-purple)' : '#f5576c'
           }}>
             {sectionType === 3 ? '🗣️ Nói' : '✍️ Viết'}
           </div>
@@ -169,7 +169,7 @@ const SpeakingWriting = () => {
               ~30 phút
             </small>
             <div style={{
-              background: sectionType === 3 ? '#667eea' : '#f5576c',
+              background: sectionType === 3 ? 'var(--color-brand-purple)' : '#f5576c',
               color: 'white',
               borderRadius: '15px',
               padding: '4px 12px',

@@ -1,11 +1,11 @@
-/* Exam List Styles */
+﻿/* Exam List Styles */
 .exam-list-container {
   padding: 10px 0;
 }
 
 /* Breadcrumb */
 .breadcrumb-container {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   padding: 10px 20px;
   margin-bottom: 20px;
@@ -28,7 +28,7 @@
 
 /* Exam List Header */
 .exam-list-header {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -42,9 +42,9 @@
 /* Filter Panel */
 .filter-panel {
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-border-light);
   margin-top: 15px;
 }
 
@@ -54,7 +54,7 @@
 }
 
 .exam-card {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
@@ -78,7 +78,7 @@
   right: 10px;
   width: 20px;
   height: 20px;
-  background-color: #28a745;
+  background-color: var(--color-approved);
   border-radius: 50%;
   z-index: 1;
 }
@@ -106,22 +106,22 @@
 }
 
 .badge-success {
-  background-color: #28a745;
+  background-color: var(--color-approved);
   color: white;
 }
 
 .badge-warning {
   background-color: #ffc107;
-  color: #212529;
+  color: var(--color-text-primary);
 }
 
 .badge-danger {
-  background-color: #dc3545;
+  background-color: var(--color-danger);
   color: white;
 }
 
 .badge-secondary {
-  background-color: #6c757d;
+  background-color: var(--color-draft);
   color: white;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .exam-card-body p {
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 20px;
   font-size: 0.95rem;
   height: 60px;
@@ -155,7 +155,7 @@
 
 .exam-detail-item {
   font-size: 0.9rem;
-  color: #495057;
+  color: var(--color-text-primary);
 }
 
 .status-badge {
@@ -167,20 +167,20 @@
 .exam-card-footer {
   padding: 15px 20px;
   border-top: 1px solid #eaeaea;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
 }
 
 /* No Exams Found */
 .no-exams-message {
   text-align: center;
   padding: 60px 20px;
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
 .no-exams-icon {
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 20px;
 }
 
@@ -190,6 +190,6 @@
 }
 
 .no-exams-message p {
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 20px;
 }

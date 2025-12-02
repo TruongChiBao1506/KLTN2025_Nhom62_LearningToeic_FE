@@ -1,16 +1,16 @@
-@import "../../../assets/breadcrumb.css";
+﻿@import "../../../assets/breadcrumb.css";
 
 .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
 
 th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
@@ -59,7 +59,7 @@ td {
 }
 
 .text-bg-danger {
-    background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
     color: white !important;
 }
 
@@ -69,13 +69,13 @@ td {
 }
 
 .btn-white:hover {
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
 }
 
 /* Pagination */
 .pagination .page-link {
     color: #0d6efd;
-    border-color: #dee2e6;
+    border-color: var(--color-border);
 }
 
 .pagination .page-item.active .page-link {
@@ -84,9 +84,9 @@ td {
 }
 
 .pagination .page-item.disabled .page-link {
-    color: #6c757d;
-    background-color: #fff;
-    border-color: #dee2e6;
+    color: var(--color-draft);
+    background-color: var(--color-bg-primary);
+    border-color: var(--color-border);
 }
 
 /* Card styles */

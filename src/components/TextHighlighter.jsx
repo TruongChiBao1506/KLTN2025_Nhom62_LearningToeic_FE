@@ -1,4 +1,4 @@
-// import React, { useState, useEffect } from "react";
+﻿// import React, { useState, useEffect } from "react";
 // import {
 //   Popover,
 //   Button,
@@ -329,7 +329,7 @@
 //                     <Paragraph
 //                       style={{
 //                         padding: "8px",
-//                         backgroundColor: "#f5f5f5",
+//                         backgroundColor: "var(--color-bg-secondary)",
 //                         borderRadius: "4px",
 //                         marginTop: "8px",
 //                       }}
@@ -368,7 +368,7 @@
 //                     <Paragraph
 //                       style={{
 //                         padding: "8px",
-//                         backgroundColor: "#f5f5f5",
+//                         backgroundColor: "var(--color-bg-secondary)",
 //                         borderRadius: "4px",
 //                         marginTop: "8px",
 //                       }}

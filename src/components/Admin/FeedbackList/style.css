@@ -1,14 +1,14 @@
-.table-row.shadow-on-hover:hover {
+﻿.table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
 
 th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
@@ -23,8 +23,8 @@ td {
 
 .glowing-button {
     padding: 10px 20px;
-    font-size: 13px;
-    background: linear-gradient(45deg, #1c75bc, #145a91);
+    font-size: 12px;
+    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
     color: white;
     border: none;
     border-radius: 25px;
@@ -76,21 +76,21 @@ td {
 .page-title {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text-primary);
     padding: 10px;
 }
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Button specific styles */
@@ -99,7 +99,7 @@ td {
 }
 
 .btn-white:hover {
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
 }
 
 /* Star icon */
@@ -110,7 +110,7 @@ td {
 /* Pagination */
 .pagination .page-link {
     color: #0d6efd;
-    border-color: #dee2e6;
+    border-color: var(--color-border);
 }
 
 .pagination .page-item.active .page-link {
@@ -119,9 +119,9 @@ td {
 }
 
 .pagination .page-item.disabled .page-link {
-    color: #6c757d;
-    background-color: #fff;
-    border-color: #dee2e6;
+    color: var(--color-draft);
+    background-color: var(--color-bg-primary);
+    border-color: var(--color-border);
 }
 
 /* Card styles */

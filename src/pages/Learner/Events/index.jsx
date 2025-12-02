@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import './style.css';
 
 const Events = () => {
@@ -216,7 +216,7 @@ const Events = () => {
       test: '#2196F3',
       marathon: '#F44336'
     };
-    return colors[category] || '#666';
+    return colors[category] || 'var(--color-text-secondary)';
   };
 
   const getCategoryIcon = (category) => {

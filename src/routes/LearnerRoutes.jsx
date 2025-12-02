@@ -33,7 +33,7 @@ import Study from "../pages/Learner/Study";
 import StudySW from "../pages/Learner/StudySW";
 import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
-import Notification from "../pages/Learner/Notification";
+import Notification from "../pages/Learner/Notification/NotificationPage";
 import ProtectedRoute from "../components/Learner/ProtectedRoute/index";
 import AITutor from "../pages/Learner/AITutor";
 import StudyTimer from "../pages/Learner/StudyTimer";
@@ -56,6 +56,8 @@ import Part5 from "../pages/Learner/Part5";
 import Part6 from "../pages/Learner/Part6";
 import Part7 from "../pages/Learner/Part7";
 import SpeakingWritingPage from "../pages/Learner/SpeakingWritingPage";
+import BecomeTeacher from "../pages/Learner/BecomeTeacher";
+import MyTeacherRequest from "../pages/Learner/MyTeacherRequest";
 
 
 const LearnerRoutes = () => {
@@ -472,6 +474,23 @@ const LearnerRoutes = () => {
           element={
             <ProtectedRoute>
               <Part7 />
+            </ProtectedRoute>
+          }
+        />
+        {/* Teacher Registration Routes */}
+        <Route
+          path="become-teacher"
+          element={
+            <ProtectedRoute>
+              <BecomeTeacher />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="my-teacher-request"
+          element={
+            <ProtectedRoute>
+              <MyTeacherRequest />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,4 @@
-.scrollable-container {
+﻿.scrollable-container {
   height: 700px;
   overflow-y: scroll;
   padding: 12px;
@@ -26,17 +26,17 @@ li:hover {
 }
 .transcript {
   color: #777;
-  font-size: 14px;
+  font-size: 12px;
   padding: 10px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 5px;
   margin-top: 10px;
 }
 .explanation {
   color: #777;
-  font-size: 14px;
+  font-size: 12px;
   padding: 10px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 5px;
   margin-top: 10px;
 }
@@ -70,7 +70,7 @@ h6 {
   border-color: #f6f9fc;
 }
 .card.specific-card:hover .text-body-secondary {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 .card:hover .card-title {
   color: rgb(22, 4, 100);
@@ -81,15 +81,15 @@ h6 {
 }
 .lesson-content p {
   font-family: "Lato", sans-serif;
-  font-size: 14px;
-  color: #333;
+  font-size: 12px;
+  color: var(--color-text-primary);
 }
 .button {
   display: inline-block;
   padding: 10px;
-  background-color: #052649;
-  color: #fff;
-  font-size: 14px;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   border-radius: 20px;
@@ -99,13 +99,13 @@ h6 {
   min-width: 100px;
 }
 .button:hover {
-  background-color: #fff;
-  color: #052649;
-  border: 1px solid #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
+  border: 1px solid var(--color-brand-navy);
 }
 button i {
   font-size: 20px;
-  color: #000;
+  color: var(--color-text-primary);
 }
 @keyframes pulse {
   0% {
@@ -165,18 +165,18 @@ button i {
   margin: 5px;
   border-radius: 20%;
   background-color: lightgray;
-  color: #000;
+  color: var(--color-text-primary);
   position: relative;
   transition: background-color 0.3s, color 0.3s;
   border: 1px solid transparent;
 }
 
 .question-list-section .question-buttons button:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
 }
 
 .question-list-section .question-buttons button.active {
-  border-color: #fff;
+  border-color: var(--color-bg-primary);
   background-color: #f1f1f1;
   border: 2px solid rgb(34, 8, 146);
 }
@@ -197,13 +197,13 @@ button i {
 
 .question-list-section .question-buttons button.correct {
   background-color: rgb(27, 170, 27);
-  color: #fff;
+  color: var(--color-bg-primary);
   border: none;
 }
 
 .question-list-section .question-buttons button.incorrect {
   background-color: rgb(228, 48, 48);
-  color: #fff;
+  color: var(--color-bg-primary);
   border: none;
 }
 .equal-size-button {
@@ -239,7 +239,7 @@ button i {
 .question-section,
 .question-list-section {
   border-radius: 20px;
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
 }
 
 .score {
@@ -323,7 +323,7 @@ button i {
   right: -10px;
   z-index: 100;
   font-size: 20px;
-  color: #000;
+  color: var(--color-text-primary);
 }
 
 .question {

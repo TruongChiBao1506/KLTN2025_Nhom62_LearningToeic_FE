@@ -1,5 +1,5 @@
-.button {
-  background-color: #052649;
+﻿.button {
+  background-color: var(--color-brand-navy);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -22,7 +22,7 @@
 }
 
 .question-info {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
@@ -30,7 +30,7 @@
 
 .badge {
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: 12px;
   margin-right: 5px;
 }
 
@@ -119,13 +119,13 @@ button.button5 {
 }
 
 .btn-success {
-  color: #fff;
+  color: var(--color-bg-primary);
   background-color: #198754;
   border-color: #198754;
 }
 
 .btn-success:hover {
-  color: #fff;
+  color: var(--color-bg-primary);
   background-color: #157347;
   border-color: #146c43;
 }

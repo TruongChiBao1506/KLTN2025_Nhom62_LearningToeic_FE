@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 
@@ -761,7 +761,7 @@ const ExamQuestionList = ({
           <div className="card-body border-0">
             <div className="countdown-section mb-2">
               <p>
-                <span style={{ fontSize: "22px" }}>&#9200;</span>
+                <span style={{ fontSize: "20px" }}>&#9200;</span>
                 <span style={{ color: "green", fontSize: "24px" }}>
                   {formatTime(countdown)}
                 </span>

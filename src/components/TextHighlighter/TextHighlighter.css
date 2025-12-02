@@ -1,4 +1,4 @@
-/* Main container */
+﻿/* Main container */
 .toeic-text-highlighter-container {
   position: relative;
 }
@@ -43,7 +43,7 @@
 
 /* Popover content */
 .toeic-highlighter-popover {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* Color selector */
@@ -67,7 +67,7 @@
 }
 
 .toeic-color-swatch.active {
-  border-color: #1890ff;
+  border-color: var(--color-primary);
   transform: scale(1.1);
 }
 
@@ -85,7 +85,7 @@
 .toeic-translation-result {
   position: relative;
   padding: 5px 25px 5px 5px;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-secondary);
   border-radius: 4px;
   margin-bottom: 5px;
 }
@@ -93,7 +93,7 @@
 .toeic-translation-text {
   max-height: 150px;
   overflow-y: auto;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
 }
 

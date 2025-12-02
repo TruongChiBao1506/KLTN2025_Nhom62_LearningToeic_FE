@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -709,7 +709,7 @@ const ExamResult = () => {
                             styles={buildStyles({
                               textSize: "16px",
                               pathColor: `rgba(62, 152, 199, ${percent / 100})`,
-                              textColor: "#333",
+                              textColor: "var(--color-text-primary)",
                               trailColor: "#d6d6d6",
                               backgroundColor: "#3e98c7",
                             })}
@@ -880,7 +880,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -891,7 +891,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -900,7 +900,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -909,7 +909,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -918,7 +918,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -927,7 +927,7 @@ const ExamResult = () => {
                                     <th
                                       style={{
                                         backgroundColor: "white",
-                                        color: "#052649",
+                                        color: "var(--color-brand-navy)",
                                         textAlign: "center",
                                       }}
                                     >
@@ -977,7 +977,7 @@ const ExamResult = () => {
                                                       : "#e8f2ff",
                                                   color: "#35509a",
                                                   width: "50px",
-                                                  fontSize: "13px",
+                                                  fontSize: "12px",
                                                   fontWeight: "bold",
                                                 }}
                                               >
@@ -1132,7 +1132,7 @@ const ExamResult = () => {
                                               <div className="question">
                                                 <span
                                                   className="badge text-bg-secondary my-2"
-                                                  style={{ fontSize: "14px" }}
+                                                  style={{ fontSize: "12px" }}
                                                 >
                                                   {
                                                     question.examQuestion

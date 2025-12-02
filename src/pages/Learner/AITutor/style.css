@@ -1,6 +1,6 @@
-.ai-tutor-container {
+﻿.ai-tutor-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   padding: 20px;
 }
 
@@ -17,19 +17,19 @@
 
 .header-info h1 {
   margin: 0;
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 28px;
   font-weight: 700;
 }
 
 .header-info p {
   margin: 5px 0 0 0;
-  color: #666;
-  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
 }
 
 .clear-chat-btn {
-  background: #ff6b6b;
+  background: var(--color-danger);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -65,7 +65,7 @@
 
 .sidebar-section h3 {
   margin: 0 0 15px 0;
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 18px;
   font-weight: 600;
 }
@@ -86,17 +86,17 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .topic-btn:hover {
-  border-color: #667eea;
+  border-color: var(--color-primary);
   background: #f8f9ff;
 }
 
 .topic-btn.active {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: white;
 }
 
@@ -139,13 +139,13 @@
 
 .personality-name {
   font-weight: 600;
-  color: #333;
-  font-size: 14px;
+  color: var(--color-text-primary);
+  font-size: 12px;
 }
 
 .personality-desc {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
@@ -166,13 +166,13 @@
 
 .stat-label {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .stat-value {
   font-weight: 600;
-  color: #667eea;
-  font-size: 14px;
+  color: var(--color-primary);
+  font-size: 12px;
 }
 
 .chat-area {
@@ -216,7 +216,7 @@
 }
 
 .message.user .message-avatar {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -234,19 +234,19 @@
   background: #f8f9ff;
   padding: 12px 16px;
   border-radius: 15px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
   word-wrap: break-word;
 }
 
 .message.user .message-text {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
 }
 
 .message-time {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-disabled);
   margin-top: 5px;
   padding: 0 5px;
 }
@@ -262,7 +262,7 @@
 .typing-indicator span {
   width: 6px;
   height: 6px;
-  background: #999;
+  background: var(--color-text-disabled);
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out;
 }
@@ -302,7 +302,7 @@
   border: 2px solid #e0e0e0;
   border-radius: 15px;
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: 12px;
   resize: none;
   outline: none;
   font-family: inherit;
@@ -310,11 +310,11 @@
 }
 
 .input-container textarea:focus {
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .send-btn {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 12px 16px;
@@ -339,7 +339,7 @@
 .input-hints {
   margin-top: 10px;
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
   text-align: center;
 }
 

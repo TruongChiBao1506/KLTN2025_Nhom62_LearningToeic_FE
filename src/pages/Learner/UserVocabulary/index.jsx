@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Table,
   Card,
@@ -394,7 +394,7 @@ const UserVocabulary = () => {
           border: "1px solid #91d5ff",
           textAlign: "center"
         }}>
-          <BookOpen size={14} style={{ color: "#1890ff", marginBottom: "4px", display: "block", margin: "0 auto 4px" }} />
+          <BookOpen size={14} style={{ color: "var(--color-primary)", marginBottom: "4px", display: "block", margin: "0 auto 4px" }} />
           <Text style={{ 
             color: "#0958d9", 
             fontSize: "12px", 
@@ -437,7 +437,7 @@ const UserVocabulary = () => {
                   border: "2px solid #d6e4ff",
                 }}
               >
-                <BookOpen size={18} style={{ color: "#1890ff" }} />
+                <BookOpen size={18} style={{ color: "var(--color-primary)" }} />
               </div>
             }
             fallback="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop"
@@ -450,8 +450,8 @@ const UserVocabulary = () => {
                   record.isCorrect === null
                     ? "#262626"
                     : record.isCorrect
-                      ? "#52c41a"
-                      : "#ff4d4f",
+                      ? "var(--color-success)"
+                      : "var(--color-danger)",
                 fontSize: "16px",
                 display: "block",
                 marginBottom: "4px"
@@ -489,7 +489,7 @@ const UserVocabulary = () => {
           background: "linear-gradient(135deg, #fff7e6 0%, #ffd591 100%)",
           borderRadius: "6px",
           border: "1px solid #ffec8b",
-          fontSize: "13px",
+          fontSize: "12px",
           color: "#d46b08",
           fontWeight: "500",
           maxWidth: "160px",
@@ -508,7 +508,7 @@ const UserVocabulary = () => {
       key: "status",
       width: 200,
       render: (_, record) => {
-        let status = { color: "default", icon: null, text: "Chưa học", bgColor: "#f5f5f5" };
+        let status = { color: "default", icon: null, text: "Chưa học", bgColor: "var(--color-bg-secondary)" };
 
         if (record.isLearned) {
           status = {
@@ -542,7 +542,7 @@ const UserVocabulary = () => {
               borderRadius: "8px",
               border: `1px solid ${
                 status.color === "success" ? "#b7eb8f" : 
-                status.color === "processing" ? "#91d5ff" : "#d9d9d9"
+                status.color === "processing" ? "#91d5ff" : "var(--color-border)"
               }`,
               marginBottom: "8px",
               display: "flex",
@@ -567,12 +567,12 @@ const UserVocabulary = () => {
                 size="small"
                 strokeColor={
                   record.proficiencyLevel >= 80 
-                    ? "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)" 
+                    ? "linear-gradient(135deg, var(--color-success) 0%, #73d13d 100%)" 
                     : record.proficiencyLevel >= 50 
-                      ? "linear-gradient(135deg, #faad14 0%, #ffc53d 100%)" 
-                      : "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)"
+                      ? "linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-light) 100%)" 
+                      : "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%)"
                 }
-                trailColor="#f5f5f5"
+                trailColor="var(--color-bg-secondary)"
                 format={(percent) => `${percent}%`}
                 style={{
                   transition: "all 0.3s ease-in-out",
@@ -588,7 +588,7 @@ const UserVocabulary = () => {
                 fontSize: "11px",
                 color: "#8c8c8c",
                 textAlign: "center",
-                background: "#fafafa",
+                background: "var(--color-bg-hover)",
                 padding: "2px 6px",
                 borderRadius: "4px",
                 border: "1px solid #f0f0f0"
@@ -602,7 +602,7 @@ const UserVocabulary = () => {
               <div style={{
                 marginTop: "6px",
                 fontSize: "11px",
-                color: "#52c41a",
+                color: "var(--color-success)",
                 fontWeight: "500",
                 animation: "fadeIn 0.5s ease-in-out",
                 textAlign: "center",
@@ -618,11 +618,11 @@ const UserVocabulary = () => {
               <div style={{
                 marginTop: "6px",
                 fontSize: "11px",
-                color: "#ff4d4f",
+                color: "var(--color-danger)",
                 fontWeight: "500",
                 animation: "fadeIn 0.5s ease-in-out",
                 textAlign: "center",
-                background: "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+                background: "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)",
                 padding: "3px 8px",
                 borderRadius: "6px",
                 border: "1px solid #ffaaa5"
@@ -650,7 +650,7 @@ const UserVocabulary = () => {
               onClick={() => speakWord(record.vocabulary)}
               style={{ 
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%)",
                 border: "none",
                 boxShadow: "0 2px 8px rgba(24, 144, 255, 0.3)",
               }}
@@ -672,8 +672,8 @@ const UserVocabulary = () => {
               style={{ 
                 borderRadius: "8px",
                 background: isSpeaking && activeIndex === actualIndex 
-                  ? "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)"
-                  : "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                  ? "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%)"
+                  : "linear-gradient(135deg, var(--color-success) 0%, #73d13d 100%)",
                 border: "none",
                 color: "white",
                 boxShadow: isSpeaking && activeIndex === actualIndex
@@ -696,7 +696,7 @@ const UserVocabulary = () => {
               textAlign: "center",
               background: record.isCorrect 
                 ? "linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)"
-                : "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+                : "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)",
               border: `1px solid ${record.isCorrect ? "#b7eb8f" : "#ffaaa5"}`,
               color: record.isCorrect ? "#389e0d" : "#cf1322",
               fontWeight: "500"
@@ -726,7 +726,7 @@ const UserVocabulary = () => {
             onClick={() => removeVocabularyFromFavorites(record)}
             style={{
               borderRadius: "8px",
-              background: "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)",
+              background: "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)",
               border: "1px solid #ffaaa5",
               color: "#cf1322",
               fontWeight: "500",
@@ -738,13 +738,13 @@ const UserVocabulary = () => {
               transition: "all 0.3s ease"
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = "linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)";
+              e.target.style.background = "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%)";
               e.target.style.color = "white";
-              e.target.style.borderColor = "#ff4d4f";
+              e.target.style.borderColor = "var(--color-danger)";
               e.target.style.transform = "scale(1.05)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = "linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%)";
+              e.target.style.background = "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)";
               e.target.style.color = "#cf1322";
               e.target.style.borderColor = "#ffaaa5";
               e.target.style.transform = "scale(1)";
@@ -781,7 +781,7 @@ const UserVocabulary = () => {
           <Spin size="large" />
           <Title
             level={4}
-            style={{ marginTop: "16px", marginBottom: "8px", color: "#1890ff" }}
+            style={{ marginTop: "16px", marginBottom: "8px", color: "var(--color-primary)" }}
           >
             Đang tải từ vựng cá nhân...
           </Title>
@@ -905,13 +905,13 @@ const UserVocabulary = () => {
           height: 100% !important;
           color: #262626 !important;
           font-weight: 500 !important;
-          font-size: 14px !important;
+          font-size: 12px !important;
           text-decoration: none !important;
         }
 
         .custom-pagination .ant-pagination-item-active {
-          background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important;
-          border-color: #1890ff !important;
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%) !important;
+          border-color: var(--color-primary) !important;
           box-shadow: 0 2px 4px rgba(24, 144, 255, 0.3) !important;
         }
 
@@ -944,7 +944,7 @@ const UserVocabulary = () => {
           border: none !important;
           background: transparent !important;
           color: #8c8c8c !important;
-          font-size: 14px !important;
+          font-size: 12px !important;
         }
 
         .custom-pagination .ant-pagination-jump-prev,
@@ -980,14 +980,14 @@ const UserVocabulary = () => {
         .custom-pagination .ant-pagination-jump-prev:hover,
         .custom-pagination .ant-pagination-jump-next:hover,
         .custom-pagination .ant-pagination-item:hover {
-          border-color: #1890ff !important;
+          border-color: var(--color-primary) !important;
           background: #f0f8ff !important;
           transform: translateY(-1px) !important;
           box-shadow: 0 2px 6px rgba(24, 144, 255, 0.2) !important;
         }
 
         .custom-pagination .ant-pagination-item:hover a {
-          color: #1890ff !important;
+          color: var(--color-primary) !important;
         }
 
         .custom-pagination .ant-pagination-options {
@@ -1025,7 +1025,7 @@ const UserVocabulary = () => {
           level={2}
           style={{
             marginBottom: "8px",
-            background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -1033,7 +1033,7 @@ const UserVocabulary = () => {
         >
           <BookOpen
             size={28}
-            style={{ marginRight: "12px", color: "#1890ff" }}
+            style={{ marginRight: "12px", color: "var(--color-primary)" }}
           />
           Từ vựng cá nhân
         </Title>
@@ -1047,10 +1047,10 @@ const UserVocabulary = () => {
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #d6e4ff" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ color: "#1890ff", marginBottom: "8px" }}>
+              <div style={{ color: "var(--color-primary)", marginBottom: "8px" }}>
                 <Users size={20} />
               </div>
-              <Text strong style={{ fontSize: "24px", color: "#1890ff", display: "block" }}>
+              <Text strong style={{ fontSize: "24px", color: "var(--color-primary)", display: "block" }}>
                 {statistics.total}
               </Text>
               <Text type="secondary">Tổng từ vựng</Text>
@@ -1060,10 +1060,10 @@ const UserVocabulary = () => {
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #d9f7be" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ color: "#52c41a", marginBottom: "8px" }}>
+              <div style={{ color: "var(--color-success)", marginBottom: "8px" }}>
                 <CheckCircle size={20} />
               </div>
-              <Text strong style={{ fontSize: "24px", color: "#52c41a", display: "block" }}>
+              <Text strong style={{ fontSize: "24px", color: "var(--color-success)", display: "block" }}>
                 {statistics.learned}
               </Text>
               <Text type="secondary">Đã học</Text>
@@ -1073,10 +1073,10 @@ const UserVocabulary = () => {
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #fff7e6" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ color: "#fa8c16", marginBottom: "8px" }}>
+              <div style={{ color: "var(--color-chart-6)", marginBottom: "8px" }}>
                 <Target size={20} />
               </div>
-              <Text strong style={{ fontSize: "24px", color: "#fa8c16", display: "block" }}>
+              <Text strong style={{ fontSize: "24px", color: "var(--color-chart-6)", display: "block" }}>
                 {statistics.practicing}
               </Text>
               <Text type="secondary">Đang luyện tập</Text>
@@ -1086,10 +1086,10 @@ const UserVocabulary = () => {
         <Col xs={24} sm={12} md={6}>
           <Card style={{ borderRadius: "12px", border: "1px solid #fff0f6" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ color: "#eb2f96", marginBottom: "8px" }}>
+              <div style={{ color: "var(--color-chart-5)", marginBottom: "8px" }}>
                 <Trophy size={20} />
               </div>
-              <Text strong style={{ fontSize: "24px", color: "#eb2f96", display: "block" }}>
+              <Text strong style={{ fontSize: "24px", color: "var(--color-chart-5)", display: "block" }}>
                 {statistics.mastered}
               </Text>
               <Text type="secondary">Thành thạo</Text>
@@ -1117,7 +1117,7 @@ const UserVocabulary = () => {
         }}>
           <Title level={3} style={{ 
             margin: 0, 
-            color: "#1890ff",
+            color: "var(--color-primary)",
             display: "flex",
             alignItems: "center",
             gap: "12px"
@@ -1130,13 +1130,13 @@ const UserVocabulary = () => {
                 marginLeft: "8px",
                 borderRadius: "12px",
                 padding: "4px 12px",
-                fontSize: "14px"
+                fontSize: "12px"
               }}
             >
               {statistics.total} từ
             </Tag>
           </Title>
-          <Text type="secondary" style={{ fontSize: "14px", marginTop: "4px", display: "block" }}>
+          <Text type="secondary" style={{ fontSize: "12px", marginTop: "4px", display: "block" }}>
             Luyện tập phát âm để nâng cao độ thành thạo
           </Text>
         </div>
@@ -1176,7 +1176,7 @@ const UserVocabulary = () => {
           }}>
             <div style={{
               color: "#8c8c8c",
-              fontSize: "14px",
+              fontSize: "12px",
               fontWeight: "500",
               display: "flex",
               alignItems: "center",

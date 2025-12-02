@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
     faEdit,
     faTrash,
-    faSearch
+    faSearch,
+    faPaperPlane,
+    faUndo,
+    faFileAlt,
+    faTimesCircle,
+    faHourglass,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
@@ -12,6 +18,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import GrammarService from '../../../services/grammarService';
+import grammarSubmissionService from '../../../services/grammarSubmissionService';
 import AddGrammarModal from './AddGrammarModal';
 import EditGrammarModal from './EditGrammarModal';
 import './style.css';
@@ -149,6 +156,318 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
         return date.toLocaleDateString('en-GB', options);
     };
 
+    // ✅ Validate and submit grammar
+    const handleSubmitGrammar = async (grammarId, grammarName) => {
+        try {
+            // Step 1: Validate grammar
+            const validationResult = await grammarSubmissionService.validateGrammar(grammarId);
+            
+            if (!validationResult.data.isValid) {
+                // Show validation errors
+                const issuesHtml = validationResult.data.issues
+                    .map(issue => `<li class="text-start">${issue}</li>`)
+                    .join('');
+                
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Không thể gửi duyệt',
+                    html: `
+                        <div class="text-start">
+                            <p><strong>${grammarName}</strong> chưa đáp ứng các yêu cầu sau:</p>
+                            <ul>${issuesHtml}</ul>
+                            <p class="text-muted mt-3">
+                                <i class="fas fa-info-circle"></i> 
+                                Vui lòng hoàn thiện nội dung trước khi gửi duyệt.
+                            </p>
+                        </div>
+                    `,
+                    confirmButtonText: 'Đã hiểu',
+                    confirmButtonColor: '#3085d6',
+                });
+                return;
+            }
+
+            // Step 2: Show confirmation with statistics
+            const { summary } = validationResult.data;
+            const result = await Swal.fire({
+                icon: 'question',
+                title: 'Xác nhận gửi duyệt',
+                html: `
+                    <div class="text-start">
+                        <p class="mb-3">Bạn có chắc muốn gửi <strong>${grammarName}</strong> để Admin duyệt?</p>
+                        <div class="alert alert-info">
+                            <strong>📊 Thống kê nội dung:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li><strong>Nội dung:</strong> ${summary.contentCount} phần</li>
+                                <li><strong>Câu hỏi:</strong> ${summary.questionCount} câu</li>
+                            </ul>
+                        </div>
+                        <p class="text-muted small mt-3">
+                            <i class="fas fa-info-circle"></i> 
+                            Sau khi gửi, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
+                        </p>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-paper-plane"></i> Gửi duyệt',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: 'var(--color-approved)',
+                cancelButtonColor: 'var(--color-draft)',
+            });
+
+            if (!result.isConfirmed) return;
+
+            // Step 3: Submit grammar
+            await grammarSubmissionService.submitGrammar(grammarId);
+
+            // Step 4: Success message
+            await Swal.fire({
+                icon: 'success',
+                title: 'Gửi duyệt thành công! 🎉',
+                html: `
+                    <p><strong>${grammarName}</strong> đã được gửi đến Admin để duyệt.</p>
+                    <p class="text-muted small">
+                        <i class="fas fa-bell"></i> 
+                        Bạn sẽ nhận được thông báo khi Admin xét duyệt.
+                    </p>
+                `,
+                timer: 3000,
+                showConfirmButton: false,
+            });
+
+            // Refresh list
+            retrieveGrammars();
+
+        } catch (error) {
+            console.error('Submit grammar error:', error);
+            
+            const errorMessage = error?.response?.data?.message || 'Có lỗi xảy ra khi gửi duyệt';
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi gửi duyệt',
+                text: errorMessage,
+                confirmButtonText: 'Đóng',
+                confirmButtonColor: '#d33',
+            });
+        }
+    };
+
+    // ✅ Withdraw submission (if pending)
+    const handleWithdrawSubmission = async (grammarId, grammarName) => {
+        try {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'Xác nhận rút lại',
+                html: `
+                    <p>Bạn có chắc muốn rút lại yêu cầu duyệt <strong>${grammarName}</strong>?</p>
+                    <p class="text-muted small">
+                        <i class="fas fa-info-circle"></i> 
+                        Sau khi rút lại, bạn có thể chỉnh sửa và gửi duyệt lại.
+                    </p>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Rút lại',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: 'var(--color-danger)',
+                cancelButtonColor: 'var(--color-draft)',
+            });
+
+            if (!result.isConfirmed) return;
+
+            await grammarSubmissionService.withdrawSubmission(grammarId);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Đã rút lại yêu cầu duyệt',
+                text: 'Bạn có thể chỉnh sửa grammar này ngay bây giờ.',
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            retrieveGrammars();
+
+        } catch (error) {
+            console.error('Withdraw submission error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi rút lại',
+                text: error?.response?.data?.message || 'Có lỗi xảy ra',
+                confirmButtonText: 'Đóng',
+            });
+        }
+    };
+
+    // ✅ Get submission status badge
+    const getSubmissionStatusBadge = (grammar) => {
+        // Priority 1: Check if approved (has approvedAt and approvedBy)
+        if (grammar.approvedAt && grammar.approvedBy) {
+            return (
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-approved)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(40, 167, 69, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faCheckCircle} />
+                    Đã duyệt
+                </span>
+            );
+        }
+
+        // Priority 2: Check if rejected (has rejectionReason)
+        if (grammar.rejectionReason) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title={`Lý do từ chối: ${grammar.rejectionReason}`}
+                    >
+                        <FontAwesomeIcon icon={faTimesCircle} />
+                        Bị từ chối
+                    </span>
+                    <button
+                        onClick={() => handleSubmitGrammar(grammar._id, grammar.grammarName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: '#1e88e5',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Gửi duyệt lại"
+                    >
+                        <FontAwesomeIcon icon={faPaperPlane} />
+                        Gửi lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Priority 3: Check if pending approval (isSubmitted = true, status = 0)
+        if (grammar.isSubmitted) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: '#ffc107',
+                            color: 'var(--color-text-primary)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(255, 193, 7, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faHourglass} />
+                        Chờ duyệt
+                    </span>
+                    <button
+                        onClick={() => handleWithdrawSubmission(grammar._id, grammar.grammarName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Rút lại yêu cầu duyệt"
+                    >
+                        <FontAwesomeIcon icon={faUndo} />
+                        Rút lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Draft state (not submitted, not published)
+        return (
+            <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-draft)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(108, 117, 125, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faFileAlt} />
+                    Bản nháp
+                </span>
+                <button
+                    onClick={() => handleSubmitGrammar(grammar._id, grammar.grammarName)}
+                    className="btn btn-sm"
+                    style={{
+                        backgroundColor: '#1e88e5',
+                        color: 'white',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        borderRadius: '20px',
+                        padding: '6px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        border: 'none',
+                        boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                        transition: 'all 0.3s ease',
+                        whiteSpace: 'nowrap'
+                    }}
+                    title="Gửi để Admin duyệt"
+                >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                    Gửi duyệt
+                </button>
+            </div>
+        );
+    };
+
     // Pagination info
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredGrammars.length);
@@ -188,13 +507,13 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -234,7 +553,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                 title="Thêm ngữ pháp mới"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -250,23 +569,29 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
 
                     {/* Table */}
                     <div className="card-body">
-                        <table className="table text-center table-hover shadow">
+                        <div className="table-responsive">
+                            <table className="table text-center table-hover shadow">
                             <thead className="text-center shadow">
                                 <tr className="align-middle">
-                                    <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
-                                    <th>GRAMMAR</th>
-                                    <th>STATUS</th>
-                                    <th>CREATED_AT</th>
-                                    <th>UPDATED_AT</th>
-                                    <th>ACTION</th>
-                                    <th>MANAGE</th>
+                                    <th style={{ width: '50px' }}><button className="btn btn-primary rounded-5 disabled">No.</button></th>
+                                    <th style={{ width: '25%', minWidth: '150px' }}>GRAMMAR</th>
+                                    <th style={{ width: '80px' }}>STATUS</th>
+                                    <th style={{ width: '110px' }}>CREATED</th>
+                                    <th style={{ width: '110px' }}>UPDATED</th>
+                                    <th style={{ width: '100px' }}>SUBMISSION</th>
+                                    <th style={{ width: '90px' }}>ACTION</th>
+                                    <th style={{ width: '200px' }}>MANAGE</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {paginatedGrammars.map((grammar, index) => (
                                     <tr key={grammar._id} className="table-row shadow-on-hover align-middle">
                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                        <td>{grammar.grammarName}</td>
+                                        <td>
+                                            <div className="text-wrap" title={grammar.grammarName}>
+                                                {grammar.grammarName}
+                                            </div>
+                                        </td>
                                         <td>
                                             {grammar.grammarStatus === 1 ? (
                                                 <span
@@ -286,8 +611,15 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                                 </span>
                                             )}
                                         </td>
-                                        <td>{formatDate(grammar.createdAt)}</td>
-                                        <td>{formatDate(grammar.updatedAt)}</td>
+                                        <td>
+                                            <div className="text-wrap small">{formatDate(grammar.createdAt)}</div>
+                                        </td>
+                                        <td>
+                                            <div className="text-wrap small">{formatDate(grammar.updatedAt)}</div>
+                                        </td>
+                                        <td>
+                                            {getSubmissionStatusBadge(grammar)}
+                                        </td>
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 {/* Edit button */}
@@ -312,13 +644,13 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                             </div>
                                         </td>
                                         <td>
-                                            <div className="d-flex justify-content-center">
-                                                <Link to={`/admin/grammar/${grammar._id}/grammar-content`}>
-                                                    <button className="glowing-button ms-2">Grammar Content</button>
+                                            <div className="d-flex justify-content-center gap-1 flex-wrap">
+                                                <Link to={`/teacher/grammar/${grammar._id}/grammar-content`}>
+                                                    <button className="glowing-button-compact">Content</button>
                                                 </Link>
 
-                                                <Link to={`/admin/grammar/${grammar._id}/grammar-question`}>
-                                                    <button className="glowing-button ms-2">Question</button>
+                                                <Link to={`/teacher/grammar/${grammar._id}/grammar-question`}>
+                                                    <button className="glowing-button-compact">Question</button>
                                                 </Link>
                                             </div>
                                         </td>
@@ -326,11 +658,12 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                 ))}
                                 {paginatedGrammars.length === 0 && (
                                     <tr key="no-data">
-                                        <td colSpan="7">No data available</td>
+                                        <td colSpan="8">No data available</td>
                                     </tr>
                                 )}
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
 
                         {/* Pagination */}
                         {filteredGrammars.length > 0 && (

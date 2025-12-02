@@ -1,20 +1,20 @@
-.table-row.shadow-on-hover:hover {
+﻿.table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
 
 th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
 .glowing-button {
     padding: 10px 20px;
-    font-size: 13px;
+    font-size: 12px;
     background: linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%);
     color: white;
     border: none;
@@ -66,15 +66,15 @@ td {
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* React Bootstrap Modal styling to match Vue transition */

@@ -1,10 +1,16 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
     faEdit,
     faTrash,
-    faSearch
+    faSearch,
+    faPaperPlane,
+    faUndo,
+    faFileAlt,
+    faTimesCircle,
+    faHourglass,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
@@ -12,6 +18,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import LessonService from '../../../services/lessonService';
+import lessonSubmissionService from '../../../services/lessonSubmissionService';
 import AddLessonModal from './AddLessonModal';
 import EditLessonModal from './EditLessonModal';
 import './style.css';
@@ -24,8 +31,6 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedLessonId, setSelectedLessonId] = useState(null);
-
-    const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
 
     const itemsPerPageOptions = [25, 50, 75, 100].map((option) => ({
         value: option,
@@ -151,6 +156,313 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
         return date.toLocaleDateString('en-GB', options);
     };
 
+    // ✅ Validate and submit lesson
+    const handleSubmitLesson = async (lessonId, lessonName) => {
+        try {
+            // Step 1: Validate lesson
+            const validateResponse = await lessonSubmissionService.validateLesson(lessonId);
+            const validationData = validateResponse.data;
+
+            if (!validationData.isValid) {
+                // Show validation errors
+                const issuesList = validationData.issues.map(issue => `• ${issue}`).join('<br>');
+                
+                await Swal.fire({
+                    title: '❌ Không thể submit',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Lesson "${lessonName}" chưa đủ điều kiện để submit:</strong></p>
+                            <div style="margin-top: 10px; color: #d33;">
+                                ${issuesList}
+                            </div>
+                        </div>
+                    `,
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                });
+                return;
+            }
+
+            // Step 2: Show confirmation with statistics
+            const summary = validationData.summary || {};
+            const result = await Swal.fire({
+                title: '📤 Submit Lesson để Admin duyệt?',
+                html: `
+                    <div style="text-align: left;">
+                        <p><strong>Lesson:</strong> ${lessonName}</p>
+                        <hr>
+                        <p><strong>📊 Thống kê:</strong></p>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li>📝 Lesson Content: <strong>${summary.contentCount || 0}</strong></li>
+                            <li>📄 File PDF: <strong>${summary.hasFile ? 'Có' : 'Không'}</strong></li>
+                        </ul>
+                        <hr>
+                        <p style="color: #666; font-size: 12px;">
+                            ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
+                        </p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--color-approved)',
+                cancelButtonColor: 'var(--color-draft)',
+                confirmButtonText: '✅ Submit',
+                cancelButtonText: '❌ Hủy',
+                width: 600,
+            });
+
+            if (!result.isConfirmed) return;
+
+            // Step 3: Submit lesson
+            await lessonSubmissionService.submitLesson(lessonId);
+
+            // Step 4: Show success message
+            await Swal.fire({
+                title: '✅ Submit thành công!',
+                html: `
+                    <div style="text-align: center;">
+                        <p>Lesson <strong>"${lessonName}"</strong> đã được gửi đến Admin để phê duyệt.</p>
+                        <p style="color: #666; margin-top: 10px;">
+                            Bạn sẽ nhận được thông báo khi Admin xem xét.
+                        </p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonColor: 'var(--color-approved)',
+                timer: 3000,
+            });
+
+            // Refresh list
+            retrieveLessons();
+
+        } catch (error) {
+            console.error('Error submitting lesson:', error);
+            
+            const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi submit lesson';
+            
+            await Swal.fire({
+                title: '❌ Lỗi',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#d33',
+            });
+        }
+    };
+
+    // ✅ Withdraw submission (if pending)
+    const handleWithdrawSubmission = async (lessonId, lessonName) => {
+        const result = await Swal.fire({
+            title: '🔙 Rút lại submission?',
+            html: `
+                <p>Bạn có chắc muốn rút lại submission của lesson <strong>"${lessonName}"</strong>?</p>
+                <p style="color: #666; font-size: 12px;">Sau khi rút lại, bạn có thể chỉnh sửa và submit lại.</p>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ffc107',
+            cancelButtonColor: 'var(--color-draft)',
+            confirmButtonText: '✅ Rút lại',
+            cancelButtonText: '❌ Hủy',
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            await lessonSubmissionService.withdrawSubmission(lessonId);
+
+            await Swal.fire({
+                title: '✅ Đã rút lại!',
+                text: `Lesson "${lessonName}" đã được rút lại. Bạn có thể chỉnh sửa và submit lại.`,
+                icon: 'success',
+                confirmButtonColor: 'var(--color-approved)',
+                timer: 2000,
+            });
+
+            retrieveLessons();
+        } catch (error) {
+            console.error('Error withdrawing submission:', error);
+            
+            const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi rút lại submission';
+            
+            await Swal.fire({
+                title: '❌ Lỗi',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#d33',
+            });
+        }
+    };
+
+    // ✅ Get submission status badge
+    const getSubmissionStatusBadge = (lesson) => {
+        // Priority 1: Check if approved (has approvedAt and approvedBy)
+        if (lesson.approvedAt && lesson.approvedBy) {
+            return (
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-approved)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(40, 167, 69, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faCheckCircle} />
+                    Đã duyệt
+                </span>
+            );
+        }
+
+        // Priority 2: Check if rejected (has rejectionReason)
+        if (lesson.rejectionReason) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title={`Lý do từ chối: ${lesson.rejectionReason}`}
+                    >
+                        <FontAwesomeIcon icon={faTimesCircle} />
+                        Bị từ chối
+                    </span>
+                    <button
+                        onClick={() => handleSubmitLesson(lesson._id, lesson.lessonName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: '#1e88e5',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Gửi duyệt lại"
+                    >
+                        <FontAwesomeIcon icon={faPaperPlane} />
+                        Gửi lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Priority 3: Check if pending approval (isSubmitted = true, status = 0)
+        if (lesson.isSubmitted) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: '#ffc107',
+                            color: 'var(--color-text-primary)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(255, 193, 7, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faHourglass} />
+                        Chờ duyệt
+                    </span>
+                    <button
+                        onClick={() => handleWithdrawSubmission(lesson._id, lesson.lessonName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Rút lại yêu cầu duyệt"
+                    >
+                        <FontAwesomeIcon icon={faUndo} />
+                        Rút lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Draft state (not submitted, not published)
+        return (
+            <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-draft)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(108, 117, 125, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faFileAlt} />
+                    Bản nháp
+                </span>
+                <button
+                    onClick={() => handleSubmitLesson(lesson._id, lesson.lessonName)}
+                    className="btn btn-sm"
+                    style={{
+                        backgroundColor: '#1e88e5',
+                        color: 'white',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        borderRadius: '20px',
+                        padding: '6px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        border: 'none',
+                        boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                        transition: 'all 0.3s ease',
+                        whiteSpace: 'nowrap'
+                    }}
+                    title="Gửi để Admin duyệt"
+                >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                    Gửi duyệt
+                </button>
+            </div>
+        );
+    };
+
     // Pagination info
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredLessons.length);
@@ -190,13 +502,13 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -217,7 +529,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                     className="form-control"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm bài học..."
                                 />
                                 <div className="input-group-append">
                                     <button className="btn btn-light-emphasis">
@@ -227,29 +539,26 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                             </div>
                         </div>
 
-                        {/* Action buttons */}
-                        <div className="col-3">
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
-                                <button
-                                    type="button"
-                                    className="btn btn-success d-flex align-items-center"
-                                    onClick={handleShowAddModal}
-                                    title="Thêm bài học mới"
-                                    style={{ 
-                                        borderRadius: '20px', 
-                                        fontSize: '14px', 
-                                        padding: '10px 18px', 
-                                        whiteSpace: 'nowrap', 
-                                        flexShrink: 0,
-                                        minWidth: '110px',
-                                        justifyContent: 'center'
-                                    }}
-                                >
-                                    <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-                                    Thêm mới
-                                </button>
-                                {/* Nếu có import/export/xóa hết thì thêm các button tương tự tại đây */}
-                            </div>
+                        {/* Add button */}
+                        <div className="col-3" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                            <button
+                                type="button"
+                                className="btn btn-success d-flex align-items-center"
+                                onClick={handleShowAddModal}
+                                title="Thêm bài học mới"
+                                style={{ 
+                                    borderRadius: '20px', 
+                                    fontSize: '12px', 
+                                    padding: '10px 18px', 
+                                    whiteSpace: 'nowrap', 
+                                    flexShrink: 0,
+                                    minWidth: '110px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                                Thêm mới
+                            </button>
                         </div>
                     </div>
 
@@ -261,6 +570,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                     <th><button className="btn btn-primary rounded-5 disabled">No.</button></th>
                                     <th>NAME</th>
                                     <th>STATUS</th>
+                                    <th>SUBMISSION</th>
                                     <th>CREATED_AT</th>
                                     <th>UPDATED_AT</th>
                                     <th>ACTION</th>
@@ -269,10 +579,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                             </thead>
                             <tbody>
                                 {paginatedLessons.map((lesson, index) => (
-                                    <tr
-                                        key={lesson._id}
-                                        className="table-row shadow-on-hover align-middle"
-                                    >
+                                    <tr key={lesson._id} className="table-row shadow-on-hover align-middle">
                                         <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                         <td>{lesson.lessonName}</td>
                                         <td>
@@ -294,16 +601,27 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                 </span>
                                             )}
                                         </td>
+                                        
+                                        {/* ✅ Submission Column */}
+                                        <td>
+                                            {getSubmissionStatusBadge(lesson)}
+                                        </td>
+
                                         <td>{formatDate(lesson.createdAt)}</td>
                                         <td>{formatDate(lesson.updatedAt)}</td>
                                         <td>
                                             <div className="d-flex justify-content-center">
-                                                {/* Edit button - dùng onClick */}
+                                                {/* Edit button */}
                                                 <button
                                                     type="button"
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(lesson._id)}
                                                     title={`Chỉnh sửa [${lesson.lessonName}]`}
+                                                    disabled={lesson.isSubmitted && lesson.lessonStatus === 0}
+                                                    style={{ 
+                                                        opacity: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 0.5 : 1,
+                                                        cursor: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 'not-allowed' : 'pointer'
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
@@ -312,8 +630,13 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                 <button
                                                     type="button"
                                                     onClick={() => deleteLesson(lesson._id)}
-                                                    title={`Xóa [${lesson.lessonName}]`}
                                                     className="btn btn-white border-0"
+                                                    title={`Xóa [${lesson.lessonName}]`}
+                                                    disabled={lesson.isSubmitted && lesson.lessonStatus === 0}
+                                                    style={{ 
+                                                        opacity: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 0.5 : 1,
+                                                        cursor: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 'not-allowed' : 'pointer'
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                 </button>
@@ -322,7 +645,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 <Link
-                                                    to={`/admin/section/${sectionId}/lesson/${lesson._id}/lesson-content`}
+                                                    to={`/teacher/sections/${sectionId}/lesson/${lesson._id}/lesson-content`}
                                                 >
                                                     <button className="glowing-button">
                                                         Lesson Content
@@ -334,7 +657,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                 ))}
                                 {paginatedLessons.length === 0 && (
                                     <tr key="no-data">
-                                        <td colSpan="7">No data available</td>
+                                        <td colSpan="8">No data available</td>
                                     </tr>
                                 )}
                             </tbody>

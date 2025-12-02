@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -170,7 +170,7 @@ const Grammar = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
         }}
       >
         <Card
@@ -199,7 +199,7 @@ const Grammar = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
           padding: "24px",
         }}
       >
@@ -262,7 +262,7 @@ const Grammar = () => {
             style={{
               fontSize: "48px",
               marginBottom: 16,
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "#2C5F8D",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -272,7 +272,7 @@ const Grammar = () => {
                 width: "48px",
                 height: "48px",
                 marginRight: "16px",
-                color: "#667eea",
+                color: "var(--color-brand-purple)",
               }}
             />
             Luyện ngữ pháp TOEIC
@@ -280,13 +280,13 @@ const Grammar = () => {
           <Paragraph
             style={{
               fontSize: "18px",
-              color: "#666",
+              color: "var(--color-text-secondary)",
               maxWidth: "600px",
               margin: "0 auto",
             }}
           >
             Học và luyện tập ngữ pháp TOEIC một cách hiệu quả với{" "}
-            <Text strong style={{ color: "#667eea" }}>
+            <Text strong style={{ color: "var(--color-brand-purple)" }}>
               {grammars.length}+
             </Text>{" "}
             bài học được biên soạn bởi các chuyên gia
@@ -311,7 +311,7 @@ const Grammar = () => {
                 title="Bài luyện tập"
                 value={docngheSections.length}
                 prefix={<PlayCircleOutlined />}
-                valueStyle={{ color: "#1890ff" }}
+                valueStyle={{ color: "var(--color-primary)" }}
               />
             </Card>
           </Col>
@@ -321,7 +321,7 @@ const Grammar = () => {
                 title="Kết quả tìm kiếm"
                 value={filteredGrammars.length}
                 prefix={<Search style={{ width: "20px", height: "20px" }} />}
-                valueStyle={{ color: "#722ed1" }}
+                valueStyle={{ color: "var(--color-chart-4)" }}
               />
             </Card>
           </Col>
@@ -347,7 +347,7 @@ const Grammar = () => {
                       style={{
                         padding: "8px",
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #667eea, #764ba2)",
+                        background: "#2C5F8D",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -427,12 +427,12 @@ const Grammar = () => {
                         style={{
                           padding: "6px",
                           borderRadius: "50%",
-                          background: "linear-gradient(135deg, #667eea, #764ba2)",
+                          background: "#2C5F8D",
                         }}
                       >
                         <Volume2 style={{ width: "16px", height: "16px", color: "white" }} />
                       </div>
-                      <Text style={{ color: "#4a5568", fontWeight: "500", fontSize: "15px" }}>
+                      <Text style={{ color: "#4a5568", fontWeight: "500", fontSize: "12px" }}>
                         Đang nghe... Hãy nói tên ngữ pháp bạn muốn tìm
                       </Text>
                     </Space>
@@ -449,7 +449,7 @@ const Grammar = () => {
                     }}
                   >
                     <Text style={{ color: "#2d3748" }}>
-                      Tìm thấy <Text strong style={{ color: "#667eea" }}>{filteredGrammars.length}</Text> kết quả cho 
+                      Tìm thấy <Text strong style={{ color: "var(--color-brand-purple)" }}>{filteredGrammars.length}</Text> kết quả cho 
                       <Text strong style={{ color: "#4a5568" }}> "{transcript}"</Text>
                     </Text>
                   </div>
@@ -473,7 +473,7 @@ const Grammar = () => {
                     style={{
                       padding: "8px",
                       borderRadius: "12px",
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      background: "#2C5F8D",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -487,7 +487,7 @@ const Grammar = () => {
                   <Badge
                     count={filteredGrammars.length}
                     style={{
-                      backgroundColor: "#667eea",
+                      backgroundColor: "var(--color-brand-purple)",
                       boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
                     }}
                   />
@@ -529,7 +529,7 @@ const Grammar = () => {
                           onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "translateY(-6px)";
                             e.currentTarget.style.boxShadow = "0 12px 32px rgba(102, 126, 234, 0.15)";
-                            e.currentTarget.style.borderColor = "#667eea";
+                            e.currentTarget.style.borderColor = "var(--color-brand-purple)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
@@ -556,7 +556,7 @@ const Grammar = () => {
                               <Avatar
                                 size={40}
                                 style={{
-                                  backgroundColor: "#667eea",
+                                  backgroundColor: "var(--color-brand-purple)",
                                   boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
                                 }}
                                 icon={<FileText style={{ width: "18px", height: "18px" }} />}
@@ -569,7 +569,7 @@ const Grammar = () => {
                                     fontSize: "12px",
                                     fontWeight: "500",
                                     border: "none",
-                                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                                    background: "#2C5F8D",
                                     color: "white",
                                   }}
                                 >
@@ -604,7 +604,7 @@ const Grammar = () => {
                               <Text
                                 style={{
                                   color: "#64748b",
-                                  fontSize: "14px",
+                                  fontSize: "12px",
                                   lineHeight: 1.5,
                                   display: "-webkit-box",
                                   WebkitLineClamp: 2,
@@ -639,12 +639,12 @@ const Grammar = () => {
                             <Space 
                               size={6}
                               style={{ 
-                                color: "#667eea",
-                                fontSize: "14px",
+                                color: "var(--color-brand-purple)",
+                                fontSize: "12px",
                                 fontWeight: "500",
                               }}
                             >
-                              <Text style={{ color: "#667eea", fontWeight: "500" }}>Học ngay</Text>
+                              <Text style={{ color: "var(--color-brand-purple)", fontWeight: "500" }}>Học ngay</Text>
                               <ArrowRight 
                                 style={{ 
                                   width: "16px", 
@@ -681,7 +681,7 @@ const Grammar = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <BookOpen style={{ width: "40px", height: "40px", color: "#667eea" }} />
+                    <BookOpen style={{ width: "40px", height: "40px", color: "var(--color-brand-purple)" }} />
                   </div>
                   
                   <Title level={3} style={{ color: "#475569", marginBottom: 8 }}>
@@ -701,7 +701,7 @@ const Grammar = () => {
                       onClick={() => setTranscript("")}
                       style={{
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #667eea, #764ba2)",
+                        background: "#2C5F8D",
                         border: "none",
                         boxShadow: "0 4px 16px rgba(102, 126, 234, 0.3)",
                         height: "48px",
@@ -727,7 +727,7 @@ const Grammar = () => {
               }}
             >
               <Title level={4} style={{ marginBottom: 16 }}>
-                <Zap style={{ width: "20px", height: "20px", marginRight: "8px", color: "#faad14" }} />
+                <Zap style={{ width: "20px", height: "20px", marginRight: "8px", color: "var(--color-warning)" }} />
                 Các bài luyện tập khác
               </Title>
 
@@ -749,7 +749,7 @@ const Grammar = () => {
                             transition: "all 0.2s ease",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = "#1890ff";
+                            e.currentTarget.style.borderColor = "var(--color-primary)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.borderColor = "#f0f0f0";
@@ -758,11 +758,11 @@ const Grammar = () => {
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <Avatar
                               size="small"
-                              style={{ backgroundColor: "#1890ff", marginRight: 12 }}
+                              style={{ backgroundColor: "var(--color-primary)", marginRight: 12 }}
                               icon={<Play style={{ width: "12px", height: "12px" }} />}
                             />
                             <div style={{ flex: 1 }}>
-                              <Text strong style={{ fontSize: "14px", display: "block" }}>
+                              <Text strong style={{ fontSize: "12px", display: "block" }}>
                                 {section.name}
                               </Text>
                               <Text type="secondary" style={{ fontSize: "12px" }}>
@@ -773,7 +773,7 @@ const Grammar = () => {
                               style={{
                                 width: "14px",
                                 height: "14px",
-                                color: "#1890ff",
+                                color: "var(--color-primary)",
                                 marginLeft: 8,
                               }}
                             />
@@ -796,7 +796,7 @@ const Grammar = () => {
               {/* Quick Stats */}
               <div>
                 <Title level={5} style={{ marginBottom: 16 }}>
-                  <Award style={{ width: "16px", height: "16px", marginRight: "8px", color: "#faad14" }} />
+                  <Award style={{ width: "16px", height: "16px", marginRight: "8px", color: "var(--color-warning)" }} />
                   Thống kê nhanh
                 </Title>
                 <Row gutter={16}>
@@ -811,7 +811,7 @@ const Grammar = () => {
                     <Statistic
                       title="Bài luyện tập"
                       value={docngheSections.length}
-                      valueStyle={{ fontSize: "20px", color: "#1890ff" }}
+                      valueStyle={{ fontSize: "20px", color: "var(--color-primary)" }}
                     />
                   </Col>
                 </Row>

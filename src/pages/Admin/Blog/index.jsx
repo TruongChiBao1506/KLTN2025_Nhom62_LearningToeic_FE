@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Breadcrumb } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import BlogList from '../../../components/Admin/BlogList';
@@ -69,7 +69,7 @@ const Blog = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #667eea 60%, #764ba2 100%)',
@@ -82,9 +82,9 @@ const Blog = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(102,126,234,0.10)'
                         }}>
-                            <EditOutlined style={{ color: '#fff', fontSize: 22 }} />
+                            <EditOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Blog Management</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Blog Management</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

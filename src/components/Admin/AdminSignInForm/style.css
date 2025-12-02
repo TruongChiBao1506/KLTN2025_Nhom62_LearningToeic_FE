@@ -1,13 +1,13 @@
-.btn-lg {
+﻿.btn-lg {
   padding: 12px 26px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 ::placeholder {
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.5px;
 }
 
@@ -31,7 +31,7 @@
 
 .error-feedback {
   color: red;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* Updated admin login styles - softer and consistent with dashboard */

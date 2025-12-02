@@ -1,8 +1,8 @@
-@import "../../../assets/css/test.css";
+﻿@import "../../../assets/css/test.css";
 
 .glowing-button {
   padding: 10px 20px;
-  font-size: 13px;
+  font-size: 12px;
   background: linear-gradient(45deg, rgb(59, 99, 126), #0b3142);
   color: white;
   border: none;
@@ -33,7 +33,7 @@
 }
 
 #translate-button {
-  background-color: #052649;
+  background-color: var(--color-brand-navy);
 }
 
 .progress {
@@ -60,7 +60,7 @@
   background-color: #eebf3f;
   color: rgb(23, 44, 66);
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   padding: 5px;
   border-radius: 5px;
   display: block;
@@ -95,7 +95,7 @@ h1 {
 }
 
 .card.specific-card:hover .text-body-secondary {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .card:hover .card-title {
@@ -105,9 +105,9 @@ h1 {
 .button {
   display: inline-block;
   padding: 10px;
-  background-color: #052649;
-  color: #fff;
-  font-size: 14px;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   border-radius: 20px;
@@ -115,13 +115,13 @@ h1 {
 }
 
 .button:hover {
-  background-color: #fff;
-  color: #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
 }
 
 button i {
   font-size: 20px;
-  color: #000;
+  color: var(--color-text-primary);
 }
 
 @keyframes pulse {
@@ -178,7 +178,7 @@ button i {
   transform: translate(-50%, -50%);
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .total-score {
@@ -258,14 +258,14 @@ button i {
 }
 
 .explanation {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 10px;
   border-left: 3px solid #0d6efd;
   margin-top: 10px;
 }
 
 .transcript {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 20px;

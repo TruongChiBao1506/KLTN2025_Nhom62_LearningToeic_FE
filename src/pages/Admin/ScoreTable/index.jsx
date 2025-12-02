@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMarker } from '@fortawesome/free-solid-svg-icons';
 import AOS from 'aos';
@@ -100,7 +100,7 @@ const ScoreTable = () => {
                                     boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                                 }}
                             >
-                                <FontAwesomeIcon icon={faMarker} color="#fff" />
+                                <FontAwesomeIcon icon={faMarker} color="var(--color-bg-primary)" />
                             </span>
                             <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
                                 Score Table

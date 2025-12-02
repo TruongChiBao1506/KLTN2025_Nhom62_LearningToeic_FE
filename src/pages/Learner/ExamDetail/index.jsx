@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import Comment from "../../../components/Learner/Comment";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./style.css"; // Import custom styles
@@ -182,7 +182,7 @@ const ExamDetail = () => {
           right: 12,
           opacity: 0.7,
           fontSize: "12px",
-          color: "#1890ff",
+          color: "var(--color-primary)",
           pointerEvents: "none",
           zIndex: 2,
           background: "rgba(255,255,255,0.8)",
@@ -834,7 +834,7 @@ const ExamDetail = () => {
     console.log("🚀 ~ ExamDetail ~ examResult:", examResult);
 
     return (
-      <Content style={{ padding: "24px", background: "#f5f5f5" }}>
+      <Content style={{ padding: "24px", background: "var(--color-bg-secondary)" }}>
         {/* Breadcrumb */}
         <Breadcrumb style={{ marginBottom: "24px" }}>
           <Breadcrumb.Item>
@@ -857,20 +857,20 @@ const ExamDetail = () => {
           style={{
             marginBottom: "24px",
             textAlign: "center",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "#2C5F8D",
             border: "none",
           }}
         >
           <Space direction="vertical" size="large">
-            <div style={{ color: "#fff" }}>
+            <div style={{ color: "var(--color-bg-primary)" }}>
               <CheckCircle
                 size={48}
-                style={{ color: "#52c41a", marginBottom: "16px" }}
+                style={{ color: "var(--color-success)", marginBottom: "16px" }}
               />
-              <Title level={2} style={{ color: "#fff", margin: 0 }}>
+              <Title level={2} style={{ color: "var(--color-bg-primary)", margin: 0 }}>
                 Hoàn thành bài thi!
               </Title>
-              <Title level={3} style={{ color: "#fff", margin: "8px 0" }}>
+              <Title level={3} style={{ color: "var(--color-bg-primary)", margin: "8px 0" }}>
                 {exam.name}
               </Title>
               <Text
@@ -907,8 +907,8 @@ const ExamDetail = () => {
                     }}
                   />
                 </div>
-                <div style={{ color: "#fff" }}>
-                  <Title level={4} style={{ color: "#fff", margin: "8px 0" }}>
+                <div style={{ color: "var(--color-bg-primary)" }}>
+                  <Title level={4} style={{ color: "var(--color-bg-primary)", margin: "8px 0" }}>
                     {examResult.correctCount}/{examResult.totalQuestions}
                   </Title>
                   <Text style={{ color: "rgba(255,255,255,0.8)" }}>
@@ -928,17 +928,17 @@ const ExamDetail = () => {
                     style={{ width: "100%" }}
                   >
                     <Space align="center">
-                      <Volume2 size={20} style={{ color: "#1890ff" }} />
+                      <Volume2 size={20} style={{ color: "var(--color-primary)" }} />
                       <Title level={5} style={{ margin: 0 }}>
                         LISTENING
                       </Title>
                     </Space>
-                    <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+                    <Title level={3} style={{ margin: 0, color: "var(--color-primary)" }}>
                       {examResult.listeningScore}/495
                     </Title>
                     <Progress
                       percent={(examResult.listeningScore / 495) * 100}
-                      strokeColor="#1890ff"
+                      strokeColor="var(--color-primary)"
                       showInfo={false}
                     />
                     <Text type="secondary">
@@ -956,17 +956,17 @@ const ExamDetail = () => {
                     style={{ width: "100%" }}
                   >
                     <Space align="center">
-                      <BookOpen size={20} style={{ color: "#faad14" }} />
+                      <BookOpen size={20} style={{ color: "var(--color-warning)" }} />
                       <Title level={5} style={{ margin: 0 }}>
                         READING
                       </Title>
                     </Space>
-                    <Title level={3} style={{ margin: 0, color: "#faad14" }}>
+                    <Title level={3} style={{ margin: 0, color: "var(--color-warning)" }}>
                       {examResult.readingScore}/495
                     </Title>
                     <Progress
                       percent={(examResult.readingScore / 495) * 100}
-                      strokeColor="#faad14"
+                      strokeColor="var(--color-warning)"
                       showInfo={false}
                     />
                     <Text type="secondary">
@@ -980,17 +980,17 @@ const ExamDetail = () => {
                 <Card
                   style={{
                     background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      "#2C5F8D",
                     border: "none",
                     textAlign: "center",
                   }}
                 >
                   <Space direction="vertical">
-                    <Title level={4} style={{ color: "#fff", margin: 0 }}>
+                    <Title level={4} style={{ color: "var(--color-bg-primary)", margin: 0 }}>
                       Tổng điểm TOEIC:{" "}
                       <Badge
                         count={`${examResult.totalScore}/990`}
-                        style={{ backgroundColor: "#52c41a", fontSize: "16px" }}
+                        style={{ backgroundColor: "var(--color-success)", fontSize: "16px" }}
                       />
                     </Title>
                     <Text style={{ color: "rgba(255,255,255,0.8)" }}>
@@ -1007,7 +1007,7 @@ const ExamDetail = () => {
           <Title level={4} style={{ marginBottom: "24px" }}>
             <TrendingUp
               size={20}
-              style={{ marginRight: "8px", color: "#1890ff" }}
+              style={{ marginRight: "8px", color: "var(--color-primary)" }}
             />
             Thống kê chi tiết
           </Title>
@@ -1015,28 +1015,28 @@ const ExamDetail = () => {
             <Col xs={12} md={6}>
               <Card
                 size="small"
-                style={{ background: "#f6ffed", border: "1px solid #b7eb8f" }}
+                style={{ background: "var(--color-success-bg)", border: "1px solid #b7eb8f" }}
               >
                 <Statistic
                   title="Câu đúng"
                   value={examResult.correctCount}
                   prefix={
-                    <CheckCircle size={20} style={{ color: "#52c41a" }} />
+                    <CheckCircle size={20} style={{ color: "var(--color-success)" }} />
                   }
-                  valueStyle={{ color: "#52c41a", fontWeight: "bold" }}
+                  valueStyle={{ color: "var(--color-success)", fontWeight: "bold" }}
                 />
               </Card>
             </Col>
             <Col xs={12} md={6}>
               <Card
                 size="small"
-                style={{ background: "#fff2f0", border: "1px solid #ffccc7" }}
+                style={{ background: "var(--color-danger-bg)", border: "1px solid #ffccc7" }}
               >
                 <Statistic
                   title="Câu sai"
                   value={examResult.incorrectCount}
-                  prefix={<XCircle size={20} style={{ color: "#ff4d4f" }} />}
-                  valueStyle={{ color: "#ff4d4f", fontWeight: "bold" }}
+                  prefix={<XCircle size={20} style={{ color: "var(--color-danger)" }} />}
+                  valueStyle={{ color: "var(--color-danger)", fontWeight: "bold" }}
                 />
               </Card>
             </Col>
@@ -1048,8 +1048,8 @@ const ExamDetail = () => {
                 <Statistic
                   title="Chưa trả lời"
                   value={examResult.unansweredCount}
-                  prefix={<HelpCircle size={20} style={{ color: "#faad14" }} />}
-                  valueStyle={{ color: "#faad14", fontWeight: "bold" }}
+                  prefix={<HelpCircle size={20} style={{ color: "var(--color-warning)" }} />}
+                  valueStyle={{ color: "var(--color-warning)", fontWeight: "bold" }}
                 />
               </Card>
             </Col>
@@ -1061,8 +1061,8 @@ const ExamDetail = () => {
                 <Statistic
                   title="Thời gian làm bài"
                   value={formatTime(examResult.timeSpent)}
-                  prefix={<Timer size={20} style={{ color: "#1890ff" }} />}
-                  valueStyle={{ color: "#1890ff", fontWeight: "bold" }}
+                  prefix={<Timer size={20} style={{ color: "var(--color-primary)" }} />}
+                  valueStyle={{ color: "var(--color-primary)", fontWeight: "bold" }}
                 />
               </Card>
             </Col>
@@ -1073,7 +1073,7 @@ const ExamDetail = () => {
           <Title level={4} style={{ marginBottom: "16px" }}>
             <FileText
               size={20}
-              style={{ marginRight: "8px", color: "#1890ff" }}
+              style={{ marginRight: "8px", color: "var(--color-primary)" }}
             />
             Xem lại câu trả lời
           </Title>
@@ -1096,7 +1096,7 @@ const ExamDetail = () => {
               {
                 key: "correct",
                 label: (
-                  <span style={{ color: "#52c41a" }}>
+                  <span style={{ color: "var(--color-success)" }}>
                     Đúng ({examResult.correctCount})
                   </span>
                 ),
@@ -1104,7 +1104,7 @@ const ExamDetail = () => {
               {
                 key: "incorrect",
                 label: (
-                  <span style={{ color: "#ff4d4f" }}>
+                  <span style={{ color: "var(--color-danger)" }}>
                     Sai ({examResult.incorrectCount})
                   </span>
                 ),
@@ -1112,7 +1112,7 @@ const ExamDetail = () => {
               {
                 key: "unanswered",
                 label: (
-                  <span style={{ color: "#faad14" }}>
+                  <span style={{ color: "var(--color-warning)" }}>
                     Chưa trả lời ({examResult.unansweredCount})
                   </span>
                 ),
@@ -1134,16 +1134,16 @@ const ExamDetail = () => {
                   style={{
                     border: `2px solid ${
                       !isAnswered
-                        ? "#faad14"
+                        ? "var(--color-warning)"
                         : isCorrect
-                        ? "#52c41a"
-                        : "#ff4d4f"
+                        ? "var(--color-success)"
+                        : "var(--color-danger)"
                     }`,
                     background: !isAnswered
                       ? "#fffbf0"
                       : isCorrect
-                      ? "#f6ffed"
-                      : "#fff2f0",
+                      ? "var(--color-success-bg)"
+                      : "var(--color-danger-bg)",
                   }}
                 >
                   <Row gutter={[16, 16]}>
@@ -1153,26 +1153,26 @@ const ExamDetail = () => {
                           count={index + 1}
                           style={{
                             backgroundColor: !isAnswered
-                              ? "#faad14"
+                              ? "var(--color-warning)"
                               : isCorrect
-                              ? "#52c41a"
-                              : "#ff4d4f",
-                            fontSize: "14px",
+                              ? "var(--color-success)"
+                              : "var(--color-danger)",
+                            fontSize: "12px",
                           }}
                         />
                         <div style={{ marginTop: "8px" }}>
                           {!isAnswered ? (
                             <HelpCircle
                               size={20}
-                              style={{ color: "#faad14" }}
+                              style={{ color: "var(--color-warning)" }}
                             />
                           ) : isCorrect ? (
                             <CheckCircle
                               size={20}
-                              style={{ color: "#52c41a" }}
+                              style={{ color: "var(--color-success)" }}
                             />
                           ) : (
-                            <XCircle size={20} style={{ color: "#ff4d4f" }} />
+                            <XCircle size={20} style={{ color: "var(--color-danger)" }} />
                           )}
                         </div>
                       </div>
@@ -1222,7 +1222,7 @@ const ExamDetail = () => {
                                     style={{
                                       padding: "20px",
                                       textAlign: "center",
-                                      background: "#f5f5f5",
+                                      background: "var(--color-bg-secondary)",
                                     }}
                                   >
                                     Loading image...
@@ -1269,18 +1269,18 @@ const ExamDetail = () => {
                                     border: "1px solid",
                                     borderColor: isUserSelected
                                       ? isCorrectAnswer
-                                        ? "#52c41a"
-                                        : "#ff4d4f"
+                                        ? "var(--color-success)"
+                                        : "var(--color-danger)"
                                       : isCorrectAnswer
-                                      ? "#52c41a"
-                                      : "#d9d9d9",
+                                      ? "var(--color-success)"
+                                      : "var(--color-border)",
                                     background: isUserSelected
                                       ? isCorrectAnswer
-                                        ? "#f6ffed"
-                                        : "#fff2f0"
+                                        ? "var(--color-success-bg)"
+                                        : "var(--color-danger-bg)"
                                       : isCorrectAnswer
-                                      ? "#f6ffed"
-                                      : "#fafafa",
+                                      ? "var(--color-success-bg)"
+                                      : "var(--color-bg-hover)",
                                   }}
                                 >
                                   <Space>
@@ -1290,18 +1290,18 @@ const ExamDetail = () => {
                                       (isCorrectAnswer ? (
                                         <CheckCircle
                                           size={16}
-                                          style={{ color: "#52c41a" }}
+                                          style={{ color: "var(--color-success)" }}
                                         />
                                       ) : (
                                         <XCircle
                                           size={16}
-                                          style={{ color: "#ff4d4f" }}
+                                          style={{ color: "var(--color-danger)" }}
                                         />
                                       ))}
                                     {!isUserSelected && isCorrectAnswer && (
                                       <CheckCircle
                                         size={16}
-                                        style={{ color: "#52c41a" }}
+                                        style={{ color: "var(--color-success)" }}
                                       />
                                     )}
                                   </Space>
@@ -1353,7 +1353,7 @@ const ExamDetail = () => {
                 size="large"
                 icon={<FileText size={16} />}
                 onClick={() => navigate("/learner/exams")}
-                style={{ background: "#1890ff", borderColor: "#1890ff" }}
+                style={{ background: "var(--color-primary)", borderColor: "var(--color-primary)" }}
               >
                 Thêm bài thi luyện tập
               </Button>
@@ -1363,9 +1363,9 @@ const ExamDetail = () => {
                 icon={<RotateCcw size={16} />}
                 onClick={() => window.location.reload()}
                 style={{
-                  background: "#52c41a",
-                  borderColor: "#52c41a",
-                  color: "#fff",
+                  background: "var(--color-success)",
+                  borderColor: "var(--color-success)",
+                  color: "var(--color-bg-primary)",
                 }}
               >
                 Làm lại bài thi
@@ -1412,7 +1412,7 @@ const ExamDetail = () => {
   // Exam start/intro view when not yet started
   if (!examStarted) {
     return (
-      <Content style={{ padding: "24px", background: "#f5f5f5" }}>
+      <Content style={{ padding: "24px", background: "var(--color-bg-secondary)" }}>
         {/* Breadcrumb */}
         <Breadcrumb style={{ marginBottom: "24px" }}>
           <Breadcrumb.Item>
@@ -1437,10 +1437,10 @@ const ExamDetail = () => {
         >
           <Card
             style={{
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "#2C5F8D",
               borderRadius: "16px",
               marginBottom: "24px",
-              color: "#fff",
+              color: "var(--color-bg-primary)",
               border: "none",
               position: "relative",
               overflow: "hidden",
@@ -1487,7 +1487,7 @@ const ExamDetail = () => {
                   <Title
                     level={2}
                     style={{
-                      color: "#fff",
+                      color: "var(--color-bg-primary)",
                       marginBottom: "8px",
                       fontSize: "1.8rem",
                       fontWeight: "bold",
@@ -1516,7 +1516,7 @@ const ExamDetail = () => {
                         borderRadius: "20px",
                         padding: "4px 12px",
                         border: "none",
-                        color: "#fff",
+                        color: "var(--color-bg-primary)",
                         backdropFilter: "blur(10px)",
                       }}
                     >
@@ -1529,7 +1529,7 @@ const ExamDetail = () => {
                         borderRadius: "20px",
                         padding: "4px 12px",
                         border: "none",
-                        color: "#fff",
+                        color: "var(--color-bg-primary)",
                         backdropFilter: "blur(10px)",
                       }}
                     >
@@ -1542,7 +1542,7 @@ const ExamDetail = () => {
                         borderRadius: "20px",
                         padding: "4px 12px",
                         border: "none",
-                        color: "#fff",
+                        color: "var(--color-bg-primary)",
                         backdropFilter: "blur(10px)",
                       }}
                     >
@@ -1572,7 +1572,7 @@ const ExamDetail = () => {
                       borderRadius: "24px",
                       background: "rgba(255,255,255,0.9)",
                       border: "none",
-                      color: "#667eea",
+                      color: "var(--color-brand-purple)",
                       boxShadow: "0 4px 16px rgba(255,255,255,0.3)",
                     }}
                   >
@@ -1584,9 +1584,9 @@ const ExamDetail = () => {
                       size="middle"
                       icon={<ArrowLeft size={14} />}
                       style={{
-                        background: "#fff",
+                        background: "var(--color-bg-primary)",
                         border: "2px solid rgba(255,255,255,0.8)",
-                        color: "#667eea",
+                        color: "var(--color-brand-purple)",
                         borderRadius: "20px",
                         fontWeight: "500",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
@@ -1617,14 +1617,14 @@ const ExamDetail = () => {
                   style={{
                     width: "40px",
                     height: "40px",
-                    background: "#52c41a",
+                    background: "var(--color-success)",
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <PlayCircle size={20} style={{ color: "#fff" }} />
+                  <PlayCircle size={20} style={{ color: "var(--color-bg-primary)" }} />
                 </div>
               </Col>
               <Col flex="auto">
@@ -1634,7 +1634,7 @@ const ExamDetail = () => {
                 >
                   Tiếp tục bài thi đã lưu
                 </Title>
-                <Text style={{ fontSize: "14px", color: "#666" }}>
+                <Text style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
                   Bạn có thể tiếp tục từ nơi đã dừng lại
                 </Text>
               </Col>
@@ -1654,12 +1654,12 @@ const ExamDetail = () => {
                 <Space align="start">
                   <BookOpen
                     size={20}
-                    style={{ color: "#1890ff", marginTop: "2px" }}
+                    style={{ color: "var(--color-primary)", marginTop: "2px" }}
                   />
                   <div>
                     <Title
                       level={5}
-                      style={{ marginBottom: "8px", color: "#1890ff" }}
+                      style={{ marginBottom: "8px", color: "var(--color-primary)" }}
                     >
                       Hướng dẫn làm bài
                     </Title>
@@ -1667,8 +1667,8 @@ const ExamDetail = () => {
                       style={{
                         margin: 0,
                         paddingLeft: "16px",
-                        fontSize: "14px",
-                        color: "#666",
+                        fontSize: "12px",
+                        color: "var(--color-text-secondary)",
                       }}
                     >
                       <li>Đọc kỹ đề bài trước khi trả lời</li>
@@ -1685,18 +1685,18 @@ const ExamDetail = () => {
                 style={{
                   borderRadius: "12px",
                   border: "1px solid #fff7e6",
-                  background: "#fff7e6",
+                  background: "var(--color-warning-bg)",
                 }}
               >
                 <Space align="start">
                   <Target
                     size={20}
-                    style={{ color: "#fa8c16", marginTop: "2px" }}
+                    style={{ color: "var(--color-chart-6)", marginTop: "2px" }}
                   />
                   <div>
                     <Title
                       level={5}
-                      style={{ marginBottom: "8px", color: "#fa8c16" }}
+                      style={{ marginBottom: "8px", color: "var(--color-chart-6)" }}
                     >
                       Lưu ý quan trọng
                     </Title>
@@ -1704,8 +1704,8 @@ const ExamDetail = () => {
                       style={{
                         margin: 0,
                         paddingLeft: "16px",
-                        fontSize: "14px",
-                        color: "#666",
+                        fontSize: "12px",
+                        color: "var(--color-text-secondary)",
                       }}
                     >
                       <li>Quản lý thời gian hợp lý</li>
@@ -1806,9 +1806,9 @@ const ExamDetail = () => {
       {/* Enhanced Exam Header */}
       <div
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
           padding: "12px 20px",
-          color: "#fff",
+          color: "var(--color-bg-primary)",
           boxShadow: "0 4px 20px rgba(102, 126, 234, 0.3)",
           position: "fixed",
           top: 0,
@@ -1827,12 +1827,12 @@ const ExamDetail = () => {
             <Space direction="vertical" size={0}>
               <Title
                 level={4}
-                style={{ color: "#fff", margin: 0, fontWeight: "600" }}
+                style={{ color: "var(--color-bg-primary)", margin: 0, fontWeight: "600" }}
               >
                 {exam.name}
               </Title>
               <Text
-                style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px" }}
+                style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}
               >
                 Câu {currentQuestionIndex + 1} /{" "}
                 {exam.questions ? exam.questions.length : 0}
@@ -1868,8 +1868,8 @@ const ExamDetail = () => {
                     <PenTool size={16} />
                     <Text
                       style={{
-                        color: "#fff",
-                        fontSize: "14px",
+                        color: "var(--color-bg-primary)",
+                        fontSize: "12px",
                         fontWeight: "600",
                       }}
                     >
@@ -1901,7 +1901,7 @@ const ExamDetail = () => {
                   <Clock size={16} />
                   <Text
                     style={{
-                      color: "#fff",
+                      color: "var(--color-bg-primary)",
                       fontSize: "16px",
                       fontWeight: "bold",
                       fontFamily: "monospace",
@@ -2084,7 +2084,7 @@ const ExamDetail = () => {
                           height: "14px",
                           border: "2px solid #faad14",
                           borderRadius: "3px",
-                          background: "#fff",
+                          background: "var(--color-bg-primary)",
                           boxShadow: "0 2px 4px rgba(250, 173, 20, 0.3)",
                         }}
                       ></div>
@@ -2171,9 +2171,9 @@ const ExamDetail = () => {
                         <div style={{ textAlign: "center" }}>
                           <div
                             style={{
-                              fontSize: "14px",
+                              fontSize: "12px",
                               fontWeight: "bold",
-                              color: "#1890ff",
+                              color: "var(--color-primary)",
                               marginBottom: "2px",
                             }}
                           >
@@ -2196,9 +2196,9 @@ const ExamDetail = () => {
                         <div style={{ textAlign: "center" }}>
                           <div
                             style={{
-                              fontSize: "14px",
+                              fontSize: "12px",
                               fontWeight: "bold",
-                              color: "#52c41a",
+                              color: "var(--color-success)",
                               marginBottom: "2px",
                             }}
                           >
@@ -2221,9 +2221,9 @@ const ExamDetail = () => {
                         <div style={{ textAlign: "center" }}>
                           <div
                             style={{
-                              fontSize: "14px",
+                              fontSize: "12px",
                               fontWeight: "bold",
-                              color: "#faad14",
+                              color: "var(--color-warning)",
                               marginBottom: "2px",
                             }}
                           >
@@ -2488,7 +2488,7 @@ const ExamDetail = () => {
                                     fontSize: "12px",
                                     fontWeight: "700",
                                     color: part.isCurrentPart
-                                      ? "#fff"
+                                      ? "var(--color-bg-primary)"
                                       : "#1e293b",
                                     textTransform: "uppercase",
                                     letterSpacing: "0.5px",
@@ -2516,7 +2516,7 @@ const ExamDetail = () => {
                                   fontSize: "11px",
                                   fontWeight: "bold",
                                   color: part.isCurrentPart
-                                    ? "#fff"
+                                    ? "var(--color-bg-primary)"
                                     : "#374151",
                                   background: part.isCurrentPart
                                     ? "rgba(255,255,255,0.2)"
@@ -2622,21 +2622,21 @@ const ExamDetail = () => {
                                       height: "28px",
                                       border: `2px solid ${
                                         isFlagged
-                                          ? "#faad14"
+                                          ? "var(--color-warning)"
                                           : isActive
-                                          ? "#1890ff"
+                                          ? "var(--color-primary)"
                                           : isAnswered
-                                          ? "#52c41a"
+                                          ? "var(--color-success)"
                                           : "#d1d5db"
                                       }`,
                                       background: isActive
                                         ? "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)"
                                         : isAnswered
                                         ? "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)"
-                                        : "#ffffff",
+                                        : "var(--color-bg-primary)",
                                       color:
                                         isActive || isAnswered
-                                          ? "#fff"
+                                          ? "var(--color-bg-primary)"
                                           : "#374151",
                                       borderRadius: "6px",
                                       fontSize: "11px",
@@ -2684,8 +2684,8 @@ const ExamDetail = () => {
                                           position: "absolute",
                                           top: "-1px",
                                           right: "-1px",
-                                          color: "#faad14",
-                                          background: "#fff",
+                                          color: "var(--color-warning)",
+                                          background: "var(--color-bg-primary)",
                                           borderRadius: "50%",
                                           padding: "1px",
                                           boxShadow:
@@ -2702,7 +2702,7 @@ const ExamDetail = () => {
                                           left: "-2px",
                                           width: "8px",
                                           height: "8px",
-                                          background: "#fff",
+                                          background: "var(--color-bg-primary)",
                                           borderRadius: "50%",
                                           border: "2px solid #1890ff",
                                           animation: "pulse 2s infinite",
@@ -2772,7 +2772,7 @@ const ExamDetail = () => {
                         Câu {currentQuestionIndex + 1} /{" "}
                         {exam.questions ? exam.questions.length : 0}
                       </Title>
-                      <Text style={{ color: "#64748b", fontSize: "13px" }}>
+                      <Text style={{ color: "#64748b", fontSize: "12px" }}>
                         {exam.type === "full-test"
                           ? "TOEIC Full Test"
                           : "Mini Test"}
@@ -2793,15 +2793,15 @@ const ExamDetail = () => {
                         borderColor: flaggedQuestions.includes(
                           currentQuestion.id
                         )
-                          ? "#faad14"
+                          ? "var(--color-warning)"
                           : "#d1d5db",
                         background: flaggedQuestions.includes(
                           currentQuestion.id
                         )
                           ? "linear-gradient(135deg, #faad14 0%, #f59e0b 100%)"
-                          : "#ffffff",
+                          : "var(--color-bg-primary)",
                         color: flaggedQuestions.includes(currentQuestion.id)
-                          ? "#fff"
+                          ? "var(--color-bg-primary)"
                           : "#374151",
                         borderRadius: "8px",
                         fontWeight: "500",
@@ -2815,8 +2815,8 @@ const ExamDetail = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (!flaggedQuestions.includes(currentQuestion.id)) {
-                          e.target.style.borderColor = "#faad14";
-                          e.target.style.color = "#faad14";
+                          e.target.style.borderColor = "var(--color-warning)";
+                          e.target.style.color = "var(--color-warning)";
                         }
                       }}
                       onMouseLeave={(e) => {
@@ -2977,7 +2977,7 @@ const ExamDetail = () => {
                         style={{
                           color: "#1e293b",
                           fontWeight: "600",
-                          fontSize: "14px",
+                          fontSize: "12px",
                         }}
                       >
                         Chọn đáp án
@@ -3015,7 +3015,7 @@ const ExamDetail = () => {
                                     : "#d1d5db",
                                   background: isSelected
                                     ? "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)"
-                                    : "#ffffff",
+                                    : "var(--color-bg-primary)",
                                   transition: "all 0.2s ease",
                                   boxShadow: isSelected
                                     ? "0 2px 8px rgba(59, 130, 246, 0.15)"
@@ -3032,7 +3032,7 @@ const ExamDetail = () => {
                                       background: isSelected
                                         ? "#3b82f6"
                                         : "#f1f5f9",
-                                      color: isSelected ? "#ffffff" : "#64748b",
+                                      color: isSelected ? "var(--color-bg-primary)" : "#64748b",
                                       display: "flex",
                                       alignItems: "center",
                                       justifyContent: "center",
@@ -3045,7 +3045,7 @@ const ExamDetail = () => {
                                   </div>
                                   <Text
                                     style={{
-                                      fontSize: "14px",
+                                      fontSize: "12px",
                                       color: isSelected ? "#1e40af" : "#374151",
                                       fontWeight: isSelected ? "500" : "400",
                                       lineHeight: "1.4",
@@ -3114,7 +3114,7 @@ const ExamDetail = () => {
                         height: "48px",
                         borderRadius: "12px",
                         fontWeight: "600",
-                        fontSize: "15px",
+                        fontSize: "12px",
                         border:
                           currentQuestionIndex === 0
                             ? "2px solid #e5e7eb"
@@ -3135,7 +3135,7 @@ const ExamDetail = () => {
                         if (currentQuestionIndex !== 0) {
                           e.target.style.background =
                             "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
-                          e.target.style.color = "#ffffff";
+                          e.target.style.color = "var(--color-bg-primary)";
                           e.target.style.transform = "translateY(-2px)";
                           e.target.style.boxShadow =
                             "0 4px 16px rgba(59, 130, 246, 0.3)";
@@ -3185,12 +3185,12 @@ const ExamDetail = () => {
                         height: "48px",
                         borderRadius: "12px",
                         fontWeight: "600",
-                        fontSize: "15px",
+                        fontSize: "12px",
                         border: "2px solid transparent",
                         background: savedProgress
                           ? "linear-gradient(135deg, #10b981 0%, #047857 100%)"
                           : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                        color: "#ffffff",
+                        color: "var(--color-bg-primary)",
                         boxShadow: savedProgress
                           ? "0 2px 8px rgba(16, 185, 129, 0.3)"
                           : "0 2px 8px rgba(245, 158, 11, 0.3)",
@@ -3227,7 +3227,7 @@ const ExamDetail = () => {
                         border: "2px solid transparent",
                         background:
                           "linear-gradient(135deg, #10b981 0%, #047857 100%)",
-                        color: "#ffffff",
+                        color: "var(--color-bg-primary)",
                         boxShadow: "0 4px 16px rgba(16, 185, 129, 0.3)",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         position: "relative",
@@ -3264,7 +3264,7 @@ const ExamDetail = () => {
                         height: "48px",
                         borderRadius: "12px",
                         fontWeight: "600",
-                        fontSize: "15px",
+                        fontSize: "12px",
                         border:
                           !exam.questions ||
                           currentQuestionIndex === exam.questions.length - 1
@@ -3298,7 +3298,7 @@ const ExamDetail = () => {
                         ) {
                           e.target.style.background =
                             "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)";
-                          e.target.style.color = "#ffffff";
+                          e.target.style.color = "var(--color-bg-primary)";
                           e.target.style.transform = "translateY(-2px)";
                           e.target.style.boxShadow =
                             "0 4px 16px rgba(59, 130, 246, 0.3)";
@@ -3342,7 +3342,7 @@ const ExamDetail = () => {
             top: "100px",
             left: "20px",
             zIndex: 1000,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "#2C5F8D",
             border: "none",
             boxShadow: "0 4px 20px rgba(102, 126, 234, 0.4)",
             animation: "sidebarButtonPulse 2s infinite",
@@ -3385,7 +3385,7 @@ const ExamDetail = () => {
                   boxShadow: "0 4px 12px rgba(250, 173, 20, 0.3)",
                 }}
               >
-                <AlertCircle size={24} style={{ color: "#fff" }} />
+                <AlertCircle size={24} style={{ color: "var(--color-bg-primary)" }} />
               </div>
               <Title level={4} style={{ margin: 0, color: "#1e293b" }}>
                 Nộp bài thi?
@@ -3427,7 +3427,7 @@ const ExamDetail = () => {
             </Text>
             <Text
               style={{
-                fontSize: "14px",
+                fontSize: "12px",
                 color: "#94a3b8",
                 lineHeight: "1.5",
               }}
@@ -3463,7 +3463,7 @@ const ExamDetail = () => {
                       boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
                     }}
                   >
-                    <CheckCircle size={20} style={{ color: "#fff" }} />
+                    <CheckCircle size={20} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
                   <Statistic
                     title={
@@ -3497,7 +3497,7 @@ const ExamDetail = () => {
                       boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
                     }}
                   >
-                    <XCircle size={20} style={{ color: "#fff" }} />
+                    <XCircle size={20} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
                   <Statistic
                     title={
@@ -3533,7 +3533,7 @@ const ExamDetail = () => {
                       boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
                     }}
                   >
-                    <Flag size={20} style={{ color: "#fff" }} />
+                    <Flag size={20} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
                   <Statistic
                     title={
@@ -3566,7 +3566,7 @@ const ExamDetail = () => {
                   paddingRight: "24px",
                   fontWeight: "500",
                   border: "2px solid #e5e7eb",
-                  background: "#ffffff",
+                  background: "var(--color-bg-primary)",
                   color: "#374151",
                   transition: "all 0.3s ease",
                 }}
@@ -3602,7 +3602,7 @@ const ExamDetail = () => {
                   paddingLeft: "24px",
                   paddingRight: "24px",
                   fontWeight: "600",
-                  fontSize: "15px",
+                  fontSize: "12px",
                   boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
                   transition: "all 0.3s ease",
                 }}
@@ -3643,7 +3643,7 @@ const ExamDetail = () => {
             style={{
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
               borderColor: "#10b981",
-              color: "#fff",
+              color: "var(--color-bg-primary)",
               fontWeight: "600",
             }}
           >
@@ -3683,7 +3683,7 @@ const ExamDetail = () => {
             style={{
               background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
               borderColor: "#3b82f6",
-              color: "#fff",
+              color: "var(--color-bg-primary)",
               fontWeight: "600",
             }}
           >

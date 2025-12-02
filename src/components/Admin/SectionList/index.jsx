@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCirclePlus,
@@ -208,15 +208,15 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                       option: (base, state) => ({
                         ...base,
                         borderRadius: 30,
-                        color: state.isSelected ? "#fff" : "#198754",
+                        color: state.isSelected ? "var(--color-bg-primary)" : "#198754",
                         backgroundColor: state.isSelected
                           ? "#198754"
                           : state.isFocused
                           ? "#e6f7ef"
-                          : "#fff",
+                          : "var(--color-bg-primary)",
                         ":active": {
                           backgroundColor: "#43c59e",
-                          color: "#fff",
+                          color: "var(--color-bg-primary)",
                         },
                       }),
                       menu: (base) => ({
@@ -266,7 +266,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                 title="Thêm phần mới"
                 style={{
                   borderRadius: "20px",
-                  fontSize: "14px",
+                  fontSize: "12px",
                   padding: "10px 18px",
                   whiteSpace: "nowrap",
                   flexShrink: 0,
@@ -366,17 +366,17 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                     </td>
                     <td>
                       <div className="d-flex justify-content-center">
-                        <Link to={`/admin/section/${section._id}/lesson`}>
+                        <Link to={`/teacher/sections/${section._id}/lesson`}>
                           <button className="glowing-button">Lesson</button>
                         </Link>
 
-                        <Link to={`/admin/section/${section._id}/question`}>
+                        <Link to={`/teacher/sections/${section._id}/question`}>
                           <button className="glowing-button ms-2">
                             Question
                           </button>
                         </Link>
 
-                        <Link to={`/admin/section/${section._id}/test`}>
+                        <Link to={`/teacher/sections/${section._id}/test`}>
                           <button className="glowing-button ms-2">Test</button>
                         </Link>
                       </div>

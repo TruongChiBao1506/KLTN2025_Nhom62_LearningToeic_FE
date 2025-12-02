@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Rate, message, Typography } from "antd";
 import feedbackService from "../../../services/feedbackService";
 import { CheckCircleTwoTone } from "@ant-design/icons";
@@ -39,7 +39,7 @@ const Feedback = () => {
         type: "success",
         content: (
           <span>
-            <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 20, marginRight: 8 }} />
+            <CheckCircleTwoTone twoToneColor="var(--color-success)" style={{ fontSize: 20, marginRight: 8 }} />
             Cảm ơn bạn đã gửi phản hồi! Chúng tôi rất trân trọng ý kiến của bạn.
           </span>
         ),
@@ -55,7 +55,7 @@ const Feedback = () => {
   return (
     <>
       <style>{rateStarStyle}</style>
-      <div style={{ maxWidth: 600, margin: "40px auto", background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.07)", padding: 32 }}>
+      <div style={{ maxWidth: 600, margin: "40px auto", background: "var(--color-bg-primary)", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.07)", padding: 32 }}>
         <Title level={2} style={{ textAlign: "center", marginBottom: 8 }}>Góp ý & Đánh giá</Title>
         <Paragraph style={{ textAlign: "center", color: "#64748b", marginBottom: 32 }}>
           Hãy cho chúng tôi biết ý kiến, góp ý hoặc báo lỗi để nền tảng ngày càng hoàn thiện hơn!

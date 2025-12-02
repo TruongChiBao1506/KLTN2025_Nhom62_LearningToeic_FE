@@ -1,4 +1,4 @@
-/* VocabularyQuiz Component Styles */
+﻿/* VocabularyQuiz Component Styles */
 .vocabulary-quiz {
   height: 130vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -166,8 +166,8 @@
 
 .score-card {
   background: #f0f8ff;
-  color: #1890ff;
-  border: 2px solid #1890ff;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
   position: relative;
 }
 
@@ -178,13 +178,13 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: #1890ff;
+  background: var(--color-primary);
 }
 
 .correct-card {
-  background: #f6ffed;
-  color: #52c41a;
-  border: 2px solid #52c41a;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 2px solid var(--color-success);
   position: relative;
 }
 
@@ -195,13 +195,13 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: #52c41a;
+  background: var(--color-success);
 }
 
 .incorrect-card {
-  background: #fff1f0;
-  color: #f5222d;
-  border: 2px solid #f5222d;
+  background: var(--color-bg-primary)1f0;
+  color: var(--color-danger);
+  border: 2px solid var(--color-danger);
   position: relative;
 }
 
@@ -212,13 +212,13 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: #f5222d;
+  background: var(--color-danger);
 }
 
 .time-card {
   background: #f9f0ff;
-  color: #722ed1;
-  border: 2px solid #722ed1;
+  color: var(--color-chart-4);
+  border: 2px solid var(--color-chart-4);
   position: relative;
 }
 
@@ -229,7 +229,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: #722ed1;
+  background: var(--color-chart-4);
 }
 
 .stat-content {
@@ -241,7 +241,7 @@
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 8px;
   opacity: 0.8;
   font-weight: 600;
@@ -287,7 +287,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid transparent;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   min-height: 70px;
   position: relative;
   overflow: hidden;
@@ -327,15 +327,15 @@
 }
 
 .modern-question-item.unanswered {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-color: #dee2e6;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-border-light) 100%);
+  border-color: var(--color-border);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .modern-question-item .question-number {
   font-weight: 600;
   font-size: 16px;
-  color: #333;
+  color: var(--color-text-primary);
   position: relative;
   z-index: 1;
 }
@@ -362,12 +362,12 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #dee2e6;
+  background: var(--color-border);
   transition: all 0.3s ease;
 }
 
 .modern-question-item:hover .unanswered-dot {
-  background: #adb5bd;
+  background: var(--color-text-disabled);
   transform: scale(1.1);
 }
 
@@ -395,7 +395,7 @@
 
 
 .stat-card.incorrect {
-  background: linear-gradient(135deg, #f5222d 0%, #ff7875 100%);
+  background: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%);
   color: white;
   border: none;
 }
@@ -416,8 +416,8 @@
 .header-card .ant-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  color: #1890ff;
-  border-color: #1890ff;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .quiz-content {
@@ -445,7 +445,7 @@
   border-radius: 10px;
   margin-bottom: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: linear-gradient(135deg, var(--color-bg-primary)fff 0%, var(--color-bg-secondary) 100%);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -467,7 +467,7 @@
 }
 
 .answer-options .ant-radio-wrapper:hover {
-  border-color: #1890ff;
+  border-color: var(--color-primary);
   background: rgba(24,144,255,0.05);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(24,144,255,0.15);
@@ -487,13 +487,13 @@
 }
 
 .question-card .ant-btn-primary {
-  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #36cfc9 100%);
   border: none;
   color: white;
 }
 
 .question-card .ant-btn-primary:hover {
-  background: linear-gradient(135deg, #0050b3 0%, #13c2c2 100%);
+  background: linear-gradient(135deg, #0050b3 0%, var(--color-info) 100%);
   box-shadow: 0 8px 20px rgba(24,144,255,0.3);
 }
 
@@ -509,7 +509,7 @@
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-border);
 }
 
 .question-list-card .ant-btn:hover {
@@ -518,26 +518,26 @@
 }
 
 .question-list-card .ant-btn-primary {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-light) 100%);
   border: none;
   color: white;
   box-shadow: 0 3px 8px rgba(82,196,26,0.3);
 }
 
 .question-list-card .ant-btn-primary:hover {
-  background: linear-gradient(135deg, #389e0d 0%, #52c41a 100%);
+  background: linear-gradient(135deg, var(--color-success-dark) 0%, var(--color-success) 100%);
   box-shadow: 0 6px 16px rgba(82,196,26,0.4);
 }
 
 .question-list-card .ant-btn:not(.ant-btn-primary) {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  color: #666;
+  background: linear-gradient(135deg, var(--color-bg-primary)fff 0%, var(--color-bg-secondary) 100%);
+  color: var(--color-text-secondary);
 }
 
 .question-list-card .ant-btn:not(.ant-btn-primary):hover {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  color: #333;
-  border-color: #1890ff;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-border-light) 100%);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
 }
 
 .quiz-loading {
@@ -584,7 +584,7 @@
   padding: 8px 16px;
   background: rgba(24,144,255,0.1);
   border-radius: 12px;
-  color: #1890ff;
+  color: var(--color-primary);
 }
 
 /* Question Card Styles */
@@ -612,7 +612,7 @@
 .question-number {
   font-size: 16px;
   font-weight: 600;
-  color: #1890ff;
+  color: var(--color-primary);
   background: rgba(24,144,255,0.1);
   padding: 4px 12px;
   border-radius: 12px;
@@ -630,7 +630,7 @@
   background: rgba(250,173,20,0.1);
   padding: 16px;
   border-radius: 12px;
-  border-left: 4px solid #faad14;
+  border-left: 4px solid var(--color-warning);
   margin-bottom: 24px;
 }
 
@@ -652,17 +652,17 @@
 }
 
 .answer-option:hover {
-  border-color: #1890ff;
+  border-color: var(--color-primary);
   background: rgba(24,144,255,0.05);
 }
 
 .answer-option.ant-radio-wrapper-checked {
-  border-color: #1890ff;
+  border-color: var(--color-primary);
   background: rgba(24,144,255,0.1);
 }
 
 .option-text {
-  font-size: 15px;
+  font-size: 12px;
   color: #2c3e50;
   margin-left: 8px;
 }
@@ -687,13 +687,13 @@
 
 /* Answer Option Styles for Practice Mode */
 .answer-option.correct-answer {
-  border-color: #52c41a !important;
+  border-color: var(--color-success) !important;
   background: linear-gradient(135deg, rgba(82,196,26,0.1) 0%, rgba(115,209,61,0.1) 100%) !important;
   box-shadow: 0 4px 12px rgba(82,196,26,0.2) !important;
 }
 
 .answer-option.incorrect-answer {
-  border-color: #f5222d !important;
+  border-color: var(--color-danger) !important;
   background: linear-gradient(135deg, rgba(245,34,45,0.1) 0%, rgba(255,120,117,0.1) 100%) !important;
   box-shadow: 0 4px 12px rgba(245,34,45,0.2) !important;
 }
@@ -720,11 +720,11 @@
 .correct-feedback {
   display: flex;
   align-items: center;
-  color: #52c41a;
+  color: var(--color-success);
 }
 
 .incorrect-feedback {
-  color: #f5222d;
+  color: var(--color-danger);
 }
 
 .practice-summary {
@@ -767,28 +767,28 @@
 }
 
 .question-btn.answered.correct {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
-  border-color: #52c41a;
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-light) 100%);
+  border-color: var(--color-success);
   color: white;
   box-shadow: 0 4px 12px rgba(82,196,26,0.3);
 }
 
 .question-btn.answered.incorrect {
-  background: linear-gradient(135deg, #f5222d 0%, #ff7875 100%);
-  border-color: #f5222d;
+  background: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%);
+  border-color: var(--color-danger);
   color: white;
   box-shadow: 0 4px 12px rgba(245,34,45,0.3);
 }
 
 .question-btn.unanswered {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-color: #d9d9d9;
-  color: #666;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-border-light) 100%);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
 }
 
 .question-btn.ant-btn-primary {
-  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
-  border: 2px solid #1890ff;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #36cfc9 100%);
+  border: 2px solid var(--color-primary);
   color: white;
   box-shadow: 0 4px 12px rgba(24,144,255,0.3);
 }
@@ -797,7 +797,7 @@
   position: absolute;
   top: -2px;
   right: -2px;
-  background: #52c41a;
+  background: var(--color-success);
   border-radius: 50%;
   color: white;
   padding: 1px;
@@ -850,25 +850,25 @@
 }
 
 .stat-card.score {
-  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #36cfc9 100%);
   color: white;
   border: none;
 }
 
 .stat-card.correct {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-light) 100%);
   color: white;
   border: none;
 }
 
 .stat-card.total {
-  background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);
+  background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-light) 100%);
   color: white;
   border: none;
 }
 
 .stat-card.time {
-  background: linear-gradient(135deg, #722ed1 0%, #b37feb 100%);
+  background: linear-gradient(135deg, var(--color-chart-4) 0%, #b37feb 100%);
   color: white;
   border: none;
 }
@@ -926,7 +926,7 @@
   }
   
   .option-text {
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .result-details .ant-col {
@@ -1052,7 +1052,7 @@
 
 /* Progress Bar Enhancement */
 .ant-progress-bg {
-  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%) !important;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #36cfc9 100%) !important;
   box-shadow: 0 2px 4px rgba(24,144,255,0.3);
 }
 

@@ -1,9 +1,9 @@
-/* ✅ CUSTOM DROPDOWN MENU STYLING for Ant Design */
+﻿/* ✅ CUSTOM DROPDOWN MENU STYLING for Ant Design */
 .custom-admin-dropdown .ant-dropdown-menu {
     border-radius: 12px !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
     border: 1px solid rgba(0, 0, 0, 0.05) !important;
-    background: #fff !important;
+    background: var(--color-bg-primary) !important;
     padding: 8px !important;
     overflow: hidden !important;
     animation: dropdownSlideIn 0.2s ease-out !important;
@@ -45,32 +45,47 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: -1;
-    border-radius: 8px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
 }
 
 .custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item::before {
-    left: 0;
+    left: 100%;
 }
 
 .custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item {
-    color: #fff !important;
-    transform: translateX(2px);
-}
-
-.custom-admin-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item span {
-    color: #fff !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    background: rgba(248, 250, 252, 0.8) !important;
+    border-color: rgba(103, 126, 234, 0.2) !important;
 }
 
 /* Logout item special styling */
+.custom-admin-dropdown .ant-dropdown-menu-item .logout-item {
+    position: relative;
+    overflow: hidden;
+}
+
 .custom-admin-dropdown .ant-dropdown-menu-item .logout-item::before {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
 }
 
 .custom-admin-dropdown .ant-dropdown-menu-item:hover .logout-item {
-    color: #fff !important;
+    background: rgba(254, 242, 242, 0.9) !important;
+    border-color: rgba(239, 68, 68, 0.25) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.custom-admin-dropdown .ant-dropdown-menu-item:hover .logout-item::before {
+    left: 100%;
 }
 
 /* Divider styling */
@@ -97,7 +112,7 @@
 }
 
 .navbar .navbar-nav .nav-item .ant-space:hover .ant-avatar {
-    border-color: #1c75bc !important;
+    border-color: var(--color-brand-blue) !important;
     transform: scale(1.05) !important;
     box-shadow: 0 4px 12px rgba(28, 117, 188, 0.3) !important;
 }
@@ -116,12 +131,12 @@
     padding: 8px 12px;
     border-radius: 6px;
     transition: all 0.2s ease;
-    color: #6c757d;
+    color: var(--color-draft);
 }
 
 .navbar .navbar-nav .nav-item .nav-link:hover {
-    background-color: #f8f9fa;
-    color: #1c75bc;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-brand-blue);
     transform: translateY(-1px);
 }
 

@@ -1,17 +1,17 @@
-.question-edit-section2-page label {
+﻿.question-edit-section2-page label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 
 .question-edit-section2-page .error-feedback {
     color: red;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .question-edit-section2-page .required-field {
     color: red;
-    font-size: 14px;
+    font-size: 12px;
     margin-left: 4px;
 }
 
@@ -30,7 +30,7 @@
 
 .modal.zoom .modal-header {
     flex-shrink: 0;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .modal.zoom .modal-body {
@@ -51,9 +51,9 @@
     flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: var(--color-bg-primary);
     z-index: 10;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
     margin-top: 0;
     padding: 12px 24px;
 }
@@ -85,7 +85,7 @@
 /* File preview styling */
 .question-edit-section2-page .file-preview {
     padding: 8px 12px;
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
     border-radius: 4px;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--color-border-light);
 }

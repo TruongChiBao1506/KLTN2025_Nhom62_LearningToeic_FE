@@ -1,4 +1,4 @@
-/* Modern Comment Section Styles */
+﻿/* Modern Comment Section Styles */
 .modern-comment-section {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 16px !important;
@@ -31,12 +31,12 @@
 /* Comment Form Styling */
 .modern-comments-container .ant-input {
   border-radius: 8px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--color-border-light);
   transition: all 0.3s ease;
 }
 
 .modern-comments-container .ant-input:focus {
-  border-color: #1890ff;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
@@ -56,12 +56,12 @@
 /* Avatar Styling */
 .modern-comment-card .ant-avatar {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  border: 2px solid #fff;
+  border: 2px solid var(--color-bg-primary);
 }
 
 /* Typography Enhancements */
 .modern-comments-container .ant-typography h3 {
-  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #36cfc9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -75,40 +75,40 @@
 
 .modern-comments-container .ant-select .ant-select-selector {
   border-radius: 8px !important;
-  border: 1px solid #e8e8e8 !important;
+  border: 1px solid var(--color-border-light) !important;
   transition: all 0.3s ease;
 }
 
 .modern-comments-container .ant-select:hover .ant-select-selector {
-  border-color: #1890ff !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Empty State Styling */
 .modern-comments-container .ant-empty {
   border-radius: 12px;
   background: linear-gradient(135deg, #fafbfc 0%, #f5f6fa 100%);
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed var(--color-border);
   padding: 40px 20px;
 }
 
 /* Load More Button */
 .modern-comments-container .ant-btn:not(.ant-btn-primary) {
   border-radius: 8px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-border);
   color: #595959;
   transition: all 0.3s ease;
 }
 
 .modern-comments-container .ant-btn:not(.ant-btn-primary):hover {
-  border-color: #1890ff;
-  color: #1890ff;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
 }
 
 /* Divider Styling */
 .modern-comments-container .ant-divider {
-  border-color: #e8e8e8;
+  border-color: var(--color-border-light);
   margin: 16px 0;
 }
 
@@ -144,7 +144,7 @@
 
 /* Legacy Comment Styles - Keep for backward compatibility */
 .comment-container {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -164,7 +164,7 @@
 }
 
 .comment-content {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .comment-footer {
@@ -177,7 +177,7 @@
 }
 
 .replies-container {
-  border-left: 2px solid #dee2e6;
+  border-left: 2px solid var(--color-border);
 }
 
 .comment-form .input-group {
@@ -190,5 +190,5 @@
 }
 
 .btn-link:hover {
-  color: #052649;
+  color: var(--color-brand-navy);
 }

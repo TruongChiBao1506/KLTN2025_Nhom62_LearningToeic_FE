@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { markAsRead, markAllAsRead, addNotification } from '../../../store/notificationSlice.js';
 import { useAuthStore } from '../../../hooks/useAuthStore';
@@ -126,8 +126,8 @@ const Notification = () => {
                       </button>
                     ) : (
                       <div className="read-status">
-                        <FontAwesomeIcon icon={faCheckCircle} style={{ color: '#28a745' }} />
-                        <span style={{ color: '#28a745', fontSize: '0.8rem', marginLeft: '4px' }}>Đã đọc</span>
+                        <FontAwesomeIcon icon={faCheckCircle} style={{ color: 'var(--color-approved)' }} />
+                        <span style={{ color: 'var(--color-approved)', fontSize: '0.8rem', marginLeft: '4px' }}>Đã đọc</span>
                       </div>
                     )}
                   </div>

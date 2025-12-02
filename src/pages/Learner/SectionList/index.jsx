@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, Row, Col, Typography, Tag, Button, Progress } from "antd";
 import {
@@ -112,7 +112,7 @@ const SectionList = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#2C5F8D",
         padding: "20px",
       }}
     >
@@ -131,7 +131,7 @@ const SectionList = () => {
           >
             <div
               style={{
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                background: "#2C5F8D",
                 borderRadius: "50%",
                 width: "80px",
                 height: "80px",
@@ -147,7 +147,7 @@ const SectionList = () => {
             <Title
               level={1}
               style={{
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                background: "#2C5F8D",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 marginBottom: "16px",
@@ -159,7 +159,7 @@ const SectionList = () => {
             <Paragraph
               style={{
                 fontSize: "18px",
-                color: "#666",
+                color: "var(--color-text-secondary)",
                 marginBottom: "24px",
                 maxWidth: "600px",
                 margin: "0 auto",
@@ -172,34 +172,34 @@ const SectionList = () => {
             <Row gutter={[24, 16]} justify="center">
               <Col>
                 <div style={{ textAlign: "center" }}>
-                  <Text strong style={{ fontSize: "24px", color: "#667eea" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-brand-purple)" }}>
                     7
                   </Text>
-                  <div style={{ color: "#666" }}>Phần thi</div>
+                  <div style={{ color: "var(--color-text-secondary)" }}>Phần thi</div>
                 </div>
               </Col>
               <Col>
                 <div style={{ textAlign: "center" }}>
-                  <Text strong style={{ fontSize: "24px", color: "#52c41a" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-success)" }}>
                     4
                   </Text>
-                  <div style={{ color: "#666" }}>Listening</div>
+                  <div style={{ color: "var(--color-text-secondary)" }}>Listening</div>
                 </div>
               </Col>
               <Col>
                 <div style={{ textAlign: "center" }}>
-                  <Text strong style={{ fontSize: "24px", color: "#fa8c16" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-chart-6)" }}>
                     3
                   </Text>
-                  <div style={{ color: "#666" }}>Reading</div>
+                  <div style={{ color: "var(--color-text-secondary)" }}>Reading</div>
                 </div>
               </Col>
               <Col>
                 <div style={{ textAlign: "center" }}>
-                  <Text strong style={{ fontSize: "24px", color: "#722ed1" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-chart-4)" }}>
                     200
                   </Text>
-                  <div style={{ color: "#666" }}>Câu hỏi</div>
+                  <div style={{ color: "var(--color-text-secondary)" }}>Câu hỏi</div>
                 </div>
               </Col>
             </Row>
@@ -270,14 +270,14 @@ const SectionList = () => {
                             justifyContent: "center",
                             color:
                               skillInfo.color === "blue"
-                                ? "#1890ff"
-                                : "#52c41a",
+                                ? "var(--color-primary)"
+                                : "var(--color-success)",
                           }}
                         >
                           {getPartIcon(partNumber)}
                         </div>
                         <div>
-                          <Title level={4} style={{ margin: 0, color: "#333" }}>
+                          <Title level={4} style={{ margin: 0, color: "var(--color-text-primary)" }}>
                             {section.name}
                           </Title>
                         </div>
@@ -306,8 +306,8 @@ const SectionList = () => {
                   >
                     <Paragraph
                       style={{
-                        color: "#666",
-                        fontSize: "14px",
+                        color: "var(--color-text-secondary)",
+                        fontSize: "12px",
                         lineHeight: "1.6",
                         marginBottom: "20px",
                         flex: 1,
@@ -348,7 +348,7 @@ const SectionList = () => {
                     {/* Stats */}
                     <div
                       style={{
-                        background: "#f8f9fa",
+                        background: "var(--color-bg-secondary)",
                         borderRadius: "12px",
                         padding: "12px",
                         marginBottom: "20px",
@@ -356,10 +356,10 @@ const SectionList = () => {
                     >
                       <Row gutter={16}>
                         <Col span={8} style={{ textAlign: "center" }}>
-                          <div style={{ color: "#999", fontSize: "11px" }}>
+                          <div style={{ color: "var(--color-text-disabled)", fontSize: "11px" }}>
                             Câu hỏi
                           </div>
-                          <div style={{ fontWeight: "600", color: "#333" }}>
+                          <div style={{ fontWeight: "600", color: "var(--color-text-primary)" }}>
                             {partNumber === 1
                               ? "6"
                               : partNumber === 2
@@ -378,18 +378,18 @@ const SectionList = () => {
                           </div>
                         </Col>
                         <Col span={8} style={{ textAlign: "center" }}>
-                          <div style={{ color: "#999", fontSize: "11px" }}>
+                          <div style={{ color: "var(--color-text-disabled)", fontSize: "11px" }}>
                             Thời gian
                           </div>
-                          <div style={{ fontWeight: "600", color: "#333" }}>
+                          <div style={{ fontWeight: "600", color: "var(--color-text-primary)" }}>
                             {partNumber <= 4 ? "~45p" : "~75p"}
                           </div>
                         </Col>
                         <Col span={8} style={{ textAlign: "center" }}>
-                          <div style={{ color: "#999", fontSize: "11px" }}>
+                          <div style={{ color: "var(--color-text-disabled)", fontSize: "11px" }}>
                             Điểm
                           </div>
-                          <div style={{ fontWeight: "600", color: "#333" }}>
+                          <div style={{ fontWeight: "600", color: "var(--color-text-primary)" }}>
                             {partNumber <= 4 ? "5-495" : "5-495"}
                           </div>
                         </Col>
@@ -406,10 +406,10 @@ const SectionList = () => {
                           height: "48px",
                           borderRadius: "12px",
                           background:
-                            "linear-gradient(135deg, #667eea, #764ba2)",
+                            "#2C5F8D",
                           border: "none",
                           fontWeight: "600",
-                          fontSize: "14px",
+                          fontSize: "12px",
                         }}
                         icon={<ChevronRight className="w-4 h-4" />}
                       >
@@ -448,7 +448,7 @@ const SectionList = () => {
                 <Text strong style={{ display: "block", marginBottom: "8px" }}>
                   Quản lý thời gian
                 </Text>
-                <Text style={{ fontSize: "14px", color: "#666" }}>
+                <Text style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
                   Luyện tập thường xuyên, mỗi ngày 30-60 phút
                 </Text>
               </div>
@@ -459,7 +459,7 @@ const SectionList = () => {
                 <Text strong style={{ display: "block", marginBottom: "8px" }}>
                   Theo dõi tiến độ
                 </Text>
-                <Text style={{ fontSize: "14px", color: "#666" }}>
+                <Text style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
                   Đánh giá kết quả và điều chỉnh phương pháp học
                 </Text>
               </div>
@@ -470,7 +470,7 @@ const SectionList = () => {
                 <Text strong style={{ display: "block", marginBottom: "8px" }}>
                   Tham gia cộng đồng
                 </Text>
-                <Text style={{ fontSize: "14px", color: "#666" }}>
+                <Text style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
                   Học cùng bạn bè để có động lực học tập
                 </Text>
               </div>

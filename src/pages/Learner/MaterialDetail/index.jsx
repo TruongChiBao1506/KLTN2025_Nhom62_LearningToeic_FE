@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -277,19 +277,19 @@ const MaterialDetailAntd = () => {
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
       case "beginner":
-        return "#52c41a";
+        return "var(--color-success)";
       case "intermediate":
-        return "#faad14";
+        return "var(--color-warning)";
       case "advanced":
-        return "#f5222d";
+        return "var(--color-danger)";
       default:
-        return "#1890ff";
+        return "var(--color-primary)";
     }
   };
 
   const getDefaultImage = (category, type) => {
     const gradients = {
-      listening: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      listening: "#2C5F8D",
       reading: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
       grammar: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
       vocabulary: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
@@ -326,7 +326,7 @@ const MaterialDetailAntd = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
         }}
       >
         <Card
@@ -353,7 +353,7 @@ const MaterialDetailAntd = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
         }}
       >
         <Card
@@ -545,13 +545,13 @@ const MaterialDetailAntd = () => {
                     </Title>
                     <div
                       style={{
-                        background: "#f8f9fa",
+                        background: "var(--color-bg-secondary)",
                         padding: "20px",
                         borderRadius: "12px",
                         border: "1px solid #e9ecef",
                       }}
                     >
-                      <Paragraph style={{ fontSize: "14px", lineHeight: 1.6 }}>
+                      <Paragraph style={{ fontSize: "12px", lineHeight: 1.6 }}>
                         {material.content.substring(0, 500)}
                         {material.content.length > 500 && "..."}
                       </Paragraph>
@@ -571,7 +571,7 @@ const MaterialDetailAntd = () => {
                     <Card
                       size="small"
                       style={{
-                        background: "#f8f9fa",
+                        background: "var(--color-bg-secondary)",
                         border: "1px solid #e9ecef",
                         borderRadius: "12px",
                       }}
@@ -617,7 +617,7 @@ const MaterialDetailAntd = () => {
                           style={{
                             borderRadius: "20px",
                             padding: "4px 12px",
-                            background: "#f0f2f5",
+                            background: "var(--color-bg-tertiary)",
                             border: "1px solid #d9d9d9",
                           }}
                         >
@@ -640,7 +640,7 @@ const MaterialDetailAntd = () => {
                     </Title>
                     <div
                       style={{
-                        background: "#f8f9fa",
+                        background: "var(--color-bg-secondary)",
                         padding: "16px",
                         borderRadius: "12px",
                         border: "1px solid #e9ecef",
@@ -775,7 +775,7 @@ const MaterialDetailAntd = () => {
                       title="Lượt tải"
                       value={material.downloads}
                       prefix={<DownloadOutlined />}
-                      valueStyle={{ color: "#1890ff" }}
+                      valueStyle={{ color: "var(--color-primary)" }}
                     />
                   </Col>
                   <Col span={24}>

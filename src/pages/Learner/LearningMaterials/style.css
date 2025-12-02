@@ -1,11 +1,11 @@
-.materials-container {
+﻿.materials-container {
   padding: 20px;
 }
 
 .materials-header {
   padding: 30px 0;
   margin-bottom: 30px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -38,7 +38,7 @@
   margin: 5px;
   padding: 8px 16px;
   border-radius: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   color: #7f8c8d;
   cursor: pointer;
   transition: all 0.3s;
@@ -47,7 +47,7 @@
 }
 
 .filter-tab:hover {
-  background-color: #e9ecef;
+  background-color: var(--color-border-light);
 }
 
 .filter-tab.active {
@@ -236,7 +236,7 @@
 }
 
 .tag {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 5px 12px;
   border-radius: 20px;
   margin-right: 10px;
@@ -248,7 +248,7 @@
 }
 
 .tag:hover {
-  background-color: #e9ecef;
+  background-color: var(--color-border-light);
 }
 
 .tag.active {

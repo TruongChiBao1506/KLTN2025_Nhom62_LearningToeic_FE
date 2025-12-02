@@ -1,4 +1,4 @@
-/* Scope all styles to ScoreTableList component */
+﻿/* Scope all styles to ScoreTableList component */
 .score-table-list .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
     transform: translateY(-1px);
@@ -6,12 +6,12 @@
 }
 
 .score-table-list th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 .score-table-list td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
@@ -43,25 +43,25 @@
 .score-table-list .page-title {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text-primary);
     padding: 10px;
 }
 
 .score-table-list .form-select,
 .score-table-list .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .score-table-list .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .score-table-list .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .score-table-list .btn-white:hover {
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
     transform: scale(1.1);
     transition: all 0.2s ease;
 }
@@ -75,16 +75,16 @@
 }
 
 .score-table-list .table th {
-    border-bottom: 2px solid #dee2e6;
+    border-bottom: 2px solid var(--color-border);
 }
 
 .score-table-list .table thead th {
     position: relative;
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-secondary);
 }
 
 .score-table-list .table tbody td {
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
 }
 
 /* Scoped button in header styling */
@@ -99,17 +99,17 @@
 /* Scoped content alignment - THIS WAS THE PROBLEM */
 .score-table-list .table tbody td {
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .score-table-list .table tbody td .fw-bold {
     font-size: 16px;
-    color: #052649;
+    color: var(--color-brand-navy);
 }
 
 /* Scoped badge styling */
 .score-table-list .table tbody td .badge {
-    font-size: 14px;
+    font-size: 12px;
     padding: 6px 12px;
     font-weight: 600;
 }
@@ -122,7 +122,7 @@
 }
 
 .score-table-list .table tbody td .btn-white:hover {
-    background-color: #f8f9fa !important;
+    background-color: var(--color-bg-secondary) !important;
     transform: scale(1.1);
 }
 

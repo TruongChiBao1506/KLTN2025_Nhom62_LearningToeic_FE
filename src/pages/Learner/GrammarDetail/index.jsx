@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   Card,
@@ -268,7 +268,7 @@ const GrammarDetail = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
         }}
       >
         <Card
@@ -322,7 +322,7 @@ const GrammarDetail = () => {
             style={{
               fontSize: "42px",
               marginBottom: 16,
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "#2C5F8D",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -332,7 +332,7 @@ const GrammarDetail = () => {
                 width: "42px",
                 height: "42px",
                 marginRight: "16px",
-                color: "#667eea",
+                color: "var(--color-brand-purple)",
               }}
             />
             {grammarName}
@@ -340,7 +340,7 @@ const GrammarDetail = () => {
           <Paragraph
             style={{
               fontSize: "16px",
-              color: "#666",
+              color: "var(--color-text-secondary)",
               maxWidth: "600px",
               margin: "0 auto",
             }}
@@ -384,7 +384,7 @@ const GrammarDetail = () => {
                         {questions.length > 0 && (
                           <Badge
                             count={questions.length}
-                            style={{ backgroundColor: "#667eea" }}
+                            style={{ backgroundColor: "var(--color-brand-purple)" }}
                           />
                         )}
                       </Space>
@@ -439,7 +439,7 @@ const GrammarDetail = () => {
                             <Space>
                               <Avatar
                                 style={{
-                                  backgroundColor: "#667eea",
+                                  backgroundColor: "var(--color-brand-purple)",
                                   color: "white",
                                 }}
                               >
@@ -455,7 +455,7 @@ const GrammarDetail = () => {
                             style={{
                               fontSize: "16px",
                               lineHeight: 1.8,
-                              color: "#333",
+                              color: "var(--color-text-primary)",
                             }}
                             dangerouslySetInnerHTML={{
                               __html: content.content
@@ -480,7 +480,7 @@ const GrammarDetail = () => {
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                     description={
                       <div style={{ textAlign: "center" }}>
-                        <Title level={4} style={{ color: "#999" }}>
+                        <Title level={4} style={{ color: "var(--color-text-disabled)" }}>
                           Chưa có nội dung lý thuyết
                         </Title>
                         <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -519,7 +519,7 @@ const GrammarDetail = () => {
                           <Space style={{ marginBottom: 16 }}>
                             <Avatar
                               style={{
-                                backgroundColor: "#667eea",
+                                backgroundColor: "var(--color-brand-purple)",
                                 color: "white",
                                 fontSize: "16px",
                               }}
@@ -581,25 +581,25 @@ const GrammarDetail = () => {
                                   borderRadius: "8px",
                                   backgroundColor: question.isGraded
                                     ? option === getCorrectOptionValue(question)
-                                      ? "#f6ffed"
+                                      ? "var(--color-success-bg)"
                                       : option === question.selectedOption &&
                                         option !==
                                           getCorrectOptionValue(question)
-                                      ? "#fff2f0"
-                                      : "#fafafa"
+                                      ? "var(--color-danger-bg)"
+                                      : "var(--color-bg-hover)"
                                     : question.selectedOption === option
-                                    ? "#e6f7ff"
+                                    ? "var(--color-info-bg)"
                                     : "white",
                                   borderColor: question.isGraded
                                     ? option === getCorrectOptionValue(question)
-                                      ? "#52c41a"
+                                      ? "var(--color-success)"
                                       : option === question.selectedOption &&
                                         option !==
                                           getCorrectOptionValue(question)
-                                      ? "#ff4d4f"
+                                      ? "var(--color-danger)"
                                       : "#f0f0f0"
                                     : question.selectedOption === option
-                                    ? "#1890ff"
+                                    ? "var(--color-primary)"
                                     : "#f0f0f0",
                                 }}
                               >
@@ -623,7 +623,7 @@ const GrammarDetail = () => {
                                         style={{
                                           width: "20px",
                                           height: "20px",
-                                          color: "#52c41a",
+                                          color: "var(--color-success)",
                                         }}
                                       />
                                     )}
@@ -635,7 +635,7 @@ const GrammarDetail = () => {
                                         style={{
                                           width: "20px",
                                           height: "20px",
-                                          color: "#ff4d4f",
+                                          color: "var(--color-danger)",
                                         }}
                                       />
                                     )}
@@ -678,7 +678,7 @@ const GrammarDetail = () => {
                                 style={{ marginBottom: 16 }}
                               >
                                 <div
-                                  style={{ fontSize: "15px", lineHeight: 1.6 }}
+                                  style={{ fontSize: "12px", lineHeight: 1.6 }}
                                   dangerouslySetInnerHTML={{
                                     __html: question.explanation,
                                   }}
@@ -769,7 +769,7 @@ const GrammarDetail = () => {
                         style={{
                           borderRadius: "16px",
                           background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            "#2C5F8D",
                           color: "white",
                           textAlign: "center",
                         }}
@@ -817,7 +817,7 @@ const GrammarDetail = () => {
                                   fontSize: "32px",
                                   fontWeight: "bold",
                                   marginBottom: 8,
-                                  color: "#52c41a",
+                                  color: "var(--color-success)",
                                 }}
                               >
                                 {score.score}
@@ -839,7 +839,7 @@ const GrammarDetail = () => {
                                   fontSize: "32px",
                                   fontWeight: "bold",
                                   marginBottom: 8,
-                                  color: "#ff4d4f",
+                                  color: "var(--color-danger)",
                                 }}
                               >
                                 {score.total - score.score}
@@ -862,7 +862,7 @@ const GrammarDetail = () => {
                           style={{
                             borderRadius: "8px",
                             backgroundColor: "white",
-                            color: "#667eea",
+                            color: "var(--color-brand-purple)",
                             border: "none",
                             padding: "12px 32px",
                             fontSize: "16px",
@@ -892,7 +892,7 @@ const GrammarDetail = () => {
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                       description={
                         <div style={{ textAlign: "center" }}>
-                          <Title level={4} style={{ color: "#999" }}>
+                          <Title level={4} style={{ color: "var(--color-text-disabled)" }}>
                             Chưa có câu hỏi trắc nghiệm
                           </Title>
                           <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -926,7 +926,7 @@ const GrammarDetail = () => {
                       width: "20px",
                       height: "20px",
                       marginRight: "8px",
-                      color: "#faad14",
+                      color: "var(--color-warning)",
                     }}
                   />
                   Ngữ pháp khác
@@ -968,8 +968,8 @@ const GrammarDetail = () => {
                                   backgroundColor:
                                     (grammar._id || grammar.grammarId) ===
                                     grammarId
-                                      ? "#667eea"
-                                      : "#1890ff",
+                                      ? "var(--color-brand-purple)"
+                                      : "var(--color-primary)",
                                   marginRight: 12,
                                 }}
                                 icon={
@@ -981,7 +981,7 @@ const GrammarDetail = () => {
                               <div style={{ flex: 1 }}>
                                 <Text
                                   strong
-                                  style={{ fontSize: "14px", display: "block" }}
+                                  style={{ fontSize: "12px", display: "block" }}
                                 >
                                   {grammar.grammarName}
                                 </Text>
@@ -999,7 +999,7 @@ const GrammarDetail = () => {
                                 style={{
                                   width: "14px",
                                   height: "14px",
-                                  color: "#1890ff",
+                                  color: "var(--color-primary)",
                                   marginLeft: 8,
                                 }}
                               />
@@ -1032,7 +1032,7 @@ const GrammarDetail = () => {
                         width: "20px",
                         height: "20px",
                         marginRight: "8px",
-                        color: "#52c41a",
+                        color: "var(--color-success)",
                       }}
                     />
                     Tiến độ luyện tập
@@ -1048,7 +1048,7 @@ const GrammarDetail = () => {
                         <Statistic
                           title="Tổng câu hỏi"
                           value={questions.length}
-                          valueStyle={{ fontSize: "20px", color: "#667eea" }}
+                          valueStyle={{ fontSize: "20px", color: "var(--color-brand-purple)" }}
                           prefix={
                             <Brain style={{ width: "16px", height: "16px" }} />
                           }
@@ -1058,7 +1058,7 @@ const GrammarDetail = () => {
                         <Statistic
                           title="Đã làm"
                           value={questions.filter((q) => q.isGraded).length}
-                          valueStyle={{ fontSize: "20px", color: "#1890ff" }}
+                          valueStyle={{ fontSize: "20px", color: "var(--color-primary)" }}
                           prefix={
                             <Target style={{ width: "16px", height: "16px" }} />
                           }
@@ -1071,7 +1071,7 @@ const GrammarDetail = () => {
                         <Statistic
                           title="Câu đúng"
                           value={score.score}
-                          valueStyle={{ fontSize: "20px", color: "#52c41a" }}
+                          valueStyle={{ fontSize: "20px", color: "var(--color-success)" }}
                           prefix={
                             <Check style={{ width: "16px", height: "16px" }} />
                           }
@@ -1086,7 +1086,7 @@ const GrammarDetail = () => {
                               : 0
                           }
                           suffix="%"
-                          valueStyle={{ fontSize: "20px", color: "#faad14" }}
+                          valueStyle={{ fontSize: "20px", color: "var(--color-warning)" }}
                           prefix={
                             <Award style={{ width: "16px", height: "16px" }} />
                           }
@@ -1100,8 +1100,8 @@ const GrammarDetail = () => {
                           style={{
                             display: "block",
                             marginBottom: 8,
-                            fontSize: "14px",
-                            color: "#666",
+                            fontSize: "12px",
+                            color: "var(--color-text-secondary)",
                           }}
                         >
                           Tỉ lệ hoàn thành
@@ -1111,8 +1111,8 @@ const GrammarDetail = () => {
                             (score.score / score.total) * 100
                           )}
                           strokeColor={{
-                            "0%": "#667eea",
-                            "100%": "#764ba2",
+                            "0%": "var(--color-brand-purple)",
+                            "100%": "var(--color-brand-purple-dark)",
                           }}
                           strokeWidth={8}
                           style={{ marginBottom: 0 }}

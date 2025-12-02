@@ -1,4 +1,4 @@
-@import url('../../../assets/breadcrumb.css');
+﻿@import url('../../../assets/breadcrumb.css');
 
 /* Scoped classes for AdminDashboard only */
 .admin-dashboard-card-with-effect {
@@ -40,12 +40,67 @@
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
+    background-color: var(--color-bg-primary);
     background-clip: border-box;
     border: 0px solid rgba(0, 0, 0, 0);
     border-radius: .25rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+}
+
+/* Chart styles */
+.ant-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
+}
+
+.recharts-wrapper {
+    margin: 0 auto;
+}
+
+.recharts-legend-wrapper {
+    padding-top: 15px !important;
+    margin-top: 10px !important;
+}
+
+.recharts-legend-item {
+    margin-right: 15px !important;
+    margin-bottom: 8px !important;
+}
+
+.recharts-legend-item-text {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--color-text-primary) !important;
+}
+
+.recharts-tooltip-wrapper {
+    outline: none;
+}
+
+.recharts-default-tooltip {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+}
+
+.recharts-tooltip-label {
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .recharts-wrapper {
+        font-size: 11px;
+    }
+    
+    .recharts-legend-item-text {
+        font-size: 11px !important;
+    }
 }
 
 .admin-dashboard-widgets-icons-2 {
@@ -64,7 +119,7 @@
 }
 
 .admin-dashboard-text-white {
-    color: #fff !important;
+    color: var(--color-bg-primary) !important;
 }
 
 .admin-dashboard-ms-auto {
@@ -96,7 +151,7 @@
 }
 
 .admin-dashboard-font-13 {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .admin-dashboard-custom-card {
@@ -120,7 +175,7 @@
 }
 
 .admin-dashboard-cd-breadcrumb li.current {
-    color: #666;
+    color: var(--color-text-secondary);
 }
 
 /* Loading animation - scoped */
@@ -141,7 +196,7 @@
 
 /* Statistic card style - scoped */
 .admin-dashboard-dashboard-card {
-    background: #fff;
+    background: var(--color-bg-primary);
     border-radius: 2rem;
     box-shadow: 0 6px 32px 0 rgba(80, 120, 255, 0.08), 0 1.5px 6px 0 rgba(80, 120, 255, 0.04);
     display: flex;
@@ -174,22 +229,22 @@
 
 .admin-dashboard-stat-blue .admin-dashboard-stat-icon {
     background: linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%);
-    color: #fff;
+    color: var(--color-bg-primary);
 }
 
 .admin-dashboard-stat-green .admin-dashboard-stat-icon {
     background: linear-gradient(135deg, #43e97b 60%, #38f9d7 100%);
-    color: #fff;
+    color: var(--color-bg-primary);
 }
 
 .admin-dashboard-stat-pink .admin-dashboard-stat-icon {
     background: linear-gradient(135deg, #fa709a 60%, #fee140 100%);
-    color: #fff;
+    color: var(--color-bg-primary);
 }
 
 .admin-dashboard-stat-yellow .admin-dashboard-stat-icon {
     background: linear-gradient(135deg, #ffe259 60%, #ffa751 100%);
-    color: #fff;
+    color: var(--color-bg-primary);
 }
 
 .admin-dashboard-stat-label {
@@ -237,7 +292,7 @@
     .admin-dashboard-widgets-icons-2 {
         width: 48px;
         height: 48px;
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .admin-dashboard-card-body h4 {

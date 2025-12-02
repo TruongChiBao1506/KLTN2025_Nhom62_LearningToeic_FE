@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Spin, Result } from "antd";
 import { ReloadOutlined, ArrowLeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
@@ -323,7 +323,7 @@ const Study = () => {
               flexDirection: 'column'
             }}>
               <Spin size="large" />
-              <p style={{ marginTop: 16, color: '#666' }}>Đang tải câu hỏi...</p>
+              <p style={{ marginTop: 16, color: 'var(--color-text-secondary)' }}>Đang tải câu hỏi...</p>
             </div>
           ) : noQuestions ? (
             <div style={{ 
@@ -333,7 +333,7 @@ const Study = () => {
               minHeight: '60vh'
             }}>
               <Result
-                icon={<ExclamationCircleOutlined style={{ color: '#faad14' }} />}
+                icon={<ExclamationCircleOutlined style={{ color: 'var(--color-warning)' }} />}
                 title="Chưa có câu hỏi cho bài test này"
                 subTitle="Bài test này hiện tại chưa có câu hỏi nào. Vui lòng thử lại sau hoặc chọn bài test khác."
                 extra={[

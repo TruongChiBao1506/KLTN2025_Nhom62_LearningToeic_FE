@@ -1,4 +1,4 @@
-.modal.zoom .modal-dialog {
+﻿.modal.zoom .modal-dialog {
     transition: transform 0.2s ease-out;
     transform: scale(0.4);
 }
@@ -24,9 +24,9 @@
 }
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }

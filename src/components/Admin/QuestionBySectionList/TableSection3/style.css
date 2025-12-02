@@ -1,20 +1,20 @@
-.table-section3 {
+﻿.table-section3 {
   width: 100%;
   overflow-x: auto;
 }
 .table-section3 .table {
   min-width: 1300px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .table-section3 th {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: bold;
    white-space: pre-line;
    max-width: 220px;
 }
 
 .table-section3 td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal;
    white-space: pre-line;
    vertical-align: middle;
@@ -37,7 +37,7 @@
     max-width: 130px;
 }
 .table-section3 .table {
-    font-size: 13px;
+    font-size: 12px;
     min-width: 1300px;
 }
 .table-section3 audio {

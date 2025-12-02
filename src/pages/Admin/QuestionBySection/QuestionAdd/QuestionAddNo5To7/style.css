@@ -1,24 +1,24 @@
-.question-add-no5to7-page label {
+﻿.question-add-no5to7-page label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 .question-add-no5to7-page .error-feedback {
     color: red;
-    font-size: 13px;
+    font-size: 12px;
 }
 .question-add-no5to7-page .required-field {
     color: red;
-    font-size: 14px;
+    font-size: 12px;
     margin-left: 4px;
 }
 .question-add-no5to7-page .modal-footer {
     flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: var(--color-bg-primary);
     z-index: 10;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
     margin-top: 0;
     padding: 12px 24px;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -95,7 +95,7 @@ const ExamMiniTest = () => {
   }
 
   return (
-    <div style={{ padding: "24px", background: "#f5f5f5", minHeight: "100vh" }}>
+    <div style={{ padding: "24px", background: "var(--color-bg-secondary)", minHeight: "100vh" }}>
       {/* Header Section */}
       <div
         style={{
@@ -108,7 +108,7 @@ const ExamMiniTest = () => {
         }}
       >
         <Space direction="vertical" size={24}>
-          <Title level={1} style={{ color: "#fff", margin: 0 }}>
+          <Title level={1} style={{ color: "var(--color-bg-primary)", margin: 0 }}>
             <Zap
               size={36}
               style={{ marginRight: "12px", verticalAlign: "middle" }}
@@ -255,7 +255,7 @@ const ExamMiniTest = () => {
                           icon={<Award size={12} />}
                           style={{ backgroundColor: "#36cfc9" }}
                         />
-                        <Text type="secondary" style={{ fontSize: "13px" }}>
+                        <Text type="secondary" style={{ fontSize: "12px" }}>
                           Cập nhật{" "}
                           {new Date(
                             exam.updatedAt || new Date()

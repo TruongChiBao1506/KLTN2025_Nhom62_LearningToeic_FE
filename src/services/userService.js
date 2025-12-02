@@ -152,6 +152,52 @@ class UserService {
       throw error;
     }
   }
+
+  // ==================== TEACHER MANAGEMENT (Admin Only) ====================
+  
+  // Tạo teacher mới
+  async createTeacher(teacherData) {
+    try {
+      const response = await axiosClient.post(`${this.baseUrl}/teachers/create`, teacherData);
+      return response;
+    } catch (error) {
+      console.error("Lỗi khi tạo teacher:", error);
+      throw error;
+    }
+  }
+
+  // Lấy danh sách tất cả teachers
+  async getAllTeachers() {
+    try {
+      const response = await axiosClient.get(`${this.baseUrl}/teachers/all`);
+      return response;
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách teachers:", error);
+      throw error;
+    }
+  }
+
+  // Promote user lên teacher
+  async promoteToTeacher(userId) {
+    try {
+      const response = await axiosClient.patch(`${this.baseUrl}/teachers/${userId}/promote`);
+      return response;
+    } catch (error) {
+      console.error("Lỗi khi promote user lên teacher:", error);
+      throw error;
+    }
+  }
+
+  // Demote teacher về learner
+  async demoteToLearner(userId) {
+    try {
+      const response = await axiosClient.patch(`${this.baseUrl}/teachers/${userId}/demote`);
+      return response;
+    } catch (error) {
+      console.error("Lỗi khi demote teacher về learner:", error);
+      throw error;
+    }
+  }
 }
 
 const userService = new UserService();

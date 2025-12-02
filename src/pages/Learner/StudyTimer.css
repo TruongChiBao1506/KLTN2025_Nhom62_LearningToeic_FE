@@ -1,6 +1,6 @@
-.study-timer-container {
+﻿.study-timer-container {
   min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -28,7 +28,7 @@
 }
 
 .study-timer-container .header-icon {
-  color: #667eea;
+  color: var(--color-primary);
   animation: studyTimerPulse 2s infinite;
 }
 
@@ -43,7 +43,7 @@
   border: none;
   border-radius: 12px;
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: var(--color-primary);
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -53,7 +53,7 @@
 }
 
 .study-timer-container .action-btn:hover {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
   transform: translateY(-2px);
 }
@@ -130,7 +130,7 @@
 }
 
 .study-timer-container .cycle-counter {
-  font-size: 14px;
+  font-size: 12px;
   color: #7f8c8d;
   font-weight: 500;
 }
@@ -168,7 +168,7 @@
 }
 
 .study-timer-container .control-btn.secondary {
-  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  background: #7F8C8D;
   color: white;
 }
 
@@ -199,17 +199,17 @@
   width: 100%;
   max-width: 400px;
   padding: 12px 20px;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--color-border-light);
   border-radius: 8px;
   font-size: 16px;
   background: white;
-  color: #495057;
+  color: var(--color-text-primary);
   transition: border-color 0.3s ease;
 }
 
 .study-timer-container .task-selector:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -242,7 +242,7 @@
 
 .study-timer-container .stat-icon {
   font-size: 24px;
-  color: #667eea;
+  color: var(--color-primary);
   margin-bottom: 10px;
 }
 
@@ -254,7 +254,7 @@
 }
 
 .study-timer-container .stat-label {
-  font-size: 14px;
+  font-size: 12px;
   color: #7f8c8d;
   font-weight: 500;
 }
@@ -285,7 +285,7 @@
   height: 35px;
   border: none;
   border-radius: 8px;
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
   cursor: pointer;
   display: flex;
@@ -312,13 +312,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .study-timer-container .task-item:hover {
-  background: #e9ecef;
+  background: var(--color-border-light);
 }
 
 .study-timer-container .task-item.completed {
@@ -336,7 +336,7 @@
 .study-timer-container .task-checkbox {
   width: 20px;
   height: 20px;
-  border: 2px solid #667eea;
+  border: 2px solid var(--color-primary);
   border-radius: 4px;
   background: white;
   cursor: pointer;
@@ -350,19 +350,19 @@
 
 .study-timer-container .task-checkbox:hover,
 .study-timer-container .task-item.completed .task-checkbox {
-  background: #667eea;
+  background: var(--color-primary);
 }
 
 .study-timer-container .task-text {
   flex: 1;
-  font-size: 14px;
-  color: #495057;
+  font-size: 12px;
+  color: var(--color-text-primary);
 }
 
 .study-timer-container .task-cycles {
   font-size: 12px;
-  color: #6c757d;
-  background: #e9ecef;
+  color: var(--color-draft);
+  background: var(--color-border-light);
   padding: 2px 8px;
   border-radius: 10px;
 }
@@ -372,7 +372,7 @@
   height: 25px;
   border: none;
   background: none;
-  color: #dc3545;
+  color: var(--color-danger);
   cursor: pointer;
   font-size: 18px;
   border-radius: 4px;
@@ -380,7 +380,7 @@
 }
 
 .study-timer-container .delete-task:hover {
-  background: #dc3545;
+  background: var(--color-danger);
   color: white;
 }
 
@@ -430,7 +430,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 25px 30px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .study-timer-modal-header h3 {
@@ -445,15 +445,15 @@
   border: none;
   background: none;
   font-size: 24px;
-  color: #6c757d;
+  color: var(--color-draft);
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.3s ease;
 }
 
 .study-timer-close-btn:hover {
-  background: #f8f9fa;
-  color: #495057;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 .study-timer-modal-content {
@@ -482,9 +482,9 @@
 .study-timer-container .time-input button {
   width: 40px;
   height: 40px;
-  border: 2px solid #667eea;
+  border: 2px solid var(--color-primary);
   background: white;
-  color: #667eea;
+  color: var(--color-primary);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -494,7 +494,7 @@
 }
 
 .study-timer-container .time-input button:hover {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -517,7 +517,7 @@
 }
 
 .study-timer-container .checkbox-label:hover {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
 }
 
 .study-timer-container .checkbox-label input[type="checkbox"] {
@@ -533,7 +533,7 @@
 }
 
 .study-timer-container .stat-box {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   color: white;
   padding: 25px;
   border-radius: 15px;
@@ -554,7 +554,7 @@
 }
 
 .study-timer-container .stat-box-label {
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0.9;
 }
 
@@ -575,7 +575,7 @@
   color: white;
   padding: 8px 15px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -682,7 +682,7 @@
   }
   
   .study-timer-container .phase-label {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 

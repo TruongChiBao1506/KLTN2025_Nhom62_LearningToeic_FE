@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Card,
@@ -232,7 +232,7 @@ const VocabularyGame = () => {
         justifyContent: "center", 
         alignItems: "center", 
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+        background: "#2C5F8D"
       }}>
         <Spin size="large" style={{ color: "white" }} />
       </div>
@@ -243,7 +243,7 @@ const VocabularyGame = () => {
     return (
       <div style={{ 
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#2C5F8D",
         padding: "40px 20px",
         display: "flex",
         flexDirection: "column",
@@ -256,7 +256,7 @@ const VocabularyGame = () => {
           borderRadius: "16px",
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)"
         }}>
-          <Title level={3} style={{ color: "#667eea", marginBottom: "16px" }}>
+          <Title level={3} style={{ color: "var(--color-brand-purple)", marginBottom: "16px" }}>
             <Target size={32} style={{ marginRight: "12px" }} />
             Chưa có từ vựng
           </Title>
@@ -297,7 +297,7 @@ const VocabularyGame = () => {
           <Link 
             to={`/learner/topic/${topicId}`}
             style={{ 
-              color: "#667eea", 
+              color: "var(--color-brand-purple)", 
               textDecoration: "none",
               display: "flex",
               alignItems: "center",
@@ -330,7 +330,7 @@ const VocabularyGame = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
           }}>
             <Text style={{ color: "#8c8c8c", fontSize: "11px", display: "block" }}>Điểm</Text>
-            <Text style={{ color: "#52c41a", fontSize: "16px", fontWeight: "bold" }}>{score}</Text>
+            <Text style={{ color: "var(--color-success)", fontSize: "16px", fontWeight: "bold" }}>{score}</Text>
           </div>
           <div style={{ 
             textAlign: "center",
@@ -340,7 +340,7 @@ const VocabularyGame = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
           }}>
             <Text style={{ color: "#8c8c8c", fontSize: "11px", display: "block" }}>Đã chơi</Text>
-            <Text style={{ color: "#faad14", fontSize: "16px", fontWeight: "bold" }}>
+            <Text style={{ color: "var(--color-warning)", fontSize: "16px", fontWeight: "bold" }}>
               {usedVocabularies.length}/{vocabularies.length}
             </Text>
           </div>
@@ -352,7 +352,7 @@ const VocabularyGame = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
           }}>
             <Text style={{ color: "#8c8c8c", fontSize: "11px", display: "block" }}>Tỷ lệ</Text>
-            <Text style={{ color: "#1890ff", fontSize: "16px", fontWeight: "bold" }}>
+            <Text style={{ color: "var(--color-primary)", fontSize: "16px", fontWeight: "bold" }}>
               {totalPlayed > 0 ? Math.round((score / totalPlayed) * 100) : 0}%
             </Text>
           </div>
@@ -382,7 +382,7 @@ const VocabularyGame = () => {
             right: "-50px",
             width: "200px",
             height: "200px",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "#2C5F8D",
             borderRadius: "50%",
             opacity: 0.05,
             zIndex: 0
@@ -416,7 +416,7 @@ const VocabularyGame = () => {
                   marginBottom: "20px", 
                   display: "block"
                 }}>
-                  Chủ đề: <strong style={{ color: "#667eea" }}>{topic.topicName}</strong> • {vocabularies.length} từ vựng
+                  Chủ đề: <strong style={{ color: "var(--color-brand-purple)" }}>{topic.topicName}</strong> • {vocabularies.length} từ vựng
                 </Text>
                 <Button 
                   type="primary" 
@@ -427,7 +427,7 @@ const VocabularyGame = () => {
                     fontSize: "16px",
                     padding: "12px 32px",
                     height: "auto",
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    background: "#2C5F8D",
                     border: "none",
                     boxShadow: "0 6px 16px rgba(102,126,234,0.4)",
                     transform: "translateY(0)",
@@ -448,7 +448,7 @@ const VocabularyGame = () => {
                 
                 {totalPlayed > 0 && (
                   <div style={{ marginTop: "15px" }}>
-                    <Button onClick={resetStats} type="link" style={{ color: "#667eea", fontSize: "14px" }}>
+                    <Button onClick={resetStats} type="link" style={{ color: "var(--color-brand-purple)", fontSize: "12px" }}>
                       Đặt lại thống kê
                     </Button>
                   </div>
@@ -459,12 +459,12 @@ const VocabularyGame = () => {
               {/* Topic info - Compact */}
               <div style={{ marginBottom: "10px" }}>
                 <Text style={{ 
-                  fontSize: "14px", 
+                  fontSize: "12px", 
                   color: "#7f8c8d",
                   display: "block"
                 }}>
-                  Chủ đề: <strong style={{ color: "#667eea" }}>{topic.topicName}</strong> • 
-                  Từ thứ <strong style={{ color: "#52c41a" }}>{usedVocabularies.length + 1}</strong>/{vocabularies.length}
+                  Chủ đề: <strong style={{ color: "var(--color-brand-purple)" }}>{topic.topicName}</strong> • 
+                  Từ thứ <strong style={{ color: "var(--color-success)" }}>{usedVocabularies.length + 1}</strong>/{vocabularies.length}
                 </Text>
               </div>
 
@@ -474,7 +474,7 @@ const VocabularyGame = () => {
                 <div style={{ 
                   marginBottom: "15px",
                   padding: "15px",
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  background: "#2C5F8D",
                   borderRadius: "12px",
                   color: "white",
                   boxShadow: "0 6px 16px rgba(102,126,234,0.3)"
@@ -522,7 +522,7 @@ const VocabularyGame = () => {
                     fontSize: "clamp(24px, 4vw, 36px)", 
                     fontFamily: "monospace", 
                     letterSpacing: "clamp(4px, 1vw, 12px)",
-                    color: "#52c41a",
+                    color: "var(--color-success)",
                     fontWeight: "bold",
                     textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
                     textAlign: "center",
@@ -549,15 +549,15 @@ const VocabularyGame = () => {
                       padding: "8px 12px",
                       background: remainingChances <= 2 ? "rgba(255,77,79,0.1)" : "rgba(82,196,26,0.1)",
                       borderRadius: "8px",
-                      border: `2px solid ${remainingChances <= 2 ? "#ff4d4f" : "#52c41a"}`,
+                      border: `2px solid ${remainingChances <= 2 ? "var(--color-danger)" : "var(--color-success)"}`,
                       whiteSpace: "nowrap"
                     }}>
-                      <Text style={{ fontSize: "14px", color: "#2c3e50" }}>
+                      <Text style={{ fontSize: "12px", color: "#2c3e50" }}>
                         ❤️ 
                       </Text>
                       <Text strong style={{ 
                         fontSize: "18px",
-                        color: remainingChances <= 2 ? "#ff4d4f" : "#52c41a",
+                        color: remainingChances <= 2 ? "var(--color-danger)" : "var(--color-success)",
                         marginLeft: "4px"
                       }}>
                         {remainingChances}
@@ -570,7 +570,7 @@ const VocabularyGame = () => {
                         icon={<Volume2 size={16} />}
                         onClick={() => playPronunciation(currentVocab.word)}
                         style={{
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          background: "#2C5F8D",
                           border: "none",
                           borderRadius: "8px",
                           padding: "6px 12px",
@@ -589,8 +589,8 @@ const VocabularyGame = () => {
                   <Progress 
                     percent={Math.round(((currentWord.length - (currentWord.split("").filter(char => !correctLetters.includes(char)).length)) / currentWord.length) * 100)}
                     strokeColor={{
-                      '0%': '#667eea',
-                      '100%': '#52c41a',
+                      '0%': 'var(--color-brand-purple)',
+                      '100%': 'var(--color-success)',
                     }}
                     trailColor="rgba(0,0,0,0.1)"
                     size="small"
@@ -603,7 +603,7 @@ const VocabularyGame = () => {
                 <Alert
                   message={gameResult === "win" ? "🎉 Chúc mừng!" : "😅 Game Over"}
                   description={
-                    <div style={{ fontSize: "14px" }}>
+                    <div style={{ fontSize: "12px" }}>
                       <div>{gameResult === "win" 
                         ? "Bạn đã đoán đúng từ vựng!" 
                         : `Từ đúng là: ${currentWord}`}
@@ -630,8 +630,8 @@ const VocabularyGame = () => {
                             onClick={playNextWord}
                             style={{ 
                               borderRadius: "6px",
-                              fontSize: "13px",
-                              background: "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                              fontSize: "12px",
+                              background: "linear-gradient(135deg, var(--color-success) 0%, #73d13d 100%)",
                               border: "none"
                             }}
                           >
@@ -647,8 +647,8 @@ const VocabularyGame = () => {
                             onClick={playNextWord}
                             style={{ 
                               borderRadius: "6px",
-                              fontSize: "13px",
-                              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                              fontSize: "12px",
+                              background: "#2C5F8D",
                               border: "none"
                             }}
                           >
@@ -666,8 +666,8 @@ const VocabularyGame = () => {
                             }}
                             style={{ 
                               borderRadius: "6px",
-                              fontSize: "13px",
-                              background: "linear-gradient(135deg, #fa8c16 0%, #faad14 100%)",
+                              fontSize: "12px",
+                              background: "linear-gradient(135deg, var(--color-chart-6) 0%, var(--color-warning) 100%)",
                               border: "none",
                               color: "white"
                             }}
@@ -682,7 +682,7 @@ const VocabularyGame = () => {
                   style={{ 
                     marginBottom: "15px",
                     borderRadius: "8px",
-                    fontSize: "14px"
+                    fontSize: "12px"
                   }}
                   showIcon
                 />
@@ -709,13 +709,13 @@ const VocabularyGame = () => {
                       disabled={guessedLetters.includes(letter) || gameResult}
                       style={{
                         height: "35px",
-                        fontSize: "14px",
+                        fontSize: "12px",
                         fontWeight: "bold",
                         borderRadius: "6px",
                         backgroundColor: correctLetters.includes(letter) 
-                          ? "#52c41a" 
+                          ? "var(--color-success)" 
                           : wrongLetters.includes(letter) 
-                            ? "#ff4d4f" 
+                            ? "var(--color-danger)" 
                             : "white",
                         color: guessedLetters.includes(letter) ? "white" : "#2c3e50",
                         border: guessedLetters.includes(letter) 
@@ -750,10 +750,10 @@ const VocabularyGame = () => {
                     onClick={playNextWord}
                     style={{ 
                       borderRadius: "8px",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "8px 16px",
                       height: "auto",
-                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      background: "#2C5F8D",
                       border: "none"
                     }}
                   >
@@ -771,10 +771,10 @@ const VocabularyGame = () => {
                       }}
                       style={{ 
                         borderRadius: "8px",
-                        fontSize: "14px",
+                        fontSize: "12px",
                         padding: "8px 16px",
                         height: "auto",
-                        background: "linear-gradient(135deg, #52c41a 0%, #73d13d 100%)",
+                        background: "linear-gradient(135deg, var(--color-success) 0%, #73d13d 100%)",
                         border: "none",
                         color: "white"
                       }}
@@ -788,7 +788,7 @@ const VocabularyGame = () => {
                     onClick={() => setGameStarted(false)}
                     style={{ 
                       borderRadius: "8px",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "8px 16px",
                       height: "auto"
                     }}
@@ -810,7 +810,7 @@ const VocabularyGame = () => {
                     onClick={() => setGameStarted(false)}
                     style={{ 
                       borderRadius: "8px",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "8px 16px",
                       height: "auto"
                     }}

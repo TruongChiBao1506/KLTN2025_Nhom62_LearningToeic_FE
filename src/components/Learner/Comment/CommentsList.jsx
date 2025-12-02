@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import { 
   Input, 
@@ -75,7 +75,8 @@ const CommentsList = ({ examId }) => {
     try {
       let fetchedComments;
       if (filter === "user") {
-        const learnerToken = localStorage.getItem("learnerToken");
+        // ✅ Check sessionStorage for tokens
+        const learnerToken = sessionStorage.getItem("learnerToken");
         if (learnerToken) {
           const decoded = jwtDecode(learnerToken);
           // Lấy comment của user cho exam này
@@ -117,7 +118,8 @@ const CommentsList = ({ examId }) => {
 
     try {
       setIsSubmittingComment(true);
-      const learnerToken = localStorage.getItem("learnerToken");
+      // ✅ Check sessionStorage for tokens
+      const learnerToken = sessionStorage.getItem("learnerToken");
       if (!learnerToken) {
         toast.error("Vui lòng đăng nhập để bình luận");
         return;
@@ -210,7 +212,7 @@ const CommentsList = ({ examId }) => {
           alignItems: "center",
           marginBottom: "16px"
         }}>
-          <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+          <Title level={3} style={{ margin: 0, color: "var(--color-primary)" }}>
             <MessageOutlined style={{ marginRight: "8px" }} />
             Thảo luận ({comments.length})
           </Title>
@@ -232,7 +234,7 @@ const CommentsList = ({ examId }) => {
 
       {/* Comment Input Form */}
       <div style={{ 
-        background: "#fafafa", 
+        background: "var(--color-bg-hover)", 
         padding: "20px", 
         borderRadius: "12px",
         marginBottom: "24px",
@@ -247,7 +249,7 @@ const CommentsList = ({ examId }) => {
             <Avatar 
               icon={<UserOutlined />} 
               style={{ 
-                backgroundColor: "#1890ff", 
+                backgroundColor: "var(--color-primary)", 
                 flexShrink: 0,
                 marginTop: "4px"
               }} 
@@ -334,7 +336,7 @@ const CommentsList = ({ examId }) => {
             }
             style={{ 
               padding: "40px 20px",
-              background: "#fafafa",
+              background: "var(--color-bg-hover)",
               borderRadius: "12px",
               border: "1px dashed #d9d9d9"
             }}
@@ -347,13 +349,13 @@ const CommentsList = ({ examId }) => {
         <div style={{ 
           marginTop: "24px",
           padding: "20px",
-          background: "#fafafa",
+          background: "var(--color-bg-hover)",
           borderRadius: "12px",
           border: "1px solid #f0f0f0"
         }}>
           {/* Pagination Info */}
           <div className="d-flex justify-content-center mt-3 fw-lighter fst-italic mb-3">
-            <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+            <p style={{ margin: 0, color: "var(--color-text-secondary)", fontSize: "12px" }}>
               {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, comments.length)} trên {comments.length} bình luận
             </p>
           </div>
@@ -369,8 +371,8 @@ const CommentsList = ({ examId }) => {
                   style={{
                     borderRadius: currentPage === 1 ? '20px 0 0 20px' : '0',
                     border: '1px solid #e9ecef',
-                    color: currentPage === 1 ? '#6c757d' : '#1890ff',
-                    backgroundColor: '#fff',
+                    color: currentPage === 1 ? 'var(--color-draft)' : 'var(--color-primary)',
+                    backgroundColor: 'var(--color-bg-primary)',
                     padding: '8px 12px',
                     transition: 'all 0.2s ease',
                     cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
@@ -390,8 +392,8 @@ const CommentsList = ({ examId }) => {
                     onClick={() => handlePageChange(pageNumber, pageSize)}
                     style={{
                       border: '1px solid #e9ecef',
-                      color: currentPage === pageNumber ? '#fff' : '#1890ff',
-                      backgroundColor: currentPage === pageNumber ? '#1890ff' : '#fff',
+                      color: currentPage === pageNumber ? 'var(--color-bg-primary)' : 'var(--color-primary)',
+                      backgroundColor: currentPage === pageNumber ? 'var(--color-primary)' : 'var(--color-bg-primary)',
                       borderLeft: pageNumber === 1 ? 'none' : '1px solid #e9ecef',
                       borderRight: pageNumber === Math.ceil(comments.length / pageSize) ? 'none' : '1px solid #e9ecef',
                       padding: '8px 12px',
@@ -413,8 +415,8 @@ const CommentsList = ({ examId }) => {
                   style={{
                     borderRadius: currentPage === Math.ceil(comments.length / pageSize) ? '0 20px 20px 0' : '0',
                     border: '1px solid #e9ecef',
-                    color: currentPage === Math.ceil(comments.length / pageSize) ? '#6c757d' : '#1890ff',
-                    backgroundColor: '#fff',
+                    color: currentPage === Math.ceil(comments.length / pageSize) ? 'var(--color-draft)' : 'var(--color-primary)',
+                    backgroundColor: 'var(--color-bg-primary)',
                     padding: '8px 12px',
                     transition: 'all 0.2s ease',
                     cursor: currentPage === Math.ceil(comments.length / pageSize) ? 'not-allowed' : 'pointer'

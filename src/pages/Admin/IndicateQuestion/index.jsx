@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { HomeOutlined, FolderOpenOutlined, EditOutlined } from '@ant-design/icons';
@@ -65,7 +65,7 @@ const IndicateQuestion = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -78,9 +78,9 @@ const IndicateQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <HomeOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/section" style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
+                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -94,9 +94,9 @@ const IndicateQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <FolderOpenOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <FolderOpenOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to={`/admin/section/${sectionId}/test`} style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Test</Link>
+                        <Link to={`/admin/section/${sectionId}/test`} style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Test</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -110,9 +110,9 @@ const IndicateQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <EditOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <EditOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Indicate Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Indicate Question</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -326,7 +326,7 @@ const BlogDetail = () => {
                 {/* Header */}
                 <div
                     style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        background: '#2C5F8D',
                         borderRadius: 16,
                         padding: '24px 32px',
                         marginBottom: 24,
@@ -345,10 +345,10 @@ const BlogDetail = () => {
                                 justifyContent: 'center',
                                 marginRight: 16
                             }}>
-                                <FontAwesomeIcon icon={faEdit} style={{ color: '#fff', fontSize: 20 }} />
+                                <FontAwesomeIcon icon={faEdit} style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                             </div>
                             <div>
-                                <h3 style={{ color: '#fff', margin: 0, fontWeight: 700 }}>Edit Blog</h3>
+                                <h3 style={{ color: 'var(--color-bg-primary)', margin: 0, fontWeight: 700 }}>Edit Blog</h3>
                                 <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: 14 }}>
                                     {blog?.title || 'Loading...'}
                                 </p>
@@ -710,13 +710,13 @@ const BlogDetail = () => {
                                         placeholder="Edit your blog content here..."
                                         style={{ 
                                             fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace', 
-                                            fontSize: '14px',
+                                            fontSize: '12px',
                                             lineHeight: '1.6',
                                             padding: '16px'
                                         }}
                                     />
                                 ) : (
-                                    <div className="border rounded-3 p-4" style={{ minHeight: '400px', background: '#fff' }}>
+                                    <div className="border rounded-3 p-4" style={{ minHeight: '400px', background: 'var(--color-bg-primary)' }}>
                                         {isPreviewMode ? (
                                             // Preview Mode - Render HTML
                                             <div 
@@ -725,8 +725,8 @@ const BlogDetail = () => {
                                                 style={{
                                                     fontFamily: 'Georgia, "Times New Roman", serif',
                                                     lineHeight: '1.7',
-                                                    fontSize: '15px',
-                                                    color: '#333'
+                                                    fontSize: '12px',
+                                                    color: 'var(--color-text-primary)'
                                                 }}
                                             />
                                         ) : (
@@ -735,9 +735,9 @@ const BlogDetail = () => {
                                                 style={{ 
                                                     whiteSpace: 'pre-wrap',
                                                     fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                                                    fontSize: '13px',
+                                                    fontSize: '12px',
                                                     lineHeight: '1.5',
-                                                    color: '#333',
+                                                    color: 'var(--color-text-primary)',
                                                     margin: 0,
                                                     padding: 0,
                                                     background: 'transparent',
@@ -767,7 +767,7 @@ const BlogDetail = () => {
                 
                 .blog-preview-content h2 {
                     color: #1a73e8;
-                    font-size: 22px;
+                    font-size: 20px;
                     font-weight: 600;
                     margin-top: 24px;
                     margin-bottom: 8px;
@@ -809,7 +809,7 @@ const BlogDetail = () => {
                     padding: 2px 6px;
                     border-radius: 3px;
                     font-family: 'Courier New', monospace;
-                    font-size: 14px;
+                    font-size: 12px;
                 }
                 
                 .blog-preview-content blockquote {

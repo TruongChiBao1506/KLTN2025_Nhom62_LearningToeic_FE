@@ -1,0 +1,153 @@
+﻿/* ========================================
+   TOEIC Admin - Color System
+   Centralized Color Variables
+   Chỉ cần thay đổi màu ở đây để thay đổi toàn bộ theme
+======================================== */
+
+:root {
+  /* ===== Primary Colors - Professional Blue Navy ===== */
+  --color-primary: #2C5F8D;           /* Navy Blue - Chuyên nghiệp, học thuật */
+  --color-primary-light: #3498DB;     /* Ocean Blue - Sáng hơn, button hover */
+  --color-primary-lighter: #5DADE2;   /* Light Blue - Backgrounds */
+  --color-primary-dark: #1E4766;      /* Dark Navy - Headings */
+  --color-primary-darker: #16324A;    /* Deeper Navy - Sidebar */
+  
+  /* ===== Secondary Colors - Teal Accent ===== */
+  --color-secondary: #16A085;         /* Teal - Accent color */
+  --color-secondary-light: #1ABC9C;   /* Light Teal */
+  --color-secondary-dark: #138D75;    /* Dark Teal */
+  
+  /* ===== Status Colors - Subtle & Clear ===== */
+  --color-success: #27AE60;           /* Green - Success */
+  --color-success-light: #2ECC71;
+  --color-success-dark: #229954;
+  --color-success-bg: #E8F8F5;
+  --color-success-border: #A9DFBF;
+  
+  --color-warning: #F39C12;           /* Orange - Warning */
+  --color-warning-light: #F8C471;
+  --color-warning-dark: #D68910;
+  --color-warning-bg: #FEF5E7;
+  --color-warning-border: #FAD7A0;
+  
+  --color-danger: #E74C3C;            /* Red - Error */
+  --color-danger-light: #EC7063;
+  --color-danger-dark: #C0392B;
+  --color-danger-bg: #FADBD8;
+  --color-danger-border: #F1948A;
+  
+  --color-info: #3498DB;              /* Blue - Info */
+  --color-info-light: #5DADE2;
+  --color-info-bg: #EBF5FB;
+  --color-info-border: #AED6F1;
+  
+  /* ===== Neutral Colors - Clean & Readable ===== */
+  --color-text-primary: #2C3E50;      /* Dark Blue Gray - Text chính */
+  --color-text-secondary: #5D6D7E;    /* Medium Gray - Text phụ */
+  --color-text-disabled: #95A5A6;     /* Light Gray - Disabled */
+  --color-text-light: #7F8C8D;        /* Soft Gray - Hints */
+  
+  --color-bg-primary: #FFFFFF;        /* White - Background chính */
+  --color-bg-secondary: #F8F9FA;      /* Very Light Gray - Cards */
+  --color-bg-tertiary: #ECF0F1;       /* Light Gray - Sections */
+  --color-bg-disabled: #E5E7E9;       /* Disabled backgrounds */
+  --color-bg-hover: #F4F6F7;          /* Hover state */
+  
+  /* ===== Border Colors - Subtle ===== */
+  --color-border-light: #ECF0F1;      /* Very light border */
+  --color-border: #D5DBDB;            /* Standard border */
+  --color-border-dark: #ABB2B9;       /* Dark border */
+  
+  /* ===== Brand Colors - Consistent with Primary ===== */
+  --color-brand-blue: #2C5F8D;        /* Same as primary */
+  --color-brand-blue-light: #3498DB;  /* Light version */
+  --color-brand-blue-dark: #1E4766;   /* Dark version */
+  --color-brand-teal: #16A085;        /* Accent teal */
+  --color-brand-navy: #16324A;        /* Deep navy for headers */
+  
+  /* ===== Functional Colors ===== */
+  --color-pending: #F39C12;           /* Chờ duyệt - Orange */
+  --color-approved: #27AE60;          /* Đã duyệt - Green */
+  --color-rejected: #E74C3C;          /* Từ chối - Red */
+  --color-draft: #7F8C8D;             /* Nháp - Gray */
+  
+  /* ===== Chart Colors - Professional Palette ===== */
+  --color-chart-1: #2C5F8D;           /* Navy Blue */
+  --color-chart-2: #16A085;           /* Teal */
+  --color-chart-3: #27AE60;           /* Green */
+  --color-chart-4: #F39C12;           /* Orange */
+  --color-chart-5: #8E44AD;           /* Purple */
+  --color-chart-6: #E74C3C;           /* Red */
+  
+  /* ===== Shadow & Overlay - Subtle ===== */
+  --shadow-sm: 0 2px 4px rgba(44, 95, 141, 0.08);
+  --shadow-md: 0 4px 8px rgba(44, 95, 141, 0.12);
+  --shadow-lg: 0 8px 16px rgba(44, 95, 141, 0.16);
+  --shadow-xl: 0 12px 24px rgba(44, 95, 141, 0.20);
+  
+  --overlay-light: rgba(44, 62, 80, 0.05);
+  --overlay-medium: rgba(44, 62, 80, 0.15);
+  --overlay-dark: rgba(44, 62, 80, 0.30);
+  
+  /* ===== Solid Colors (No Gradients) ===== */
+  --gradient-primary: var(--color-primary);           /* Solid color thay vì gradient */
+  --gradient-secondary: var(--color-secondary);       /* Solid color */
+  --gradient-success: var(--color-success);           /* Solid color */
+  --gradient-header: var(--color-primary-dark);       /* Solid navy */
+  --gradient-button: var(--color-primary);            /* Solid button */
+  
+  /* ===== SweetAlert2 Colors ===== */
+  --swal-confirm-btn: #2C5F8D;
+  --swal-cancel-btn: #7F8C8D;
+  --swal-success-btn: #27AE60;
+  --swal-danger-btn: #E74C3C;
+  
+  /* ===== Bootstrap Override Colors ===== */
+  --bs-primary: var(--color-primary);
+  --bs-secondary: var(--color-secondary);
+  --bs-success: var(--color-success);
+  --bs-danger: var(--color-danger);
+  --bs-warning: var(--color-warning);
+  --bs-info: var(--color-info);
+  --bs-light: var(--color-bg-secondary);
+  --bs-dark: var(--color-brand-navy);
+}
+
+/* ========================================
+   Dark Mode Variables (Optional)
+======================================== */
+[data-theme="dark"] {
+  --color-primary: #5DADE2;
+  --color-primary-light: #85C1E2;
+  --color-text-primary: #ECF0F1;
+  --color-text-secondary: #BDC3C7;
+  --color-bg-primary: #1C2833;
+  --color-bg-secondary: #273746;
+  --color-bg-tertiary: #34495E;
+  --color-border: #566573;
+  --color-border-light: #424949;
+}
+
+/* ========================================
+   Utility Classes for Quick Color Usage
+======================================== */
+.text-primary { color: var(--color-text-primary) !important; }
+.text-secondary { color: var(--color-text-secondary) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-danger { color: var(--color-danger) !important; }
+.text-warning { color: var(--color-warning) !important; }
+.text-info { color: var(--color-info) !important; }
+
+.bg-primary { background-color: var(--color-bg-primary) !important; }
+.bg-secondary { background-color: var(--color-bg-secondary) !important; }
+.bg-success { background-color: var(--color-success-bg) !important; }
+.bg-danger { background-color: var(--color-danger-bg) !important; }
+.bg-warning { background-color: var(--color-warning-bg) !important; }
+
+.border-primary { border-color: var(--color-border) !important; }
+.border-light { border-color: var(--color-border-light) !important; }
+.border-dark { border-color: var(--color-border-dark) !important; }
+
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }

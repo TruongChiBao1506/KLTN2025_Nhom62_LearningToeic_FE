@@ -1,15 +1,15 @@
-/* CSS matching Vue version exactly */
+﻿/* CSS matching Vue version exactly */
 .table-row.shadow-on-hover:hover {
     box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9);
 }
 
 th {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: bold;
 }
 
 td {
-    color: #052649;
+    color: var(--color-brand-navy);
     font-weight: normal;
 }
 
@@ -44,15 +44,15 @@ td {
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Enhanced badge styling */
@@ -76,7 +76,7 @@ td {
 }
 
 .text-bg-danger {
-    background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
     color: white !important;
 }
 
@@ -95,7 +95,7 @@ td {
 }
 
 .btn-white:hover {
-    background-color: #f8f9fa !important;
+    background-color: var(--color-bg-secondary) !important;
     transform: scale(1.05);
 }
 

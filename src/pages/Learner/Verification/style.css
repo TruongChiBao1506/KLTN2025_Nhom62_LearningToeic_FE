@@ -1,4 +1,4 @@
-.verification-container {
+﻿.verification-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -21,33 +21,33 @@
 
 .verification-box h3 {
   margin-top: 20px;
-  color: #333;
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
 .verification-box p {
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 15px 0;
 }
 
 .success-icon {
   font-size: 80px;
-  color: #28a745;
+  color: var(--color-approved);
   margin-bottom: 20px;
 }
 
 .error-icon {
   font-size: 80px;
-  color: #dc3545;
+  color: var(--color-danger);
   margin-bottom: 20px;
 }
 
 .verification-box.success {
-  border-top: 5px solid #28a745;
+  border-top: 5px solid var(--color-approved);
 }
 
 .verification-box.error {
-  border-top: 5px solid #dc3545;
+  border-top: 5px solid var(--color-danger);
 }
 
 @media (max-width: 576px) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import {
     Card,
@@ -366,10 +366,10 @@ const LearningPathPage = () => {
     const Loading = React.memo(() => (
         <div className="ai-learning-path-loading" style={loadingOuterStyle}>
             <div style={loadingBoxStyle}>
-                <Spin size="large" style={{ marginBottom: 10, fontSize: 40, color: '#1890ff' }} />
+                <Spin size="large" style={{ marginBottom: 10, fontSize: 40, color: 'var(--color-primary)' }} />
                 <p style={{
                     fontSize: 20,
-                    color: '#1890ff',
+                    color: 'var(--color-primary)',
                     fontWeight: 700,
                     margin: 0,
                     letterSpacing: 1.1,
@@ -386,7 +386,7 @@ const LearningPathPage = () => {
     const EmptyState = React.memo(() => (
         <div className="ai-learning-path-empty">
             <Result
-                icon={<BookOutlined style={{ color: '#1890ff' }} />}
+                icon={<BookOutlined style={{ color: 'var(--color-primary)' }} />}
                 title="Chưa có lộ trình học tập nào"
                 subTitle="Hãy tạo lộ trình học tập AI đầu tiên để bắt đầu hành trình TOEIC của bạn!"
                 extra={[
@@ -452,7 +452,7 @@ const LearningPathPage = () => {
                                             style={{
                                                 background: 'linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)',
                                                 border: 'none',
-                                                color: '#fff',
+                                                color: 'var(--color-bg-primary)',
                                                 fontWeight: 700,
                                                 boxShadow: '0 4px 16px rgba(24,144,255,0.18)',
                                                 letterSpacing: 0.5,
@@ -646,8 +646,8 @@ const LearningPathPage = () => {
                                                                 background: '#fffbe6',
                                                                 textAlign: 'center',
                                                             }}>
-                                                                <div style={{ fontWeight: 600, marginBottom: 8, color: '#faad14', fontSize: 16 }}>
-                                                                    {day.dayName} ({day.date}) <span style={{ marginLeft: 8, color: '#faad14', fontWeight: 500 }}>[Ngày nghỉ]</span>
+                                                                <div style={{ fontWeight: 600, marginBottom: 8, color: 'var(--color-warning)', fontSize: 16 }}>
+                                                                    {day.dayName} ({day.date}) <span style={{ marginLeft: 8, color: 'var(--color-warning)', fontWeight: 500 }}>[Ngày nghỉ]</span>
                                                                 </div>
                                                                 <div style={{ color: '#bfbfbf', fontSize: 18, margin: '16px 0' }}>
                                                                     <CalendarOutlined style={{ fontSize: 32, marginBottom: 8 }} />
@@ -672,7 +672,7 @@ const LearningPathPage = () => {
 
                                                     // Logic disable checkbox và styling
                                                     let checkboxDisabled = true;
-                                                    let backgroundColor = '#fafafa';
+                                                    let backgroundColor = 'var(--color-bg-hover)';
                                                     let subLabel = '';
                                                     let dayColor = '#aaa';
                                                     let borderStyle = '1px solid #f0f0f0';
@@ -685,9 +685,9 @@ const LearningPathPage = () => {
                                                     } else if (allActivitiesDone) {
                                                         // Ngày đã hoàn thành tất cả hoạt động -> disable và màu xanh
                                                         checkboxDisabled = true;
-                                                        backgroundColor = '#f6ffed';
+                                                        backgroundColor = 'var(--color-success-bg)';
                                                         subLabel = 'Đã hoàn thành - Đã khóa';
-                                                        dayColor = '#52c41a';
+                                                        dayColor = 'var(--color-success)';
                                                         borderStyle = '1px solid #b7eb8f';
                                                     } else if (!allPreviousDaysCompleted) {
                                                         // Các ngày trước chưa hoàn thành -> cho phép hoàn thành ngày này nếu không phải tương lai
@@ -698,15 +698,15 @@ const LearningPathPage = () => {
                                                             checkboxDisabled = false;
                                                             backgroundColor = '#fff2e8';
                                                             subLabel = 'Cần hoàn thành để mở khóa ngày tiếp theo';
-                                                            dayColor = '#fa8c16';
+                                                            dayColor = 'var(--color-chart-6)';
                                                             borderStyle = '2px solid #ffa940';
                                                             boxShadow = '0 2px 8px rgba(250,140,22,0.15)';
                                                         }
                                                     } else if (allPreviousDaysCompleted && !isFuture) {
                                                         // Các ngày trước đã hoàn thành và không phải ngày tương lai -> cho phép
                                                         checkboxDisabled = false;
-                                                        backgroundColor = '#e6f7ff';
-                                                        dayColor = '#1890ff';
+                                                        backgroundColor = 'var(--color-info-bg)';
+                                                        dayColor = 'var(--color-primary)';
                                                         borderStyle = '2px solid #1890ff';
                                                         boxShadow = '0 2px 8px rgba(24,144,255,0.15)';
                                                         if (isToday) {
@@ -741,7 +741,7 @@ const LearningPathPage = () => {
                                                                 {subLabel && (
                                                                     <span style={{
                                                                         marginLeft: 8,
-                                                                        color: allActivitiesDone ? '#52c41a' : (!checkboxDisabled ? '#1890ff' : '#faad14'),
+                                                                        color: allActivitiesDone ? 'var(--color-success)' : (!checkboxDisabled ? 'var(--color-primary)' : 'var(--color-warning)'),
                                                                         fontWeight: 400,
                                                                         fontSize: 12
                                                                     }}>
@@ -827,7 +827,7 @@ const LearningPathPage = () => {
                                             title="Thời gian/ngày"
                                             value={currentPath.studyTimePerDay || 0}
                                             suffix="phút"
-                                            valueStyle={{ color: '#1890ff' }}
+                                            valueStyle={{ color: 'var(--color-primary)' }}
                                             prefix={<ClockCircleOutlined />}
                                         />
                                     </Card>
@@ -837,7 +837,7 @@ const LearningPathPage = () => {
                                         <Statistic
                                             title="Điểm mục tiêu"
                                             value={currentPath.targetScore || 0}
-                                            valueStyle={{ color: '#722ed1' }}
+                                            valueStyle={{ color: 'var(--color-chart-4)' }}
                                             prefix={<StarOutlined />}
                                         />
                                     </Card>
@@ -854,7 +854,7 @@ const LearningPathPage = () => {
                                     <Col xs={24} sm={8}>
                                         <div className="insight-section">
                                             <Title level={5}>
-                                                <TrophyOutlined style={{ color: '#52c41a' }} /> Điểm mạnh
+                                                <TrophyOutlined style={{ color: 'var(--color-success)' }} /> Điểm mạnh
                                             </Title>
                                             <ul>
                                                 {Array.isArray(currentPath.aiInsights.strengths) && currentPath.aiInsights.strengths.length > 0
@@ -868,7 +868,7 @@ const LearningPathPage = () => {
                                     <Col xs={24} sm={8}>
                                         <div className="insight-section">
                                             <Title level={5}>
-                                                <ExclamationCircleOutlined style={{ color: '#faad14' }} /> Cần cải thiện
+                                                <ExclamationCircleOutlined style={{ color: 'var(--color-warning)' }} /> Cần cải thiện
                                             </Title>
                                             <ul>
                                                 {Array.isArray(currentPath.aiInsights.weaknesses) && currentPath.aiInsights.weaknesses.length > 0
@@ -882,7 +882,7 @@ const LearningPathPage = () => {
                                     <Col xs={24} sm={8}>
                                         <div className="insight-section">
                                             <Title level={5}>
-                                                <BookOutlined style={{ color: '#1890ff' }} /> Tập trung tiếp theo
+                                                <BookOutlined style={{ color: 'var(--color-primary)' }} /> Tập trung tiếp theo
                                             </Title>
                                             <Text strong>{currentPath.aiInsights.nextFocus || 'Không có dữ liệu'}</Text>
                                         </div>
@@ -932,7 +932,7 @@ const LearningPathPage = () => {
                                 )}
                                 <div style={{ marginTop: 16 }}>
                                     <Title level={5}>
-                                        <CheckCircleOutlined style={{ color: '#722ed1' }} /> Gợi ý từ AI
+                                        <CheckCircleOutlined style={{ color: 'var(--color-chart-4)' }} /> Gợi ý từ AI
                                     </Title>
                                     <ul>
                                         {Array.isArray(currentPath.aiInsights.recommendations) && currentPath.aiInsights.recommendations.length > 0

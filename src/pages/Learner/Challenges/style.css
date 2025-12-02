@@ -1,7 +1,7 @@
-/* Challenges Styles */
+﻿/* Challenges Styles */
 .challenges-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   padding: 20px;
 }
 
@@ -104,7 +104,7 @@
 
 .tab-btn.active {
   background: white;
-  color: #667eea;
+  color: var(--color-primary);
   box-shadow: 0 5px 15px rgba(255,255,255,0.3);
 }
 
@@ -177,7 +177,7 @@
 }
 
 .category-badge {
-  background: #666;
+  background: var(--color-text-secondary);
   color: white;
   text-transform: capitalize;
 }
@@ -185,12 +185,12 @@
 .challenge-content h3 {
   font-size: 1.3rem;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.3;
 }
 
 .challenge-content p {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.5;
   margin-bottom: 20px;
 }
@@ -208,12 +208,12 @@
 }
 
 .progress-info span:first-child {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .progress-percentage {
   font-weight: bold;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .progress-bar {
@@ -225,7 +225,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-brand-purple-dark));
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -242,12 +242,12 @@
 }
 
 .info-label {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .info-value {
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .challenge-actions {
@@ -276,16 +276,16 @@
 }
 
 .btn-details {
-  background: #f8f9fa;
-  color: #333;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 .btn-details:hover {
-  background: #e9ecef;
+  background: var(--color-border-light);
 }
 
 .btn-join {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-brand-purple-dark));
   color: white;
 }
 
@@ -326,7 +326,7 @@
 }
 
 .btn-expired {
-  background: #999;
+  background: var(--color-text-disabled);
   color: white;
   cursor: not-allowed;
 }
@@ -366,7 +366,7 @@
 
 .modal-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 1.5rem;
 }
 
@@ -375,7 +375,7 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #666;
+  color: var(--color-text-secondary);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -385,7 +385,7 @@
 }
 
 .modal-close:hover {
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .modal-body {
@@ -399,7 +399,7 @@
 }
 
 .challenge-description {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   font-size: 1.1rem;
 }
@@ -411,7 +411,7 @@
 }
 
 .detail-section h4 {
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
   font-size: 1.1rem;
 }
@@ -422,7 +422,7 @@
 }
 
 .detail-section li {
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 5px;
   line-height: 1.5;
 }
@@ -431,7 +431,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   padding: 20px;
   border-radius: 10px;
 }
@@ -443,12 +443,12 @@
 }
 
 .challenge-stats .stat-item strong {
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 0.9rem;
 }
 
 .progress-section h4 {
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 15px;
   font-size: 1.1rem;
 }
@@ -465,7 +465,7 @@
 
 .progress-text {
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
   text-align: center;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+﻿import React, { useState, useMemo } from "react";
 import {
   Row,
   Col,
@@ -143,14 +143,14 @@ const TestPart7Triple = ({
     if (!question.isGraded) return {};
 
     if (option === question.correctOption) {
-      return { borderColor: "#52c41a", backgroundColor: "#f6ffed" };
+      return { borderColor: "var(--color-success)", backgroundColor: "var(--color-success-bg)" };
     }
 
     if (
       option === question.selectedOption &&
       question.selectedLetter !== question.correctOption
     ) {
-      return { borderColor: "#ff4d4f", backgroundColor: "#fff2f0" };
+      return { borderColor: "var(--color-danger)", backgroundColor: "var(--color-danger-bg)" };
     }
 
     return {};
@@ -176,7 +176,7 @@ const TestPart7Triple = ({
                       <Card
                         size="small"
                         style={{
-                          backgroundColor: "#f8f9fa",
+                          backgroundColor: "var(--color-bg-secondary)",
                           borderRadius: "8px",
                         }}
                       >
@@ -206,11 +206,11 @@ const TestPart7Triple = ({
                                   style={{
                                     marginBottom: 12,
                                     padding: "8px 12px",
-                                    backgroundColor: "#e6f7ff",
+                                    backgroundColor: "var(--color-info-bg)",
                                     borderRadius: "6px",
-                                    fontSize: "14px",
+                                    fontSize: "12px",
                                     fontWeight: "bold",
-                                    color: "#1890ff",
+                                    color: "var(--color-primary)",
                                   }}
                                 >
                                   {groupQuestions[0].questionText}
@@ -223,7 +223,7 @@ const TestPart7Triple = ({
                                 }}
                                 style={{
                                   lineHeight: "1.6",
-                                  fontSize: "15px",
+                                  fontSize: "12px",
                                   whiteSpace: "pre-line",
                                 }}
                               />
@@ -276,7 +276,7 @@ const TestPart7Triple = ({
                                       ) + 1
                                     }
                                     style={{
-                                      backgroundColor: "#1890ff",
+                                      backgroundColor: "var(--color-primary)",
                                       color: "white",
                                       fontSize: "12px",
                                       fontWeight: "bold",
@@ -286,7 +286,7 @@ const TestPart7Triple = ({
                                     text={question.questionType}
                                     style={{
                                       backgroundColor: "#f0f0f0",
-                                      color: "#666",
+                                      color: "var(--color-text-secondary)",
                                       fontSize: "11px",
                                     }}
                                   />
@@ -294,7 +294,7 @@ const TestPart7Triple = ({
 
                                 <Text
                                   style={{
-                                    fontSize: "15px",
+                                    fontSize: "12px",
                                     lineHeight: "1.5",
                                   }}
                                 >
@@ -345,7 +345,7 @@ const TestPart7Triple = ({
                                               question.correctOption && (
                                               <CheckCircle
                                                 size={16}
-                                                style={{ color: "#52c41a" }}
+                                                style={{ color: "var(--color-success)" }}
                                               />
                                             )}
 
@@ -356,7 +356,7 @@ const TestPart7Triple = ({
                                               question.correctOption && (
                                               <XCircle
                                                 size={16}
-                                                style={{ color: "#ff4d4f" }}
+                                                style={{ color: "var(--color-danger)" }}
                                               />
                                             )}
                                         </div>
@@ -424,7 +424,7 @@ const TestPart7Triple = ({
                                         size="small"
                                         style={{
                                           marginTop: 12,
-                                          backgroundColor: "#fafafa",
+                                          backgroundColor: "var(--color-bg-hover)",
                                           border: "1px solid #e8e8e8",
                                         }}
                                       >
@@ -441,7 +441,7 @@ const TestPart7Triple = ({
                                             <Badge
                                               text="Bản dịch"
                                               style={{
-                                                backgroundColor: "#52c41a",
+                                                backgroundColor: "var(--color-success)",
                                                 color: "white",
                                                 fontSize: "10px",
                                                 marginBottom: 8,
@@ -511,17 +511,17 @@ const TestPart7Triple = ({
                       const questionNumber =
                         calculateQuestionNumber(parseInt(groupId), index) + 1;
                       let backgroundColor = "#f0f0f0";
-                      let color = "#666";
+                      let color = "var(--color-text-secondary)";
 
                       if (question.selectedOption) {
                         if (question.isGraded) {
                           backgroundColor =
                             question.selectedLetter === question.correctOption
-                              ? "#52c41a"
-                              : "#ff4d4f";
+                              ? "var(--color-success)"
+                              : "var(--color-danger)";
                           color = "white";
                         } else {
-                          backgroundColor = "#fa8c16";
+                          backgroundColor = "var(--color-chart-6)";
                           color = "white";
                         }
                       }
@@ -559,13 +559,13 @@ const TestPart7Triple = ({
                   justifyContent: "center",
                   gap: 16,
                   padding: "16px",
-                  backgroundColor: "#fafafa",
+                  backgroundColor: "var(--color-bg-hover)",
                   borderRadius: "8px",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <CheckCircle size={16} style={{ color: "#52c41a" }} />
-                  <Text strong style={{ color: "#52c41a" }}>
+                  <CheckCircle size={16} style={{ color: "var(--color-success)" }} />
+                  <Text strong style={{ color: "var(--color-success)" }}>
                     {
                       questions.filter(
                         (q) =>
@@ -578,8 +578,8 @@ const TestPart7Triple = ({
                   </Text>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <XCircle size={16} style={{ color: "#ff4d4f" }} />
-                  <Text strong style={{ color: "#ff4d4f" }}>
+                  <XCircle size={16} style={{ color: "var(--color-danger)" }} />
+                  <Text strong style={{ color: "var(--color-danger)" }}>
                     {
                       questions.filter(
                         (q) =>

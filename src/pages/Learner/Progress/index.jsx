@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartLine,
@@ -517,7 +517,7 @@ const Progress = () => {
       key: "examName",
       width: 250,
       render: (text, record) => (
-        <Text strong style={{ color: "#1890ff" }}>
+        <Text strong style={{ color: "var(--color-primary)" }}>
           {text || record.name || `Bài thi ${record.id || "Unknown"}`}
         </Text>
       ),
@@ -551,7 +551,7 @@ const Progress = () => {
       width: 120,
       render: (_, record) => (
         <Space>
-          <Text strong style={{ color: "#52c41a", fontSize: "16px" }}>
+          <Text strong style={{ color: "var(--color-success)", fontSize: "16px" }}>
             {record.score || 0}
           </Text>
           <Text type="secondary">
@@ -563,7 +563,7 @@ const Progress = () => {
   ];
 
   return (
-    <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
+    <div style={{ padding: "24px", background: "var(--color-bg-tertiary)", minHeight: "100vh" }}>
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -591,7 +591,7 @@ const Progress = () => {
         >
           <TrendingUp
             size={28}
-            style={{ marginRight: "12px", color: "#1890ff" }}
+            style={{ marginRight: "12px", color: "var(--color-primary)" }}
           />
           Tiến độ học tập của tôi
         </Title>
@@ -609,7 +609,7 @@ const Progress = () => {
                 borderRadius: "12px",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 border: "none",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "#2C5F8D",
               }}
             >
               <div style={{ color: "white" }}>
@@ -646,7 +646,7 @@ const Progress = () => {
                           }}
                         />
                       </div>
-                      <Text style={{ color: "white", fontSize: "14px", marginTop: "4px" }}>
+                      <Text style={{ color: "white", fontSize: "12px", marginTop: "4px" }}>
                         {progressData.goalProgress.progressPercentage}% hoàn thành
                       </Text>
                     </div>
@@ -678,10 +678,10 @@ const Progress = () => {
                 title="Chuỗi học tập hiện tại"
                 value={progressData.currentStreak}
                 suffix="ngày"
-                prefix={<FontAwesomeIcon icon={faCheckCircle} style={{ color: "#ff4d4f" }} />}
-                valueStyle={{ color: "#ff4d4f", fontSize: "32px" }}
+                prefix={<FontAwesomeIcon icon={faCheckCircle} style={{ color: "var(--color-danger)" }} />}
+                valueStyle={{ color: "var(--color-danger)", fontSize: "32px" }}
               />
-              <Text type="secondary" style={{ fontSize: "14px" }}>
+              <Text type="secondary" style={{ fontSize: "12px" }}>
                 Tiếp tục duy trì để đạt kỷ lục mới! 🔥
               </Text>
             </Card>
@@ -692,10 +692,10 @@ const Progress = () => {
                 title="Thời gian học tuần này"
                 value={progressData.studyTimeThisWeek}
                 suffix="giờ"
-                prefix={<Clock size={20} style={{ color: "#1890ff" }} />}
-                valueStyle={{ color: "#1890ff", fontSize: "32px" }}
+                prefix={<Clock size={20} style={{ color: "var(--color-primary)" }} />}
+                valueStyle={{ color: "var(--color-primary)", fontSize: "32px" }}
               />
-              <Text type="secondary" style={{ fontSize: "14px" }}>
+              <Text type="secondary" style={{ fontSize: "12px" }}>
                 Tuyệt vời! Hãy duy trì nhịp độ này 📚
               </Text>
             </Card>
@@ -710,8 +710,8 @@ const Progress = () => {
             <Statistic
               title="Tổng số bài thi"
               value={progressData.totalExams}
-              prefix={<BookOpen size={20} style={{ color: "#1890ff" }} />}
-              valueStyle={{ color: "#1890ff" }}
+              prefix={<BookOpen size={20} style={{ color: "var(--color-primary)" }} />}
+              valueStyle={{ color: "var(--color-primary)" }}
             />
           </Card>
         </Col>
@@ -720,8 +720,8 @@ const Progress = () => {
             <Statistic
               title="Điểm trung bình"
               value={progressData.averageScore}
-              prefix={<CheckCircle size={20} style={{ color: "#52c41a" }} />}
-              valueStyle={{ color: "#52c41a" }}
+              prefix={<CheckCircle size={20} style={{ color: "var(--color-success)" }} />}
+              valueStyle={{ color: "var(--color-success)" }}
             />
           </Card>
         </Col>
@@ -730,8 +730,8 @@ const Progress = () => {
             <Statistic
               title="Giờ học tập"
               value={progressData.studyHours}
-              prefix={<Clock size={20} style={{ color: "#fa8c16" }} />}
-              valueStyle={{ color: "#fa8c16" }}
+              prefix={<Clock size={20} style={{ color: "var(--color-chart-6)" }} />}
+              valueStyle={{ color: "var(--color-chart-6)" }}
             />
           </Card>
         </Col>
@@ -740,8 +740,8 @@ const Progress = () => {
             <Statistic
               title="Bài học hoàn thành"
               value={progressData.completedLessons}
-              prefix={<Award size={20} style={{ color: "#eb2f96" }} />}
-              valueStyle={{ color: "#eb2f96" }}
+              prefix={<Award size={20} style={{ color: "var(--color-chart-5)" }} />}
+              valueStyle={{ color: "var(--color-chart-5)" }}
             />
           </Card>
         </Col>
@@ -830,7 +830,7 @@ const Progress = () => {
                               style={{
                                 width: "32px",
                                 height: `${Math.min(item.listening * 2, 180)}px`,
-                                backgroundColor: "#52c41a",
+                                backgroundColor: "var(--color-success)",
                                 borderRadius: "4px 4px 0 0",
                                 marginBottom: "4px",
                                 minHeight: "20px",
@@ -839,7 +839,7 @@ const Progress = () => {
                             />
                             <Text style={{ 
                               fontSize: "10px", 
-                              color: "#52c41a",
+                              color: "var(--color-success)",
                               display: "block",
                               fontWeight: "600"
                             }}>
@@ -851,7 +851,7 @@ const Progress = () => {
                               style={{
                                 width: "32px",
                                 height: `${Math.min(item.reading * 2, 180)}px`,
-                                backgroundColor: "#1890ff",
+                                backgroundColor: "var(--color-primary)",
                                 borderRadius: "4px 4px 0 0",
                                 marginBottom: "4px",
                                 minHeight: "20px",
@@ -860,7 +860,7 @@ const Progress = () => {
                             />
                             <Text style={{ 
                               fontSize: "10px", 
-                              color: "#1890ff",
+                              color: "var(--color-primary)",
                               display: "block",
                               fontWeight: "600"
                             }}>
@@ -879,15 +879,15 @@ const Progress = () => {
                   }}>
                     <Space size="large">
                       <span style={{ 
-                        color: "#52c41a", 
-                        fontSize: "14px",
+                        color: "var(--color-success)", 
+                        fontSize: "12px",
                         fontWeight: "600"
                       }}>
                         ● Listening
                       </span>
                       <span style={{ 
-                        color: "#1890ff", 
-                        fontSize: "14px",
+                        color: "var(--color-primary)", 
+                        fontSize: "12px",
                         fontWeight: "600"
                       }}>
                         ● Reading
@@ -912,7 +912,7 @@ const Progress = () => {
             </Title>
 
             <div style={{ marginBottom: "20px" }}>
-              <Text strong style={{ color: "#52c41a", fontSize: "16px" }}>
+              <Text strong style={{ color: "var(--color-success)", fontSize: "16px" }}>
                 <Target size={16} style={{ marginRight: "8px" }} />
                 Điểm mạnh
               </Text>
@@ -926,7 +926,7 @@ const Progress = () => {
             </div>
 
             <div>
-              <Text strong style={{ color: "#ff4d4f", fontSize: "16px" }}>
+              <Text strong style={{ color: "var(--color-danger)", fontSize: "16px" }}>
                 <Target size={16} style={{ marginRight: "8px" }} />
                 Cần cải thiện
               </Text>
@@ -1003,7 +1003,7 @@ const Progress = () => {
                             top: `${y - 8}px`,
                             width: "16px",
                             height: "16px",
-                            backgroundColor: index === 0 ? "#52c41a" : index === 1 ? "#1890ff" : index === 2 ? "#fa8c16" : "#eb2f96",
+                            backgroundColor: index === 0 ? "var(--color-success)" : index === 1 ? "var(--color-primary)" : index === 2 ? "var(--color-chart-6)" : "var(--color-chart-5)",
                             borderRadius: "50%",
                             border: "2px solid white",
                             boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
@@ -1016,7 +1016,7 @@ const Progress = () => {
                             top: `${y - 10}px`,
                             fontSize: "12px",
                             fontWeight: "600",
-                            color: "#666"
+                            color: "var(--color-text-secondary)"
                           }}>
                             {skill.skill}: {skill.score}
                           </div>
@@ -1029,10 +1029,10 @@ const Progress = () => {
                 {/* Legend */}
                 <div style={{ marginTop: "20px" }}>
                   <Space wrap>
-                    <span style={{ color: "#52c41a" }}>● Listening</span>
-                    <span style={{ color: "#1890ff" }}>● Reading</span>
-                    <span style={{ color: "#fa8c16" }}>● Grammar</span>
-                    <span style={{ color: "#eb2f96" }}>● Vocabulary</span>
+                    <span style={{ color: "var(--color-success)" }}>● Listening</span>
+                    <span style={{ color: "var(--color-primary)" }}>● Reading</span>
+                    <span style={{ color: "var(--color-chart-6)" }}>● Grammar</span>
+                    <span style={{ color: "var(--color-chart-5)" }}>● Vocabulary</span>
                   </Space>
                 </div>
               </div>
@@ -1156,7 +1156,7 @@ const Progress = () => {
                       <div
                         style={{
                           height: `${item.studyTime * 2}px`,
-                          backgroundColor: index % 2 === 0 ? "#1890ff" : "#52c41a",
+                          backgroundColor: index % 2 === 0 ? "var(--color-primary)" : "var(--color-success)",
                           borderRadius: "4px 4px 0 0",
                           marginBottom: "8px",
                           minHeight: "10px",
@@ -1168,7 +1168,7 @@ const Progress = () => {
                       <Text style={{ fontSize: "12px", display: "block" }}>
                         {new Date(item.date).toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' })}
                       </Text>
-                      <Text style={{ fontSize: "12px", color: "#666", display: "block" }}>
+                      <Text style={{ fontSize: "12px", color: "var(--color-text-secondary)", display: "block" }}>
                         {item.studyTime}p
                       </Text>
                     </div>
@@ -1206,14 +1206,14 @@ const Progress = () => {
                   }}
                   bodyStyle={{ padding: "16px" }}
                 >
-                  <Title level={5} style={{ color: "#1890ff", marginBottom: "8px" }}>
+                  <Title level={5} style={{ color: "var(--color-primary)", marginBottom: "8px" }}>
                     <FontAwesomeIcon
                       icon={faHeadphones}
                       style={{ marginRight: "8px" }}
                     />
                     Cải thiện Listening
                   </Title>
-                  <Text style={{ fontSize: "14px", lineHeight: "1.6" }}>
+                  <Text style={{ fontSize: "12px", lineHeight: "1.6" }}>
                     Dựa trên kết quả gần đây, bạn nên tập trung vào phần
                     Listening Part 3 và 4. Hãy luyện tập nghe các đoạn hội
                     thoại và bài giảng dài với tốc độ nói nhanh.
@@ -1229,14 +1229,14 @@ const Progress = () => {
                   }}
                   bodyStyle={{ padding: "16px" }}
                 >
-                  <Title level={5} style={{ color: "#52c41a", marginBottom: "8px" }}>
+                  <Title level={5} style={{ color: "var(--color-success)", marginBottom: "8px" }}>
                     <FontAwesomeIcon
                       icon={faBook}
                       style={{ marginRight: "8px" }}
                     />
                     Cải thiện Reading
                   </Title>
-                  <Text style={{ fontSize: "14px", lineHeight: "1.6" }}>
+                  <Text style={{ fontSize: "12px", lineHeight: "1.6" }}>
                     Phần Reading của bạn đang tiến bộ tốt! Để đạt điểm cao
                     hơn, hãy luyện tập đọc nhanh với các bài đọc dài trong
                     Part 7 và cải thiện kỹ năng đọc lướt.

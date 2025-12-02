@@ -1,17 +1,17 @@
-.table-section7-double-wrapper {
+﻿.table-section7-double-wrapper {
   width: 100%;
   overflow-x: auto;
 }
 
 .table-section7-double th {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: bold;
    white-space: pre-line;
    max-width: 220px;
 }
 
 .table-section7-double td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal;
    white-space: pre-line;
    vertical-align: middle;
@@ -31,7 +31,7 @@
     max-width: 130px;
 }
 .table-section7-double .table {
-    font-size: 13px;
+    font-size: 12px;
     min-width: 1300px;
 }
 .table-section7-double audio {

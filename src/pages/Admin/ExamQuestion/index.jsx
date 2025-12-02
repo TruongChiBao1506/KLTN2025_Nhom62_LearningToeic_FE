@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { FileTextOutlined, QuestionCircleOutlined } from '@ant-design/icons';
@@ -246,7 +246,7 @@ const ExamQuestion = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -259,9 +259,9 @@ const ExamQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <FileTextOutlined style={{ color: '#fff', fontSize: 22 }} />
+                            <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Exam</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Exam</span>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -275,9 +275,9 @@ const ExamQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <QuestionCircleOutlined style={{ color: '#fff', fontSize: 22 }} />
+                            <QuestionCircleOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Exam Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Exam Question</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>
@@ -310,7 +310,7 @@ const ExamQuestion = () => {
                             data-aos="fade-in"
                             data-aos-duration="500"
                         >
-                            <QuestionCircleOutlined style={{ fontSize: 32, color: '#ff4d4f', marginBottom: 12 }} />
+                            <QuestionCircleOutlined style={{ fontSize: 32, color: 'var(--color-danger)', marginBottom: 12 }} />
                             <h5>Lỗi tải dữ liệu</h5>
                             <p>{error}</p>
                             <button

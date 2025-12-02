@@ -1,19 +1,19 @@
-.question-edit-no8to10-page label {
+﻿.question-edit-no8to10-page label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 
 .question-edit-no8to10-page .error-feedback {
     color: red;
-    font-size: 13px;
+    font-size: 12px;
     margin-top: 5px;
     display: block;
 }
 
 .question-edit-no8to10-page .required-field {
     color: red;
-    font-size: 14px;
+    font-size: 12px;
     margin-left: 4px;
 }
 
@@ -21,9 +21,9 @@
     flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: var(--color-bg-primary);
     z-index: 10;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
     margin-top: 0;
     padding: 12px 24px;
     display: flex;
@@ -59,14 +59,14 @@
     margin-bottom: 1rem;
 }
 .question-edit-no8to10-page .ckeditor-container:focus-within {
-    border-color: #1c75bc;
+    border-color: var(--color-brand-blue);
     box-shadow: 0 0 0 0.2rem rgba(28, 117, 188, 0.25);
 }
 .question-edit-no8to10-page .ckeditor-container.is-invalid {
-    border-color: #dc3545;
+    border-color: var(--color-danger);
 }
 .question-edit-no8to10-page .ckeditor-container.is-invalid:focus-within {
-    border-color: #dc3545;
+    border-color: var(--color-danger);
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 .question-edit-no8to10-page .ck-editor__editable {
@@ -79,7 +79,7 @@
 }
 .question-edit-no8to10-page .ck-content {
     font-family: inherit;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.5;
 }
 

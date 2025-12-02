@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -277,7 +277,7 @@ const VocabularyTopics = () => {
               <div>
                 <Title
                   level={5}
-                  style={{ marginBottom: "12px", color: "#1890ff" }}
+                  style={{ marginBottom: "12px", color: "var(--color-primary)" }}
                 >
                   <Search
                     style={{
@@ -299,9 +299,9 @@ const VocabularyTopics = () => {
                     size="large"
                     style={{
                       borderRadius: "8px 0 0 8px",
-                      fontSize: "14px",
+                      fontSize: "12px",
                     }}
-                    suffix={<Search style={{ color: "#1890ff" }} />}
+                    suffix={<Search style={{ color: "var(--color-primary)" }} />}
                   />
                   <Button
                     type={isSpeaking ? "primary" : "default"}
@@ -311,8 +311,8 @@ const VocabularyTopics = () => {
                     style={{
                       borderRadius: "0 8px 8px 0",
                       height: "40px",
-                      background: isSpeaking ? "#52c41a" : undefined,
-                      borderColor: isSpeaking ? "#52c41a" : undefined,
+                      background: isSpeaking ? "var(--color-success)" : undefined,
+                      borderColor: isSpeaking ? "var(--color-success)" : undefined,
                     }}
                   >
                     {isSpeaking ? (
@@ -339,14 +339,14 @@ const VocabularyTopics = () => {
                   border: "1px solid rgba(0, 0, 0, 0.06)",
                   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
                 }}>
-                  <div style={{ color: "#1890ff", marginBottom: "6px" }}>
+                  <div style={{ color: "var(--color-primary)", marginBottom: "6px" }}>
                     <BookOpen size={24} />
                   </div>
-                  <Text strong style={{ fontSize: "24px", color: "#1890ff" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-primary)" }}>
                     {enabledTopics.length}
                   </Text>
                   <div>
-                    <Text type="secondary" style={{ fontSize: "14px" }}>Chủ đề có sẵn</Text>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>Chủ đề có sẵn</Text>
                   </div>
                 </Card>
               </Col>
@@ -362,14 +362,14 @@ const VocabularyTopics = () => {
                   border: "1px solid rgba(0, 0, 0, 0.06)",
                   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
                 }}>
-                  <div style={{ color: "#52c41a", marginBottom: "6px" }}>
+                  <div style={{ color: "var(--color-success)", marginBottom: "6px" }}>
                     <Target size={24} />
                   </div>
-                  <Text strong style={{ fontSize: "24px", color: "#52c41a" }}>
+                  <Text strong style={{ fontSize: "24px", color: "var(--color-success)" }}>
                     {Object.values(topicStats).reduce((sum, stat) => sum + stat.totalVocabularies, 0)}
                   </Text>
                   <div>
-                    <Text type="secondary" style={{ fontSize: "14px" }}>Tổng từ vựng</Text>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>Tổng từ vựng</Text>
                   </div>
                 </Card>
               </Col>
@@ -397,7 +397,7 @@ const VocabularyTopics = () => {
                   }}
                 >
                   <Spin size="large" />
-                  <Title level={4} style={{ color: "#1890ff", margin: 0 }}>
+                  <Title level={4} style={{ color: "var(--color-primary)", margin: 0 }}>
                     Đang tải dữ liệu chủ đề...
                   </Title>
                   <Text type="secondary">Vui lòng đợi trong giây lát</Text>
@@ -409,13 +409,13 @@ const VocabularyTopics = () => {
                       style={{
                         width: "64px",
                         height: "64px",
-                        color: "#d9d9d9",
+                        color: "var(--color-border)",
                       }}
                     />
                   }
                   description={
                     <div style={{ textAlign: "center" }}>
-                      <Title level={4} style={{ color: "#999" }}>
+                      <Title level={4} style={{ color: "var(--color-text-disabled)" }}>
                         Không tìm thấy chủ đề nào
                       </Title>
                       <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -449,7 +449,7 @@ const VocabularyTopics = () => {
                     <Title
                       level={4}
                       style={{
-                        color: "#1890ff",
+                        color: "var(--color-primary)",
                         marginBottom: "6px",
                         display: "flex",
                         alignItems: "center",
@@ -462,13 +462,13 @@ const VocabularyTopics = () => {
                       <Badge
                         count={filteredTopics.length}
                         style={{
-                          backgroundColor: "#52c41a",
+                          backgroundColor: "var(--color-success)",
                           fontSize: "12px",
                         }}
                       />
                     </Title>
                     {(searchQuery || transcript) && (
-                      <Text type="secondary" style={{ fontSize: "13px" }}>
+                      <Text type="secondary" style={{ fontSize: "12px" }}>
                         Tìm thấy {filteredTopics.length} chủ đề cho "
                         {searchQuery || transcript}"
                       </Text>
@@ -529,7 +529,7 @@ const VocabularyTopics = () => {
                                     display: shouldShowFallback ? "flex" : "none",
                                     width: "100%",
                                     height: "100%",
-                                    background: "linear-gradient(135deg, #1890ff 0%, #40a9ff 50%, #87d068 100%)",
+                                    background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-success-light) 100%)",
                                     alignItems: "center",
                                     justifyContent: "center",
                                     flexDirection: "column",
@@ -548,7 +548,7 @@ const VocabularyTopics = () => {
                                   <Text 
                                     style={{ 
                                       color: "white", 
-                                      fontSize: "14px", 
+                                      fontSize: "12px", 
                                       fontWeight: "600",
                                       textAlign: "center",
                                       maxWidth: "120px",
@@ -624,7 +624,7 @@ const VocabularyTopics = () => {
                                   alignItems: "flex-start",
                                   marginBottom: "8px"
                                 }}>
-                                  <Title level={5} style={{ margin: 0, color: "#1890ff", fontSize: "16px" }}>
+                                  <Title level={5} style={{ margin: 0, color: "var(--color-primary)", fontSize: "16px" }}>
                                     {topic.topicName}
                                   </Title>
                                   <Tag color={getDifficultyColor(stats.difficulty)}>
@@ -633,7 +633,7 @@ const VocabularyTopics = () => {
                                 </div>
                                 
                                 {topic.description && (
-                                  <Text type="secondary" style={{ fontSize: "13px", lineHeight: "1.4", display: "block", marginBottom: "12px" }}>
+                                  <Text type="secondary" style={{ fontSize: "12px", lineHeight: "1.4", display: "block", marginBottom: "12px" }}>
                                     {topic.description.length > 80 
                                       ? `${topic.description.substring(0, 80)}...` 
                                       : topic.description}
@@ -666,10 +666,10 @@ const VocabularyTopics = () => {
                                   <Row gutter={8}>
                                     <Col span={12}>
                                       <div style={{ textAlign: "center", padding: "8px" }}>
-                                        <div style={{ color: "#1890ff", marginBottom: "4px" }}>
+                                        <div style={{ color: "var(--color-primary)", marginBottom: "4px" }}>
                                           <BookOpen size={16} />
                                         </div>
-                                        <Text strong style={{ display: "block", fontSize: "14px" }}>
+                                        <Text strong style={{ display: "block", fontSize: "12px" }}>
                                           {stats.totalVocabularies}
                                         </Text>
                                         <Text type="secondary" style={{ fontSize: "11px" }}>
@@ -679,10 +679,10 @@ const VocabularyTopics = () => {
                                     </Col>
                                     <Col span={12}>
                                       <div style={{ textAlign: "center", padding: "8px" }}>
-                                        <div style={{ color: "#52c41a", marginBottom: "4px" }}>
+                                        <div style={{ color: "var(--color-success)", marginBottom: "4px" }}>
                                           <Clock size={16} />
                                         </div>
-                                        <Text strong style={{ display: "block", fontSize: "14px" }}>
+                                        <Text strong style={{ display: "block", fontSize: "12px" }}>
                                           {stats.estimatedTime}m
                                         </Text>
                                         <Text type="secondary" style={{ fontSize: "11px" }}>
@@ -716,7 +716,7 @@ const VocabularyTopics = () => {
                                     style={{
                                       width: "14px",
                                       height: "14px",
-                                      color: "#999",
+                                      color: "var(--color-text-disabled)",
                                     }}
                                   />
                                 </Space>
@@ -749,12 +749,12 @@ const VocabularyTopics = () => {
                 <Title
                   level={5}
                   style={{
-                    color: "#fa8c16",
+                    color: "var(--color-chart-6)",
                     marginBottom: "4px",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    fontSize: "14px",
+                    fontSize: "12px",
                   }}
                 >
                   <Zap style={{ width: "16px", height: "16px" }} />
@@ -844,8 +844,8 @@ const VocabularyTopics = () => {
                                 style={{
                                   background:
                                     section.type === 1
-                                      ? "linear-gradient(135deg, #1890ff, #36cfc9)"
-                                      : "linear-gradient(135deg, #52c41a, #73d13d)",
+                                      ? "linear-gradient(135deg, var(--color-primary), var(--color-info))"
+                                      : "linear-gradient(135deg, var(--color-success), #73d13d)",
                                   border: "none",
                                 }}
                                 icon={
@@ -867,7 +867,7 @@ const VocabularyTopics = () => {
                                     fontSize: "12px",
                                     margin: 0,
                                     marginBottom: "2px",
-                                    color: "#1890ff",
+                                    color: "var(--color-primary)",
                                   }}
                                 >
                                   {section.name}
@@ -889,7 +889,7 @@ const VocabularyTopics = () => {
                               style={{
                                 width: "12px",
                                 height: "12px",
-                                color: "#999",
+                                color: "var(--color-text-disabled)",
                               }}
                             />
                           </div>

@@ -1,28 +1,28 @@
-label {
+﻿label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 
 .error-feedback {
     color: red;
-    font-size: 13px;
+    font-size: 12px;
     margin-top: 4px;
 }
 
 .required-field {
     color: red;
-    font-size: 14px;
+    font-size: 12px;
     margin-left: 4px;
 }
 
 .custom-font {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .form-control.is-invalid,
 .form-select.is-invalid {
-    border-color: #dc3545;
+    border-color: var(--color-danger);
 }
 
 .spinner-border {

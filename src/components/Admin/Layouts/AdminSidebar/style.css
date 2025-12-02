@@ -1,8 +1,8 @@
-/* AdminSidebar CSS - Exact Match with LearnerLayout Design */
+﻿/* AdminSidebar CSS - Professional Navy Blue Theme */
 
 /* Main Sidebar Container */
-.learner-sidebar {
-  background: #ffffff;
+.admin-sidebar {
+  background: var(--color-bg-primary);
   border-right: 1px solid #e0e0e0;
   transition: width 0.3s ease;
   position: fixed;
@@ -16,13 +16,13 @@
 }
 
 /* When explicitly collapsed (when isToggled = false) */
-.learner-sidebar:not(.active) {
+.admin-sidebar:not(.active) {
   width: 80px; /* Collapsed width */
 }
 
-/* Sidebar Header - Purple Gradient */
-.sidebar-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Admin Sidebar Header - Navy Blue Solid */
+.admin-sidebar-header {
+  background: var(--color-primary-dark);
   color: white;
   padding: 24px 20px;
   text-align: left;
@@ -33,12 +33,12 @@
 }
 
 /* Collapsed header styling */
-.learner-sidebar:not(.active) .sidebar-header {
+.admin-sidebar:not(.active) .admin-sidebar-header {
   padding: 24px 10px;
   justify-content: center;
 }
 
-.learner-sidebar:not(.active) .logo-container {
+.admin-sidebar:not(.active) .logo-container {
   justify-content: center;
 }
 
@@ -49,93 +49,93 @@
 }
 
 /* Navigation Styles */
-.sidebar-nav {
+.admin-sidebar-nav {
   padding: 0;
 }
 
-.nav-list {
+.admin-sidebar-nav .nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.nav-item {
+.admin-sidebar-nav .nav-item {
   margin: 0;
   border-bottom: none;
 }
 
 /* Main Navigation Links - Clean Design */
-.nav-link {
+.admin-sidebar-nav .nav-link {
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  color: #333333;
+  color: var(--color-text-primary);
   text-decoration: none;
   border: none;
-  background: #ffffff;
+  background: var(--color-bg-primary);
   transition: all 0.2s ease;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   position: relative;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.nav-link:hover {
-  background-color: #f8f9fa;
-  color: #333333;
+.admin-sidebar-nav .nav-link:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-primary);
 }
 
-.nav-link.active {
-  background-color: #e3f2fd;
-  color: #1976d2;
+.admin-sidebar-nav .nav-link.active {
+  background-color: rgba(44, 95, 141, 0.1);
+  color: var(--color-primary);
   font-weight: 500;
 }
 
 /* Navigation Icons */
-.nav-icon {
+.admin-sidebar-nav .nav-icon {
   margin-right: 12px;
   font-size: 16px;
   width: 20px;
   text-align: center;
-  color: #666666;
+  color: var(--color-text-secondary);
   transition: color 0.2s ease;
 }
 
-.nav-link:hover .nav-icon {
-  color: #333333;
+.admin-sidebar-nav .nav-link:hover .nav-icon {
+  color: var(--color-primary);
 }
 
-.nav-link.active .nav-icon {
-  color: #1976d2;
+.admin-sidebar-nav .nav-link.active .nav-icon {
+  color: var(--color-primary);
 }
 
 /* Navigation Text */
-.nav-text {
+.admin-sidebar-nav .nav-text {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* Hide text when collapsed */
-.learner-sidebar:not(.active) .nav-text {
+.admin-sidebar:not(.active) .nav-text {
   display: none;
 }
 
-.learner-sidebar:not(.active) .nav-link {
+.admin-sidebar:not(.active) .nav-link {
   justify-content: center;
   padding: 16px 10px;
   position: relative;
 }
 
-.learner-sidebar:not(.active) .nav-icon {
+.admin-sidebar:not(.active) .nav-icon {
   margin-right: 0;
 }
 
 /* Tooltip for collapsed sidebar */
-.learner-sidebar:not(.active) .nav-link:hover::after {
+.admin-sidebar:not(.active) .nav-link:hover::after {
   content: attr(data-tooltip);
   position: absolute;
   left: 100%;
@@ -165,40 +165,40 @@
 }
 
 /* Scrollbar Styling */
-.learner-sidebar::-webkit-scrollbar {
+.admin-sidebar::-webkit-scrollbar {
   width: 6px;
 }
 
-.learner-sidebar::-webkit-scrollbar-track {
+.admin-sidebar::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.learner-sidebar::-webkit-scrollbar-thumb {
+.admin-sidebar::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
 }
 
-.learner-sidebar::-webkit-scrollbar-thumb:hover {
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .learner-sidebar {
+  .admin-sidebar {
     width: 260px !important;
   }
   
-  .learner-sidebar.active {
+  .admin-sidebar.active {
     width: 260px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .learner-sidebar {
+  .admin-sidebar {
     width: 240px !important;
   }
   
-  .learner-sidebar.active {
+  .admin-sidebar.active {
     width: 240px !important;
   }
 }

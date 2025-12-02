@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Card,
@@ -114,7 +114,7 @@ const SectionSW = () => {
         <div className="section-sw-wrapper">
           {/* Header */}
           <div className="section-sw-header">
-            <Title level={1} className="section-sw-title" style={{color: '#fff'}}>
+            <Title level={1} className="section-sw-title" style={{color: 'var(--color-bg-primary)'}}>
               Nâng Tầm Kỹ Năng TOEIC Speaking & Writing
             </Title>
             <Paragraph className="section-sw-subtitle">

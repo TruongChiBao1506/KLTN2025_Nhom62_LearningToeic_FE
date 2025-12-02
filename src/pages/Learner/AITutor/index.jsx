@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Layout,
   Card,
@@ -541,11 +541,11 @@ const AITutor = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+    <Layout style={{ minHeight: "100vh", background: "var(--color-bg-tertiary)" }}>
       {/* Sidebar */}
-      <Sider width={350} style={{ background: "#fff", padding: "20px" }}>
+      <Sider width={350} style={{ background: "var(--color-bg-primary)", padding: "20px" }}>
         <div style={{ marginBottom: "24px" }}>
-          <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+          <Title level={3} style={{ margin: 0, color: "var(--color-primary)" }}>
             <Brain size={24} style={{ marginRight: 8 }} />
             AI Tutor Pro
           </Title>
@@ -558,7 +558,7 @@ const AITutor = () => {
             <Card size="small" style={{ textAlign: "center" }}>
               <div
                 style={{
-                  color: "#1890ff",
+                  color: "var(--color-primary)",
                   fontSize: "20px",
                   fontWeight: "bold",
                 }}
@@ -574,7 +574,7 @@ const AITutor = () => {
             <Card size="small" style={{ textAlign: "center" }}>
               <div
                 style={{
-                  color: "#52c41a",
+                  color: "var(--color-success)",
                   fontSize: "20px",
                   fontWeight: "bold",
                 }}
@@ -718,14 +718,14 @@ const AITutor = () => {
                           icon={message.type === "user" ? <User /> : <Brain />}
                           style={{
                             backgroundColor:
-                              message.type === "user" ? "#1890ff" : "#52c41a",
+                              message.type === "user" ? "var(--color-primary)" : "var(--color-success)",
                           }}
                         />
                         <div
                           style={{
                             background:
-                              message.type === "user" ? "#1890ff" : "#f6f6f6",
-                            color: message.type === "user" ? "#fff" : "#000",
+                              message.type === "user" ? "var(--color-primary)" : "#f6f6f6",
+                            color: message.type === "user" ? "var(--color-bg-primary)" : "var(--color-text-primary)",
                             padding: "12px 16px",
                             borderRadius: "12px",
                             whiteSpace: "pre-line",
@@ -742,7 +742,7 @@ const AITutor = () => {
                             >
                               <Badge
                                 count={message.score.toFixed(1)}
-                                style={{ backgroundColor: "#52c41a" }}
+                                style={{ backgroundColor: "var(--color-success)" }}
                               >
                                 <Star size={16} style={{ color: "#ffa940" }} />
                               </Badge>
@@ -767,7 +767,7 @@ const AITutor = () => {
                   >
                     <Avatar
                       icon={<Brain />}
-                      style={{ backgroundColor: "#52c41a" }}
+                      style={{ backgroundColor: "var(--color-success)" }}
                     />
                     <Spin size="small" />
                     <Text type="secondary">AI đang suy nghĩ...</Text>
@@ -883,7 +883,7 @@ const AITutor = () => {
                   <Space>
                     <Avatar
                       icon={<Volume2 />}
-                      style={{ backgroundColor: "#52c41a" }}
+                      style={{ backgroundColor: "var(--color-success)" }}
                     />
                     <div>
                       <Text strong>AI Pronunciation Scoring</Text>
@@ -1002,7 +1002,7 @@ const AITutor = () => {
                   <Space>
                     <Avatar
                       icon={<BookOpen />}
-                      style={{ backgroundColor: "#1890ff" }}
+                      style={{ backgroundColor: "var(--color-primary)" }}
                     />
                     <div>
                       <Text strong>AI Grammar Analysis</Text>
@@ -1085,7 +1085,7 @@ const AITutor = () => {
                   <Space>
                     <Avatar
                       icon={<Brain />}
-                      style={{ backgroundColor: "#722ed1" }}
+                      style={{ backgroundColor: "var(--color-chart-4)" }}
                     />
                     <div>
                       <Text strong>AI Vocabulary Analysis</Text>
@@ -1216,7 +1216,7 @@ const AITutor = () => {
       >
         <div style={{ textAlign: "center" }}>
           <div
-            style={{ fontSize: "48px", color: "#52c41a", marginBottom: "16px" }}
+            style={{ fontSize: "48px", color: "var(--color-success)", marginBottom: "16px" }}
           >
             {speakingScore.toFixed(1)}
           </div>

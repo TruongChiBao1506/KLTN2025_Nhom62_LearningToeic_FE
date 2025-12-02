@@ -1,4 +1,4 @@
-.word-item {
+﻿.word-item {
   border: 1px solid #ddd;
   padding: 15px;
   margin-bottom: 15px;
@@ -7,7 +7,7 @@
 }
 
 .question-card {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-left: 4px solid #007bff;
 }
 
@@ -21,7 +21,7 @@
   background-color: #f0f8f3;
   padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #28a745;
+  border-left: 4px solid var(--color-approved);
 }
 
 .audio-simulation {
@@ -29,15 +29,15 @@
   padding: 10px;
   border-radius: 5px;
   text-align: center;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #052649;
-  color: #fff;
-  font-size: 14px;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   border-radius: 20px;
@@ -47,9 +47,9 @@
 }
 
 .button:hover {
-  background-color: #fff;
-  color: #052649;
-  border: 1px solid #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
+  border: 1px solid var(--color-brand-navy);
 }
 
 .bg-primary {

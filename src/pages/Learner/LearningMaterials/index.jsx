@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -257,15 +257,15 @@ const LearningMaterialsAntd = () => {
     const cat = category?.toLowerCase() || "";
     switch (cat) {
       case "listening":
-        return <Headphones style={{ fontSize: "14px" }} />;
+        return <Headphones style={{ fontSize: "12px" }} />;
       case "reading":
-        return <BookOpen style={{ fontSize: "14px" }} />;
+        return <BookOpen style={{ fontSize: "12px" }} />;
       case "grammar":
-        return <FileText style={{ fontSize: "14px" }} />;
+        return <FileText style={{ fontSize: "12px" }} />;
       case "vocabulary":
-        return <BookOutlined style={{ fontSize: "14px" }} />;
+        return <BookOutlined style={{ fontSize: "12px" }} />;
       default:
-        return <BookOutlined style={{ fontSize: "14px" }} />;
+        return <BookOutlined style={{ fontSize: "12px" }} />;
     }
   };
 
@@ -284,7 +284,7 @@ const LearningMaterialsAntd = () => {
 
   const getDefaultImage = (category, type) => {
     const gradients = {
-      listening: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      listening: "#2C5F8D",
       reading: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
       grammar: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
       vocabulary: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
@@ -361,7 +361,7 @@ const LearningMaterialsAntd = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
         }}
       >
         <Card
@@ -410,7 +410,7 @@ const LearningMaterialsAntd = () => {
             style={{
               fontSize: "48px",
               marginBottom: 16,
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "#2C5F8D",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -420,13 +420,13 @@ const LearningMaterialsAntd = () => {
           <Paragraph
             style={{
               fontSize: "18px",
-              color: "#666",
+              color: "var(--color-text-secondary)",
               maxWidth: "600px",
               margin: "0 auto",
             }}
           >
             Khám phá bộ sưu tập tài liệu TOEIC chất lượng cao với hơn{" "}
-            <Text strong style={{ color: "#667eea" }}>
+            <Text strong style={{ color: "var(--color-brand-purple)" }}>
               1000+
             </Text>{" "}
             tài liệu được biên soạn bởi các chuyên gia hàng đầu
@@ -451,7 +451,7 @@ const LearningMaterialsAntd = () => {
                 title="Bài học"
                 value={materials.filter((m) => m.type === "lesson").length}
                 prefix={<PlayCircleOutlined />}
-                valueStyle={{ color: "#1890ff" }}
+                valueStyle={{ color: "var(--color-primary)" }}
               />
             </Card>
           </Col>
@@ -464,7 +464,7 @@ const LearningMaterialsAntd = () => {
                   0
                 )}
                 prefix={<DownloadOutlined />}
-                valueStyle={{ color: "#722ed1" }}
+                valueStyle={{ color: "var(--color-chart-4)" }}
               />
             </Card>
           </Col>
@@ -475,7 +475,7 @@ const LearningMaterialsAntd = () => {
                 value={4.9}
                 suffix="/ 5"
                 prefix={<StarOutlined />}
-                valueStyle={{ color: "#faad14" }}
+                valueStyle={{ color: "var(--color-warning)" }}
               />
             </Card>
           </Col>
@@ -678,8 +678,8 @@ const LearningMaterialsAntd = () => {
                   <Paragraph
                     ellipsis={{ rows: 2 }}
                     style={{
-                      color: "#666",
-                      fontSize: "14px",
+                      color: "var(--color-text-secondary)",
+                      fontSize: "12px",
                       marginBottom: 12,
                     }}
                   >
@@ -716,7 +716,7 @@ const LearningMaterialsAntd = () => {
                             width: "16px",
                             height: "16px",
                             margin: "0 auto 4px",
-                            color: "#666",
+                            color: "var(--color-text-secondary)",
                             display: "block",
                           }}
                         />
@@ -735,7 +735,7 @@ const LearningMaterialsAntd = () => {
                             width: "16px",
                             height: "16px",
                             margin: "0 auto 4px",
-                            color: "#666",
+                            color: "var(--color-text-secondary)",
                             display: "block",
                           }}
                         />
@@ -754,7 +754,7 @@ const LearningMaterialsAntd = () => {
                             width: "16px",
                             height: "16px",
                             margin: "0 auto 4px",
-                            color: "#666",
+                            color: "var(--color-text-secondary)",
                             display: "block",
                           }}
                         />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+﻿import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   User,
@@ -28,6 +28,7 @@ import {
   Star,
   Target,
   Trophy,
+  UserPlus,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -36,13 +37,13 @@ import authService from "../services/authService";
 import sectionService from "../services/sectionsService";
 import ChatbotButton from "../components/Learner/Chatbot/ChatbotButton";
 import { useAuthStore } from "../hooks/useAuthStore";
+import useNotifications from "../hooks/useNotifications";
 import {
   fetchNotifications,
-  markAsRead,
   markAllAsRead,
-  addNotification,
 } from "../store/notificationSlice.js";
 import socketService from "../services/socketService";
+import { getNotificationsByRole, getRoleSpecificCounts } from '../utils/notificationRoleFilter';
 
 import "./LearnerLayout.css";
 
@@ -73,41 +74,115 @@ const LearnerLayout = () => {
   const [openKeys, setOpenKeys] = useState([]);
   const { info } = useAuthStore();
   const dispatch = useDispatch();
-  const notifications = useSelector(
+  
+  // Helper function to check if user is a teacher (memoized)
+  const isTeacher = useCallback(() => {
+    console.log("🔍 isTeacher check - info:", info);
+    
+    if (!info) {
+      console.log("❌ No info");
+      return false;
+    }
+    
+    // ✅ FIX: Check if roles array contains role object with name 'ROLE_TEACHER'
+    if (Array.isArray(info.roles)) {
+      console.log("📋 info.roles:", info.roles);
+      
+      // Check if any role object has name 'ROLE_TEACHER'
+      const hasTeacherRole = info.roles.some(role => {
+        // Handle both string and object formats
+        if (typeof role === 'string') {
+          return role === 'ROLE_TEACHER';
+        }
+        // Handle object format: {_id: '...', name: 'ROLE_TEACHER'}
+        return role.name === 'ROLE_TEACHER';
+      });
+      
+      console.log("✅ hasTeacherRole:", hasTeacherRole);
+      return hasTeacherRole;
+    }
+    
+    // Check if role string is 'ROLE_TEACHER' (legacy format)
+    if (typeof info.role === 'string') {
+      console.log("📝 info.role (string):", info.role);
+      return info.role === 'ROLE_TEACHER';
+    }
+    
+    // Fallback to isTeacher boolean field
+    const fallbackCheck = info.isTeacher === true;
+    console.log("⚠️ Fallback isTeacher:", fallbackCheck);
+    return fallbackCheck;
+  }, [info]);
+  
+  // Get hook and create stable reference
+  const notificationHook = useNotifications();
+  const handleNotificationRef = useRef(notificationHook.handleNotification);
+  
+  // Update ref when hook changes (won't trigger re-render)
+  useEffect(() => {
+    handleNotificationRef.current = notificationHook.handleNotification;
+  }, [notificationHook.handleNotification]);
+  
+  const allNotifications = useSelector(
     (state) => state.notifications.notifications
   );
-  const unreadCount = useSelector((state) => state.notifications.unreadCount);
-
-  // Debug: Log info để kiểm tra avatar
-  useEffect(() => {
-    console.log("🎯 LearnerLayout - Current info from Redux:", info);
-    console.log("🖼️ LearnerLayout - Avatar value:", info?.avatar);
-  }, [info]);
+  const allCounts = useSelector((state) => state.notifications.counts);
+  
+  // Filter notifications for learner role
+  const notifications = React.useMemo(() => 
+    getNotificationsByRole(allNotifications, 'learner'), 
+    [allNotifications]
+  );
+  
+  const roleCounts = React.useMemo(() => 
+    getRoleSpecificCounts(allCounts, 'learner'),
+    [allCounts]
+  );
+  
+  const unreadCount = roleCounts.total || 0;
 
   // Kết nối socket và setup listener khi LearnerLayout mount
+  // Use stable callback with useRef to prevent duplicate listeners
+  const handleNewNotification = useCallback((notification) => {
+    console.log(
+      "🔔 Real-time notification received in LearnerLayout:",
+      notification
+    );
+    // Use ref to get latest handler without recreating callback
+    handleNotificationRef.current(notification);
+  }, []); // ← Empty deps = STABLE callback
+
   useEffect(() => {
-    if (info?.id) {
-      console.log("🔌 Connecting socket in LearnerLayout for user:", info.id);
-      socketService.connect(info.id); // Connect socket với userId
-
-      // Setup listener cho notification
-      const handleNewNotification = (notification) => {
-        console.log(
-          "🔔 Real-time notification received in LearnerLayout:",
-          notification
-        );
-        dispatch(addNotification(notification)); // Thêm vào Redux store
-      };
-      socketService.on("notification", handleNewNotification);
-
-      // Fetch initial notifications
-      dispatch(fetchNotifications(info.id));
-
-      return () => {
-        socketService.off("notification", handleNewNotification);
-      };
+    if (!info?.id) {
+      console.log('⚠️ No user info, skipping socket connection');
+      return;
     }
-  }, [info?.id, dispatch]);
+
+    console.log("🔌 Setting up socket connection for user:", info.id);
+    
+    // Connect socket
+    socketService.connect(info.id);
+
+    // Register listener ONCE
+    console.log('📝 Registering notification listener...');
+    socketService.on("notification", handleNewNotification);
+
+    // Fetch initial notifications
+    dispatch(fetchNotifications(info.id));
+
+    // Log listener count for debugging
+    const counts = socketService.getListenerCounts();
+    console.log('📊 Listener counts after registration:', counts);
+
+    // 🔧 CRITICAL: Cleanup function to remove listener on unmount
+    return () => {
+      console.log("🧹 Cleaning up notification listener in LearnerLayout");
+      socketService.off("notification", handleNewNotification);
+      
+      const countsAfter = socketService.getListenerCounts();
+      console.log('📊 Listener counts after cleanup:', countsAfter);
+    };
+  }, [info?.id, dispatch, handleNewNotification]); // handleNewNotification is now STABLE
 
   // Toggle submenu open/close
   const handleToggleSubmenu = (keys) => {
@@ -297,11 +372,8 @@ const LearnerLayout = () => {
     try {
       // Sử dụng authService để đăng xuất
       await authService.signOut();
-      localStorage.removeItem("learnerToken");
-      localStorage.removeItem("learnerRefreshToken");
-      localStorage.removeItem("learnerAccessTokenExpirationTime");
-      localStorage.removeItem("learnerRefreshTokenExpirationTime");
-      localStorage.removeItem("LearnerAuthenticated");
+      // ✅ Clear ALL tokens (user might have multiple roles)
+      authService.clearAuth();
       dispatch(logout());
       toast.success("Đăng xuất thành công!");
       window.location.href = "/auth/signin";
@@ -345,7 +417,7 @@ const LearnerLayout = () => {
       menuItems.unshift({
         key: "loading",
         icon: <FileText size={16} />,
-        label: <span style={{ color: "#999" }}>Đang tải...</span>,
+        label: <span style={{ color: "var(--color-text-disabled)" }}>Đang tải...</span>,
         disabled: true,
       });
       return menuItems;
@@ -449,6 +521,11 @@ const LearnerLayout = () => {
       label: "Khác",
       children: [
         {
+          key: "/learner/become-teacher",
+          icon: <UserPlus size={16} />,
+          label: <Link to="/learner/become-teacher">Đăng ký làm Teacher</Link>,
+        },
+        {
           key: "/learner/feedback",
           icon: <Star size={16} />,
           label: <Link to="/learner/feedback">Góp ý</Link>,
@@ -486,7 +563,7 @@ const LearnerLayout = () => {
           style={{
             padding: "16px 20px 12px",
             borderBottom: "1px solid rgba(0,0,0,0.06)",
-            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            background: "#F8F9FA",
             borderRadius: "12px 12px 0 0",
             margin: "-8px -8px 12px",
             color: "#1a202c",
@@ -497,12 +574,12 @@ const LearnerLayout = () => {
               size={48}
               src={info?.avatar}
               style={{
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                background: "#2C5F8D",
                 border: "2px solid rgba(103, 126, 234, 0.1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#fff",
+                color: "var(--color-bg-primary)",
               }}
             >
               {info?.name?.charAt(0) || "U"}
@@ -510,7 +587,7 @@ const LearnerLayout = () => {
             <div>
               <div
                 style={{
-                  fontSize: "15px",
+                  fontSize: "12px",
                   fontWeight: "600",
                   marginBottom: "2px",
                   color: "#1a202c",
@@ -526,6 +603,23 @@ const LearnerLayout = () => {
               >
                 {info?.email || "user@example.com"}
               </div>
+              {/* Teacher badge - show if user has ROLE_TEACHER */}
+              {isTeacher() && (
+                <div
+                  style={{
+                    fontSize: "11px",
+                    marginTop: "4px",
+                    padding: "2px 8px",
+                    background: "#27AE60",
+                    color: "var(--color-bg-primary)",
+                    borderRadius: "4px",
+                    display: "inline-block",
+                    fontWeight: "500",
+                  }}
+                >
+                  Teacher
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -550,13 +644,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(103, 126, 234, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #667eea, #764ba2)",
+              background: "#2C5F8D",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -564,16 +658,59 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <User size={16} style={{ color: "#fff" }} />
+            <User size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Hồ sơ cá nhân
           </span>
         </Link>
       ),
     },
+    // Teacher Content Management - Only show if user has ROLE_TEACHER
+    ...(isTeacher() ? [{
+      key: "teacher-content",
+      label: (
+        <Link
+          to="/teacher/"
+          className="dropdown-menu-item"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            margin: "2px 8px",
+            textDecoration: "none",
+            color: "#1f2937",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            position: "relative",
+            overflow: "hidden",
+            background: "var(--color-bg-primary)",
+            border: "1px solid rgba(16, 185, 129, 0.15)",
+          }}
+        >
+          <div
+            style={{
+              background: "#27AE60",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <BookOpen size={16} style={{ color: "var(--color-bg-primary)" }} />
+          </div>
+          <span
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
+          >
+            Quản lý nội dung
+          </span>
+        </Link>
+      ),
+    }] : []),
     {
       key: "/learner/progress",
       label: (
@@ -592,13 +729,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(16, 185, 129, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #10b981, #059669)",
+              background: "#27AE60",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -606,10 +743,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <TrendingUp size={16} style={{ color: "#fff" }} />
+            <TrendingUp size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Tiến độ học tập
           </span>
@@ -634,13 +771,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(245, 158, 11, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #f59e0b, #d97706)",
+              background: "#F39C12",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -648,10 +785,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <StickyNote size={16} style={{ color: "#fff" }} />
+            <StickyNote size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Ghi chú cá nhân
           </span>
@@ -676,13 +813,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(239, 68, 68, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              background: "#E74C3C",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -690,10 +827,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <Heart size={16} style={{ color: "#fff" }} />
+            <Heart size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Từ vựng đã lưu
           </span>
@@ -718,13 +855,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(139, 92, 246, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+              background: "#8E44AD",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -732,10 +869,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <Star size={16} style={{ color: "#fff" }} />
+            <Star size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Thành tích
           </span>
@@ -760,13 +897,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(107, 114, 128, 0.15)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #6b7280, #4b5563)",
+              background: "#7F8C8D",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -774,10 +911,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <Settings size={16} style={{ color: "#fff" }} />
+            <Settings size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#1f2937" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
           >
             Cài đặt
           </span>
@@ -810,13 +947,13 @@ const LearnerLayout = () => {
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             position: "relative",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             border: "1px solid rgba(239, 68, 68, 0.2)",
           }}
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              background: "#E74C3C",
               borderRadius: "8px",
               padding: "8px",
               display: "flex",
@@ -824,10 +961,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <LogOut size={16} style={{ color: "#fff" }} />
+            <LogOut size={16} style={{ color: "var(--color-bg-primary)" }} />
           </div>
           <span
-            style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}
+            style={{ fontWeight: "600", fontSize: "12px", color: "#dc2626" }}
           >
             Đăng xuất
           </span>
@@ -846,7 +983,7 @@ const LearnerLayout = () => {
           style={{
             padding: "16px 20px 12px",
             borderBottom: "1px solid rgba(0,0,0,0.06)",
-            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            background: "#F8F9FA",
             borderRadius: "12px 12px 0 0",
             margin: "-8px -8px 8px",
             position: "sticky",
@@ -864,7 +1001,7 @@ const LearnerLayout = () => {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
-                  background: "linear-gradient(135deg, #667eea, #764ba2)",
+                  background: "#2C5F8D",
                   borderRadius: "6px",
                   padding: "4px",
                   display: "flex",
@@ -872,12 +1009,12 @@ const LearnerLayout = () => {
                   justifyContent: "center",
                 }}
               >
-                <Bell size={14} style={{ color: "#fff" }} />
+                <Bell size={14} style={{ color: "var(--color-bg-primary)" }} />
               </div>
               <Text
                 strong
                 style={{
-                  fontSize: "15px",
+                  fontSize: "12px",
                   fontWeight: "600",
                   color: "#1a202c",
                 }}
@@ -894,7 +1031,7 @@ const LearnerLayout = () => {
                 fontSize: "12px",
                 background: "rgba(103, 126, 234, 0.1)",
                 borderRadius: "6px",
-                color: "#667eea",
+                color: "var(--color-brand-purple)",
                 fontWeight: "500",
                 border: "none",
                 height: "auto",
@@ -936,7 +1073,7 @@ const LearnerLayout = () => {
                     top: 0,
                     bottom: 0,
                     width: "3px",
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                    background: "#2C5F8D",
                     borderRadius: "0 2px 2px 0",
                   }}
                 />
@@ -952,8 +1089,8 @@ const LearnerLayout = () => {
                 <div
                   style={{
                     background: !notification.isRead
-                      ? "linear-gradient(135deg, #667eea, #764ba2)"
-                      : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                      ? "#2C5F8D"
+                      : "#ECF0F1",
                     borderRadius: "8px",
                     padding: "6px",
                     display: "flex",
@@ -967,7 +1104,7 @@ const LearnerLayout = () => {
                   <Bell
                     size={14}
                     style={{
-                      color: !notification.isRead ? "#fff" : "#64748b",
+                      color: !notification.isRead ? "var(--color-bg-primary)" : "#64748b",
                     }}
                   />
                 </div>
@@ -975,7 +1112,7 @@ const LearnerLayout = () => {
                   <div
                     style={{
                       fontWeight: !notification.isRead ? "600" : "500",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       color: !notification.isRead ? "#1a202c" : "#4a5568",
                       marginBottom: "4px",
                       lineHeight: "1.4",
@@ -989,7 +1126,7 @@ const LearnerLayout = () => {
                   </div>
                   <div
                     style={{
-                      fontSize: "13px",
+                      fontSize: "12px",
                       color: "#64748b",
                       marginBottom: "6px",
                       lineHeight: "1.4",
@@ -1036,7 +1173,7 @@ const LearnerLayout = () => {
               >
                 <div
                   style={{
-                    background: "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+                    background: "#ECF0F1",
                     borderRadius: "50%",
                     width: "48px",
                     height: "48px",
@@ -1050,7 +1187,7 @@ const LearnerLayout = () => {
                 </div>
                 <div
                   style={{
-                    fontSize: "14px",
+                    fontSize: "12px",
                     fontWeight: "500",
                     marginBottom: "4px",
                   }}
@@ -1085,11 +1222,11 @@ const LearnerLayout = () => {
             padding: "12px 16px",
             margin: "4px 8px 8px",
             borderRadius: "8px",
-            background: "linear-gradient(135deg, #667eea, #764ba2)",
-            color: "#fff",
+            background: "#2C5F8D",
+            color: "var(--color-bg-primary)",
             textDecoration: "none",
             fontWeight: "500",
-            fontSize: "14px",
+            fontSize: "12px",
             transition: "all 0.3s ease",
             gap: "6px",
           }}
@@ -1112,10 +1249,10 @@ const LearnerLayout = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "#2C5F8D",
               margin: "-24px -24px 0 -24px",
               padding: "20px 24px",
-              color: "#fff",
+              color: "var(--color-bg-primary)",
             }}
           >
             <Space>
@@ -1129,11 +1266,11 @@ const LearnerLayout = () => {
                   justifyContent: "center",
                 }}
               >
-                <GraduationCap size={24} style={{ color: "#fff" }} />
+                <GraduationCap size={24} style={{ color: "var(--color-bg-primary)" }} />
               </div>
               <Title
                 level={4}
-                style={{ margin: 0, color: "#fff", fontWeight: "600" }}
+                style={{ margin: 0, color: "var(--color-bg-primary)", fontWeight: "600" }}
               >
                 TOEIC Learning
               </Title>
@@ -1143,7 +1280,7 @@ const LearnerLayout = () => {
               icon={<X size={20} />}
               onClick={() => setMobileDrawerVisible(false)}
               style={{
-                color: "#fff",
+                color: "var(--color-bg-primary)",
                 background: "rgba(255,255,255,0.15)",
                 border: "none",
                 borderRadius: "8px",
@@ -1156,7 +1293,7 @@ const LearnerLayout = () => {
         open={mobileDrawerVisible}
         bodyStyle={{
           padding: 0,
-          background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+          background: "#FFFFFF",
         }}
         width={280}
         closable={false}
@@ -1200,7 +1337,7 @@ const LearnerLayout = () => {
                 flexShrink: 0,
               }}
             >
-              <GraduationCap size={24} style={{ color: "#764ba2" }} />
+              <GraduationCap size={24} style={{ color: "var(--color-brand-purple-dark)" }} />
             </div>
             {!collapsed && (
               <div style={{ overflow: "hidden" }}>
@@ -1319,7 +1456,7 @@ const LearnerLayout = () => {
         {/* Header */}
         <Header
           style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "#2C5F8D",
             padding: "0 32px 0 32px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
             zIndex: 100,
@@ -1364,7 +1501,7 @@ const LearnerLayout = () => {
                 border: "none",
                 color: "white",
                 cursor: "pointer",
-                fontSize: "22px",
+                fontSize: "20px",
                 marginRight: "12px",
                 padding: "4px 8px",
               }}
@@ -1380,7 +1517,7 @@ const LearnerLayout = () => {
               className="mobile-menu-btn"
               style={{
                 display: "none",
-                color: "#fff",
+                color: "var(--color-bg-primary)",
                 backgroundColor: "rgba(255,255,255,0.15)",
                 border: "none",
                 borderRadius: "8px",
@@ -1407,7 +1544,7 @@ const LearnerLayout = () => {
                   background: "rgba(255,255,255,0.96)",
                   backdropFilter: "blur(10px)",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  fontSize: "15px",
+                  fontSize: "12px",
                   height: "38px",
                   paddingLeft: 32,
                 }}
@@ -1439,7 +1576,7 @@ const LearnerLayout = () => {
               <Card
                 size="small"
                 style={{
-                  background: "linear-gradient(135deg, #ff6b6b, #ee5a52)",
+                  background: "#E74C3C",
                   border: "none",
                   cursor: "pointer",
                   borderRadius: "10px",
@@ -1471,12 +1608,12 @@ const LearnerLayout = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Flame size={14} style={{ color: "#fff" }} />
+                    <Flame size={14} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
-                  <div style={{ color: "#fff" }}>
+                  <div style={{ color: "var(--color-bg-primary)" }}>
                     <div
                       style={{
-                        fontSize: "14px",
+                        fontSize: "12px",
                         fontWeight: "bold",
                         lineHeight: 1,
                       }}
@@ -1491,7 +1628,7 @@ const LearnerLayout = () => {
               <Card
                 size="small"
                 style={{
-                  background: "linear-gradient(135deg, #4facfe, #00f2fe)",
+                  background: "#3498DB",
                   border: "none",
                   borderRadius: "10px",
                   boxShadow: "0 2px 8px rgba(79, 172, 254, 0.2)",
@@ -1519,12 +1656,12 @@ const LearnerLayout = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Clock size={14} style={{ color: "#fff" }} />
+                    <Clock size={14} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
-                  <div style={{ color: "#fff" }}>
+                  <div style={{ color: "var(--color-bg-primary)" }}>
                     <div
                       style={{
-                        fontSize: "14px",
+                        fontSize: "12px",
                         fontWeight: "bold",
                         lineHeight: 1,
                       }}
@@ -1544,7 +1681,7 @@ const LearnerLayout = () => {
               onClick={toggleDarkMode}
               style={{
                 background: "linear-gradient(135deg, #feca57, #ff9ff3)",
-                color: "#fff",
+                color: "var(--color-bg-primary)",
                 border: "none",
                 borderRadius: "8px",
                 width: "36px",
@@ -1567,7 +1704,7 @@ const LearnerLayout = () => {
                 boxShadow:
                   "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                 border: "1px solid rgba(0, 0, 0, 0.05)",
-                background: "#fff",
+                background: "var(--color-bg-primary)",
                 minWidth: "360px",
                 maxWidth: "400px",
                 padding: "0",
@@ -1592,7 +1729,7 @@ const LearnerLayout = () => {
                       unreadCount > 0
                         ? "linear-gradient(135deg, #a8edea, #fed6e3)"
                         : "rgba(255,255,255,0.15)",
-                    color: unreadCount > 0 ? "#722ed1" : "#fff",
+                    color: unreadCount > 0 ? "var(--color-chart-4)" : "var(--color-bg-primary)",
                     border: "none",
                     borderRadius: "8px",
                     width: "36px",
@@ -1615,7 +1752,7 @@ const LearnerLayout = () => {
                       position: "absolute",
                       top: 8,
                       right: 2,
-                      background: "#ff4d4f",
+                      background: "var(--color-danger)",
                       boxShadow: "0 2px 8px rgba(255, 77, 79, 0.3)",
                       minWidth: 16,
                       height: 16,
@@ -1643,7 +1780,7 @@ const LearnerLayout = () => {
                   boxShadow:
                     "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                   border: "1px solid rgba(0, 0, 0, 0.05)",
-                  background: "#fff",
+                  background: "var(--color-bg-primary)",
                   minWidth: "280px",
                   padding: "0",
                   overflow: "hidden",
@@ -1668,8 +1805,8 @@ const LearnerLayout = () => {
                     size={32}
                     src={info?.avatar}
                     style={{
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
-                      color: "#fff",
+                      background: "#2C5F8D",
+                      color: "var(--color-bg-primary)",
                       border: "2px solid rgba(255,255,255,0.3)",
                       display: "flex",
                       alignItems: "center",
@@ -1681,9 +1818,9 @@ const LearnerLayout = () => {
                   <Text
                     style={{
                       display: windowWidth > 768 ? "block" : "none",
-                      color: "#fff",
+                      color: "var(--color-bg-primary)",
                       fontWeight: "500",
-                      fontSize: "15px",
+                      fontSize: "12px",
                       marginLeft: 6,
                     }}
                   >
@@ -1706,7 +1843,7 @@ const LearnerLayout = () => {
         >
           <div
             style={{
-              background: "#fff",
+              background: "var(--color-bg-primary)",
               borderRadius: "16px",
               minHeight: "100%",
               overflow: "hidden",
@@ -1749,20 +1886,20 @@ const LearnerLayout = () => {
                 <Space direction="vertical" align="center">
                   <div
                     style={{
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      background: "#2C5F8D",
                       borderRadius: "12px",
                       padding: "8px",
                       display: "inline-flex",
                       marginBottom: "8px",
                     }}
                   >
-                    <GraduationCap size={20} style={{ color: "#fff" }} />
+                    <GraduationCap size={20} style={{ color: "var(--color-bg-primary)" }} />
                   </div>
                   <Text
                     type="secondary"
                     style={{
-                      fontSize: "14px",
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
+                      fontSize: "12px",
+                      background: "#2C5F8D",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       fontWeight: "500",
@@ -1790,11 +1927,11 @@ const LearnerLayout = () => {
                     style={{
                       color: "#8c8c8c",
                       textDecoration: "none",
-                      fontSize: "13px",
+                      fontSize: "12px",
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Trợ giúp
@@ -1804,11 +1941,11 @@ const LearnerLayout = () => {
                     style={{
                       color: "#8c8c8c",
                       textDecoration: "none",
-                      fontSize: "13px",
+                      fontSize: "12px",
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Chính sách bảo mật
@@ -1818,11 +1955,11 @@ const LearnerLayout = () => {
                     style={{
                       color: "#8c8c8c",
                       textDecoration: "none",
-                      fontSize: "13px",
+                      fontSize: "12px",
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Điều khoản sử dụng
@@ -1832,11 +1969,11 @@ const LearnerLayout = () => {
                     style={{
                       color: "#8c8c8c",
                       textDecoration: "none",
-                      fontSize: "13px",
+                      fontSize: "12px",
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Liên hệ
@@ -1851,7 +1988,7 @@ const LearnerLayout = () => {
       {/* Floating Action Button */}
       <FloatButton.BackTop
         style={{
-          background: "linear-gradient(135deg, #667eea, #764ba2)",
+          background: "#2C5F8D",
           border: "none",
           boxShadow: "0 4px 16px rgba(102, 126, 234, 0.3)",
         }}
@@ -2016,7 +2153,7 @@ const LearnerLayout = () => {
 
         .ant-menu-item-selected {
           background: linear-gradient(135deg, #e6f7ff, #bae7ff) !important;
-          color: #1890ff !important;
+          color: var(--color-primary) !important;
           box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
           transform: translateX(4px) !important;
         }
@@ -2032,7 +2169,7 @@ const LearnerLayout = () => {
         }
 
         .ant-menu-submenu-selected > .ant-menu-submenu-title {
-          color: #1890ff !important;
+          color: var(--color-primary) !important;
           background: linear-gradient(135deg, #e6f7ff, #bae7ff) !important;
         }
 
@@ -2070,7 +2207,7 @@ const LearnerLayout = () => {
         }
 
         ::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: #2C5F8D;
           border-radius: 3px;
         }
 

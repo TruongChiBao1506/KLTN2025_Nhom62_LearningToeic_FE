@@ -1,9 +1,9 @@
-.table-section1-to-5 th {
-   color: #052649; 
+﻿.table-section1-to-5 th {
+   color: var(--color-brand-navy); 
    font-weight: bold;
 }
 .table-section1-to-5 td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal;
 }
 .table-section1-to-5 .table-row.shadow-on-hover:hover {
@@ -23,7 +23,7 @@
     border-radius: 10px;
 }
 .table-section1-to-5 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 .table-section1-to-5 audio {
     width: 100%;

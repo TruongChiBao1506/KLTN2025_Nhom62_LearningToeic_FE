@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -34,7 +34,7 @@ const { Title, Text, Paragraph } = Typography;
 // Function to get card color based on index
 const getCardColor = (index) => {
   const colors = [
-    "#667eea, #764ba2", // Purple gradient
+    "#2C5F8D", // Purple gradient
     "#f093fb, #f5576c", // Pink gradient
     "#4facfe, #00f2fe", // Blue gradient
     "#43e97b, #38f9d7", // Green gradient
@@ -342,7 +342,7 @@ const TopicDetail = () => {
               <Link
                 to="/learner/topics"
                 style={{
-                  color: "#667eea",
+                  color: "var(--color-brand-purple)",
                   textDecoration: "none",
                   display: "inline-flex",
                   alignItems: "center",
@@ -354,17 +354,17 @@ const TopicDetail = () => {
                 }}
               >
                 <ArrowLeft size={16} style={{ marginRight: "6px" }} />
-                <Text style={{ fontSize: "14px", color: "#667eea", fontWeight: "500" }}>
+                <Text style={{ fontSize: "12px", color: "var(--color-brand-purple)", fontWeight: "500" }}>
                   Quay lại
                 </Text>
               </Link>
               <div
                 style={{
-                  background: "linear-gradient(45deg, #667eea, #764ba2)",
+                  background: "#2C5F8D",
                   color: "white",
                   padding: "6px 16px",
                   borderRadius: "20px",
-                  fontSize: "13px",
+                  fontSize: "12px",
                   display: "flex",
                   alignItems: "center",
                   marginRight: "16px",
@@ -387,13 +387,13 @@ const TopicDetail = () => {
           <Col span={8}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Input
-                prefix={<Search size={14} style={{ color: "#667eea" }} />}
+                prefix={<Search size={14} style={{ color: "var(--color-brand-purple)" }} />}
                 placeholder="Tìm kiếm từ vựng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
                   borderRadius: "20px",
-                  fontSize: "13px",
+                  fontSize: "12px",
                   border: "2px solid #667eea",
                   boxShadow: "0 2px 4px rgba(102,126,234,0.2)",
                 }}
@@ -426,7 +426,7 @@ const TopicDetail = () => {
                 right: "-50px",
                 width: "200px",
                 height: "200px",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "#2C5F8D",
                 borderRadius: "50%",
                 opacity: 0.05,
                 zIndex: 0
@@ -452,7 +452,7 @@ const TopicDetail = () => {
                         <div style={{ 
                           textAlign: "center", 
                           padding: "16px 12px", 
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
+                          background: "#2C5F8D", 
                           borderRadius: "16px", 
                           color: "white",
                           boxShadow: "0 8px 24px rgba(102,126,234,0.3)"
@@ -526,7 +526,7 @@ const TopicDetail = () => {
                   </Title>
                   <Text
                     type="secondary"
-                    style={{ fontSize: "14px", color: "#7f8c8d" }}
+                    style={{ fontSize: "12px", color: "#7f8c8d" }}
                   >
                     {searchTerm
                       ? "Thử tìm kiếm với từ khóa khác"
@@ -593,13 +593,13 @@ const TopicDetail = () => {
                                 size={16}
                                 fill={
                                   favoriteVocabs.includes(vocab._id)
-                                    ? "#faad14"
+                                    ? "var(--color-warning)"
                                     : "none"
                                 }
                                 color={
                                   favoriteVocabs.includes(vocab._id)
-                                    ? "#faad14"
-                                    : "#d9d9d9"
+                                    ? "var(--color-warning)"
+                                    : "var(--color-border)"
                                 }
                               />
                             }
@@ -642,7 +642,7 @@ const TopicDetail = () => {
                               icon={
                                 <Volume2
                                   size={16}
-                                  style={{ color: "#667eea" }}
+                                  style={{ color: "var(--color-brand-purple)" }}
                                 />
                               }
                               onClick={() => playPronunciation(vocab.word)}
@@ -749,7 +749,7 @@ const TopicDetail = () => {
               >
                 <BookOpen
                   size={18}
-                  style={{ marginRight: "8px", color: "#667eea" }}
+                  style={{ marginRight: "8px", color: "var(--color-brand-purple)" }}
                 />
                 Luyện tập
               </Title>
@@ -778,7 +778,7 @@ const TopicDetail = () => {
                 >
                   <div style={{ textAlign: "center" }}>
                     <div style={{
-                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      background: "#2C5F8D",
                       borderRadius: "12px",
                       padding: "12px",
                       marginBottom: "12px",
@@ -803,7 +803,7 @@ const TopicDetail = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: "13px",
+                        fontSize: "12px",
                         marginBottom: "16px",
                         color: "#7f8c8d",
                         display: "block",
@@ -816,8 +816,8 @@ const TopicDetail = () => {
                         type="primary"
                         size="middle"
                         style={{
-                          fontSize: "13px",
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          fontSize: "12px",
+                          background: "#2C5F8D",
                           border: "none",
                           color: "white",
                           borderRadius: "12px",
@@ -881,7 +881,7 @@ const TopicDetail = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: "13px",
+                        fontSize: "12px",
                         marginBottom: "16px",
                         color: "#7f8c8d",
                         display: "block",
@@ -895,7 +895,7 @@ const TopicDetail = () => {
                         type="primary"
                         size="middle"
                         style={{
-                          fontSize: "13px",
+                          fontSize: "12px",
                           background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
                           border: "none",
                           color: "white",
@@ -960,7 +960,7 @@ const TopicDetail = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: "13px",
+                        fontSize: "12px",
                         marginBottom: "16px",
                         color: "#7f8c8d",
                         display: "block",
@@ -974,7 +974,7 @@ const TopicDetail = () => {
                         type="primary"
                         size="middle"
                         style={{
-                          fontSize: "13px",
+                          fontSize: "12px",
                           background: "linear-gradient(135deg, #1890ff 0%, #36cfc9 100%)",
                           border: "none",
                           color: "white",
@@ -1038,7 +1038,7 @@ const TopicDetail = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: "13px",
+                        fontSize: "12px",
                         marginBottom: "16px",
                         color: "#7f8c8d",
                         display: "block",
@@ -1051,7 +1051,7 @@ const TopicDetail = () => {
                         type="primary"
                         size="middle"
                         style={{
-                          fontSize: "13px",
+                          fontSize: "12px",
                           background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
                           border: "none",
                           color: "white",
@@ -1097,17 +1097,17 @@ const TopicDetail = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "12px 16px",
                       backgroundColor: "rgba(102,126,234,0.08)",
                       borderRadius: "12px",
                       border: "1px solid rgba(102,126,234,0.1)"
                     }}
                   >
-                    <Text style={{ color: "#667eea", fontWeight: "600" }}>
+                    <Text style={{ color: "var(--color-brand-purple)", fontWeight: "600" }}>
                       📚 Tổng:
                     </Text>
-                    <Text strong style={{ color: "#2c3e50", fontSize: "14px" }}>
+                    <Text strong style={{ color: "#2c3e50", fontSize: "12px" }}>
                       {vocabularies.length} từ
                     </Text>
                   </div>
@@ -1115,7 +1115,7 @@ const TopicDetail = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "12px 16px",
                       backgroundColor: "rgba(52,152,219,0.08)",
                       borderRadius: "12px",
@@ -1125,7 +1125,7 @@ const TopicDetail = () => {
                     <Text style={{ color: "#3498db", fontWeight: "600" }}>
                       👁️ Hiển thị:
                     </Text>
-                    <Text strong style={{ color: "#2c3e50", fontSize: "14px" }}>
+                    <Text strong style={{ color: "#2c3e50", fontSize: "12px" }}>
                       {filteredVocabularies.length} từ
                     </Text>
                   </div>
@@ -1133,7 +1133,7 @@ const TopicDetail = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       padding: "12px 16px",
                       backgroundColor: "rgba(231,76,60,0.08)",
                       borderRadius: "12px",
@@ -1143,7 +1143,7 @@ const TopicDetail = () => {
                     <Text style={{ color: "#e74c3c", fontWeight: "600" }}>
                       ❤️ Yêu thích:
                     </Text>
-                    <Text strong style={{ color: "#e74c3c", fontSize: "14px" }}>
+                    <Text strong style={{ color: "#e74c3c", fontSize: "12px" }}>
                       {favoriteVocabs.length} từ
                     </Text>
                   </div>

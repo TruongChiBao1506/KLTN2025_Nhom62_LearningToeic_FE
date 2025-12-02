@@ -1,4 +1,4 @@
-.question-section {
+﻿.question-section {
   margin-bottom: 20px;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .transcript {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 15px;
   border-radius: 5px;
   margin-top: 10px;
@@ -58,7 +58,7 @@
 }
 
 .question-list-section {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 10px;
   padding: 15px;
 }
@@ -75,7 +75,7 @@
   height: 40px;
   border-radius: 50%;
   border: 1px solid #ddd;
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;

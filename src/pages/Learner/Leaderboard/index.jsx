@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import leaderboardService from '../../../services/leaderboardService';
@@ -293,7 +293,7 @@ const Leaderboard = () => {
           </div>
 
           {leaderboard.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
               <div style={{ fontSize: '3rem', marginBottom: '20px' }}>📊</div>
               <div style={{ fontSize: '1.1rem' }}>
                 Chưa có dữ liệu bảng xếp hạng cho {formatPeriodLabel(activePeriod).toLowerCase()}

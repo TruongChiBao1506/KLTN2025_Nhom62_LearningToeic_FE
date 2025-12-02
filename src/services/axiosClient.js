@@ -2,24 +2,32 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const getToken = () => {
-    // Ưu tiên admin token trước
-    const adminToken = localStorage.getItem('adminToken');
-    const learnerToken = localStorage.getItem('learnerToken');
-    const userToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    // ✅ Priority: admin -> teacher -> learner -> general user
+    // ✅ Read from sessionStorage (security improvement)
+    const adminToken = sessionStorage.getItem('adminToken');
+    const teacherToken = sessionStorage.getItem('teacherToken');
+    const learnerToken = sessionStorage.getItem('learnerToken');
+    const userToken = sessionStorage.getItem('accessToken');
     
-    return adminToken || learnerToken || userToken;
+    return adminToken || teacherToken || learnerToken || userToken;
 };
 
 const getRefreshToken = () => {
-    const adminRefreshToken = localStorage.getItem('adminRefreshToken');
-    const learnerRefreshToken = localStorage.getItem('learnerRefreshToken');
-    const userRefreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+    // ✅ Read from sessionStorage
+    const adminRefreshToken = sessionStorage.getItem('adminRefreshToken');
+    const teacherRefreshToken = sessionStorage.getItem('teacherRefreshToken');
+    const learnerRefreshToken = sessionStorage.getItem('learnerRefreshToken');
+    const userRefreshToken = sessionStorage.getItem('refreshToken');
     
-    return adminRefreshToken || learnerRefreshToken || userRefreshToken;
+    return adminRefreshToken || teacherRefreshToken || learnerRefreshToken || userRefreshToken;
 };
 
-const isRemembered = () => {
-    return localStorage.getItem('rememberMe') === 'true';
+const getUserType = () => {
+    // ✅ Check sessionStorage for token presence
+    if (sessionStorage.getItem('adminToken')) return 'admin';
+    if (sessionStorage.getItem('teacherToken')) return 'teacher';
+    if (sessionStorage.getItem('learnerToken')) return 'learner';
+    return 'user';
 };
 
 const axiosClient = axios.create({
@@ -70,31 +78,41 @@ axiosClient.interceptors.response.use(
                 });
                 
                 const newToken = response.data.token || response.data.accessToken;
+                const userType = getUserType();
                 
-                //   Lưu token mới vào đúng storage
-                const hasAdminToken = localStorage.getItem('adminToken');
-                const hasLearnerToken = localStorage.getItem('learnerToken');
-                
-                if (hasAdminToken) {
-                    // Nếu đang dùng admin token, lưu vào admin storage
-                    localStorage.setItem('adminToken', newToken);
+                // ✅ Save new token to sessionStorage based on user type
+                if (userType === 'admin') {
+                    sessionStorage.setItem('adminToken', newToken);
                     if (response.data.refreshToken) {
-                        localStorage.setItem('adminRefreshToken', response.data.refreshToken);
+                        sessionStorage.setItem('adminRefreshToken', response.data.refreshToken);
                     }
-                } else if (hasLearnerToken) {
-                    // Nếu đang dùng learner token, lưu vào learner storage
-                    localStorage.setItem('learnerToken', newToken);
+                    if (response.data.jwtExpirationTime) {
+                        sessionStorage.setItem('adminAccessTokenExpirationTime', 
+                            (Date.now() + response.data.jwtExpirationTime).toString());
+                    }
+                } else if (userType === 'teacher') {
+                    sessionStorage.setItem('teacherToken', newToken);
                     if (response.data.refreshToken) {
-                        localStorage.setItem('learnerRefreshToken', response.data.refreshToken);
+                        sessionStorage.setItem('teacherRefreshToken', response.data.refreshToken);
+                    }
+                    if (response.data.jwtExpirationTime) {
+                        sessionStorage.setItem('teacherAccessTokenExpirationTime', 
+                            (Date.now() + response.data.jwtExpirationTime).toString());
+                    }
+                } else if (userType === 'learner') {
+                    sessionStorage.setItem('learnerToken', newToken);
+                    if (response.data.refreshToken) {
+                        sessionStorage.setItem('learnerRefreshToken', response.data.refreshToken);
+                    }
+                    if (response.data.jwtExpirationTime) {
+                        sessionStorage.setItem('learnerAccessTokenExpirationTime', 
+                            (Date.now() + response.data.jwtExpirationTime).toString());
                     }
                 } else {
-                    // Nếu là user token thường
-                    const remembered = isRemembered();
-                    const storage = remembered ? localStorage : sessionStorage;
-                    storage.setItem('accessToken', newToken);
-                    
+                    // General user tokens
+                    sessionStorage.setItem('accessToken', newToken);
                     if (response.data.refreshToken) {
-                        storage.setItem('refreshToken', response.data.refreshToken);
+                        sessionStorage.setItem('refreshToken', response.data.refreshToken);
                     }
                 }
                 
@@ -102,28 +120,29 @@ axiosClient.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
                 return axiosClient(originalRequest);
             } catch (refreshError) {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('user');
-                localStorage.removeItem('adminToken');
-                localStorage.removeItem('adminRefreshToken');
-                localStorage.removeItem('adminAccessTokenExpirationTime');
-                localStorage.removeItem('adminRefreshTokenExpirationTime');
-                localStorage.removeItem('learnerToken');
-                localStorage.removeItem('learnerRefreshToken');
-                localStorage.removeItem('learnerAccessTokenExpirationTime');
-                localStorage.removeItem('learnerRefreshTokenExpirationTime');
-                sessionStorage.removeItem('accessToken');
-                sessionStorage.removeItem('refreshToken');
-                sessionStorage.removeItem('user');
+                // ✅ Clear all tokens from both storages on refresh failure
+                sessionStorage.clear();
                 
-                // Redirect về trang phù hợp
-                const isAdminPage = window.location.pathname.includes('/admin');
-                const isLearnerPage = window.location.pathname.includes('/learner');
-                if (isAdminPage) {
-                    window.location.href = '/admin/signin';
-                } else if (isLearnerPage) {
-                    window.location.href = '/auth/signin';
+                // Clear user data from localStorage
+                localStorage.removeItem('user');
+                localStorage.removeItem('learnerUser');
+                
+                // Clean up old localStorage tokens (backward compatibility)
+                const oldKeys = [
+                    'accessToken', 'refreshToken',
+                    'adminToken', 'adminRefreshToken', 'adminAccessTokenExpirationTime', 'adminRefreshTokenExpirationTime',
+                    'teacherToken', 'teacherRefreshToken', 'teacherAccessTokenExpirationTime', 'teacherRefreshTokenExpirationTime',
+                    'learnerToken', 'learnerRefreshToken', 'learnerAccessTokenExpirationTime', 'learnerRefreshTokenExpirationTime',
+                    'learnerAuthenticated'
+                ];
+                oldKeys.forEach(key => localStorage.removeItem(key));
+                
+                // ✅ Redirect based on current page
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('/admin')) {
+                    window.location.href = '/auth/admin/signin';
+                } else if (currentPath.includes('/teacher')) {
+                    window.location.href = '/auth/admin/signin';
                 } else {
                     window.location.href = '/auth/signin';
                 }

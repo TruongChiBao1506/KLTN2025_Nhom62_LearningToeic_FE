@@ -1,14 +1,14 @@
-.table-row.shadow-on-hover:hover {
+﻿.table-row.shadow-on-hover:hover {
    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9); 
 }
 
 th {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: bold;
 }
 
 td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal;
 }
 
@@ -43,15 +43,15 @@ td {
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Content truncation styles */
@@ -69,10 +69,10 @@ td div[title] {
 
 .text-bg-success {
     background-color: #198754 !important;
-    color: #fff !important;
+    color: var(--color-bg-primary) !important;
 }
 
 .text-bg-danger {
-    background-color: #dc3545 !important;
-    color: #fff !important;
+    background-color: var(--color-danger) !important;
+    color: var(--color-bg-primary) !important;
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+﻿import React, { useRef, useEffect, useState } from "react";
 import { Space, Button, Alert } from "antd";
 import { Volume2, Play, Pause, AlertCircle } from "lucide-react";
 import audioRegistry from "../utils/AudioRegistry";
@@ -224,7 +224,7 @@ const AudioPlayer = ({ src, style = {}, questionId }) => {
 
   return (
     <Space align="center" style={style}>
-      <Volume2 size={16} style={{ color: "#1890ff" }} />
+      <Volume2 size={16} style={{ color: "var(--color-primary)" }} />
       <Button
         type="primary"
         icon={isPlaying ? <Pause size={14} /> : <Play size={14} />}

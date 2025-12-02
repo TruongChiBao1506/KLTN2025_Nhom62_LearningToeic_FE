@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import {
   Card,
   Button,
@@ -103,8 +103,8 @@ const TestPart1 = ({
   const getQuestionButtonStyle = (question) => {
     if (!question.selectedOption) {
       return {
-        backgroundColor: "#f5f5f5",
-        color: "#666",
+        backgroundColor: "var(--color-bg-secondary)",
+        color: "var(--color-text-secondary)",
         border: "1px solid #d9d9d9",
       };
     }
@@ -112,13 +112,13 @@ const TestPart1 = ({
     if (question.isGraded) {
       if (question.selectedLetter === question.correctOption) {
         return {
-          backgroundColor: "#52c41a",
+          backgroundColor: "var(--color-success)",
           color: "white",
           border: "1px solid #52c41a",
         };
       } else {
         return {
-          backgroundColor: "#ff4d4f",
+          backgroundColor: "var(--color-danger)",
           color: "white",
           border: "1px solid #ff4d4f",
         };
@@ -126,7 +126,7 @@ const TestPart1 = ({
     }
 
     return {
-      backgroundColor: "#fa8c16",
+      backgroundColor: "var(--color-chart-6)",
       color: "white",
       border: "1px solid #fa8c16",
     };
@@ -159,8 +159,8 @@ const TestPart1 = ({
                     shape="circle"
                     size="large"
                     style={{
-                      backgroundColor: "#1890ff",
-                      borderColor: "#1890ff",
+                      backgroundColor: "var(--color-primary)",
+                      borderColor: "var(--color-primary)",
                       fontWeight: "bold",
                     }}
                   >
@@ -187,7 +187,7 @@ const TestPart1 = ({
                         gap: "12px",
                       }}
                     >
-                      <Volume2 size={20} color="#1890ff" />
+                      <Volume2 size={20} color="var(--color-primary)" />
                       <div style={{ flex: 1 }}>
                         <audio
                           controls
@@ -231,7 +231,7 @@ const TestPart1 = ({
                           <div
                             style={{
                               fontSize: "10px",
-                              color: "#666",
+                              color: "var(--color-text-secondary)",
                               marginTop: "4px",
                             }}
                           >
@@ -246,7 +246,7 @@ const TestPart1 = ({
                   <Col xs={24} md={12}>
                     <div
                       style={{
-                        background: "#f8f9fa",
+                        background: "var(--color-bg-secondary)",
                         padding: "16px",
                         borderRadius: "8px",
                         textAlign: "center",
@@ -307,20 +307,20 @@ const TestPart1 = ({
                               borderRadius: "8px",
                               border: `2px solid ${
                                 isCorrect
-                                  ? "#52c41a"
+                                  ? "var(--color-success)"
                                   : isWrong
-                                  ? "#ff4d4f"
+                                  ? "var(--color-danger)"
                                   : isSelected
-                                  ? "#1890ff"
+                                  ? "var(--color-primary)"
                                   : "#f0f0f0"
                               }`,
                               backgroundColor: isCorrect
-                                ? "#f6ffed"
+                                ? "var(--color-success-bg)"
                                 : isWrong
-                                ? "#fff2f0"
+                                ? "var(--color-danger-bg)"
                                 : isSelected
-                                ? "#e6f7ff"
-                                : "#fafafa",
+                                ? "var(--color-info-bg)"
+                                : "var(--color-bg-hover)",
                               position: "relative",
                               transition: "all 0.3s ease",
                             }}
@@ -339,7 +339,7 @@ const TestPart1 = ({
                             {isCorrect && (
                               <Check
                                 size={24}
-                                color="#52c41a"
+                                color="var(--color-success)"
                                 style={{
                                   position: "absolute",
                                   right: "16px",
@@ -351,7 +351,7 @@ const TestPart1 = ({
                             {isWrong && (
                               <X
                                 size={24}
-                                color="#ff4d4f"
+                                color="var(--color-danger)"
                                 style={{
                                   position: "absolute",
                                   right: "16px",
@@ -521,14 +521,14 @@ const TestPart1 = ({
               <div style={{ textAlign: "center" }}>
                 <Space size="large">
                   <Space>
-                    <Check size={20} color="#52c41a" />
-                    <Text strong style={{ color: "#52c41a" }}>
+                    <Check size={20} color="var(--color-success)" />
+                    <Text strong style={{ color: "var(--color-success)" }}>
                       {getCorrectCount}/{questions.length}
                     </Text>
                   </Space>
                   <Space>
-                    <X size={20} color="#ff4d4f" />
-                    <Text strong style={{ color: "#ff4d4f" }}>
+                    <X size={20} color="var(--color-danger)" />
+                    <Text strong style={{ color: "var(--color-danger)" }}>
                       {getIncorrectCount}/{questions.length}
                     </Text>
                   </Space>

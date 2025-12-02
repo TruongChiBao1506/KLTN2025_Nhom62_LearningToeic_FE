@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   Card, 
@@ -274,13 +274,13 @@ const VocabularyQuiz = () => {
   // Get question type display
 //   const getQuestionTypeDisplay = (type) => {
 //     const types = {
-//       'fill-blank': { text: 'Điền từ', color: '#1890ff', icon: '📝' },
-//       'complete-sentence': { text: 'Hoàn thành câu', color: '#52c41a', icon: '✏️' },
-//       'meaning': { text: 'Nghĩa từ vựng', color: '#faad14', icon: '📖' },
-//       'synonym': { text: 'Từ đồng nghĩa', color: '#722ed1', icon: '🔄' },
-//       'antonym': { text: 'Từ trái nghĩa', color: '#f5222d', icon: '⚡' }
+//       'fill-blank': { text: 'Điền từ', color: 'var(--color-primary)', icon: '📝' },
+//       'complete-sentence': { text: 'Hoàn thành câu', color: 'var(--color-success)', icon: '✏️' },
+//       'meaning': { text: 'Nghĩa từ vựng', color: 'var(--color-warning)', icon: '📖' },
+//       'synonym': { text: 'Từ đồng nghĩa', color: 'var(--color-chart-4)', icon: '🔄' },
+//       'antonym': { text: 'Từ trái nghĩa', color: 'var(--color-danger)', icon: '⚡' }
 //     };
-//     return types[type] || { text: 'Trắc nghiệm', color: '#666', icon: '❓' };
+//     return types[type] || { text: 'Trắc nghiệm', color: 'var(--color-text-secondary)', icon: '❓' };
 //   };
 
   if (loading) {
@@ -297,7 +297,7 @@ const VocabularyQuiz = () => {
     return (
       <div className="quiz-no-questions">
         <Result
-          icon={<BookOpen size={64} style={{ color: '#faad14' }} />}
+          icon={<BookOpen size={64} style={{ color: 'var(--color-warning)' }} />}
           title="Chưa có câu hỏi"
           subTitle="Chủ đề này chưa có câu hỏi trắc nghiệm nào."
           extra={
@@ -321,7 +321,7 @@ const VocabularyQuiz = () => {
             <div style={{
               width: '80px',
               height: '80px',
-              background: 'linear-gradient(135deg, #1890ff 0%, #36cfc9 100%)',
+              background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-info) 100%)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -345,7 +345,7 @@ const VocabularyQuiz = () => {
             {/* Subtitle */}
             <Text style={{ 
               fontSize: 16, 
-              color: '#1890ff',
+              color: 'var(--color-primary)',
               display: 'block',
               marginBottom: 32,
               fontWeight: '500'
@@ -365,13 +365,13 @@ const VocabularyQuiz = () => {
                     textAlign: 'center'
                   }}
                 >
-                  <div style={{ color: '#1890ff', fontSize: '16px', marginBottom: 4 }}>
+                  <div style={{ color: 'var(--color-primary)', fontSize: '16px', marginBottom: 4 }}>
                     <BookOpen size={20} style={{ marginBottom: 4 }} />
                   </div>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1890ff', marginBottom: 4 }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: 4 }}>
                     {questions.length}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                     Câu hỏi
                   </div>
                 </Card>
@@ -380,19 +380,19 @@ const VocabularyQuiz = () => {
                 <Card 
                   size="small" 
                   style={{ 
-                    background: '#fff7e6', 
+                    background: 'var(--color-warning-bg)', 
                     border: '1px solid #ffd591',
                     borderRadius: '12px',
                     textAlign: 'center'
                   }}
                 >
-                  <div style={{ color: '#fa8c16', fontSize: '16px', marginBottom: 4 }}>
+                  <div style={{ color: 'var(--color-chart-6)', fontSize: '16px', marginBottom: 4 }}>
                     <Clock size={20} style={{ marginBottom: 4 }} />
                   </div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fa8c16', marginBottom: 4 }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--color-chart-6)', marginBottom: 4 }}>
                     Không giới hạn
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                     Thời gian
                   </div>
                 </Card>
@@ -401,19 +401,19 @@ const VocabularyQuiz = () => {
                 <Card 
                   size="small" 
                   style={{ 
-                    background: '#f6ffed', 
+                    background: 'var(--color-success-bg)', 
                     border: '1px solid #b7eb8f',
                     borderRadius: '12px',
                     textAlign: 'center'
                   }}
                 >
-                  <div style={{ color: '#52c41a', fontSize: '16px', marginBottom: 4 }}>
+                  <div style={{ color: 'var(--color-success)', fontSize: '16px', marginBottom: 4 }}>
                     ⭐
                   </div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#52c41a', marginBottom: 4 }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--color-success)', marginBottom: 4 }}>
                     {Math.round((questions.length * 100) / questions.length)}%
                   </div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                     Mục tiêu
                   </div>
                 </Card>
@@ -423,7 +423,7 @@ const VocabularyQuiz = () => {
             {/* Instructions */}
             <Card 
               style={{ 
-                background: '#fafafa', 
+                background: 'var(--color-bg-hover)', 
                 border: '1px solid #f0f0f0',
                 borderRadius: '12px',
                 marginBottom: 32,
@@ -439,7 +439,7 @@ const VocabularyQuiz = () => {
               }}>
                 Hướng dẫn:
               </Title>
-              <div style={{ fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
+              <div style={{ fontSize: '12px', color: '#555', lineHeight: '1.6' }}>
                 <div style={{ marginBottom: 8 }}>
                   • Đọc câu hỏi và các lựa chọn một cách cẩn thận
                 </div>
@@ -468,7 +468,7 @@ const VocabularyQuiz = () => {
                   minWidth: 140, 
                   height: 48,
                   borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)',
+                  background: 'linear-gradient(135deg, var(--color-success) 0%, #73d13d 100%)',
                   border: 'none',
                   fontSize: '16px',
                   fontWeight: '500'
@@ -514,7 +514,7 @@ const VocabularyQuiz = () => {
               <Title level={2} style={{ marginBottom: 8, marginTop: 16 }}>
                 Hoàn thành bài kiểm tra!
               </Title>
-              <Text style={{ fontSize: 16, color: '#666' }}>
+              <Text style={{ fontSize: 16, color: 'var(--color-text-secondary)' }}>
                 Business & Finance
               </Text>
             </div>
@@ -666,7 +666,7 @@ const VocabularyQuiz = () => {
           <Progress 
             percent={progress} 
             showInfo={false} 
-            strokeColor="#1890ff"
+            strokeColor="var(--color-primary)"
             style={{ marginTop: 16 }}
           />
         </Card>
@@ -750,10 +750,10 @@ const VocabularyQuiz = () => {
                         <span className="option-text">
                           {option}
                           {hasAnswered && showCheck && (
-                            <CheckCircle size={16} style={{ marginLeft: 8, color: '#52c41a' }} />
+                            <CheckCircle size={16} style={{ marginLeft: 8, color: 'var(--color-success)' }} />
                           )}
                           {hasAnswered && showCross && (
-                            <span style={{ marginLeft: 8, color: '#f5222d' }}>✗</span>
+                            <span style={{ marginLeft: 8, color: 'var(--color-danger)' }}>✗</span>
                           )}
                         </span>
                       </Radio>
@@ -767,29 +767,29 @@ const VocabularyQuiz = () => {
                 <div className="answer-explanation" style={{ marginTop: 20 }}>
                   {selectedAnswers[currentQuestionIndex].isCorrect ? (
                     <div className="correct-feedback">
-                      <CheckCircle size={20} style={{ color: '#52c41a', marginRight: 8 }} />
-                      <Text strong style={{ color: '#52c41a' }}>Chính xác!</Text>
+                      <CheckCircle size={20} style={{ color: 'var(--color-success)', marginRight: 8 }} />
+                      <Text strong style={{ color: 'var(--color-success)' }}>Chính xác!</Text>
                     </div>
                   ) : (
                     <div className="incorrect-feedback">
                       <div style={{ marginBottom: 8 }}>
-                        <span style={{ color: '#f5222d', marginRight: 8 }}>✗</span>
-                        <Text strong style={{ color: '#f5222d' }}>Chưa đúng!</Text>
+                        <span style={{ color: 'var(--color-danger)', marginRight: 8 }}>✗</span>
+                        <Text strong style={{ color: 'var(--color-danger)' }}>Chưa đúng!</Text>
                       </div>
                       <div style={{ marginBottom: 8 }}>
                         <Text strong>Đáp án của bạn: </Text>
-                        <Text style={{ color: '#f5222d', fontWeight: 'bold' }}>{selectedAnswers[currentQuestionIndex].answer}</Text>
+                        <Text style={{ color: 'var(--color-danger)', fontWeight: 'bold' }}>{selectedAnswers[currentQuestionIndex].answer}</Text>
                       </div>
                       <div style={{ marginBottom: 8 }}>
                         <Text strong>Đáp án đúng: </Text>
-                        <Text style={{ color: '#52c41a', fontWeight: 'bold' }}>{currentQuestion.correctAnswer}</Text>
+                        <Text style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>{currentQuestion.correctAnswer}</Text>
                       </div>
                       {currentQuestion.questionExplanation && (
                         <div style={{ 
                           background: 'rgba(250,173,20,0.1)', 
                           padding: '12px', 
                           borderRadius: '8px',
-                          borderLeft: '4px solid #faad14'
+                          borderLeft: '4px solid var(--color-warning)'
                         }}>
                           <Text strong>Giải thích: </Text>
                           <Text>{currentQuestion.questionExplanation}</Text>
@@ -850,7 +850,7 @@ const VocabularyQuiz = () => {
                       isCorrect ? (
                         <CheckCircle size={12} className="answered-icon" />
                       ) : (
-                        <XCircle size={12} className="answered-icon" style={{ background: '#f5222d' }} />
+                        <XCircle size={12} className="answered-icon" style={{ background: 'var(--color-danger)' }} />
                       )
                     )}
                   </Button>
@@ -887,7 +887,7 @@ const VocabularyQuiz = () => {
                   size="large"
                   block
                   onClick={() => setShowSummary(true)}
-                  style={{ marginBottom: '8px', background: '#52c41a', borderColor: '#52c41a' }}
+                  style={{ marginBottom: '8px', background: 'var(--color-success)', borderColor: 'var(--color-success)' }}
                 >
                   Xem tổng kết
                 </Button>

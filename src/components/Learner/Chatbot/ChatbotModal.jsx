@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import {
   Modal,
   Input,
@@ -55,7 +55,7 @@ const chatStyles = {
   inputContainer: {
     transition: "all 0.3s ease",
     borderTop: "1px solid #f0f0f0",
-    backgroundColor: "#fff",
+    backgroundColor: "var(--color-bg-primary)",
   },
   floatingCard: {
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -97,7 +97,7 @@ const LoadingMessage = () => (
     <Avatar
       icon={<RobotOutlined />}
       style={{
-        backgroundColor: "#1890ff",
+        backgroundColor: "var(--color-primary)",
         marginRight: "8px",
         marginTop: "4px",
         flexShrink: 0,
@@ -108,7 +108,7 @@ const LoadingMessage = () => (
       style={{
         padding: "10px 14px",
         borderRadius: "18px",
-        backgroundColor: "#fff",
+        backgroundColor: "var(--color-bg-primary)",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
         display: "flex",
         alignItems: "center",
@@ -116,11 +116,11 @@ const LoadingMessage = () => (
     >
       <Spin
         indicator={
-          <LoadingOutlined style={{ fontSize: 16, color: "#1890ff" }} />
+          <LoadingOutlined style={{ fontSize: 16, color: "var(--color-primary)" }} />
         }
         style={{ marginRight: "8px" }}
       />
-      <Text type="secondary" style={{ fontSize: "14px" }}>
+      <Text type="secondary" style={{ fontSize: "12px" }}>
         Đang trả lời...
       </Text>
     </div>
@@ -324,7 +324,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       <FloatButton
         icon={
           <Badge count={unreadCount} size="small">
-            <MessageOutlined style={{color: "#fff", fontSize: "20px"}}/>
+            <MessageOutlined style={{color: "var(--color-bg-primary)", fontSize: "20px"}}/>
           </Badge>
         }
         onClick={() => {
@@ -348,7 +348,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          backgroundColor: "#1890ff",
+          backgroundColor: "var(--color-primary)",
           color: "white",
         }}
       >
@@ -356,7 +356,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
           <Avatar
             icon={<RobotOutlined />}
             size="small"
-            style={{ backgroundColor: "#fff", color: "#1890ff" }}
+            style={{ backgroundColor: "var(--color-bg-primary)", color: "var(--color-primary)" }}
           />
           <Text style={{ color: "white", fontWeight: 500 }}>
             TOEIC AI Assistant
@@ -425,7 +425,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
               flex: 1,
               overflowY: "auto",
               padding: "16px",
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "var(--color-bg-secondary)",
               maxHeight: isExpanded ? "70vh" : "400px",
             }}
             css={chatStyles.messageContainer}
@@ -451,7 +451,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                     <Avatar
                       icon={<RobotOutlined />}
                       style={{
-                        backgroundColor: "#1890ff",
+                        backgroundColor: "var(--color-primary)",
                         marginRight: "8px",
                         marginTop: "4px",
                         flexShrink: 0,
@@ -463,8 +463,8 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                     style={{
                       padding: "10px 14px",
                       borderRadius: "18px",
-                      backgroundColor: msg.isUser ? "#1890ff" : "#fff",
-                      color: msg.isUser ? "#fff" : "#000",
+                      backgroundColor: msg.isUser ? "var(--color-primary)" : "var(--color-bg-primary)",
+                      color: msg.isUser ? "var(--color-bg-primary)" : "var(--color-text-primary)",
                       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                       border:
                         msg.source === "fallback"
@@ -488,7 +488,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                       style={{
                         margin: 0,
                         whiteSpace: "pre-wrap",
-                        fontSize: "14px",
+                        fontSize: "12px",
                       }}
                     >
                       {msg.content}
@@ -530,7 +530,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
             style={{
               padding: "12px 16px",
               borderTop: "1px solid #f0f0f0",
-              backgroundColor: "#fff",
+              backgroundColor: "var(--color-bg-primary)",
             }}
           >
             {/* <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>

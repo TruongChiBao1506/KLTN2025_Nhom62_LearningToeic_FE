@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -98,20 +98,20 @@ const ExamFullTest = () => {
   }
 
   return (
-    <div style={{ padding: "24px", background: "#f5f5f5", minHeight: "100vh" }}>
+    <div style={{ padding: "24px", background: "var(--color-bg-secondary)", minHeight: "100vh" }}>
       {/* Header Section */}
       <div
         style={{
           textAlign: "center",
           marginBottom: "48px",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#2C5F8D",
           padding: "48px 24px",
           borderRadius: "16px",
           boxShadow: "0 8px 24px rgba(102, 126, 234, 0.25)",
         }}
       >
         <Space direction="vertical" size={24}>
-          <Title level={1} style={{ color: "#fff", margin: 0 }}>
+          <Title level={1} style={{ color: "var(--color-bg-primary)", margin: 0 }}>
             <Trophy
               size={36}
               style={{ marginRight: "12px", verticalAlign: "middle" }}
@@ -258,7 +258,7 @@ const ExamFullTest = () => {
                           icon={<Trophy size={12} />}
                           style={{ backgroundColor: "#ffd700" }}
                         />
-                        <Text type="secondary" style={{ fontSize: "13px" }}>
+                        <Text type="secondary" style={{ fontSize: "12px" }}>
                           Cập nhật{" "}
                           {new Date(exam.updatedAt).toLocaleDateString("vi-VN")}
                         </Text>

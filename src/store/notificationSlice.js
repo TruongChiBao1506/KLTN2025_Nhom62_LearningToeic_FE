@@ -48,12 +48,64 @@ const notificationSlice = createSlice({
     notifications: [],
     unreadCount: 0,
     loading: false,
+    // Counters cho từng loại notification
+    counts: {
+      achievement: 0,
+      teacherRequest: 0,
+      contentApproval: 0,
+      roleChange: 0,
+      system: 0,
+      reminder: 0,
+    }
   },
   reducers: {
     addNotification: (state, action) => {
       state.notifications.unshift(action.payload);
       state.unreadCount += 1;
+      
+      // Cập nhật counter theo loại notification
+      const type = action.payload.data?.originalType || action.payload.type;
+      switch(type) {
+        case 'achievement':
+        case 'new_achievement':
+          state.counts.achievement += 1;
+          break;
+        case 'teacher_request':
+        case 'teacher_approved':
+        case 'teacher_rejected':
+          state.counts.teacherRequest += 1;
+          break;
+        case 'content_pending':
+        case 'content_approved':
+        case 'content_rejected':
+          state.counts.contentApproval += 1;
+          break;
+        case 'role_promoted':
+        case 'role_demoted':
+          state.counts.roleChange += 1;
+          break;
+        case 'system':
+        case 'system_notification':
+          state.counts.system += 1;
+          break;
+        case 'reminder':
+        case 'reminder_notification':
+          state.counts.reminder += 1;
+          break;
+        default:
+          break;
+      }
     },
+    clearNotificationCounts: (state) => {
+      state.counts = {
+        achievement: 0,
+        teacherRequest: 0,
+        contentApproval: 0,
+        roleChange: 0,
+        system: 0,
+        reminder: 0,
+      };
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -63,22 +115,111 @@ const notificationSlice = createSlice({
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.notifications = action.payload;
         state.unreadCount = action.payload.filter(n => !n.isRead).length;
+        
+        // Tính toán counts cho từng loại
+        state.counts = action.payload.reduce((acc, notification) => {
+          if (notification.isRead) return acc; // Chỉ đếm unread
+          
+          const type = notification.data?.originalType || notification.type;
+          switch(type) {
+            case 'achievement':
+            case 'new_achievement':
+              acc.achievement += 1;
+              break;
+            case 'teacher_request':
+            case 'teacher_approved':
+            case 'teacher_rejected':
+              acc.teacherRequest += 1;
+              break;
+            case 'content_pending':
+            case 'content_approved':
+            case 'content_rejected':
+              acc.contentApproval += 1;
+              break;
+            case 'role_promoted':
+            case 'role_demoted':
+              acc.roleChange += 1;
+              break;
+            case 'system':
+            case 'system_notification':
+              acc.system += 1;
+              break;
+            case 'reminder':
+            case 'reminder_notification':
+              acc.reminder += 1;
+              break;
+            default:
+              break;
+          }
+          return acc;
+        }, {
+          achievement: 0,
+          teacherRequest: 0,
+          contentApproval: 0,
+          roleChange: 0,
+          system: 0,
+          reminder: 0,
+        });
+        
         state.loading = false;
       })
       .addCase(fetchNotifications.rejected, (state) => {
         state.loading = false;
       })
       .addCase(markAsRead.fulfilled, (state, action) => {
-        state.notifications = state.notifications.map(n =>
+        const notification = state.notifications.find(n =>
           (n.id === action.payload || n._id === action.payload)
-            ? { ...n, isRead: true }
-            : n
         );
-        state.unreadCount = Math.max(0, state.unreadCount - 1);
+        
+        if (notification && !notification.isRead) {
+          notification.isRead = true;
+          state.unreadCount = Math.max(0, state.unreadCount - 1);
+          
+          // Giảm counter tương ứng
+          const type = notification.data?.originalType || notification.type;
+          switch(type) {
+            case 'achievement':
+            case 'new_achievement':
+              state.counts.achievement = Math.max(0, state.counts.achievement - 1);
+              break;
+            case 'teacher_request':
+            case 'teacher_approved':
+            case 'teacher_rejected':
+              state.counts.teacherRequest = Math.max(0, state.counts.teacherRequest - 1);
+              break;
+            case 'content_pending':
+            case 'content_approved':
+            case 'content_rejected':
+              state.counts.contentApproval = Math.max(0, state.counts.contentApproval - 1);
+              break;
+            case 'role_promoted':
+            case 'role_demoted':
+              state.counts.roleChange = Math.max(0, state.counts.roleChange - 1);
+              break;
+            case 'system':
+            case 'system_notification':
+              state.counts.system = Math.max(0, state.counts.system - 1);
+              break;
+            case 'reminder':
+            case 'reminder_notification':
+              state.counts.reminder = Math.max(0, state.counts.reminder - 1);
+              break;
+            default:
+              break;
+          }
+        }
       })
       .addCase(markAllAsRead.fulfilled, (state) => {
         state.notifications = state.notifications.map(n => ({ ...n, isRead: true }));
         state.unreadCount = 0;
+        state.counts = {
+          achievement: 0,
+          teacherRequest: 0,
+          contentApproval: 0,
+          roleChange: 0,
+          system: 0,
+          reminder: 0,
+        };
       })
       .addCase(removeNotification.fulfilled, (state, action) => {
         const notification = state.notifications.find(n => n.id === action.payload || n._id === action.payload);
@@ -94,5 +235,5 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { addNotification } = notificationSlice.actions;
+export const { addNotification, clearNotificationCounts } = notificationSlice.actions;
 export default notificationSlice.reducer;

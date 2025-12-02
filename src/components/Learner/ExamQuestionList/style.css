@@ -1,4 +1,4 @@
-.question {
+﻿.question {
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 15px;
   margin-bottom: 15px;
@@ -7,7 +7,7 @@
 }
 
 .viewed-question {
-  border-left: 3px solid #28a745;
+  border-left: 3px solid var(--color-approved);
   padding-left: 5px;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .dark-mode .modal-header-custom {
-  border-color: #333;
+  border-color: var(--color-text-primary);
 }
 
 .dark-mode .modal-close-button {
@@ -105,13 +105,13 @@
 }
 
 .dark-mode .btn-outline-secondary {
-  color: #adb5bd;
-  border-color: #495057;
+  color: var(--color-text-disabled);
+  border-color: var(--color-text-primary);
 }
 
 .dark-mode .btn-outline-secondary:hover {
-  background-color: #495057;
-  color: #fff;
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
 }
 
 .dark-mode .form-check-input:checked {
@@ -120,17 +120,17 @@
 }
 
 .dark-mode .form-check-input:not(:checked) {
-  background-color: #333;
-  border-color: #666;
+  background-color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
 }
 
 .dark-mode .card.specific-card {
   background-color: #1e1e1e;
-  border-color: #333;
+  border-color: var(--color-text-primary);
 }
 
 .dark-mode .question-list-section .question-buttons button {
-  background-color: #333;
+  background-color: var(--color-text-primary);
   color: #ccc;
 }
 

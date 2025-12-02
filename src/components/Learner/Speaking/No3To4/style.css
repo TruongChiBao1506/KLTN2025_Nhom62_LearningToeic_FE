@@ -1,4 +1,4 @@
-.word-item {
+﻿.word-item {
   border: 1px solid #ddd;
   padding: 15px;
   margin-bottom: 15px;
@@ -23,9 +23,9 @@
 .button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #052649;
-  color: #fff;
-  font-size: 14px;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   border-radius: 20px;
@@ -35,9 +35,9 @@
 }
 
 .button:hover {
-  background-color: #fff;
-  color: #052649;
-  border: 1px solid #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
+  border: 1px solid var(--color-brand-navy);
 }
 
 .bg-primary {

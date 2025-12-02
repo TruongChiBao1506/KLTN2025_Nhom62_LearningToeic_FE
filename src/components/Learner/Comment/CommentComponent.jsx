@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -79,7 +79,8 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
     if (!replyText.trim()) return;
 
     try {
-      const learnerToken = localStorage.getItem("learnerToken");
+      // ✅ Check sessionStorage for tokens
+      const learnerToken = sessionStorage.getItem("learnerToken");
       if (!learnerToken) {
         toast.error("Vui lòng đăng nhập để trả lời bình luận");
         return;
@@ -125,7 +126,8 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
 
   const isOwner = () => {
     try {
-      const learnerToken = localStorage.getItem("learnerToken");
+      // ✅ Check sessionStorage for tokens
+      const learnerToken = sessionStorage.getItem("learnerToken");
       if (!learnerToken) return false;
 
       const decoded = jwtDecode(learnerToken);
@@ -141,7 +143,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
     <Card
       className="modern-comment-card"
       style={{
-        background: isOptimistic ? "#f6ffed" : "#fff", // Highlight optimistic comments
+        background: isOptimistic ? "var(--color-success-bg)" : "var(--color-bg-primary)", // Highlight optimistic comments
         borderRadius: "12px",
         border: `1px solid ${isOptimistic ? "#b7eb8f" : "#f0f0f0"}`,
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
@@ -162,7 +164,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
             <>
               <Avatar
                 src={comment.user?.image}
-                style={{ backgroundColor: "#1890ff", color: "#fff" }}
+                style={{ backgroundColor: "var(--color-primary)", color: "var(--color-bg-primary)" }}
                 size={40}
               />
             </>
@@ -170,15 +172,15 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
             <Avatar
               icon={<UserOutlined />}
               style={{
-                backgroundColor: "#1890ff",
-                color: "#fff"
+                backgroundColor: "var(--color-primary)",
+                color: "var(--color-bg-primary)"
               }}
               size={40}
             />
           )}
 
           <div>
-            <Text strong style={{ fontSize: "14px", color: "#262626" }}>
+            <Text strong style={{ fontSize: "12px", color: "#262626" }}>
               {comment.user?.name || comment.userName || "Người dùng"}
             </Text>
             <br />
@@ -217,7 +219,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
         <Paragraph
           style={{
             margin: 0,
-            fontSize: "14px",
+            fontSize: "12px",
             lineHeight: "1.6",
             color: "#262626"
           }}
@@ -235,7 +237,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
             icon={<MessageOutlined />}
             onClick={() => setShowReplyForm(!showReplyForm)}
             style={{
-              color: showReplyForm ? "#1890ff" : "#8c8c8c",
+              color: showReplyForm ? "var(--color-primary)" : "#8c8c8c",
               padding: "0 8px",
               height: "28px"
             }}
@@ -251,7 +253,7 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
         <div style={{
           marginTop: "16px",
           marginLeft: "52px",
-          background: "#fafafa",
+          background: "var(--color-bg-hover)",
           padding: "16px",
           borderRadius: "8px",
           border: "1px solid #f0f0f0"

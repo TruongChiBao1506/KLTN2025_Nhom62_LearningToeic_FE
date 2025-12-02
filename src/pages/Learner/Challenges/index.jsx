@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import './style.css';
 
 const Challenges = () => {
@@ -234,7 +234,7 @@ const Challenges = () => {
       medium: '#FF9800',
       hard: '#F44336'
     };
-    return colors[difficulty] || '#666';
+    return colors[difficulty] || 'var(--color-text-secondary)';
   };
 
   const getCategoryIcon = (category) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { HomeOutlined, QuestionCircleOutlined } from '@ant-design/icons';
@@ -69,7 +69,7 @@ const QuestionBySection = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -82,9 +82,9 @@ const QuestionBySection = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <HomeOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/section" style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
+                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -98,9 +98,9 @@ const QuestionBySection = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <QuestionCircleOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <QuestionCircleOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Question</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

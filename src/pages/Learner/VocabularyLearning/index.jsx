@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   Typography,
@@ -91,7 +91,7 @@ const flipCardStyles = `
   }
   
   .flip-card-back {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #2C5F8D;
     color: white;
     transform: rotateY(180deg);
   }
@@ -645,10 +645,10 @@ const VocabularyLearning = () => {
     <Card style={{ marginBottom: "24px", borderRadius: "12px" }}>
       <div style={{ textAlign: "center", marginBottom: "24px" }}>
         <Title level={3}>
-          <BookOpen style={{ marginRight: "8px", color: "#1890ff" }} />
+          <BookOpen style={{ marginRight: "8px", color: "var(--color-primary)" }} />
           Học với Flashcard
         </Title>
-        <Text type="secondary" style={{ fontSize: "14px" }}>
+        <Text type="secondary" style={{ fontSize: "12px" }}>
           💡 Phím tắt: ← → (chuyển card), Space/Enter (lật card)
         </Text>
       </div>
@@ -722,7 +722,7 @@ const VocabularyLearning = () => {
                   />
                 </div>
 
-                <Title level={3} style={{ color: "#52c41a", marginBottom: "16px" }}>
+                <Title level={3} style={{ color: "var(--color-success)", marginBottom: "16px" }}>
                   Nghĩa:
                 </Title>
                 <Text style={{ color: "white", fontSize: "18px", marginBottom: "20px" }}>
@@ -730,7 +730,7 @@ const VocabularyLearning = () => {
                 </Text>
                 {vocabularies[currentIndex].exampleSentence && (
                   <>
-                    <Title level={4} style={{ color: "#faad14", marginBottom: "8px" }}>
+                    <Title level={4} style={{ color: "var(--color-warning)", marginBottom: "8px" }}>
                       Ví dụ:
                     </Title>
                     <Text style={{ color: "rgba(255,255,255,0.9)", fontSize: "16px", fontStyle: "italic" }}>
@@ -795,8 +795,8 @@ const VocabularyLearning = () => {
               color: record.isCorrect === null 
                 ? "#262626" 
                 : record.isCorrect 
-                  ? "#52c41a" 
-                  : "#ff4d4f",
+                  ? "var(--color-success)" 
+                  : "var(--color-danger)",
               fontSize: "16px",
             }}
           >
@@ -823,7 +823,7 @@ const VocabularyLearning = () => {
         dataIndex: "ipa",
         key: "ipa",
         render: (text) => (
-          <Text code style={{ color: "#52c41a", borderRadius: "4px" }}>
+          <Text code style={{ color: "var(--color-success)", borderRadius: "4px" }}>
             {text}
           </Text>
         ),
@@ -867,7 +867,7 @@ const VocabularyLearning = () => {
           if (!text) return <Text type="secondary">Chưa thử</Text>;
           return (
             <Space direction="vertical" size={0}>
-              <Text style={{ color: record.isCorrect ? "#52c41a" : "#ff4d4f" }}>
+              <Text style={{ color: record.isCorrect ? "var(--color-success)" : "var(--color-danger)" }}>
                 {text}
               </Text>
               <Tag
@@ -886,7 +886,7 @@ const VocabularyLearning = () => {
         render: (_, record, index) => (
           <Button
             type="text"
-            icon={record.isBookmarked ? <Star size={16} style={{ color: "#faad14" }} /> : <StarOff size={16} />}
+            icon={record.isBookmarked ? <Star size={16} style={{ color: "var(--color-warning)" }} /> : <StarOff size={16} />}
             onClick={() => toggleBookmark(index)}
           />
         ),
@@ -897,7 +897,7 @@ const VocabularyLearning = () => {
       <Card style={{ marginBottom: "24px", borderRadius: "12px" }}>
         <div style={{ textAlign: "center", marginBottom: "24px" }}>
           <Title level={3}>
-            <Headphones style={{ marginRight: "8px", color: "#1890ff" }} />
+            <Headphones style={{ marginRight: "8px", color: "var(--color-primary)" }} />
             Luyện tập phát âm
           </Title>
         </div>
@@ -916,7 +916,7 @@ const VocabularyLearning = () => {
     <Card style={{ marginBottom: "24px", borderRadius: "12px" }}>
       <div style={{ textAlign: "center", marginBottom: "24px" }}>
         <Title level={3}>
-          <Target style={{ marginRight: "8px", color: "#1890ff" }} />
+          <Target style={{ marginRight: "8px", color: "var(--color-primary)" }} />
           Trò chơi đoán từ
         </Title>
       </div>
@@ -940,7 +940,7 @@ const VocabularyLearning = () => {
           <div>
             <div style={{ marginBottom: "20px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px" }}>
-                <Lightbulb size={20} style={{ color: "#faad14", marginRight: "8px" }} />
+                <Lightbulb size={20} style={{ color: "var(--color-warning)", marginRight: "8px" }} />
                 <Text style={{ fontSize: "16px" }}>{currentHint}</Text>
               </div>
               
@@ -949,7 +949,7 @@ const VocabularyLearning = () => {
                 fontFamily: "monospace", 
                 letterSpacing: "8px",
                 marginBottom: "20px",
-                color: "#1890ff"
+                color: "var(--color-primary)"
               }}>
                 {currentWord.split("").map((letter, index) => (
                   <span key={index}>
@@ -960,7 +960,7 @@ const VocabularyLearning = () => {
 
               <div style={{ marginBottom: "20px" }}>
                 <Text>Số lần sai còn lại: </Text>
-                <Text strong style={{ color: remainingChances <= 2 ? "#ff4d4f" : "#52c41a" }}>
+                <Text strong style={{ color: remainingChances <= 2 ? "var(--color-danger)" : "var(--color-success)" }}>
                   {remainingChances}
                 </Text>
               </div>
@@ -991,9 +991,9 @@ const VocabularyLearning = () => {
                   disabled={guessedLetters.includes(letter) || gameResult}
                   style={{
                     backgroundColor: correctLetters.includes(letter) 
-                      ? "#52c41a" 
+                      ? "var(--color-success)" 
                       : wrongLetters.includes(letter) 
-                        ? "#ff4d4f" 
+                        ? "var(--color-danger)" 
                         : undefined,
                     color: guessedLetters.includes(letter) ? "white" : undefined,
                     borderRadius: "6px",
@@ -1028,7 +1028,7 @@ const VocabularyLearning = () => {
           <Card style={{ borderRadius: "12px" }}>
             <div style={{ textAlign: "center", marginBottom: "24px" }}>
               <Title level={3}>
-                <Trophy style={{ marginRight: "8px", color: "#1890ff" }} />
+                <Trophy style={{ marginRight: "8px", color: "var(--color-primary)" }} />
                 Trắc nghiệm từ vựng
               </Title>
             </div>
@@ -1045,7 +1045,7 @@ const VocabularyLearning = () => {
                     borderRadius: "8px" 
                   }}
                 />
-                <div style={{ color: "#8c8c8c", fontSize: "14px" }}>
+                <div style={{ color: "#8c8c8c", fontSize: "12px" }}>
                   💡 Câu hỏi trắc nghiệm sẽ được thêm vào sau để bạn có thể luyện tập
                 </div>
               </div>
@@ -1058,7 +1058,7 @@ const VocabularyLearning = () => {
                     style={{ 
                       marginBottom: "16px", 
                       borderRadius: "8px",
-                      border: selectedAnswers[index] ? "1px solid #1890ff" : undefined
+                      border: selectedAnswers[index] ? "1px solid var(--color-primary)" : undefined
                     }}
                   >
                     <div style={{ marginBottom: "16px" }}>
@@ -1084,22 +1084,22 @@ const VocabularyLearning = () => {
                             style={{
                               backgroundColor: isSubmitted 
                                 ? option === question.correctOption 
-                                  ? "#f6ffed" 
+                                  ? "var(--color-success-bg)" 
                                   : selectedAnswers[index] === option && option !== question.correctOption
-                                    ? "#fff2f0"
+                                    ? "var(--color-danger-bg)"
                                     : "transparent"
                                 : "transparent",
                               padding: "8px",
                               borderRadius: "4px",
-                              border: isSubmitted && option === question.correctOption ? "1px solid #52c41a" : "none"
+                              border: isSubmitted && option === question.correctOption ? "1px solid var(--color-success)" : "none"
                             }}
                           >
                             {option}
                             {isSubmitted && option === question.correctOption && (
-                              <CheckCircle size={16} style={{ color: "#52c41a", marginLeft: "8px" }} />
+                              <CheckCircle size={16} style={{ color: "var(--color-success)", marginLeft: "8px" }} />
                             )}
                             {isSubmitted && selectedAnswers[index] === option && option !== question.correctOption && (
-                              <XCircle size={16} style={{ color: "#ff4d4f", marginLeft: "8px" }} />
+                              <XCircle size={16} style={{ color: "var(--color-danger)", marginLeft: "8px" }} />
                             )}
                           </Radio>
                         ))}
@@ -1176,12 +1176,12 @@ const VocabularyLearning = () => {
                   style={{
                     backgroundColor: isSubmitted
                       ? question.answered && question.selectedOption === question.correctOption
-                        ? "#52c41a"
+                        ? "var(--color-success)"
                         : question.answered 
-                          ? "#ff4d4f"
-                          : "#d9d9d9"
+                          ? "var(--color-danger)"
+                          : "var(--color-border)"
                       : selectedAnswers[index]
-                        ? "#1890ff"
+                        ? "var(--color-primary)"
                         : "#f0f0f0",
                     color: selectedAnswers[index] || (isSubmitted && question.answered) ? "white" : "black",
                     border: "none",
@@ -1196,10 +1196,10 @@ const VocabularyLearning = () => {
             {isSubmitted && (
               <div style={{ marginBottom: "16px", textAlign: "center" }}>
                 <div style={{ marginBottom: "8px" }}>
-                  <span style={{ color: "#52c41a" }}>●</span> Đúng: {correctCount}/{questions.length}
+                  <span style={{ color: "var(--color-success)" }}>●</span> Đúng: {correctCount}/{questions.length}
                 </div>
                 <div>
-                  <span style={{ color: "#ff4d4f" }}>●</span> Sai: {incorrectCount}/{questions.length}
+                  <span style={{ color: "var(--color-danger)" }}>●</span> Sai: {incorrectCount}/{questions.length}
                 </div>
               </div>
             )}
@@ -1217,7 +1217,7 @@ const VocabularyLearning = () => {
     }}>
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: "32px" }}>
-        <Title level={2} style={{ marginBottom: "8px", color: "#1890ff" }}>
+        <Title level={2} style={{ marginBottom: "8px", color: "var(--color-primary)" }}>
           {topicName || "Học từ vựng"}
         </Title>
         <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -1257,7 +1257,7 @@ const VocabularyLearning = () => {
           }}
         >
           Trắc nghiệm {questions.length > 0 && <span style={{ 
-            backgroundColor: activeTab === "quiz" ? "rgba(255,255,255,0.3)" : "#1890ff",
+            backgroundColor: activeTab === "quiz" ? "rgba(255,255,255,0.3)" : "var(--color-primary)",
             color: activeTab === "quiz" ? "white" : "white",
             borderRadius: "10px",
             padding: "2px 6px",
@@ -1283,7 +1283,7 @@ const VocabularyLearning = () => {
       {/* Other Topics */}
       <Card style={{ marginTop: "32px", borderRadius: "12px" }}>
         <Title level={4} style={{ textAlign: "center", marginBottom: "20px" }}>
-          <Lightbulb style={{ marginRight: "8px", color: "#faad14" }} />
+          <Lightbulb style={{ marginRight: "8px", color: "var(--color-warning)" }} />
           Chủ đề khác
         </Title>
         <Row gutter={[16, 16]}>

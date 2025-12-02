@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
@@ -242,7 +242,7 @@ const GrammarQuestionList = ({
                 confirmButtonText: 'Import',
                 cancelButtonText: 'Hủy',
                 confirmButtonColor: '#198754',
-                cancelButtonColor: '#dc3545'
+                cancelButtonColor: 'var(--color-danger)'
             });
 
             if (result.isConfirmed) {
@@ -313,13 +313,13 @@ const GrammarQuestionList = ({
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -359,7 +359,7 @@ const GrammarQuestionList = ({
                                 title="Tải template mẫu Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -378,7 +378,7 @@ const GrammarQuestionList = ({
                                 title="Import câu hỏi từ file Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -398,7 +398,7 @@ const GrammarQuestionList = ({
                                 title="Export tất cả câu hỏi ra file Excel"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px',
                                     whiteSpace: 'nowrap',
                                     flexShrink: 0,
@@ -419,7 +419,7 @@ const GrammarQuestionList = ({
                                 title="Thêm grammar question mới"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,

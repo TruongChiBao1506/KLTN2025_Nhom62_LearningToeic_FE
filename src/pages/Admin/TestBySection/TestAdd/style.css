@@ -1,18 +1,18 @@
-label {
+﻿label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     color: rgb(44, 44, 44);
 }
 
 .error-feedback {
-    color: #dc3545;
-    font-size: 13px;
+    color: var(--color-danger);
+    font-size: 12px;
     margin-top: 0.25rem;
 }
 
 .required-field {
-    color: #dc3545;
-    font-size: 14px;
+    color: var(--color-danger);
+    font-size: 12px;
     margin-left: 4px;
 }
 
@@ -21,7 +21,7 @@ label {
 }
 
 .page {
-    background-color: #fff;
+    background-color: var(--color-bg-primary);
 }
 
 /* Custom alert styling */
@@ -39,7 +39,7 @@ label {
 
 /* Form validation styles */
 .form-control.is-invalid {
-    border-color: #dc3545;
+    border-color: var(--color-danger);
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
@@ -55,7 +55,7 @@ label {
 
 .modal-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
 }
 
 /* Button styles */

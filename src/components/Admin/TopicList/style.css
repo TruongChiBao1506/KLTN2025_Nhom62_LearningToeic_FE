@@ -1,21 +1,21 @@
-.table-row.shadow-on-hover:hover {
+﻿.table-row.shadow-on-hover:hover {
    box-shadow: 0 2px 3px rgba(196, 181, 181, 0.9); 
 }
 
 th {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: bold;
 }
 
 td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal;
 }
 
 .glowing-button {
     padding: 10px 20px;
-    font-size: 13px;
-    background: linear-gradient(45deg, #1c75bc, #145a91);
+    font-size: 12px;
+    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
     color: white;
     border: none;
     border-radius: 25px;
@@ -75,31 +75,118 @@ td {
 
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Custom pagination button styles */
 .page-link {
     border: none;
     background: none;
-    color: #052649;
+    color: var(--color-brand-navy);
 }
 
 .page-link:hover {
-    background-color: #f8f9fa;
-    color: #052649;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-brand-navy);
 }
 
 .page-item.active .page-link {
-    background-color: #052649;
-    border-color: #052649;
+    background-color: var(--color-brand-navy);
+    border-color: var(--color-brand-navy);
     color: white;
+}
+
+/* ✅ Submission Status Styles */
+.badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.badge.bg-secondary {
+    background-color: var(--color-draft) !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.badge.bg-success {
+    background-color: var(--color-approved) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--color-danger) !important;
+}
+
+/* ✅ Submit/Withdraw Button Styles */
+.btn-sm.btn-primary {
+    background: linear-gradient(135deg, #3085d6 0%, #2575c6 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(48, 133, 214, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-sm.btn-primary:hover {
+    background: linear-gradient(135deg, #2575c6 0%, #1e65b6 100%);
+    box-shadow: 0 4px 8px rgba(48, 133, 214, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-sm.btn-outline-danger {
+    border: 2px solid var(--color-danger);
+    color: var(--color-danger);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-sm.btn-outline-danger:hover {
+    background: var(--color-danger);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* ✅ Disabled button styles */
+button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+/* ✅ Submission column spacing */
+td .d-flex.flex-column {
+    min-height: 80px;
+    justify-content: center;
+}
+
+/* ✅ Rejection reason text */
+.text-danger {
+    line-height: 1.3;
+    word-wrap: break-word;
 }

@@ -26,7 +26,7 @@ const authSlice = createSlice({
   initialState: {
     info: null, // Thông tin người dùng
     isAuthenticated: false,
-    role: null, // 'admin' hoặc 'user'
+    role: null, // 'admin', 'teacher', hoặc 'user'/'learner'
   },
   reducers: {
     setInfo: (state, action) => {

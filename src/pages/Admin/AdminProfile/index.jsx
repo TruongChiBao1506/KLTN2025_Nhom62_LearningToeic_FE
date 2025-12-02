@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -147,7 +147,8 @@ const Profile = () => {
     const getUserById = async () => {
         try {
             setIsLoading(true);
-            const adminToken = localStorage.getItem("adminToken");
+            // ✅ Check sessionStorage instead of localStorage
+            const adminToken = sessionStorage.getItem("adminToken");
             const decoded = jwtDecode(adminToken);
             const username = decoded.username || decoded.name;
             const userIdResult = await UserService.getUserIdByUsername(username);
@@ -287,7 +288,7 @@ const Profile = () => {
                                     boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                                 }}
                             >
-                                <FontAwesomeIcon icon={faUserCircle} color="#fff" />
+                                <FontAwesomeIcon icon={faUserCircle} color="var(--color-bg-primary)" />
                             </span>
                             <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
                                 Profile

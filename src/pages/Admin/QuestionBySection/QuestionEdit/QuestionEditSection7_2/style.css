@@ -1,9 +1,9 @@
-.edit-question-section7-2-page .button {
+﻿.edit-question-section7-2-page .button {
   display: inline-block;
   padding: 10px;
-  background-color: #052649;
-  color: #fff;
-  font-size: 14px;
+  background-color: var(--color-brand-navy);
+  color: var(--color-bg-primary);
+  font-size: 12px;
   font-weight: bold;
   text-decoration: none;
   border-radius: 20px;
@@ -13,30 +13,30 @@
 }
 
 .edit-question-section7-2-page .button:hover {
-  background-color: #fff;
-  color: #052649;
-  border: 1px solid #052649;
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-navy);
+  border: 1px solid var(--color-brand-navy);
 }
 
 .edit-question-section7-2-page .button i {
   font-size: 20px;
-  color: #000;
+  color: var(--color-text-primary);
 }
 
 .edit-question-section7-2-page label {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   color: rgb(44, 44, 44);
 }
 
 .edit-question-section7-2-page .error-feedback {
   color: red;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .edit-question-section7-2-page .required-field {
   color: red;
-  font-size: 14px;
+  font-size: 12px;
   margin-left: 4px;
 }
 
@@ -59,7 +59,7 @@
 
 .edit-question-section7-2-page .modal-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid var(--color-border);
 }
 
 .edit-question-section7-2-page .custom-font {
@@ -67,7 +67,7 @@
 }
 
 .edit-question-section7-2-page .border-secondary {
-  border-color: #6c757d !important;
+  border-color: var(--color-draft) !important;
 }
 
 /* CKEditor custom styling */
@@ -99,7 +99,7 @@
 
 .modal.zoom .modal-header {
     flex-shrink: 0;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .modal.zoom .modal-body {
@@ -120,9 +120,9 @@
     flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: var(--color-bg-primary);
     z-index: 10;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--color-border);
     margin-top: 0;
     padding: 12px 24px;
 }
@@ -132,7 +132,7 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: #fff;
+  background: var(--color-bg-primary);
   padding: 16px 0 8px 0;
   border-bottom: 1px solid #eee;
 }

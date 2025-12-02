@@ -1,4 +1,4 @@
-.bg-test {
+﻿.bg-test {
   min-height: 100vh;
   background-color: #f8f8fa;
   transition: background-color 0.3s, color 0.3s;
@@ -11,16 +11,16 @@
 
 .dark-mode .card {
   background-color: #1e1e1e;
-  border-color: #333;
+  border-color: var(--color-text-primary);
   color: #e0e0e0;
 }
 
 .dark-mode .card.specific-card {
-  border: 2px solid #333;
+  border: 2px solid var(--color-text-primary);
 }
 
 .dark-mode .question {
-  border-color: #333;
+  border-color: var(--color-text-primary);
 }
 
 .dark-mode .alert-primary {
@@ -49,7 +49,7 @@
 }
 
 .dark-mode .modal-header-custom {
-  border-color: #333;
+  border-color: var(--color-text-primary);
 }
 
 .dark-mode .text-muted {
@@ -71,7 +71,7 @@
 }
 
 .viewed-question {
-  border-left: 3px solid #28a745;
+  border-left: 3px solid var(--color-approved);
   padding-left: 10px;
 }
 

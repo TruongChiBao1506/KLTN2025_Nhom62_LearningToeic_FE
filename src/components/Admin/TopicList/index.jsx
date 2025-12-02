@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
     faEdit,
     faTrash,
-    faSearch
+    faSearch,
+    faPaperPlane,
+    faUndo,
+    faCheckCircle,
+    faTimesCircle,
+    faHourglass,
+    faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
@@ -12,6 +18,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import TopicService from '../../../services/topicService';
+import topicSubmissionService from '../../../services/topicSubmissionService';
 import AddTopicModal from './AddTopicModal';
 import EditTopicModal from './EditTopicModal';
 import './style.css';
@@ -156,6 +163,298 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
         return date.toLocaleDateString('en-GB', options);
     };
 
+    // ✅ Validate and submit topic
+    const handleSubmitTopic = async (topicId, topicName) => {
+        console.log('Submitting topic:', topicId, topicName);
+        try {
+            // 🚧 SKIP VALIDATION - Submit trực tiếp
+            // Show confirmation
+            const result = await Swal.fire({
+                title: `Submit "${topicName}"?`,
+                html: `
+                    <div style="text-align: center;">
+                        <p style="margin: 20px 0; font-size: 16px;">
+                            Topic này sẽ được gửi đến admin để phê duyệt.
+                        </p>
+                        <p style="color: #6c757d; font-size: 12px;">
+                            ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi admin duyệt/từ chối.
+                        </p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: 'var(--color-draft)',
+                confirmButtonText: '📤 Gửi ngay',
+                cancelButtonText: '❌ Hủy',
+            });
+
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Đang gửi...',
+                    text: 'Vui lòng đợi',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Submit to admin
+                const submitResponse = await topicSubmissionService.submitTopic(topicId);
+                
+                if (submitResponse.success) {
+                    Swal.fire({
+                        title: '✅ Gửi thành công!',
+                        html: `
+                            <p>Topic "<strong>${topicName}</strong>" đã được gửi đến admin để phê duyệt</p>
+                            <p style="color: #6c757d; font-size: 12px; margin-top: 10px;">
+                                Bạn sẽ nhận thông báo khi admin xem xét topic của bạn.
+                            </p>
+                        `,
+                        icon: 'success',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                    retrieveTopics(); // Refresh list
+                } else {
+                    throw new Error(submitResponse.message || 'Failed to submit');
+                }
+            }
+        } catch (error) {
+            console.error('Submit Error:', error);
+            
+            // Better error message
+            const errorMessage = error.response?.data?.message 
+                || error.message 
+                || 'Đã xảy ra lỗi không xác định';
+            
+            Swal.fire({
+                title: '❌ Gửi thất bại',
+                html: `
+                    <p>${errorMessage}</p>
+                    ${error.response?.data?.details ? `
+                        <div style="background: #f8d7da; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                            <small>${error.response.data.details}</small>
+                        </div>
+                    ` : ''}
+                `,
+                icon: 'error',
+                confirmButtonText: 'Đóng'
+            });
+        }
+    };
+
+    // ✅ Withdraw submission (if pending)
+    const handleWithdrawSubmission = async (topicId, topicName) => {
+        const result = await Swal.fire({
+            title: `Rút lại submission?`,
+            text: `Rút lại "${topicName}" khỏi quy trình phê duyệt`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: 'var(--color-draft)',
+            confirmButtonText: 'Rút lại',
+            cancelButtonText: 'Hủy',
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await topicSubmissionService.withdrawSubmission(topicId);
+                
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Đã rút lại!',
+                        text: 'Bạn có thể chỉnh sửa topic này lại',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                    retrieveTopics();
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    title: 'Rút lại thất bại',
+                    text: error.response?.data?.message || 'Đã xảy ra lỗi',
+                    icon: 'error',
+                });
+            }
+        }
+    };
+
+    // ✅ Get submission status badge
+    const getSubmissionStatusBadge = (topic) => {
+        // Priority 1: Check if approved (has approvedAt or approvedBy)
+        if (topic.approvedAt || topic.approvedBy) {
+            return (
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-approved)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(40, 167, 69, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faCheckCircle} />
+                    Đã duyệt
+                </span>
+            );
+        }
+
+        // Priority 2: Check if rejected (has rejectionReason)
+        if (topic.rejectionReason) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title={`Lý do từ chối: ${topic.rejectionReason}`}
+                    >
+                        <FontAwesomeIcon icon={faTimesCircle} />
+                        Bị từ chối
+                    </span>
+                    <button
+                        onClick={() => handleSubmitTopic(topic._id, topic.topicName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: '#1e88e5',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Gửi duyệt lại"
+                    >
+                        <FontAwesomeIcon icon={faPaperPlane} />
+                        Gửi lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Priority 3: Check if pending approval (isSubmitted = true, status = 0)
+        if (topic.isSubmitted) {
+            return (
+                <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                    <span 
+                        className="badge rounded-pill px-3 py-2" 
+                        style={{ 
+                            backgroundColor: '#ffc107',
+                            color: 'var(--color-text-primary)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(255, 193, 7, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faHourglass} />
+                        Chờ duyệt
+                    </span>
+                    <button
+                        onClick={() => handleWithdrawSubmission(topic._id, topic.topicName)}
+                        className="btn btn-sm"
+                        style={{
+                            backgroundColor: 'var(--color-danger)',
+                            color: 'white',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
+                            padding: '6px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: 'none',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap'
+                        }}
+                        title="Rút lại yêu cầu duyệt"
+                    >
+                        <FontAwesomeIcon icon={faUndo} />
+                        Rút lại
+                    </button>
+                </div>
+            );
+        }
+
+        // Draft state (not submitted, not published)
+        return (
+            <div className="d-flex flex-column align-items-center" style={{ gap: '8px' }}>
+                <span 
+                    className="badge rounded-pill px-3 py-2" 
+                    style={{ 
+                        backgroundColor: 'var(--color-draft)',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 4px rgba(108, 117, 125, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    <FontAwesomeIcon icon={faFileAlt} />
+                    Bản nháp
+                </span>
+                <button
+                    onClick={() => handleSubmitTopic(topic._id, topic.topicName)}
+                    className="btn btn-sm"
+                    style={{
+                        backgroundColor: '#1e88e5',
+                        color: 'white',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        borderRadius: '20px',
+                        padding: '6px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        border: 'none',
+                        boxShadow: '0 2px 4px rgba(30, 136, 229, 0.3)',
+                        transition: 'all 0.3s ease',
+                        whiteSpace: 'nowrap'
+                    }}
+                    title="Gửi để Admin duyệt"
+                >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                    Gửi duyệt
+                </button>
+            </div>
+        );
+    };
+
     // Pagination info
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredTopics.length);
@@ -195,13 +494,13 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                             option: (base, state) => ({
                                                 ...base,
                                                 borderRadius: 30,
-                                                color: state.isSelected ? '#fff' : '#198754',
+                                                color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                                                 backgroundColor: state.isSelected
                                                     ? '#198754'
                                                     : state.isFocused
                                                         ? '#e6f7ef'
-                                                        : '#fff',
-                                                ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                                                        : 'var(--color-bg-primary)',
+                                                ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                                             }),
                                             menu: (base) => ({
                                                 ...base,
@@ -241,7 +540,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                 title="Thêm chủ đề mới"
                                 style={{ 
                                     borderRadius: '20px', 
-                                    fontSize: '14px', 
+                                    fontSize: '12px', 
                                     padding: '10px 18px', 
                                     whiteSpace: 'nowrap', 
                                     flexShrink: 0,
@@ -264,6 +563,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                     <th>TOPIC</th>
                                     <th>IMAGE</th>
                                     <th>STATUS</th>
+                                    <th>SUBMISSION</th>
                                     <th>CREATED_AT</th>
                                     <th>UPDATED_AT</th>
                                     <th>ACTION</th>
@@ -278,7 +578,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                         <td>
                                             <img
                                                 src={getImageUrl(topic.topicImage)}
-                                                alt="Topic Image"
+                                                alt="Topic"
                                                 className="topic-image rounded-5"
                                             />
                                         </td>
@@ -301,6 +601,10 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                 </span>
                                             )}
                                         </td>
+                                        <td>
+                                            {getSubmissionStatusBadge(topic)}
+                                        </td>
+
                                         <td>{formatDate(topic.createdAt)}</td>
                                         <td>{formatDate(topic.updatedAt)}</td>
                                         <td>
@@ -311,6 +615,11 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(topic._id)}
                                                     title={`Chỉnh sửa [${topic.topicName}]`}
+                                                    disabled={topic.isSubmitted && topic.topicStatus === 0}
+                                                    style={{ 
+                                                        opacity: (topic.isSubmitted && topic.topicStatus === 0) ? 0.5 : 1,
+                                                        cursor: (topic.isSubmitted && topic.topicStatus === 0) ? 'not-allowed' : 'pointer'
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
@@ -321,6 +630,11 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     onClick={() => deleteTopic(topic._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${topic.topicName}]`}
+                                                    disabled={topic.isSubmitted && topic.topicStatus === 0}
+                                                    style={{ 
+                                                        opacity: (topic.isSubmitted && topic.topicStatus === 0) ? 0.5 : 1,
+                                                        cursor: (topic.isSubmitted && topic.topicStatus === 0) ? 'not-allowed' : 'pointer'
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                 </button>
@@ -328,11 +642,11 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                         </td>
                                         <td>
                                             <div className="d-flex justify-content-center">
-                                                <Link to={`/admin/topic/${topic._id}/vocabulary`}>
+                                                <Link to={`/teacher/topics/${topic._id}/vocabulary`}>
                                                     <button className="glowing-button ms-2">Vocabulary</button>
                                                 </Link>
 
-                                                <Link to={`/admin/topic/${topic._id}/vocabulary-question`}>
+                                                <Link to={`/teacher/topics/${topic._id}/vocabulary-question`}>
                                                     <button className="glowing-button ms-2">Question</button>
                                                 </Link>
                                             </div>
@@ -341,7 +655,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                 ))}
                                 {paginatedTopics.length === 0 && (
                                     <tr key="no-data">
-                                        <td colSpan="8">No data available</td>
+                                        <td colSpan="9">No data available</td>
                                     </tr>
                                 )}
                             </tbody>

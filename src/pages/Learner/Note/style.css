@@ -1,6 +1,6 @@
-/* Main container styles */
+﻿/* Main container styles */
 .notes-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   min-height: 100vh;
   padding: 2rem 0;
 }
@@ -22,7 +22,7 @@
 .notes-title {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -30,14 +30,14 @@
 }
 
 .notes-subtitle {
-  color: #6c757d;
+  color: var(--color-draft);
   font-size: 1.1rem;
   font-weight: 400;
 }
 
 /* Add new note button */
 .add-note-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border: none;
   border-radius: 50px;
   padding: 12px 30px;
@@ -49,7 +49,7 @@
 }
 
 .reset-order-btn {
-  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
+  background: linear-gradient(135deg, var(--color-danger-light) 0%, var(--color-danger) 100%);
   border: none;
   border-radius: 25px;
   padding: 8px 20px;
@@ -69,7 +69,7 @@
 .add-note-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, var(--color-brand-purple-dark) 0%, var(--color-primary) 100%);
 }
 
 /* Form card styles */
@@ -82,7 +82,7 @@
 }
 
 .form-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   color: white;
   padding: 1.5rem;
   font-weight: 600;
@@ -129,7 +129,7 @@
 }
 
 .note-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -162,7 +162,7 @@
 }
 
 .edit-btn {
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .delete-btn {
@@ -198,13 +198,13 @@
   background: white;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border: 2px solid #667eea;
+  border: 2px solid var(--color-primary);
   overflow: hidden;
   height: 100%;
 }
 
 .edit-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   color: white;
   padding: 1rem 1.5rem;
   font-weight: 600;
@@ -221,11 +221,11 @@
   padding: 12px 16px;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
 }
 
 .form-input:focus {
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   background: white;
   outline: none;
@@ -240,9 +240,9 @@
 
 /* Buttons */
 .btn-cancel {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   border: 2px solid #e2e8f0;
-  color: #6c757d;
+  color: var(--color-draft);
   padding: 10px 20px;
   border-radius: 10px;
   font-weight: 500;
@@ -250,9 +250,9 @@
 }
 
 .btn-cancel:hover {
-  background: #e9ecef;
+  background: var(--color-border-light);
   border-color: #ced4da;
-  color: #495057;
+  color: var(--color-text-primary);
 }
 
 .btn-save {
@@ -271,7 +271,7 @@
 }
 
 .btn-primary-custom {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -281,7 +281,7 @@
 }
 
 .btn-primary-custom:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, var(--color-brand-purple-dark) 0%, var(--color-primary) 100%);
   transform: translateY(-1px);
 }
 
@@ -313,7 +313,7 @@
 /* Required field indicator */
 .required-field {
   color: #e53e3e;
-  font-size: 14px;
+  font-size: 12px;
   margin-left: 4px;
 }
 
@@ -390,8 +390,8 @@
   top: 10px;
   right: 10px;
   cursor: grab;
-  color: #999;
-  font-size: 14px;
+  color: var(--color-text-disabled);
+  font-size: 12px;
   padding: 5px;
   border-radius: 3px;
   transition: all 0.2s ease;
@@ -399,7 +399,7 @@
 }
 
 .drag-handle:hover {
-  color: #666;
+  color: var(--color-text-secondary);
   background-color: rgba(0, 0, 0, 0.05);
 }
 

@@ -1,4 +1,4 @@
-.vocabulary-image {
+﻿.vocabulary-image {
   width: 60px;
   height: 60px;
   object-fit: cover;
@@ -21,7 +21,7 @@
   justify-content: center;
 }
 #letter-container button {
-  background-color: #ffffff;
+  background-color: var(--color-bg-primary)fff;
   border: 2px solid #7786f5;
   color: #7786f5;
   outline: none;
@@ -32,12 +32,12 @@
 }
 #letter-container .correct {
   background-color: #008000;
-  color: #ffffff;
+  color: var(--color-bg-primary)fff;
   border: 2px solid #008000;
 }
 #letter-container .incorrect {
   background-color: red;
-  color: #ffffff;
+  color: var(--color-bg-primary)fff;
   border: 2px solid red;
 }
 #chanceCount {
@@ -54,7 +54,7 @@
 .button div {
   color: white;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 12px;
   text-align: center;
   text-decoration: none;
   background-color: #ffa12b;
@@ -63,8 +63,8 @@
   padding: 10px 20px;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  text-shadow: 0px 1px 0px #000;
-  filter: dropshadow(color=#000, offx=0px, offy=1px);
+  text-shadow: 0px 1px 0px var(--color-text-primary);
+  filter: dropshadow(color=var(--color-text-primary), offx=0px, offy=1px);
 
   -webkit-box-shadow: inset 0 1px 0 #ffe5c4, 0 10px 0 #915100;
   -moz-box-shadow: inset 0 1px 0 #ffe5c4, 0 10px 0 #915100;

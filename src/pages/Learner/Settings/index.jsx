@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
   Card, Row, Col, Typography, Switch, Select, InputNumber, 
   Slider, Tabs, Button, message, Space, TimePicker 
@@ -99,7 +99,7 @@ const Settings = () => {
   const renderGeneralSettings = () => (
     <Card style={{ marginBottom: 16 }}>
       <Title level={4}>
-        <GlobalOutlined style={{ marginRight: 8, color: "#1890ff" }} />
+        <GlobalOutlined style={{ marginRight: 8, color: "var(--color-primary)" }} />
         Cài đặt chung
       </Title>
       
@@ -196,7 +196,7 @@ const Settings = () => {
   const renderStudySettings = () => (
     <Card style={{ marginBottom: 16 }}>
       <Title level={4}>
-        <BookOutlined style={{ marginRight: 8, color: "#52c41a" }} />
+        <BookOutlined style={{ marginRight: 8, color: "var(--color-success)" }} />
         Cài đặt học tập
       </Title>
       
@@ -289,7 +289,7 @@ const Settings = () => {
   const renderAudioSettings = () => (
     <Card style={{ marginBottom: 16 }}>
       <Title level={4}>
-        <SoundOutlined style={{ marginRight: 8, color: "#fa8c16" }} />
+        <SoundOutlined style={{ marginRight: 8, color: "var(--color-chart-6)" }} />
         Cài đặt âm thanh
       </Title>
       
@@ -345,7 +345,7 @@ const Settings = () => {
   const renderPrivacySettings = () => (
     <Card style={{ marginBottom: 16 }}>
       <Title level={4}>
-        <SafetyOutlined style={{ marginRight: 8, color: "#722ed1" }} />
+        <SafetyOutlined style={{ marginRight: 8, color: "var(--color-chart-4)" }} />
         Cài đặt riêng tư
       </Title>
       
@@ -404,7 +404,7 @@ const Settings = () => {
           textAlign: 'center',
           margin: 0
         }}>
-          <SettingOutlined style={{ marginRight: 12, color: '#1890ff' }} />
+          <SettingOutlined style={{ marginRight: 12, color: 'var(--color-primary)' }} />
           Cài đặt
         </Title>
         <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>
@@ -484,7 +484,7 @@ const Settings = () => {
         <Col xs={24} md={12}>
           <Card>
             <Title level={4}>
-              <BulbOutlined style={{ marginRight: 8, color: '#faad14' }} />
+              <BulbOutlined style={{ marginRight: 8, color: 'var(--color-warning)' }} />
               Mẹo
             </Title>
             <ul style={{ paddingLeft: 20, margin: 0 }}>
@@ -499,7 +499,7 @@ const Settings = () => {
         <Col xs={24} md={12}>
           <Card>
             <Title level={4}>
-              <SafetyOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+              <SafetyOutlined style={{ marginRight: 8, color: 'var(--color-success)' }} />
               Bảo mật
             </Title>
             <Text>

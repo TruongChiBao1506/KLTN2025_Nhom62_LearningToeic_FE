@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 
 const No5To7 = ({ testId }) => {
@@ -281,11 +281,11 @@ const No5To7 = ({ testId }) => {
                           className="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill"
                           style={{ backgroundColor: "orange" }}
                         >
-                          <span style={{ fontSize: "22px" }}>&#9200;</span>
+                          <span style={{ fontSize: "20px" }}>&#9200;</span>
                           Chuẩn bị: {preparingCountdown[currentIndex]} s
                         </span>
                         <span className="badge ms-3 bg-success-subtle border border-successs-subtle text-success-emphasis rounded-pill">
-                          <span style={{ fontSize: "22px" }}>&#9200;</span>
+                          <span style={{ fontSize: "20px" }}>&#9200;</span>
                           Ghi âm: {recordingCountdown[currentIndex]} s
                         </span>
                       </div>

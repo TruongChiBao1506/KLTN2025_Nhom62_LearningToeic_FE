@@ -1,9 +1,9 @@
-.table-section5-to-7 th {
-   color: #052649; 
+﻿.table-section5-to-7 th {
+   color: var(--color-brand-navy); 
    font-weight: bold; 
 }
 .table-section5-to-7 td {
-   color: #052649; 
+   color: var(--color-brand-navy); 
    font-weight: normal; 
 }
 .table-section5-to-7 .modal.zoom .modal-dialog {
@@ -17,7 +17,7 @@
     width: 50px;
 }
 .table-section5-to-7 .table {
-    font-size: 13px;
+    font-size: 12px;
 }
 .table-section5-to-7 audio {
     width: 100%;

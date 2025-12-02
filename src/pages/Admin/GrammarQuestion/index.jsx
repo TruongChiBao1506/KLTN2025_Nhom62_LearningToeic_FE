@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
@@ -71,7 +71,7 @@ const GrammarQuestion = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -84,9 +84,9 @@ const GrammarQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <BookOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/grammar" style={{ color: '#fff', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Grammar</Link>
+                        <Link to="/admin/grammar" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Grammar</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -100,9 +100,9 @@ const GrammarQuestion = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <BookOutlined style={{ color: '#fff', fontSize: 20 }} />
+                            <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 18 }}>Grammar Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Grammar Question</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

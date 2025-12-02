@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -221,7 +221,7 @@ const LearnerDashboard = () => {
                 skillData.writing || 0,
               ],
               colorByPoint: true,
-              colors: ["#17a2b8", "#28a745", "#ffc107", "#dc3545"],
+              colors: ["#17a2b8", "var(--color-approved)", "#ffc107", "var(--color-danger)"],
             },
           ],
           credits: {
@@ -276,8 +276,8 @@ const LearnerDashboard = () => {
       <div style={{padding:"24px"}}>
         <div className="welcome-banner" data-aos="fade-up">
           <div className="banner-content">
-            <h2 style={{color:"#fff"}}>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
-            <p style={{color:"#fff"}}>
+            <h2 style={{color:"var(--color-bg-primary)"}}>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
+            <p style={{color:"var(--color-bg-primary)"}}>
               Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi
               TOEIC tiếp theo của bạn.
             </p>

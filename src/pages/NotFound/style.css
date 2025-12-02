@@ -1,9 +1,9 @@
-.not-found-container {
+﻿.not-found-container {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   text-align: center;
   padding: 0 20px;
 }
@@ -28,7 +28,7 @@
 
 .error-message {
   font-size: 18px;
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 30px;
 }
 

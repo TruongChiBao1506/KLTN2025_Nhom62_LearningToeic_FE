@@ -1,6 +1,6 @@
-.profile-container {
+﻿.profile-container {
   padding: 30px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   min-height: 100vh;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .profile-card {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 10px;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   margin-bottom: 30px;
@@ -17,9 +17,9 @@
 }
 
 .profile-card-header {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding: 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border-light);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,7 +46,7 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff;
+  border: 4px solid var(--color-bg-primary);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
@@ -105,7 +105,7 @@
 }
 
 .profile-detail-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding-left: 10px;
   border-radius: 5px;
 }
@@ -126,7 +126,7 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #ecf0f1;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -208,7 +208,7 @@
 }
 
 .streak-section {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   padding: 20px;
   border-radius: 10px;
 }
@@ -256,7 +256,7 @@
 }
 
 .activity-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding-left: 10px;
   border-radius: 8px;
 }
@@ -324,7 +324,7 @@
 }
 
 .profile-stats-card {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 10px;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   padding: 20px;
@@ -348,8 +348,8 @@
 }
 
 .profile-stats-label {
-  color: #6c757d;
-  font-size: 14px;
+  color: var(--color-draft);
+  font-size: 12px;
 }
 
 .profile-progress-bar {
@@ -478,7 +478,7 @@
 }
 
 .streak-section {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   padding: 20px;
   border-radius: 10px;
 }
@@ -526,7 +526,7 @@
 }
 
 .activity-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding-left: 10px;
   border-radius: 8px;
 }
@@ -594,7 +594,7 @@
 }
 
 .profile-stats-card {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 10px;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   padding: 20px;
@@ -618,8 +618,8 @@
 }
 
 .profile-stats-label {
-  color: #6c757d;
-  font-size: 14px;
+  color: var(--color-draft);
+  font-size: 12px;
 }
 
 .profile-progress-bar {
@@ -748,7 +748,7 @@
 }
 
 .streak-section {
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   padding: 20px;
   border-radius: 10px;
 }
@@ -796,7 +796,7 @@
 }
 
 .activity-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding-left: 10px;
   border-radius: 8px;
 }
@@ -1014,7 +1014,7 @@
 }
 
 .breadcrumb-item.active {
-  color: #6c757d;
+  color: var(--color-draft);
 }
 
 /* Enhanced profile detail items */
@@ -1026,7 +1026,7 @@
 }
 
 .profile-detail-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   padding-left: 10px;
   border-radius: 5px;
 }
@@ -1036,7 +1036,7 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #ecf0f1;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;

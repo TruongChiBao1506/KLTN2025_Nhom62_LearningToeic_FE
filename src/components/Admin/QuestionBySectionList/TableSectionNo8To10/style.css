@@ -1,9 +1,9 @@
-.table-section8-to-10 th {
-   color: #052649; 
+﻿.table-section8-to-10 th {
+   color: var(--color-brand-navy); 
    font-weight: bold; 
 }
 .table-section8-to-10 td {
-   color: #052649;
+   color: var(--color-brand-navy);
    font-weight: normal; 
 }
 .table-section8-to-10 .modal.zoom .modal-dialog {
@@ -18,7 +18,7 @@
 }
 .table-section8-to-10 .table {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
 }
 .table-section8-to-10 audio {
     width: 100%;

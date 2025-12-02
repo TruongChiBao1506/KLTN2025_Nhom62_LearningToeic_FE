@@ -1,4 +1,4 @@
-.profile-container {
+﻿.profile-container {
     padding: 1rem 0;
     background: transparent;
 }
@@ -19,7 +19,7 @@
 }
 
 .profile-title {
-    color: #1c75bc;
+    color: var(--color-brand-blue);
     /* Đổi màu từ white sang dark */
     font-size: 2.5rem;
     font-weight: 700;
@@ -29,7 +29,7 @@
 }
 
 .profile-subtitle {
-    color: #6c757d;
+    color: var(--color-draft);
     /* Đổi màu từ rgba white */
     font-size: 1.1rem;
     margin: 0;
@@ -59,7 +59,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-right: 1px solid #e9ecef;
+    border-right: 1px solid var(--color-border-light);
 }
 
 .avatar-container {
@@ -77,7 +77,7 @@
     height: 180px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #1c75bc;
+    border: 4px solid var(--color-brand-blue);
     box-shadow: 0 8px 32px rgba(5, 38, 73, 0.2);
     transition: transform 0.3s ease;
 }
@@ -93,12 +93,12 @@
 .username {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1c75bc;
+    color: var(--color-brand-blue);
     margin-bottom: 0.5rem;
 }
 
 .user-role {
-    color: #6c757d;
+    color: var(--color-draft);
     font-size: 1.1rem;
     margin-bottom: 2rem;
     font-weight: 500;
@@ -112,7 +112,7 @@
 }
 
 .upload-btn {
-    background: linear-gradient(45deg, #1c75bc, #145a91);
+    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
@@ -137,7 +137,7 @@
 
 .upload-hint {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--color-draft);
 }
 
 /* Forms Section */
@@ -147,7 +147,7 @@
 
 .tab-navigation {
     display: flex;
-    background: #f8f9fa;
+    background: var(--color-bg-secondary);
     border-radius: 15px;
     padding: 0.5rem;
     margin-bottom: 2rem;
@@ -161,7 +161,7 @@
     border: none;
     border-radius: 10px;
     font-weight: 500;
-    color: #6c757d;
+    color: var(--color-draft);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -176,8 +176,8 @@
 }
 
 .tab-btn:hover:not(.active) {
-    background: #e9ecef;
-    color: #495057;
+    background: var(--color-border-light);
+    color: var(--color-text-primary);
 }
 
 /* Form Styles */
@@ -220,7 +220,7 @@
 
 .form-label {
     font-weight: 600;
-    color: #333;
+    color: var(--color-text-primary);
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
@@ -229,7 +229,7 @@
 
 .form-input {
     padding: 1rem;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--color-border-light);
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -240,13 +240,13 @@
 
 .form-input:focus {
     outline: none;
-    border-color: #1c75bc;
+    border-color: var(--color-brand-blue);
     box-shadow: 0 0 0 3px rgba(5, 38, 73, 0.1);
 }
 
 .form-input.disabled {
-    background: #f8f9fa;
-    color: #6c757d;
+    background: var(--color-bg-secondary);
+    color: var(--color-draft);
     cursor: not-allowed;
 }
 
@@ -292,7 +292,7 @@
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #6c757d;
+    color: var(--color-draft);
     cursor: pointer;
     padding: 8px;
     transition: all 0.3s ease;
@@ -306,13 +306,13 @@
 }
 
 .password-toggle:hover {
-    color: #1c75bc;
+    color: var(--color-brand-blue);
     background: rgba(28, 117, 188, 0.1);
 }
 
 .password-toggle:focus {
     outline: none;
-    color: #1c75bc;
+    color: var(--color-brand-blue);
     box-shadow: 0 0 0 2px rgba(28, 117, 188, 0.2);
 }
 
@@ -321,7 +321,7 @@
 }
 
 .submit-btn {
-    background: linear-gradient(45deg, #1c75bc, #145a91);
+    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -357,7 +357,7 @@
 }
 
 .text-primary {
-    color: #052649 !important;
+    color: var(--color-brand-navy) !important;
 }
 
 /* Responsive Design */
@@ -368,7 +368,7 @@
 
     .avatar-section {
         border-right: none;
-        border-bottom: 1px solid #e9ecef;
+        border-bottom: 1px solid var(--color-border-light);
         padding: 2rem 1rem;
     }
 

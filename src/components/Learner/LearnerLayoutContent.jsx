@@ -1,4 +1,4 @@
-// import React, { useState, useEffect, useCallback, useRef } from "react";
+﻿// import React, { useState, useEffect, useCallback, useRef } from "react";
 // import { Outlet, Link, useLocation } from "react-router-dom";
 // import { useNotificationContext } from '../contexts/NotificationContext';
 // import {
@@ -202,21 +202,21 @@
 //             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
 //             position: "relative",
 //             overflow: "hidden",
-//             background: "#ffffff",
+//             background: "var(--color-bg-primary)",
 //             border: "1px solid rgba(239, 68, 68, 0.2)"
 //           }}
 //         >
 //           <div style={{
-//             background: "linear-gradient(135deg, #ef4444, #dc2626)",
+//             background: "#E74C3C",
 //             borderRadius: "8px",
 //             padding: "8px",
 //             display: "flex",
 //             alignItems: "center",
 //             justifyContent: "center"
 //           }}>
-//             <LogOut size={16} style={{ color: "#fff" }} />
+//             <LogOut size={16} style={{ color: "var(--color-bg-primary)" }} />
 //           </div>
-//           <span style={{ fontWeight: "600", fontSize: "14px", color: "#dc2626" }}>Đăng xuất</span>
+//           <span style={{ fontWeight: "600", fontSize: "12px", color: "#dc2626" }}>Đăng xuất</span>
 //         </div>
 //       ),
 //     },
@@ -232,7 +232,7 @@
 //           style={{
 //             padding: "16px 20px 12px",
 //             borderBottom: "1px solid rgba(0,0,0,0.06)",
-//             background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+//             background: "#F8F9FA",
 //             borderRadius: "12px 12px 0 0",
 //             margin: "-8px -8px 8px",
 //             position: "sticky",
@@ -243,16 +243,16 @@
 //           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 //             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 //               <div style={{
-//                 background: "linear-gradient(135deg, #667eea, #764ba2)",
+//                 background: "#2C5F8D",
 //                 borderRadius: "6px",
 //                 padding: "4px",
 //                 display: "flex",
 //                 alignItems: "center",
 //                 justifyContent: "center"
 //               }}>
-//                 <Bell size={14} style={{ color: "#fff" }} />
+//                 <Bell size={14} style={{ color: "var(--color-bg-primary)" }} />
 //               </div>
-//               <Text strong style={{ fontSize: "15px", fontWeight: "600", color: "#1a202c" }}>
+//               <Text strong style={{ fontSize: "12px", fontWeight: "600", color: "#1a202c" }}>
 //                 Thông báo
 //               </Text>
 //             </div>
@@ -264,7 +264,7 @@
 //                 fontSize: "12px",
 //                 background: "rgba(103, 126, 234, 0.1)",
 //                 borderRadius: "6px",
-//                 color: "#667eea",
+//                 color: "var(--color-brand-purple)",
 //                 fontWeight: "500",
 //                 border: "none",
 //                 height: "auto"
@@ -306,7 +306,7 @@
 //                 top: 0,
 //                 bottom: 0,
 //                 width: "3px",
-//                 background: "linear-gradient(135deg, #667eea, #764ba2)",
+//                 background: "#2C5F8D",
 //                 borderRadius: "0 2px 2px 0"
 //               }} />
 //             )}
@@ -318,8 +318,8 @@
 //             }}>
 //               <div style={{
 //                 background: !notification.read
-//                   ? "linear-gradient(135deg, #667eea, #764ba2)"
-//                   : "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+//                   ? "#2C5F8D"
+//                   : "#ECF0F1",
 //                 borderRadius: "8px",
 //                 padding: "6px",
 //                 display: "flex",
@@ -330,13 +330,13 @@
 //                 marginTop: "2px"
 //               }}>
 //                 <Bell size={14} style={{
-//                   color: !notification.read ? "#fff" : "#64748b"
+//                   color: !notification.read ? "var(--color-bg-primary)" : "#64748b"
 //                 }} />
 //               </div>
 //               <div style={{ flex: 1, minWidth: 0 }}>
 //                 <div style={{
 //                   fontWeight: !notification.read ? "600" : "500",
-//                   fontSize: "14px",
+//                   fontSize: "12px",
 //                   color: !notification.read ? "#1a202c" : "#4a5568",
 //                   marginBottom: "4px",
 //                   lineHeight: "1.4",
@@ -348,7 +348,7 @@
 //                   {notification.title}
 //                 </div>
 //                 <div style={{
-//                   fontSize: "13px",
+//                   fontSize: "12px",
 //                   color: "#64748b",
 //                   marginBottom: "6px",
 //                   lineHeight: "1.4",
@@ -386,7 +386,7 @@
 //               }}
 //             >
 //               <div style={{
-//                 background: "linear-gradient(135deg, #e2e8f0, #cbd5e0)",
+//                 background: "#ECF0F1",
 //                 borderRadius: "50%",
 //                 width: "48px",
 //                 height: "48px",
@@ -397,7 +397,7 @@
 //               }}>
 //                 <Bell size={20} style={{ color: "#64748b" }} />
 //               </div>
-//               <div style={{ fontSize: "14px", fontWeight: "500", marginBottom: "4px" }}>
+//               <div style={{ fontSize: "12px", fontWeight: "500", marginBottom: "4px" }}>
 //                 Không có thông báo nào
 //               </div>
 //               <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
@@ -427,11 +427,11 @@
 //             padding: "12px 16px",
 //             margin: "4px 8px 8px",
 //             borderRadius: "8px",
-//             background: "linear-gradient(135deg, #667eea, #764ba2)",
-//             color: "#fff",
+//             background: "#2C5F8D",
+//             color: "var(--color-bg-primary)",
 //             textDecoration: "none",
 //             fontWeight: "500",
-//             fontSize: "14px",
+//             fontSize: "12px",
 //             transition: "all 0.3s ease",
 //             gap: "6px"
 //           }}
@@ -460,7 +460,7 @@
 //         >
 //           <div
 //             style={{
-//               background: "linear-gradient(135deg, #667eea, #764ba2)",
+//               background: "#2C5F8D",
 //               borderRadius: "8px",
 //               padding: "8px",
 //               display: "flex",
@@ -468,7 +468,7 @@
 //               justifyContent: "center",
 //             }}
 //           >
-//             <GraduationCap size={20} style={{ color: "#fff" }} />
+//             <GraduationCap size={20} style={{ color: "var(--color-bg-primary)" }} />
 //           </div>
 //           <span>Menu</span>
 //         </div>
@@ -479,11 +479,11 @@
 //       width={280}
 //       bodyStyle={{
 //         padding: 0,
-//         background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+//         background: "#F8F9FA",
 //       }}
 //       headerStyle={{
-//         background: "linear-gradient(135deg, #667eea, #764ba2)",
-//         color: "#fff",
+//         background: "#2C5F8D",
+//         color: "var(--color-bg-primary)",
 //         borderBottom: "none",
 //       }}
 //     >
@@ -497,7 +497,7 @@
 //           style={{
 //             background: "transparent",
 //             border: "none",
-//             fontSize: "14px",
+//             fontSize: "12px",
 //           }}
 //           items={[
 //             {
@@ -573,7 +573,7 @@
 //       onCollapse={setCollapsed}
 //       width={280}
 //       style={{
-//         background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+//         background: "#F8F9FA",
 //         borderRight: "1px solid rgba(0,0,0,0.06)",
 //         boxShadow: "2px 0 8px rgba(0,0,0,0.1)",
 //       }}
@@ -585,7 +585,7 @@
 //           padding: "16px",
 //           textAlign: "center",
 //           borderBottom: "1px solid rgba(0,0,0,0.06)",
-//           background: "linear-gradient(135deg, #667eea, #764ba2)",
+//           background: "#2C5F8D",
 //           margin: collapsed ? "0 8px 16px" : "0 0 16px",
 //           borderRadius: collapsed ? "8px" : "0 0 12px 12px",
 //           transition: "all 0.3s ease",
@@ -603,7 +603,7 @@
 //           >
 //             <div
 //               style={{
-//                 background: "#fff",
+//                 background: "var(--color-bg-primary)",
 //                 borderRadius: "8px",
 //                 padding: "8px",
 //                 display: "flex",
@@ -611,14 +611,14 @@
 //                 justifyContent: "center",
 //               }}
 //             >
-//               <GraduationCap size={24} style={{ color: "#667eea" }} />
+//               <GraduationCap size={24} style={{ color: "var(--color-brand-purple)" }} />
 //             </div>
 //             <div>
 //               <div
 //                 style={{
 //                   fontSize: "18px",
 //                   fontWeight: "700",
-//                   color: "#fff",
+//                   color: "var(--color-bg-primary)",
 //                   lineHeight: "1.2",
 //                 }}
 //               >
@@ -639,7 +639,7 @@
 //         {collapsed && (
 //           <div
 //             style={{
-//               background: "#fff",
+//               background: "var(--color-bg-primary)",
 //               borderRadius: "8px",
 //               padding: "8px",
 //               display: "flex",
@@ -647,7 +647,7 @@
 //               justifyContent: "center",
 //             }}
 //           >
-//             <GraduationCap size={20} style={{ color: "#667eea" }} />
+//             <GraduationCap size={20} style={{ color: "var(--color-brand-purple)" }} />
 //           </div>
 //         )}
 //       </div>
@@ -661,7 +661,7 @@
 //         style={{
 //           background: "transparent",
 //           border: "none",
-//           fontSize: "14px",
+//           fontSize: "12px",
 //         }}
 //         items={[
 //           {
@@ -734,7 +734,7 @@
 //       {/* Header */}
 //       <Header
 //         style={{
-//           background: "#fff",
+//           background: "var(--color-bg-primary)",
 //           padding: "0 24px",
 //           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
 //           borderBottom: "1px solid rgba(0,0,0,0.06)",
@@ -756,7 +756,7 @@
 //             onClick={() => setMobileDrawerVisible(true)}
 //             style={{
 //               display: windowWidth <= 768 ? "block" : "none",
-//               color: "#667eea",
+//               color: "var(--color-brand-purple)",
 //             }}
 //           />
 
@@ -767,7 +767,7 @@
 //             onClick={() => setCollapsed(!collapsed)}
 //             style={{
 //               display: windowWidth > 768 ? "block" : "none",
-//               color: "#667eea",
+//               color: "var(--color-brand-purple)",
 //             }}
 //           />
 
@@ -799,7 +799,7 @@
 //               padding: "6px 12px",
 //               background: "linear-gradient(135deg, #f093fb, #f5576c)",
 //               borderRadius: "16px",
-//               color: "#fff",
+//               color: "var(--color-bg-primary)",
 //               fontSize: "12px",
 //               fontWeight: "600",
 //             }}
@@ -837,7 +837,7 @@
 //               <Bell
 //                 size={20}
 //                 style={{
-//                   color: notifications.filter((n) => !n.read).length > 0 ? "#667eea" : "#64748b",
+//                   color: notifications.filter((n) => !n.read).length > 0 ? "var(--color-brand-purple)" : "#64748b",
 //                   transition: "all 0.3s ease",
 //                 }}
 //               />
@@ -849,7 +849,7 @@
 //                     position: "absolute",
 //                     top: 8,
 //                     right: 2,
-//                     background: "#ff4d4f",
+//                     background: "var(--color-danger)",
 //                     boxShadow: "0 2px 8px rgba(255, 77, 79, 0.3)",
 //                     minWidth: 16,
 //                   }}
@@ -878,15 +878,15 @@
 //                 padding: "6px 8px",
 //                 borderRadius: "8px",
 //                 transition: "all 0.3s ease",
-//                 background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+//                 background: "#F8F9FA",
 //                 border: "1px solid rgba(0,0,0,0.06)",
 //               }}
 //             >
 //               <Avatar
 //                 size={32}
 //                 style={{
-//                   background: "linear-gradient(135deg, #667eea, #764ba2)",
-//                   color: "#fff",
+//                   background: "#2C5F8D",
+//                   color: "var(--color-bg-primary)",
 //                   fontWeight: "600",
 //                 }}
 //               >
@@ -900,7 +900,7 @@
 //               >
 //                 <div
 //                   style={{
-//                     fontSize: "14px",
+//                     fontSize: "12px",
 //                     fontWeight: "600",
 //                     color: "#1a202c",
 //                   }}
@@ -927,7 +927,7 @@
 //         style={{
 //           margin: "24px 16px",
 //           padding: 24,
-//           background: "#fff",
+//           background: "var(--color-bg-primary)",
 //           borderRadius: "12px",
 //           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
 //           minHeight: "calc(100vh - 140px)",
@@ -940,7 +940,7 @@
 //       <Footer
 //         style={{
 //           textAlign: "center",
-//           background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+//           background: "#F8F9FA",
 //           borderTop: "1px solid rgba(0,0,0,0.06)",
 //           color: "#64748b",
 //           padding: "16px",

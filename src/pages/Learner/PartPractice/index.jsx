@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
   Card, 
@@ -181,12 +181,12 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             width: "40px",
             height: "40px",
             borderRadius: "12px",
-            background: "#667eea",
+            background: "var(--color-brand-purple)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <ReadOutlined style={{ color: "#fff", fontSize: "18px" }} />
+            <ReadOutlined style={{ color: "var(--color-bg-primary)", fontSize: "18px" }} />
           </div>
           <Tag color="blue" style={{ borderRadius: "8px", fontSize: "12px" }}>
             Bài học
@@ -201,7 +201,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         <Paragraph style={{ 
           margin: "0 0 16px 0", 
           color: "#64748b", 
-          fontSize: "14px",
+          fontSize: "12px",
           lineHeight: "1.5",
           flex: 1,
           overflow: "hidden",
@@ -220,7 +220,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           paddingTop: "16px",
           borderTop: "1px solid #f1f5f9"
         }}>
-          <span style={{ color: "#64748b", fontSize: "13px" }}>
+          <span style={{ color: "#64748b", fontSize: "12px" }}>
             <BookOutlined style={{ marginRight: "4px" }} />
             {lesson.duration || "30"} phút
           </span>
@@ -275,7 +275,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <PlayCircleOutlined style={{ color: "#fff", fontSize: "18px" }} />
+            <PlayCircleOutlined style={{ color: "var(--color-bg-primary)", fontSize: "18px" }} />
           </div>
           <Tag color="green" style={{ borderRadius: "8px", fontSize: "12px" }}>
             Bài kiểm tra
@@ -290,7 +290,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         <Paragraph style={{ 
           margin: "0 0 16px 0", 
           color: "#64748b", 
-          fontSize: "14px",
+          fontSize: "12px",
           lineHeight: "1.5",
           flex: 1,
           overflow: "hidden",
@@ -311,11 +311,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           borderRadius: "8px",
           border: "1px solid #d1fae5"
         }}>
-          <span style={{ color: "#059669", fontSize: "13px" }}>
+          <span style={{ color: "#059669", fontSize: "12px" }}>
             <FileTextOutlined style={{ marginRight: "4px" }} />
             {test.questionCount || 20} câu
           </span>
-          <span style={{ color: "#f59e0b", fontSize: "13px" }}>
+          <span style={{ color: "#f59e0b", fontSize: "12px" }}>
             <UserOutlined style={{ marginRight: "4px" }} />
             {test.testParticipants || 0} lượt
           </span>
@@ -346,7 +346,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       }}>
         <div style={{
           textAlign: "center",
-          background: "#ffffff",
+          background: "var(--color-bg-primary)",
           borderRadius: "24px",
           padding: "48px",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
@@ -379,7 +379,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       }}>
         <div style={{
           textAlign: "center",
-          background: "#ffffff",
+          background: "var(--color-bg-primary)",
           borderRadius: "24px",
           padding: "48px",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
@@ -413,7 +413,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           {/* Header */}
           <div style={{
-            background: "#ffffff",
+            background: "var(--color-bg-primary)",
             borderRadius: "16px",
             padding: "24px",
             marginBottom: "24px",
@@ -423,7 +423,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           }}>
             <Title level={1} style={{ 
               margin: "0 0 8px 0",
-              color: "#667eea",
+              color: "var(--color-brand-purple)",
               fontSize: "32px"
             }}>
               {section?.name || "Luyện tập TOEIC"}
@@ -446,7 +446,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             onChange={setActiveTab}
             size="large"
             style={{ 
-              background: "#ffffff",
+              background: "var(--color-bg-primary)",
               borderRadius: "16px",
               padding: "24px",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",

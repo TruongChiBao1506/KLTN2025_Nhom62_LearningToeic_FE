@@ -1,4 +1,4 @@
-/* ExamDetail Styles - Enhanced */
+﻿/* ExamDetail Styles - Enhanced */
 .exam-detail-container {
   padding: 10px 0;
 }
@@ -116,7 +116,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border-radius: 6px;
   transition: all 0.3s ease;
 }
@@ -194,7 +194,7 @@
   }
   
   .exam-header h4, .exam-header h5 {
-    font-size: 14px !important;
+    font-size: 12px !important;
   }
   
   .answer-option {
@@ -341,11 +341,11 @@ hr {
 
 /* Enhanced Hero Section */
 .exam-hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border-radius: 20px;
   padding: 40px;
   margin-bottom: 32px;
-  color: #fff;
+  color: var(--color-bg-primary);
   position: relative;
   overflow: hidden;
 }
@@ -401,9 +401,9 @@ hr {
 
 /* Enhanced Feature Boxes */
 .feature-box {
-  background: #fafafa;
+  background: var(--color-bg-hover);
   border-radius: 8px;
-  border-left: 4px solid #1890ff;
+  border-left: 4px solid var(--color-primary);
   padding: 12px 16px;
   transition: all 0.3s ease;
 }
@@ -416,7 +416,7 @@ hr {
 
 /* Enhanced CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f0f7ff 0%, var(--color-bg-primary)fff 100%);
   border-radius: 20px;
   border: none;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -433,7 +433,7 @@ hr {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-brand-purple-dark), var(--color-primary));
   background-size: 200% 100%;
   animation: gradientMove 3s ease-in-out infinite;
 }
@@ -450,7 +450,7 @@ hr {
   font-size: 18px;
   font-weight: 600;
   border-radius: 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border: none;
   box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
   transition: all 0.3s ease;
@@ -483,15 +483,15 @@ hr {
   height: 56px;
   font-size: 16px;
   border-radius: 28px;
-  border: 2px solid #d9d9d9;
-  background: #fff;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-primary);
   color: #595959;
   transition: all 0.3s ease;
 }
 
 .secondary-button:hover {
-  border-color: #40a9ff;
-  color: #40a9ff;
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-light);
   transform: translateY(-1px);
 }
 
@@ -499,8 +499,8 @@ hr {
 .progress-alert-card {
   margin-bottom: 32px;
   border-radius: 16px;
-  border: 2px solid #52c41a;
-  background: linear-gradient(135deg, #f6ffed 0%, #ffffff 100%);
+  border: 2px solid var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-bg) 0%, var(--color-bg-primary)fff 100%);
   box-shadow: 0 4px 20px rgba(82, 196, 26, 0.1);
   position: relative;
   overflow: hidden;
@@ -513,7 +513,7 @@ hr {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #52c41a, #389e0d, #52c41a);
+  background: linear-gradient(90deg, var(--color-success), var(--color-success-dark), var(--color-success));
   background-size: 200% 100%;
   animation: progressGlow 2s ease-in-out infinite;
 }
@@ -526,7 +526,7 @@ hr {
 .progress-icon-container {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -541,7 +541,7 @@ hr {
 
 /* Breadcrumb */
 .breadcrumb-container {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   padding: 10px 20px;
   margin-bottom: 20px;
@@ -564,7 +564,7 @@ hr {
 
 /* Exam Introduction */
 .exam-intro-container {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 20px;
@@ -601,7 +601,7 @@ hr {
 }
 
 .exam-description p {
-  color: #6c757d;
+  color: var(--color-draft);
   line-height: 1.6;
 }
 
@@ -615,7 +615,7 @@ hr {
 
 .exam-instructions li {
   margin-bottom: 10px;
-  color: #6c757d;
+  color: var(--color-draft);
 }
 
 .exam-intro-actions {
@@ -672,7 +672,7 @@ hr {
   border-right: 1px solid #eaeaea;
   display: flex;
   flex-direction: column;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
 }
 
 .question-nav-header {
@@ -701,8 +701,8 @@ hr {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  border: 1px solid #dee2e6;
-  background-color: #fff;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-primary);
   font-weight: 600;
   cursor: pointer;
   position: relative;
@@ -735,7 +735,7 @@ hr {
   flex-shrink: 0;
   padding: 15px;
   border-bottom: 1px solid #eaeaea;
-  background: #fafafa;
+  background: var(--color-bg-hover);
   margin-left: -12px;
   margin-right: -12px;
   margin-top: -12px;
@@ -768,7 +768,7 @@ hr {
 
 .legend-color.flagged {
   border: 1px solid #ffc107;
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
 }
 
 /* Question Content */
@@ -776,7 +776,7 @@ hr {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   display: flex;
   flex-direction: column;
 }
@@ -798,7 +798,7 @@ hr {
 .flag-button {
   background: none;
   border: 1px solid #ffc107;
-  color: #6c757d;
+  color: var(--color-draft);
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;
@@ -806,12 +806,12 @@ hr {
 }
 
 .flag-button:hover {
-  background-color: #fff9db;
+  background-color: var(--color-bg-primary)9db;
 }
 
 .flag-button.flagged {
   background-color: #ffc107;
-  color: #212529;
+  color: var(--color-text-primary);
 }
 
 .question-image {
@@ -851,7 +851,7 @@ hr {
 .answer-option label {
   display: flex;
   padding: 10px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
@@ -859,7 +859,7 @@ hr {
 }
 
 .answer-option label:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
 }
 
 .answer-option input:checked + label {
@@ -871,7 +871,7 @@ hr {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #e9ecef;
+  background-color: var(--color-border-light);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -905,7 +905,7 @@ hr {
 
 /* Exam Results */
 .exam-results-container {
-  background-color: #fff;
+  background-color: var(--color-bg-primary);
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -918,7 +918,7 @@ hr {
 }
 
 .results-header h2 {
-  color: #28a745;
+  color: var(--color-approved);
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -930,7 +930,7 @@ hr {
 
 /* Overall Score Section */
 .overall-score-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
   border-radius: 12px;
   padding: 30px;
   color: white;
@@ -958,7 +958,7 @@ hr {
 .score-percentage {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--color-bg-primary);
 }
 
 .score-detail {
@@ -994,14 +994,14 @@ hr {
 
 .score-section-header h5 {
   margin: 0;
-  color: #fff;
+  color: var(--color-bg-primary);
   font-weight: bold;
 }
 
 .score-number {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--color-bg-primary);
   margin-bottom: 10px;
 }
 
@@ -1041,7 +1041,7 @@ hr {
 }
 
 .total-toeic-score h4 {
-  color: #fff;
+  color: var(--color-bg-primary);
   margin-bottom: 10px;
 }
 
@@ -1062,7 +1062,7 @@ hr {
 }
 
 .stat-card {
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -1076,11 +1076,11 @@ hr {
 }
 
 .stat-card.correct {
-  border-left-color: #28a745;
+  border-left-color: var(--color-approved);
 }
 
 .stat-card.incorrect {
-  border-left-color: #dc3545;
+  border-left-color: var(--color-danger);
 }
 
 .stat-card.unanswered {
@@ -1094,15 +1094,15 @@ hr {
 .stat-icon {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: #6c757d;
+  color: var(--color-draft);
 }
 
 .stat-card.correct .stat-icon {
-  color: #28a745;
+  color: var(--color-approved);
 }
 
 .stat-card.incorrect .stat-icon {
-  color: #dc3545;
+  color: var(--color-danger);
 }
 
 .stat-card.unanswered .stat-icon {
@@ -1120,7 +1120,7 @@ hr {
 }
 
 .stat-label {
-  color: #6c757d;
+  color: var(--color-draft);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -1152,7 +1152,7 @@ hr {
 }
 
 .question-review-item {
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -1161,11 +1161,11 @@ hr {
 }
 
 .question-review-item.correct {
-  border-left-color: #28a745;
+  border-left-color: var(--color-approved);
 }
 
 .question-review-item.incorrect {
-  border-left-color: #dc3545;
+  border-left-color: var(--color-danger);
 }
 
 .question-review-item.unanswered {
@@ -1177,7 +1177,7 @@ hr {
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-bottom: 1px solid #eee;
 }
 
@@ -1212,11 +1212,11 @@ hr {
 }
 
 .status-badge.correct {
-  background-color: #28a745;
+  background-color: var(--color-approved);
 }
 
 .status-badge.incorrect {
-  background-color: #dc3545;
+  background-color: var(--color-danger);
 }
 
 .status-badge.unanswered {
@@ -1243,20 +1243,20 @@ hr {
   padding: 10px 15px;
   margin-bottom: 8px;
   border-radius: 8px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border: 1px solid #eee;
   transition: all 0.2s ease;
 }
 
 .option-review-item.selected-correct {
   background-color: #d4edda;
-  border-color: #28a745;
+  border-color: var(--color-approved);
   color: #155724;
 }
 
 .option-review-item.selected-incorrect {
   background-color: #f8d7da;
-  border-color: #dc3545;
+  border-color: var(--color-danger);
   color: #721c24;
 }
 
@@ -1274,7 +1274,7 @@ hr {
 }
 
 .option-letter {
-  background: #6c757d;
+  background: var(--color-draft);
   color: white;
   width: 25px;
   height: 25px;
@@ -1287,11 +1287,11 @@ hr {
 }
 
 .option-review-item.selected-correct .option-letter {
-  background: #28a745;
+  background: var(--color-approved);
 }
 
 .option-review-item.selected-incorrect .option-letter {
-  background: #dc3545;
+  background: var(--color-danger);
 }
 
 .option-review-item.correct-answer .option-letter {
@@ -1304,7 +1304,7 @@ hr {
 }
 
 .explanation-section {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
   padding: 15px;
   border-left: 4px solid #17a2b8;
@@ -1349,12 +1349,12 @@ hr {
 }
 
 .confirm-modal p {
-  color: #6c757d;
+  color: var(--color-draft);
   margin-bottom: 20px;
 }
 
 .stats-summary {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-secondary);
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
@@ -1411,17 +1411,17 @@ hr {
 }
 
 .question-sidebar-grid::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: var(--color-bg-secondary);
   border-radius: 2px;
 }
 
 .question-sidebar-grid::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
+  background: var(--color-border);
   border-radius: 2px;
 }
 
 .question-sidebar-grid::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
+  background: var(--color-border-dark);
 }
 
 /* Fixed legend area */
@@ -1430,7 +1430,7 @@ hr {
   height: 70px;
   border-top: 1px solid #f0f0f0;
   padding-top: 8px;
-  background-color: #fafafa;
+  background-color: var(--color-bg-hover);
   margin-left: -12px;
   margin-right: -12px;
   margin-bottom: -12px;
@@ -1546,7 +1546,7 @@ hr {
   }
   
   .exam-header-compact .ant-typography {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .question-content-area .ant-card-body {
@@ -1644,7 +1644,7 @@ hr {
   }
   
   .exam-header-compact .ant-typography {
-    font-size: 13px;
+    font-size: 12px;
   }
   
   .exam-header-compact .ant-space-item > div {
@@ -1674,19 +1674,19 @@ hr {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-border-light);
   padding: 12px;
 }
 
 .question-nav-legend {
   flex-shrink: 0;
   margin-bottom: 12px;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-border-light);
 }
 
 .question-nav-legend .legend-item {
@@ -1734,8 +1734,8 @@ hr {
   width: 100%;
   height: 24px;
   border-radius: 4px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 10px;
@@ -1745,7 +1745,7 @@ hr {
   justify-content: center;
   position: relative;
   padding: 0;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .question-button:hover {
@@ -1753,26 +1753,26 @@ hr {
 }
 
 .question-button.active {
-  background: #1890ff;
-  border-color: #1890ff;
-  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg-primary);
 }
 
 .question-button.answered {
-  background: #52c41a;
-  border-color: #52c41a;
-  color: #fff;
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: var(--color-bg-primary);
 }
 
 .question-button.flagged {
-  border-color: #faad14;
+  border-color: var(--color-warning);
 }
 
 .progress-summary {
   flex-shrink: 0;
   background: #f0f9ff;
   border-radius: 6px;
-  border: 1px solid #91d5ff;
+  border: 1px solid var(--color-info-border);
   padding: 8px;
 }
 

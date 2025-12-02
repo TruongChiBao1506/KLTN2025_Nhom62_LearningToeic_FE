@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminDashboard from '../pages/Admin/AdminDashboard';
-// import ProtectedRoute from './components/Admin/ProtectedRoute';
+import AdminProtectedRoute from '../components/AdminProtectedRoute';
 
 // Admin
 import AdminLayout from '../pages/Admin/AdminLayout';
@@ -27,15 +27,28 @@ import ExamQuestion from '../pages/Admin/ExamQuestion';
 import ScoreTable from '../pages/Admin/ScoreTable';
 import QuestionBySection from '../pages/Admin/QuestionBySection';
 import IndicateQuestion from '../pages/Admin/IndicateQuestion';
+import ContentApproval from '../pages/Admin/ContentApproval';
+import TeacherRequests from '../pages/Admin/TeacherRequests';
+import Notifications from '../pages/Admin/Notifications/NotificationPage';
 // import các component khác nếu cần
 
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<AdminLayout />}>
+      <Route path="/" element={
+        <AdminProtectedRoute>
+          <AdminLayout />
+        </AdminProtectedRoute>
+      }>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="profile" element={<AdminProfile />} />
+            
+            {/* Content Approval & Teacher Requests */}
+            <Route path="content-approval" element={<ContentApproval />} />
+            <Route path="teacher-requests" element={<TeacherRequests />} />
+            <Route path="notifications" element={<Notifications />} />
+
             <Route path="section" element={<Section />} />
 
             <Route path="section/:sectionId/lesson" element={<LessonBySection />} />

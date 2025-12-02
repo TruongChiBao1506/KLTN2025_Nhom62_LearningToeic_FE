@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -790,7 +790,7 @@ const ImproveStudy = () => {
       className="improve-study-container"
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "#2C5F8D",
         padding: "20px 0",
       }}
     >
@@ -812,7 +812,7 @@ const ImproveStudy = () => {
               <div style={{ textAlign: "center", marginBottom: "40px" }}>
                 <div
                   style={{
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                    background: "#2C5F8D",
                     borderRadius: "50%",
                     width: "80px",
                     height: "80px",
@@ -828,7 +828,7 @@ const ImproveStudy = () => {
                 <Title
                   level={2}
                   style={{
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
+                    background: "#2C5F8D",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     marginBottom: "8px",
@@ -840,7 +840,7 @@ const ImproveStudy = () => {
                 <Text
                   style={{
                     fontSize: "16px",
-                    color: "#666",
+                    color: "var(--color-text-secondary)",
                     display: "block",
                     marginBottom: "8px",
                   }}
@@ -905,7 +905,7 @@ const ImproveStudy = () => {
                       transition: "all 0.3s ease",
                       overflow: "visible",
                       ":hover": {
-                        borderColor: "#667eea",
+                        borderColor: "var(--color-brand-purple)",
                         boxShadow: "0 8px 24px rgba(102, 126, 234, 0.15)",
                       },
                     }}
@@ -923,7 +923,7 @@ const ImproveStudy = () => {
                         }}
                       >
                         <Target className="w-5 h-5 text-blue-500" />
-                        <Text strong style={{ color: "#1890ff" }}>
+                        <Text strong style={{ color: "var(--color-primary)" }}>
                           Chọn phần thi
                         </Text>
                       </div>
@@ -935,7 +935,7 @@ const ImproveStudy = () => {
                             padding: "8px",
                             borderRadius: "6px",
                             border: "1px solid #d9d9d9",
-                            fontSize: "14px",
+                            fontSize: "12px",
                           }}
                           value={selectedSection}
                           onChange={(e) => {
@@ -985,7 +985,7 @@ const ImproveStudy = () => {
                         }}
                       >
                         <BookOpen className="w-5 h-5 text-green-500" />
-                        <Text strong style={{ color: "#52c41a" }}>
+                        <Text strong style={{ color: "var(--color-success)" }}>
                           Chọn loại câu hỏi
                         </Text>
                       </div>
@@ -997,7 +997,7 @@ const ImproveStudy = () => {
                             padding: "8px",
                             borderRadius: "6px",
                             border: "1px solid #d9d9d9",
-                            fontSize: "14px",
+                            fontSize: "12px",
                             opacity: selectedSection ? 1 : 0.6,
                           }}
                           value={selectedQuestionType}
@@ -1038,7 +1038,7 @@ const ImproveStudy = () => {
                     fontWeight: "600",
                     background:
                       selectedSection && selectedQuestionType
-                        ? "linear-gradient(135deg, #667eea, #764ba2)"
+                        ? "#2C5F8D"
                         : undefined,
                     border: "none",
                     boxShadow:
@@ -1054,7 +1054,7 @@ const ImproveStudy = () => {
 
                 {(!selectedSection || !selectedQuestionType) && (
                   <div style={{ marginTop: "12px" }}>
-                    <Text type="secondary" style={{ fontSize: "14px" }}>
+                    <Text type="secondary" style={{ fontSize: "12px" }}>
                       Vui lòng chọn phần thi và loại câu hỏi để bắt đầu
                     </Text>
                   </div>
@@ -1114,7 +1114,7 @@ const ImproveStudy = () => {
               style={{
                 borderRadius: "12px",
                 height: "40px",
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
+                background: "#2C5F8D",
                 border: "none",
               }}
             >

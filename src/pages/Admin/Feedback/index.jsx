@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Breadcrumb } from 'antd';
 import { MessageOutlined } from '@ant-design/icons';
 import FeedbackList from '../../../components/Admin/FeedbackList';
@@ -71,7 +71,7 @@ const Feedback = () => {
                 data-aos-duration="400"
                 data-aos-delay="50"
             >
-                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
                             background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -84,9 +84,9 @@ const Feedback = () => {
                             marginRight: 12,
                             boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                         }}>
-                            <MessageOutlined style={{ color: '#fff', fontSize: 22 }} />
+                            <MessageOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Feedback</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Feedback</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

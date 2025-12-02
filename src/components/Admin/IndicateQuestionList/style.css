@@ -1,4 +1,4 @@
-.input-group {
+﻿.input-group {
     border: 1px solid #6694c2;
     border-radius: 10px;
     overflow: hidden;
@@ -19,9 +19,9 @@
 }
 .form-select,
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .page-item .page-link {
-    font-size: 13px;
+    font-size: 12px;
 }

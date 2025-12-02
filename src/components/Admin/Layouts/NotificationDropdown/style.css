@@ -1,0 +1,51 @@
+﻿/* Notification Dropdown Styles */
+.notification-item {
+  transition: all 0.3s ease;
+}
+
+.notification-item.unread {
+  position: relative;
+}
+
+.notification-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
+}
+
+.notification-item:hover {
+  background-color: var(--color-bg-hover) !important;
+}
+
+/* Custom scrollbar for notifications */
+.ant-dropdown .notification-item::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ant-dropdown .notification-item::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.ant-dropdown .notification-item::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.ant-dropdown .notification-item::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Badge animation */
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+}
+
+.notification-bell-badge:hover {
+  animation: bellShake 0.5s ease;
+}

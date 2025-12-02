@@ -1,7 +1,7 @@
-/* Settings Page - Ant Design Enhanced Styles */
+﻿/* Settings Page - Ant Design Enhanced Styles */
 .settings-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f2f5 0%, #fafafa 100%);
+  background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-hover) 100%);
 }
 
 /* Card Glass Morphism Effect - Scoped to Settings component */
@@ -29,7 +29,7 @@
 }
 
 .settings-container .ant-tabs-tab.ant-tabs-tab-active {
-  background: linear-gradient(45deg, #1890ff, #52c41a);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-success));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -37,13 +37,13 @@
 }
 
 .settings-container .ant-tabs-ink-bar {
-  background: linear-gradient(45deg, #1890ff, #52c41a);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-success));
   height: 3px;
 }
 
 /* Switch Enhancement - Scoped to Settings component */
 .settings-container .ant-switch-checked {
-  background-color: #52c41a;
+  background-color: var(--color-success);
 }
 
 .settings-container .ant-switch-checked:focus {
@@ -52,18 +52,18 @@
 
 /* Select Enhancement - Scoped to Settings component */
 .settings-container .ant-select-selector {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .settings-container .ant-select:hover .ant-select-selector {
-  border-color: #40a9ff;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
 }
 
 .settings-container .ant-select-focused .ant-select-selector {
-  border-color: #40a9ff;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
@@ -75,12 +75,12 @@
 }
 
 .settings-container .ant-btn-primary {
-  background: linear-gradient(45deg, #1890ff, #52c41a);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-success));
   border: none;
 }
 
 .settings-container .ant-btn-primary:hover {
-  background: linear-gradient(45deg, #40a9ff, #73d13d);
+  background: linear-gradient(45deg, var(--color-primary-light), var(--color-success-light));
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
 }
@@ -96,26 +96,26 @@
 }
 
 .settings-container .ant-input-number:hover {
-  border-color: #40a9ff;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
 }
 
 .settings-container .ant-input-number:focus {
-  border-color: #40a9ff;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 /* Slider Enhancement - Scoped to Settings component */
 .settings-container .ant-slider-rail {
-  background: #f5f5f5;
+  background: var(--color-bg-secondary);
 }
 
 .settings-container .ant-slider-track {
-  background: linear-gradient(45deg, #1890ff, #52c41a);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-success));
 }
 
 .settings-container .ant-slider-handle {
-  border: solid 2px #1890ff;
+  border: solid 2px var(--color-primary);
 }
 
 .settings-container .ant-slider-handle:focus {
@@ -140,7 +140,7 @@
   
   .settings-container .ant-tabs-tab {
     padding: 8px 12px;
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .settings-container .ant-card {
@@ -204,12 +204,12 @@
 }
 
 .settings-container ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #1890ff, #52c41a);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-success));
   border-radius: 3px;
 }
 
 .settings-container ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #40a9ff, #73d13d);
+  background: linear-gradient(45deg, var(--color-primary-light), var(--color-success-light));
 }
 
 /* Dark mode support - Scoped to Settings component */

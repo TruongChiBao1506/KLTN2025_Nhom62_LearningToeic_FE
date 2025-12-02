@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCirclePlus,
@@ -6,6 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import QuestionService from "../../../services/questionService";
+import sectionsService from "../../../services/sectionsService";
 
 // Table components
 import TableSection1 from "./TableSection1";
@@ -50,6 +51,27 @@ const QuestionSectionPage = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [section, setSection] = useState(null);
+  const [sectionLoading, setSectionLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSection = async () => {
+      if (!sectionId) return;
+      
+      setSectionLoading(true);
+      try {
+        const response = await sectionsService.get(sectionId);
+        setSection(response);
+      } catch (error) {
+        console.error("Error fetching section:", error);
+        setSection(null);
+      } finally {
+        setSectionLoading(false);
+      }
+    };
+
+    fetchSection();
+  }, [sectionId]);
 
   const filteredQuestions = useMemo(() => {
     if (!questions || !Array.isArray(questions)) {
@@ -113,128 +135,170 @@ const QuestionSectionPage = ({
   const getAudioUrl = (audioName) =>
     audioName ? `http://localhost:9004/audios/${audioName}` : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
 
-  // Table selection logic
+  // Table selection logic based on section metadata
   const renderTable = () => {
-    switch (sectionId) {
-      case "686ce171b614dda1fc08f1d0":
-        return (
-          <TableSection1
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            getImageUrl={getImageUrl}
-            getAudioUrl={getAudioUrl}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686ce171b614dda1fc08f1d1":
-        return (
-          <TableSection2
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            getAudioUrl={getAudioUrl}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686ce171b614dda1fc08f1d2":
-        return (
-          <TableSection3
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            getImageUrl={getImageUrl}
-            getAudioUrl={getAudioUrl}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686ce171b614dda1fc08f1d3":
-        return (
-          <TableSection4
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            getImageUrl={getImageUrl}
-            getAudioUrl={getAudioUrl}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686ce171b614dda1fc08f1d4":
-        return (
-          <TableSection5
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686ce171b614dda1fc08f1d5":
-        return (
-          <TableSection6
-            paginatedQuestions={paginatedQuestions}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "686007e22278739d2ceea780":
-        return (
-          <TableSection7Single
-            paginatedQuestions={paginatedQuestions}
-            getImageUrl={getImageUrl}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "685d10f3abd7f3cf92add620":
-        return (
-          <TableSection7Double
-            paginatedQuestions={paginatedQuestions}
-            getImageUrl={getImageUrl}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "685d12f0abd7f3cf92add643":
-        return (
-          <TableSection7Triple
-            paginatedQuestions={paginatedQuestions}
-            getImageUrl={getImageUrl}
-            currentPage={currentPage}
-            ITEMS_PER_PAGE={itemsPerPage}
-            sectionId={sectionId}
-            retrieveQuestions={retrieveQuestions}
-            QuestionService={QuestionService}
-            handleShowEditModal={handleShowEditModal}
-          />
-        );
-      case "685d16f6abd7f3cf92add64a":
+    if (sectionLoading) {
+      return <div className="text-center p-4">Đang tải thông tin phần thi...</div>;
+    }
+    if (!section) {
+      return <div className="text-center p-4 text-danger">Không tìm thấy thông tin phần thi.</div>;
+    }
+
+    // Extract part number from name (e.g., "Part 1: Photographs" -> 1)
+    const partMatch = section.name.match(/Part (\d+)/i);
+    const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+    // Determine table based on type and part number
+    if (section.type === 1) {  // Listening sections
+      switch (partNumber) {
+        case 1:
+          return (
+            <TableSection1
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              getImageUrl={getImageUrl}
+              getAudioUrl={getAudioUrl}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        case 2:
+          return (
+            <TableSection2
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              getAudioUrl={getAudioUrl}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        case 3:
+          return (
+            <TableSection3
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              getImageUrl={getImageUrl}
+              getAudioUrl={getAudioUrl}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        case 4:
+          return (
+            <TableSection4
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              getImageUrl={getImageUrl}
+              getAudioUrl={getAudioUrl}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        default:
+          return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Listening này.</div>;
+      }
+    } else if (section.type === 2) {  // Reading sections
+      switch (partNumber) {
+        case 5:
+          return (
+            <TableSection5
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        case 6:
+          return (
+            <TableSection6
+              paginatedQuestions={paginatedQuestions}
+              currentPage={currentPage}
+              ITEMS_PER_PAGE={itemsPerPage}
+              sectionId={sectionId}
+              retrieveQuestions={retrieveQuestions}
+              QuestionService={QuestionService}
+              handleShowEditModal={handleShowEditModal}
+            />
+          );
+        case 7:
+          // Handle Part 7 variants based on name keywords
+          if (section.name.toLowerCase().includes("single")) {
+            return (
+              <TableSection7Single
+                paginatedQuestions={paginatedQuestions}
+                getImageUrl={getImageUrl}
+                currentPage={currentPage}
+                ITEMS_PER_PAGE={itemsPerPage}
+                sectionId={sectionId}
+                retrieveQuestions={retrieveQuestions}
+                QuestionService={QuestionService}
+                handleShowEditModal={handleShowEditModal}
+              />
+            );
+          } else if (section.name.toLowerCase().includes("double")) {
+            return (
+              <TableSection7Double
+                paginatedQuestions={paginatedQuestions}
+                getImageUrl={getImageUrl}
+                currentPage={currentPage}
+                ITEMS_PER_PAGE={itemsPerPage}
+                sectionId={sectionId}
+                retrieveQuestions={retrieveQuestions}
+                QuestionService={QuestionService}
+                handleShowEditModal={handleShowEditModal}
+              />
+            );
+          } else if (section.name.toLowerCase().includes("triple")) {
+            return (
+              <TableSection7Triple
+                paginatedQuestions={paginatedQuestions}
+                getImageUrl={getImageUrl}
+                currentPage={currentPage}
+                ITEMS_PER_PAGE={itemsPerPage}
+                sectionId={sectionId}
+                retrieveQuestions={retrieveQuestions}
+                QuestionService={QuestionService}
+                handleShowEditModal={handleShowEditModal}
+              />
+            );
+          } else {
+            // Default Part 7 (general Reading Comprehension)
+            return (
+              <TableSection7Single
+                paginatedQuestions={paginatedQuestions}
+                getImageUrl={getImageUrl}
+                currentPage={currentPage}
+                ITEMS_PER_PAGE={itemsPerPage}
+                sectionId={sectionId}
+                retrieveQuestions={retrieveQuestions}
+                QuestionService={QuestionService}
+                handleShowEditModal={handleShowEditModal}
+              />
+            );
+          }
+        default:
+          return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Reading này.</div>;
+      }
+    } else if (section.type === 3) {  // Grammar sections (types 1-2, 3-4, 5-7, 8-10, 11)
+      // Determine by section name patterns
+      const nameLower = section.name.toLowerCase();
+      
+      if (nameLower.includes("1") && nameLower.includes("2")) {
         return (
           <TableSectionNo1To2
             paginatedQuestions={paginatedQuestions}
@@ -246,7 +310,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d170eabd7f3cf92add651":
+      } else if (nameLower.includes("3") && nameLower.includes("4")) {
         return (
           <TableSectionNo3To4
             paginatedQuestions={paginatedQuestions}
@@ -259,7 +323,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d1721abd7f3cf92add658":
+      } else if (nameLower.includes("5") && nameLower.includes("7")) {
         return (
           <TableSectionNo5To7
             paginatedQuestions={paginatedQuestions}
@@ -271,7 +335,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d1732abd7f3cf92add65f":
+      } else if (nameLower.includes("8") && nameLower.includes("10")) {
         return (
           <TableSectionNo8To10
             paginatedQuestions={paginatedQuestions}
@@ -284,7 +348,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d1744abd7f3cf92add666":
+      } else if (nameLower.includes("11")) {
         return (
           <TableSectionNo11
             paginatedQuestions={paginatedQuestions}
@@ -296,7 +360,12 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d1761abd7f3cf92add66d":
+      }
+      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần ngữ pháp này.</div>;
+    } else if (section.type === 4) {  // Vocabulary sections (types 1-5, 6-7, 8)
+      const nameLower = section.name.toLowerCase();
+      
+      if (nameLower.includes("1") && nameLower.includes("5")) {
         return (
           <TableSectionNo1To5
             paginatedQuestions={paginatedQuestions}
@@ -309,7 +378,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d1773abd7f3cf92add674":
+      } else if (nameLower.includes("6") && nameLower.includes("7")) {
         return (
           <TableSectionNo6To7
             paginatedQuestions={paginatedQuestions}
@@ -321,7 +390,7 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      case "685d178babd7f3cf92add67b":
+      } else if (nameLower.includes("8")) {
         return (
           <TableSectionNo8
             paginatedQuestions={paginatedQuestions}
@@ -333,9 +402,11 @@ const QuestionSectionPage = ({
             handleShowEditModal={handleShowEditModal}
           />
         );
-      default:
-        return null;
+      }
+      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần từ vựng này.</div>;
     }
+
+    return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;
   };
 
   // Pagination info
@@ -378,13 +449,13 @@ const QuestionSectionPage = ({
                       option: (base, state) => ({
                         ...base,
                         borderRadius: 30,
-                        color: state.isSelected ? '#fff' : '#198754',
+                        color: state.isSelected ? 'var(--color-bg-primary)' : '#198754',
                         backgroundColor: state.isSelected
                           ? '#198754'
                           : state.isFocused
                             ? '#e6f7ef'
-                            : '#fff',
-                        ':active': { backgroundColor: '#43c59e', color: '#fff' }
+                            : 'var(--color-bg-primary)',
+                        ':active': { backgroundColor: '#43c59e', color: 'var(--color-bg-primary)' }
                       }),
                       menu: (base) => ({
                         ...base,
@@ -424,7 +495,7 @@ const QuestionSectionPage = ({
                 title="Thêm mới câu hỏi"
                 style={{ 
                   borderRadius: '20px', 
-                  fontSize: '14px', 
+                  fontSize: '12px', 
                   padding: '10px 18px', 
                   whiteSpace: 'nowrap', 
                   flexShrink: 0,

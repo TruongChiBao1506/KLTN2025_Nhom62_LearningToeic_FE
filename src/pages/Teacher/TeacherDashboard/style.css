@@ -1,0 +1,95 @@
+﻿.teacher-dashboard {
+  padding: 24px;
+}
+
+.teacher-dashboard h2 {
+  font-weight: 600;
+}
+
+.teacher-dashboard .ant-card {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.teacher-dashboard .ant-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.teacher-dashboard .ant-statistic-title {
+  margin-bottom: 8px;
+}
+
+.teacher-dashboard .ant-statistic-content {
+  font-size: 24px;
+}
+
+.teacher-dashboard .ant-table {
+  font-size: 12px;
+}
+
+.teacher-dashboard .ant-table-thead > tr > th {
+  background: var(--color-bg-hover);
+  font-weight: 600;
+}
+
+.teacher-dashboard .ant-tabs-tab {
+  font-size: 12px;
+}
+
+/* Chart styles */
+.teacher-dashboard .recharts-wrapper {
+  margin: 0 auto;
+}
+
+.teacher-dashboard .recharts-legend-wrapper {
+  padding-top: 15px !important;
+  margin-top: 10px !important;
+}
+
+.teacher-dashboard .recharts-legend-item {
+  margin-right: 15px !important;
+  margin-bottom: 8px !important;
+}
+
+.teacher-dashboard .recharts-legend-item-text {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--color-text-primary) !important;
+}
+
+.teacher-dashboard .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.teacher-dashboard .recharts-default-tooltip {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+}
+
+.teacher-dashboard .recharts-tooltip-label {
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .teacher-dashboard {
+    padding: 16px;
+  }
+  
+  .teacher-dashboard h2 {
+    font-size: 20px;
+  }
+
+  .teacher-dashboard .recharts-wrapper {
+    font-size: 11px;
+  }
+
+  .teacher-dashboard .recharts-legend-item-text {
+    font-size: 11px !important;
+  }
+}

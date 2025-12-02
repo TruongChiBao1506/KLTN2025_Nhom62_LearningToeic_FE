@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+﻿import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button, Space, Input, Tooltip, message } from "antd";
 import { Palette, Languages, X, MessageSquare } from "lucide-react";
 import "./TextHighlighter.css";
@@ -230,7 +230,7 @@ const TextHighlighter = ({ children, containerId }) => {
               backgroundColor: "#f6f8fa",
               borderRadius: "4px",
               marginBottom: "8px",
-              fontSize: "14px",
+              fontSize: "12px",
             }}
           >
             {translation}
@@ -251,7 +251,7 @@ const TextHighlighter = ({ children, containerId }) => {
             style={{ marginBottom: "12px" }}
           >
             <div
-              style={{ marginBottom: "8px", fontSize: "12px", color: "#666" }}
+              style={{ marginBottom: "8px", fontSize: "12px", color: "var(--color-text-secondary)" }}
             >
               Choose highlight color:
             </div>
@@ -408,7 +408,7 @@ const TextHighlighter = ({ children, containerId }) => {
           >
             <div>
               <strong>Selected Text: </strong>
-              <span style={{ color: "#1890ff", fontSize: "14px" }}>
+              <span style={{ color: "var(--color-primary)", fontSize: "12px" }}>
                 {selectedText}
               </span>
             </div>

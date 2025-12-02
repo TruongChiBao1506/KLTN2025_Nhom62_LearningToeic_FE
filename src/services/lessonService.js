@@ -42,7 +42,7 @@ class LessonService {
     const response = await axiosClient.put(
       `${this.baseUrl}/${lessonId}/status`,
       {
-        newStatus: newStatus,
+        status: newStatus,
       }
     );
     return response.data;

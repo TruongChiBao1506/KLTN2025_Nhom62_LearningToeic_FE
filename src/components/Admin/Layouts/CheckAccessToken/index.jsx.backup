@@ -1,0 +1,236 @@
+import { useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthService from '../../../../services/authService';
+import { useAuthStore } from '../../../../hooks/useAuthStore';
+
+const TokenManager = () => {
+    const { setIsAuthenticated } = useAuthStore();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const tokenRefreshIntervalRef = useRef(null);
+    const refreshTokenTimeoutRef = useRef(null);
+
+    // Determine if current route is for teacher
+    const isTeacherRoute = location.pathname.startsWith('/teacher');
+
+    const handleLogout = useCallback(() => {
+        console.log("Logging out...");
+        // Clear all tokens: admin, teacher, and learner
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminRefreshToken");
+        localStorage.removeItem("adminAccessTokenExpirationTime");
+        localStorage.removeItem("adminRefreshTokenExpirationTime");
+        localStorage.removeItem("teacherToken");
+        localStorage.removeItem("teacherRefreshToken");
+        localStorage.removeItem("teacherAccessTokenExpirationTime");
+        localStorage.removeItem("teacherRefreshTokenExpirationTime");
+        localStorage.removeItem("learnerToken");
+        localStorage.removeItem("learnerRefreshToken");
+        localStorage.removeItem("learnerAccessTokenExpirationTime");
+        localStorage.removeItem("learnerRefreshTokenExpirationTime");
+        localStorage.setItem('theme', 'light');
+        setIsAuthenticated(false);
+        navigate('/auth/signin');
+    }, [navigate, setIsAuthenticated]);
+
+    const hasValidTokens = useCallback(() => {
+        console.log("🔍 TokenManager - Checking valid tokens...");
+        console.log("📍 Current route:", location.pathname);
+        console.log("👨‍🏫 Is teacher route:", isTeacherRoute);
+        
+        // For teacher routes, check ONLY teacher tokens
+        if (isTeacherRoute) {
+            const teacherToken = localStorage.getItem("teacherToken");
+            const teacherRefreshToken = localStorage.getItem("teacherRefreshToken");
+            const adminToken = localStorage.getItem("adminToken");
+            const adminRefreshToken = localStorage.getItem("adminRefreshToken");
+            
+            console.log("🔑 Teacher token exists:", !!teacherToken);
+            console.log("� Teacher refresh token exists:", !!teacherRefreshToken);
+            console.log("� Admin token exists:", !!adminToken);
+            console.log("🔄 Admin refresh token exists:", !!adminRefreshToken);
+            
+            // Teacher needs teacherToken, Admin can use adminToken
+            const hasTeacherTokens = teacherToken && teacherRefreshToken;
+            const hasAdminTokens = adminToken && adminRefreshToken;
+            
+            console.log("✅ Has teacher tokens:", hasTeacherTokens);
+            console.log("✅ Has admin tokens:", hasAdminTokens);
+            
+            if (!hasTeacherTokens && !hasAdminTokens) {
+                console.log("❌ No valid tokens found for teacher routes");
+                return false;
+            }
+            
+            console.log("✅ Valid tokens found for teacher!");
+            return true;
+        }
+        
+        // For admin routes, only check admin tokens
+        const adminToken = localStorage.getItem("adminToken");
+        const adminRefreshToken = localStorage.getItem("adminRefreshToken");
+        
+        console.log("🔑 Admin token exists:", !!adminToken);
+        console.log("🔄 Admin refresh token exists:", !!adminRefreshToken);
+        
+        if (!adminToken || !adminRefreshToken) {
+            console.log("❌ No admin tokens found");
+            return false;
+        }
+        
+        console.log("✅ Valid admin tokens found!");
+        return true;
+    }, [isTeacherRoute, location.pathname]);
+
+    // Get token prefix based on route
+    const getTokenPrefix = useCallback(() => {
+        if (isTeacherRoute) {
+            // For teacher, prefer teacherToken but can use adminToken
+            const hasTeacherToken = localStorage.getItem("teacherToken");
+            const hasAdminToken = localStorage.getItem("adminToken");
+            const prefix = hasTeacherToken ? "teacher" : (hasAdminToken ? "admin" : "teacher");
+            console.log("🎯 Token prefix for teacher route:", prefix);
+            return prefix;
+        }
+        console.log("🎯 Token prefix for admin route: admin");
+        return "admin";
+    }, [isTeacherRoute]);
+
+    // Function to schedule the refreshToken check
+    const scheduleRefreshToken = useCallback(async () => {
+        const tokenPrefix = getTokenPrefix();
+        const refreshTokenExpireTime = Number(localStorage.getItem(`${tokenPrefix}RefreshTokenExpirationTime`));
+        const timeUntilRefreshTokenExpiry = refreshTokenExpireTime - Date.now();
+
+        const bufferTime = 5 * 60 * 1000; // 5 minutes
+
+        if (timeUntilRefreshTokenExpiry > bufferTime) {
+            refreshTokenTimeoutRef.current = setTimeout(async () => {
+                try {
+                    // Use the roleType instead of isAdmin boolean
+                    const isValid = await AuthService.checkTokensValidity(tokenPrefix);
+                    
+                    if (!isValid) {
+                        handleLogout();
+                    } else {
+                        // Schedule next check
+                        scheduleRefreshToken();
+                    }
+                } catch (error) {
+                    console.error('Error checking refresh token validity:', error);
+                    handleLogout();
+                }
+            }, timeUntilRefreshTokenExpiry - bufferTime);
+        } else if (timeUntilRefreshTokenExpiry <= 0) {
+            console.log("Refresh token has expired. User needs to sign in again.");
+            handleLogout();
+        }
+    }, [handleLogout, getTokenPrefix]);
+
+    useEffect(() => {
+        const initializeTokenManagement = async () => {
+            try {
+                if (!hasValidTokens()) {
+                    console.log("No valid tokens found, redirecting to signin");
+                    handleLogout();
+                    return;
+                }
+
+                const tokenPrefix = getTokenPrefix();
+                console.log("Using token prefix:", tokenPrefix);
+
+                // Get the jwtExpirationTime from localStorage
+                const jwtExpirationTime = Number(localStorage.getItem(`${tokenPrefix}AccessTokenExpirationTime`));
+                const now = Date.now();
+                const timeUntilTokenExpiry = jwtExpirationTime - now;
+
+                console.log("Token expiry time:", new Date(jwtExpirationTime));
+                console.log("Current time:", new Date(now));
+                console.log("Time until expiry (minutes):", Math.floor(timeUntilTokenExpiry / (1000 * 60)));
+
+                // Nếu token sắp hết hạn (trong vòng 5 phút), thử refresh
+                const bufferTime = 5 * 60 * 1000; // 5 minutes
+                
+                if (timeUntilTokenExpiry <= bufferTime && timeUntilTokenExpiry > 0) {
+                    console.log("Token expiring soon, attempting refresh...");
+                    try {
+                        const isValid = await AuthService.checkTokensValidity(tokenPrefix);
+                        if (!isValid) {
+                            handleLogout();
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error refreshing token:', error);
+                        handleLogout();
+                        return;
+                    }
+                } else if (timeUntilTokenExpiry <= 0) {
+                    console.log("Token has expired, attempting refresh...");
+                    try {
+                        const isValid = await AuthService.checkTokensValidity(tokenPrefix);
+                        if (!isValid) {
+                            handleLogout();
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error refreshing expired token:', error);
+                        handleLogout();
+                        return;
+                    }
+                }
+
+                // Chỉ set interval nếu token còn hạn lâu
+                if (timeUntilTokenExpiry > bufferTime) {
+                    // Set the token refresh interval - check every 10 minutes
+                    const intervalTime = 10 * 60 * 1000; // 10 minutes
+                    
+                    tokenRefreshIntervalRef.current = setInterval(async () => {
+                        try {
+                            const currentPrefix = getTokenPrefix();
+                            const currentExpiry = Number(localStorage.getItem(`${currentPrefix}AccessTokenExpirationTime`));
+                            const currentTime = Date.now();
+                            const timeLeft = currentExpiry - currentTime;
+                            
+                            // Chỉ refresh nếu token sắp hết hạn
+                            if (timeLeft <= bufferTime) {
+                                const isAdminToken = currentPrefix === "admin";
+                                await AuthService.checkTokensValidity(isAdminToken);
+                            }
+                        } catch (error) {
+                            console.error('Error in token refresh interval:', error);
+                            if (tokenRefreshIntervalRef.current) {
+                                clearInterval(tokenRefreshIntervalRef.current);
+                                tokenRefreshIntervalRef.current = null;
+                            }
+                        }
+                    }, intervalTime);
+                }
+
+                // Schedule the refreshToken check
+                await scheduleRefreshToken();
+            } catch (error) {
+                console.error('Error initializing token management:', error);
+                handleLogout();
+            }
+        };
+
+        initializeTokenManagement();
+
+        // Cleanup function
+        return () => {
+            if (tokenRefreshIntervalRef.current) {
+                clearInterval(tokenRefreshIntervalRef.current);
+                tokenRefreshIntervalRef.current = null;
+            }
+
+            if (refreshTokenTimeoutRef.current) {
+                clearTimeout(refreshTokenTimeoutRef.current);
+                refreshTokenTimeoutRef.current = null;
+            }
+        };
+    }, [handleLogout, scheduleRefreshToken, getTokenPrefix, hasValidTokens]);
+
+    return null;
+};
+
+export default TokenManager;

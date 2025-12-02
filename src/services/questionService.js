@@ -44,10 +44,10 @@ class QuestionService {
   }
 
   // Cập nhật trạng thái câu hỏi
-  async updateStatus(questionId, newStatus) {
+  async updateStatus(questionId, status) {
     const response = await axiosClient.put(
       `${this.baseUrl}/${questionId}/status`,
-      newStatus
+      {status}
     );
     return response;
   }

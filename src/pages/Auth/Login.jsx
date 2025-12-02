@@ -32,16 +32,27 @@ const Login = () => {
           refreshTokenExpirationTime,
         } = response.data;
 
-        // Lưu token và thông tin xác thực
+        // ✅ Chuẩn hóa: Lưu token và thông tin xác thực
         if (roles.includes("ROLE_ADMIN")) {
           await authService.saveToken(
             token,
             refreshToken,
             jwtExpirationTime,
             refreshTokenExpirationTime,
-            true
+            'admin'
           );
           // Record login achievement for admin
+          await recordLogin(response.data.userId || username);
+          navigate("/admin/dashboard");
+        } else if (roles.includes("ROLE_TEACHER")) {
+          await authService.saveToken(
+            token,
+            refreshToken,
+            jwtExpirationTime,
+            refreshTokenExpirationTime,
+            'teacher'
+          );
+          // Record login achievement for teacher
           await recordLogin(response.data.userId || username);
           navigate("/admin/dashboard");
         } else if (roles.includes("ROLE_LEARNER")) {
@@ -50,7 +61,7 @@ const Login = () => {
             refreshToken,
             jwtExpirationTime,
             refreshTokenExpirationTime,
-            false
+            'learner'
           );
           // Record login achievement for learner
           await recordLogin(response.data.userId || username);

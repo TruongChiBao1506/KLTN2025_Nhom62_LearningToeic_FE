@@ -1,0 +1,116 @@
+﻿/* Teacher Header - Custom Dropdown Styling */
+
+/* ✅ CUSTOM DROPDOWN MENU STYLING for Ant Design */
+.custom-teacher-dropdown .ant-dropdown-menu {
+    border-radius: 12px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background: var(--color-bg-primary) !important;
+    padding: 8px !important;
+    overflow: hidden !important;
+    animation: dropdownSlideIn 0.2s ease-out !important;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dropdown menu item hover effects */
+.custom-teacher-dropdown .ant-dropdown-menu-item {
+    border-radius: 8px !important;
+    margin: 2px 0 !important;
+    padding: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item:hover {
+    background: transparent !important;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item .dropdown-menu-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item .dropdown-menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item::before {
+    left: 100%;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item:hover .dropdown-menu-item {
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    background: rgba(248, 250, 252, 0.8) !important;
+    border-color: rgba(103, 126, 234, 0.2) !important;
+}
+
+/* Logout item special styling */
+.custom-teacher-dropdown .ant-dropdown-menu-item .logout-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item .logout-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item:hover .logout-item {
+    background: rgba(254, 242, 242, 0.9) !important;
+    border-color: rgba(239, 68, 68, 0.25) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.custom-teacher-dropdown .ant-dropdown-menu-item:hover .logout-item::before {
+    left: 100%;
+}
+
+/* Divider styling */
+.custom-teacher-dropdown .ant-dropdown-menu-item-divider {
+    margin: 12px 8px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%) !important;
+    border-color: transparent !important;
+}
+
+/* Remove text decoration from all links */
+.custom-teacher-dropdown a,
+.custom-teacher-dropdown .ant-dropdown-menu-item a {
+    text-decoration: none !important;
+}
+
+.custom-teacher-dropdown a:hover,
+.custom-teacher-dropdown .ant-dropdown-menu-item a:hover {
+    text-decoration: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .custom-teacher-dropdown .ant-dropdown-menu {
+        min-width: 250px !important;
+    }
+}

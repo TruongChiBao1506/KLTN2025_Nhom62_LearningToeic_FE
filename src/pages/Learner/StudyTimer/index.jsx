@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 // import './style.css';
 
 const StudyTimer = () => {
@@ -233,7 +233,7 @@ const StudyTimer = () => {
                 className="timer-progress"
                 style={{
                   background: `conic-gradient(${
-                    isBreak ? "#4ecdc4" : "#667eea"
+                    isBreak ? "var(--color-info)" : "var(--color-brand-purple)"
                   } ${getProgressPercentage() * 3.6}deg, #e0e0e0 0deg)`,
                 }}
               >

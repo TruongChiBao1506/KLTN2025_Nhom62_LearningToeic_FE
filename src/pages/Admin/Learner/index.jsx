@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Breadcrumb } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import LearnerList from '../../../components/Admin/LearnerList';
@@ -72,7 +72,7 @@ const Learner = () => {
                     data-aos-duration="400"
                     data-aos-delay="50"
                 >
-                    <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: '#fff' }}>
+                    <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                         <Breadcrumb.Item>
                             <span style={{
                                 background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
@@ -85,9 +85,9 @@ const Learner = () => {
                                 marginRight: 12,
                                 boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
                             }}>
-                                <TeamOutlined style={{ color: '#fff', fontSize: 22 }} />
+                                <TeamOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                             </span>
-                            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>Learner</span>
+                            <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Learner</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
