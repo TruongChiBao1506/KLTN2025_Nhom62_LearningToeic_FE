@@ -10,7 +10,7 @@ import {
   Tag,
   Empty,
   Divider,
-  Space
+  Space,
 } from "antd";
 import {
   PlayCircleOutlined,
@@ -18,7 +18,7 @@ import {
   FileTextOutlined,
   UserOutlined,
   ReadOutlined,
-  ThunderboltOutlined
+  ThunderboltOutlined,
 } from "@ant-design/icons";
 import SectionService from "../../../services/sectionsService";
 import TestService from "../../../services/testService";
@@ -30,20 +30,20 @@ const { Title, Paragraph } = Typography;
 
 const SectionSW = () => {
   const { sectionId } = useParams();
-  
+
   // Use section access hook for checking section status
-  const { 
-    section, 
-    loading: sectionLoading, 
-    error: sectionError, 
-    isAccessible 
+  const {
+    section,
+    loading: sectionLoading,
+    error: sectionError,
+    isAccessible,
   } = useSectionAccess(sectionId, {
-    redirectTo: '/learner/speaking-writing',
+    redirectTo: "/learner/speaking-writing",
     redirectDelay: 3000,
     showToast: true,
     pollInterval: 30000,
   });
-  
+
   const [sections, setSections] = useState([]);
   const [tests, setTests] = useState([]);
   const [sectionName, setSectionName] = useState("");
@@ -53,8 +53,9 @@ const SectionSW = () => {
   const retrieveSections = useCallback(async () => {
     try {
       const response = await SectionService.allEnable();
-      setSections(response);
+      console.log("🚀 ~ SectionSW ~ response:", response);
 
+      setSections(response);
     } catch (error) {
       console.log(error);
     }
@@ -70,9 +71,14 @@ const SectionSW = () => {
     if (!sectionId) return;
     try {
       const response = await TestService.getEnableTestsBySection(sectionId);
+      console.log("🚀 ~ SectionSW ~ tests response:", response);
       setTests(response);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching tests:", error);
+      // Set empty tests if API fails (404 means no tests for this section yet)
+      if (error.response?.status === 404) {
+        setTests([]);
+      }
     }
   }, [sectionId]);
 
@@ -114,13 +120,19 @@ const SectionSW = () => {
         <div className="section-sw-wrapper">
           {/* Header */}
           <div className="section-sw-header">
-            <Title level={1} className="section-sw-title" style={{color: 'var(--color-bg-primary)'}}>
+            <Title
+              level={1}
+              className="section-sw-title"
+              style={{ color: "#fff" }}
+            >
               Nâng Tầm Kỹ Năng TOEIC Speaking & Writing
             </Title>
             <Paragraph className="section-sw-subtitle">
-              {sectionName ? `Luyện tập: ${sectionName}` : 
-               section?.name ? `Luyện tập: ${section.name}` : 
-               "Nâng cao kỹ năng Speaking và Writing TOEIC"}
+              {sectionName
+                ? `Luyện tập: ${sectionName}`
+                : section?.name
+                ? `Luyện tập: ${section.name}`
+                : "Nâng cao kỹ năng Speaking và Writing TOEIC"}
             </Paragraph>
           </div>
 
@@ -140,7 +152,7 @@ const SectionSW = () => {
                 headStyle={{
                   background: "#f8fafc",
                   borderBottom: "1px solid #e2e8f0",
-                  borderRadius: "16px 16px 0 0"
+                  borderRadius: "16px 16px 0 0",
                 }}
               >
                 {tests.length > 0 ? (
@@ -149,11 +161,11 @@ const SectionSW = () => {
                       <Col xs={24} sm={12} lg={12} key={test._id}>
                         <Card
                           className="test-card"
-                          bodyStyle={{ 
-                            padding: "20px", 
+                          bodyStyle={{
+                            padding: "20px",
                             height: "100%",
                             display: "flex",
-                            flexDirection: "column"
+                            flexDirection: "column",
                           }}
                         >
                           {/* Header */}
@@ -165,12 +177,12 @@ const SectionSW = () => {
                               Bài kiểm tra
                             </Tag>
                           </div>
-                          
+
                           {/* Content */}
                           <Title level={5} className="test-title">
                             {test.testName}
                           </Title>
-                          
+
                           {/* Stats */}
                           <div className="test-stats">
                             <span className="test-stat-item">
@@ -182,7 +194,7 @@ const SectionSW = () => {
                               {test.testParticipants} lượt
                             </span>
                           </div>
-                          
+
                           {/* Footer */}
                           <div style={{ marginTop: "auto" }}>
                             <Link
@@ -227,20 +239,24 @@ const SectionSW = () => {
                 headStyle={{
                   background: "#f8fafc",
                   borderBottom: "1px solid #e2e8f0",
-                  borderRadius: "16px 16px 0 0"
+                  borderRadius: "16px 16px 0 0",
                 }}
               >
                 {noivietSections.length > 0 ? (
-                  <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                  <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ width: "100%" }}
+                  >
                     {noivietSections.map((section) => (
                       <Card
-                        key={section.id}
+                        key={section._id}
                         className="sidebar-card"
                         size="small"
                         bodyStyle={{ padding: "16px" }}
                       >
                         <Link
-                          to={`/learner/practice-sw/${section.id}`}
+                          to={`/learner/practice-sw/${section._id}`}
                           className="sidebar-link"
                         >
                           <div className="sidebar-item">
@@ -248,7 +264,7 @@ const SectionSW = () => {
                               <ReadOutlined className="sidebar-icon" />
                             </div>
                             <div className="sidebar-text">
-                              <Paragraph 
+                              <Paragraph
                                 className="sidebar-title"
                                 title={section.name}
                               >
