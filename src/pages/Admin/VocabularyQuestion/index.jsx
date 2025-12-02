@@ -68,14 +68,14 @@ const VocabularyQuestion = () => {
     if (error) {
         return (
             <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-                {/* Breadcrumb Ant Design + Gradient */}
+                {/* Breadcrumb with solid colors */}
                 <div
                     style={{
-                        background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                        background: '#2C5F8D',
                         minHeight: 70,
                         border: 'none',
                         borderRadius: 16,
-                        boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                        boxShadow: '0 4px 8px rgba(44, 95, 141, 0.12)',
                         display: 'flex',
                         alignItems: 'center',
                         padding: '0 32px',
@@ -88,7 +88,7 @@ const VocabularyQuestion = () => {
                     <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                         <Breadcrumb.Item>
                             <span style={{
-                                background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                background: '#3498DB',
                                 borderRadius: '50%',
                                 width: 40,
                                 height: 40,
@@ -96,7 +96,7 @@ const VocabularyQuestion = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginRight: 12,
-                                boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                boxShadow: '0 2px 8px rgba(44, 95, 141, 0.15)'
                             }}>
                                 <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                             </span>
@@ -104,7 +104,7 @@ const VocabularyQuestion = () => {
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
                             <span style={{
-                                background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                background: '#3498DB',
                                 borderRadius: '50%',
                                 width: 40,
                                 height: 40,
@@ -112,7 +112,7 @@ const VocabularyQuestion = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginRight: 12,
-                                boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                boxShadow: '0 2px 8px rgba(44, 95, 141, 0.15)'
                             }}>
                                 <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                             </span>
@@ -148,14 +148,14 @@ const VocabularyQuestion = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* Breadcrumb Ant Design + Gradient */}
+            {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                    background: '#2C5F8D',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
-                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                    boxShadow: '0 4px 8px rgba(44, 95, 141, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
                     padding: '0 32px',
@@ -168,7 +168,7 @@ const VocabularyQuestion = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                            background: '#3498DB',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -176,7 +176,7 @@ const VocabularyQuestion = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginRight: 12,
-                            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                            boxShadow: '0 2px 8px rgba(44, 95, 141, 0.15)'
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
@@ -184,7 +184,7 @@ const VocabularyQuestion = () => {
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                            background: '#3498DB',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -192,7 +192,7 @@ const VocabularyQuestion = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginRight: 12,
-                            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                            boxShadow: '0 2px 8px rgba(44, 95, 141, 0.15)'
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>

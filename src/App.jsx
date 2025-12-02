@@ -69,6 +69,10 @@ function App() {
         {/* Redirect old admin signin to new path */}
         <Route path="/admin/signin" element={<Navigate to="/auth/admin/signin" replace />} />
 
+        {/* Redirect old password reset routes to auth prefix */}
+        <Route path="/forgot-password" element={<Navigate to="/auth/forgot-password" replace />} />
+        <Route path="/reset-password" element={<Navigate to="/auth/reset-password" replace />} />
+
         {/* Admin Routes (now supports both admin and teacher) */}
         <Route path="/admin/*" element={<AdminRoutes />} />
 

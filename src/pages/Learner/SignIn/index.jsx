@@ -499,7 +499,7 @@ const SignIn = () => {
                       Ghi nhớ đăng nhập
                     </Checkbox>
                     <Link
-                      to="/forgot-password"
+                      to="/auth/forgot-password"
                       style={{ 
                         color: "#2C5F8D", 
                         textDecoration: "none",

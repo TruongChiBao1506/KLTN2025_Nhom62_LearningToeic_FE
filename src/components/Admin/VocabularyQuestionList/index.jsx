@@ -526,7 +526,7 @@ const VocabularyQuestionList = ({ vocabularyQuestions = [], topicId, retrieveVoc
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div className="text-wrap small" title={stripHtml(vocabularyQuestion.questionExplanation)}>
+                                                            <div className="text-wrap" title={stripHtml(vocabularyQuestion.questionExplanation)}>
                                                                 {stripHtml(vocabularyQuestion.questionExplanation)}
                                                             </div>
                                                         </td>

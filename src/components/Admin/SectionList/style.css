@@ -18,6 +18,32 @@
     object-fit: cover;
 }
 
+/* Glowing buttons - Lesson, Question, Test */
+.glowing-button {
+    background: #2C5F8D;
+    color: var(--color-bg-primary);
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(44, 95, 141, 0.2);
+}
+
+.glowing-button:hover {
+    background: #3498DB;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.3);
+    color: var(--color-bg-primary);
+}
+
+.glowing-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(44, 95, 141, 0.25);
+}
+
 /* Override react-bootstrap styles if necessary */
 .page-heading .card {
     border-radius: 0.75rem;

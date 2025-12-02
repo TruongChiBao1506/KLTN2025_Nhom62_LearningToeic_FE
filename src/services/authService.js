@@ -60,6 +60,89 @@ class AuthService {
     return response.data;
   }
 
+  // ✅ Forgot Password - Send reset email
+  async forgotPassword(email) {
+    try {
+      const response = await axiosClient.post(`${this.baseUrl}/forgot-password`, { email });
+      
+      // Return the response directly if it has 'message', otherwise return response.data
+      if (response && response.message) {
+        return response;
+      } else if (response && response.data) {
+        return response.data;
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('❌ [AuthService] forgotPassword error:', error);
+      throw error;
+    }
+  }
+
+  // ✅ Verify Reset Token - Check if token is valid (using query parameter)
+  async verifyResetToken(token) {
+    try {
+      const response = await axiosClient.get(`${this.baseUrl}/verify-reset-token`, {
+        params: { token }
+      });
+      
+      // Return response directly if already unwrapped, otherwise return response.data
+      if (response && (response.valid !== undefined || response.message)) {
+        return response;
+      } else if (response && response.data) {
+        return response.data;
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('❌ [AuthService] verifyResetToken error:', error);
+      throw error;
+    }
+  }
+
+  // ✅ Reset Password - Submit new password with token
+  async resetPassword(token, newPassword) {
+    try {
+      const response = await axiosClient.post(`${this.baseUrl}/reset-password`, {
+        token,
+        newPassword
+      });
+      
+      // Return response directly if already unwrapped, otherwise return response.data
+      if (response && response.message) {
+        return response;
+      } else if (response && response.data) {
+        return response.data;
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('❌ [AuthService] resetPassword error:', error);
+      throw error;
+    }
+  }
+
+  // ✅ Change Password - Change password for authenticated user
+  async changePassword(currentPassword, newPassword) {
+    try {
+      const response = await axiosClient.post(`${this.baseUrl}/change-password`, {
+        currentPassword,
+        newPassword
+      });
+      
+      // Return response directly if already unwrapped, otherwise return response.data
+      if (response && response.message) {
+        return response;
+      } else if (response && response.data) {
+        return response.data;
+      }
+      
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // ✅ IMPROVED: Save tokens to sessionStorage for better security
   async saveToken(
     token,

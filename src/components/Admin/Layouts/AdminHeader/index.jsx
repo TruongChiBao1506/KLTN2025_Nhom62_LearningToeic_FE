@@ -117,7 +117,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                     color: "#1a202c",
                                 }}
                             >
-                                Thông báo
+                                Thông báo {unreadCount > 0 && `(${unreadCount})`}
                             </span>
                         </div>
                         <Button
@@ -144,7 +144,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
             disabled: true,
         },
         ...(notifications.length > 0
-            ? notifications.map((notification) => ({
+            ? notifications.slice(0, 5).map((notification) => ({
                 key: notification.id || notification._id,
                 label: (
                     <div
@@ -330,7 +330,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
                     }}
                     className="view-all-notifications"
                 >
-                    <span>Xem tất cả thông báo</span>
+                    <span>Xem tất cả thông báo {notifications.length > 5 && `(${notifications.length})`}</span>
                     <ArrowRight size={14} />
                 </Link>
             ),
@@ -563,6 +563,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                     background: "var(--color-bg-primary)",
                                     minWidth: "360px",
                                     maxWidth: "400px",
+                                    maxHeight: "600px",
                                     padding: "0",
                                     overflow: "hidden",
                                 }}

@@ -7,9 +7,7 @@ import {
   Row,
   Col,
   Tag,
-  Tooltip,
   Space,
-  Divider,
   Alert,
 } from "antd";
 
@@ -795,7 +793,7 @@ const ImproveStudy = () => {
       }}
     >
       {!showImproveTest ? (
-        <Row justify="center" style={{ minHeight: "80vh" }}>
+        <Row justify="center">
           <Col xs={24} sm={22} md={20} lg={16} xl={14}>
             <Card
               style={{
@@ -806,43 +804,44 @@ const ImproveStudy = () => {
                 overflow: "visible",
                 boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
               }}
-              bodyStyle={{ padding: "40px" }}
+              bodyStyle={{ padding: "24px" }}
             >
               {/* Header Section */}
-              <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              <div style={{ textAlign: "center", marginBottom: "20px" }}>
                 <div
                   style={{
                     background: "#2C5F8D",
                     borderRadius: "50%",
-                    width: "80px",
-                    height: "80px",
+                    width: "60px",
+                    height: "60px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    margin: "0 auto 20px",
+                    margin: "0 auto 12px",
                     animation: "pulse 2s infinite",
                   }}
                 >
-                  <Target className="w-8 h-8 text-white" />
+                  <Target className="w-6 h-6 text-white" />
                 </div>
                 <Title
-                  level={2}
+                  level={3}
                   style={{
                     background: "#2C5F8D",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                    marginBottom: "8px",
+                    marginBottom: "6px",
                     fontWeight: "700",
+                    fontSize: "20px",
                   }}
                 >
                   BÀI KIỂM TRA CẢI THIỆN TỪNG PHẦN
                 </Title>
                 <Text
                   style={{
-                    fontSize: "16px",
+                    fontSize: "13px",
                     color: "var(--color-text-secondary)",
                     display: "block",
-                    marginBottom: "8px",
+                    marginBottom: "6px",
                   }}
                 >
                   Nâng cao kỹ năng TOEIC của bạn với bài tập chuyên sâu
@@ -854,8 +853,6 @@ const ImproveStudy = () => {
                   7 Parts • Listening & Reading
                 </Tag>
               </div>
-
-              <Divider />
 
               {/* Instructions */}
               <Alert
@@ -876,7 +873,7 @@ const ImproveStudy = () => {
                 type="info"
                 showIcon
                 style={{
-                  marginBottom: "32px",
+                  marginBottom: "16px",
                   borderRadius: "12px",
                   background:
                     "linear-gradient(135deg, rgba(24, 144, 255, 0.1), rgba(64, 169, 255, 0.05))",
@@ -884,7 +881,7 @@ const ImproveStudy = () => {
               />
 
               {/* Selection Form */}
-              <Row gutter={[24, 24]}>
+              <Row gutter={[16, 16]}>
                 {/* Debug info */}
                 {process.env.NODE_ENV === "development" && (
                   <Col xs={24}>
@@ -1024,17 +1021,17 @@ const ImproveStudy = () => {
               </Row>
 
               {/* Start Button */}
-              <div style={{ textAlign: "center", marginTop: "40px" }}>
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
                 <Button
                   type="primary"
                   size="large"
                   onClick={startPractice}
                   disabled={!selectedSection || !selectedQuestionType}
                   style={{
-                    height: "56px",
-                    padding: "0 40px",
-                    borderRadius: "28px",
-                    fontSize: "16px",
+                    height: "44px",
+                    padding: "0 32px",
+                    borderRadius: "22px",
+                    fontSize: "14px",
                     fontWeight: "600",
                     background:
                       selectedSection && selectedQuestionType
@@ -1064,16 +1061,16 @@ const ImproveStudy = () => {
               {/* Additional Info */}
               <div
                 style={{
-                  marginTop: "40px",
-                  padding: "20px",
+                  marginTop: "20px",
+                  padding: "16px",
                   background:
                     "linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05))",
                   borderRadius: "16px",
                 }}
               >
-                <Row gutter={[16, 16]} align="middle">
+                <Row gutter={[12, 12]} align="middle">
                   <Col xs={24} sm={8} style={{ textAlign: "center" }}>
-                    <Clock className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+                    <Clock className="w-6 h-6 mx-auto mb-1 text-blue-500" />
                     <Text strong style={{ display: "block" }}>
                       Thời gian linh hoạt
                     </Text>
@@ -1082,7 +1079,7 @@ const ImproveStudy = () => {
                     </Text>
                   </Col>
                   <Col xs={24} sm={8} style={{ textAlign: "center" }}>
-                    <Award className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                    <Award className="w-6 h-6 mx-auto mb-1 text-green-500" />
                     <Text strong style={{ display: "block" }}>
                       Đánh giá chi tiết
                     </Text>
@@ -1091,7 +1088,7 @@ const ImproveStudy = () => {
                     </Text>
                   </Col>
                   <Col xs={24} sm={8} style={{ textAlign: "center" }}>
-                    <Zap className="w-8 h-8 mx-auto mb-2 text-orange-500" />
+                    <Zap className="w-6 h-6 mx-auto mb-1 text-orange-500" />
                     <Text strong style={{ display: "block" }}>
                       Cải thiện kỹ năng
                     </Text>

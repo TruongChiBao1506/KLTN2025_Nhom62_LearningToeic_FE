@@ -612,10 +612,10 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                             )}
                                         </td>
                                         <td>
-                                            <div className="text-wrap small">{formatDate(grammar.createdAt)}</div>
+                                            <div className="text-wrap">{formatDate(grammar.createdAt)}</div>
                                         </td>
                                         <td>
-                                            <div className="text-wrap small">{formatDate(grammar.updatedAt)}</div>
+                                            <div className="text-wrap">{formatDate(grammar.updatedAt)}</div>
                                         </td>
                                         <td>
                                             {getSubmissionStatusBadge(grammar)}

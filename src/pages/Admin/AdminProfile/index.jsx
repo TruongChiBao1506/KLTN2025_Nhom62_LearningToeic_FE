@@ -11,6 +11,7 @@ import 'aos/dist/aos.css';
 
 import UserService from '../../../services/userService';
 import ProfileImageService from '../../../services/profileImageService';
+import authService from '../../../services/authService';
 import '../../../assets/breadcrumb.css';
 import './style.css';
 
@@ -116,14 +117,10 @@ const Profile = () => {
         validationSchema: passwordFormSchema,
         onSubmit: async (values) => {
             try {
-                // Prepare data according to backend API
-                const passwordData = {
-                    currentPassword: values.currentPassword,
-                    newPassword: values.newPassword,
-                    confirmPassword: values.confirmPassword
-                };
-
-                await UserService.changePassword(userId, passwordData);
+                await authService.changePassword(
+                    values.currentPassword,
+                    values.newPassword
+                );
                 getUserById();
                 toast.success('Đổi mật khẩu thành công', {
                     autoClose: 2000

@@ -642,10 +642,10 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
                                             )}
                                         </td>
                                         <td>
-                                            <div className="text-wrap small">{formatDate(exam.createdAt)}</div>
+                                            <div className="text-wrap">{formatDate(exam.createdAt)}</div>
                                         </td>
                                         <td>
-                                            <div className="text-wrap small">{formatDate(exam.updatedAt)}</div>
+                                            <div className="text-wrap">{formatDate(exam.updatedAt)}</div>
                                         </td>
                                         
                                         {/* ✅ Submission Column */}

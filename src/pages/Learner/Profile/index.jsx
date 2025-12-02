@@ -43,6 +43,7 @@ import {
 import dayjs from "dayjs";
 import userService from "../../../services/userService";
 import ProfileImageService from "../../../services/profileImageService";
+import authService from "../../../services/authService";
 import { useAuthStore } from "../../../hooks/useAuthStore";
 
 const { Title, Text, Paragraph } = Typography;
@@ -398,7 +399,7 @@ const Profile = () => {
       setLoading(true);
       setErrors({});
 
-      await userService.changeUserPassword(
+      await authService.changePassword(
         passwordData.currentPassword,
         passwordData.newPassword
       );

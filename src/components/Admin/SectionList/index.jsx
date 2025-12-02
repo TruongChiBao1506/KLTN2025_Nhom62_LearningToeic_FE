@@ -200,22 +200,22 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                         ...base,
                         borderRadius: 30,
                         minHeight: 32,
-                        borderColor: "#198754",
+                        borderColor: "#2C5F8D",
                         boxShadow: "none",
                         fontWeight: 400,
-                        color: "#198754",
+                        color: "#2C5F8D",
                       }),
                       option: (base, state) => ({
                         ...base,
                         borderRadius: 30,
-                        color: state.isSelected ? "var(--color-bg-primary)" : "#198754",
+                        color: state.isSelected ? "var(--color-bg-primary)" : "#2C5F8D",
                         backgroundColor: state.isSelected
-                          ? "#198754"
+                          ? "#2C5F8D"
                           : state.isFocused
-                          ? "#e6f7ef"
+                          ? "#EBF5FB"
                           : "var(--color-bg-primary)",
                         ":active": {
-                          backgroundColor: "#43c59e",
+                          backgroundColor: "#3498DB",
                           color: "var(--color-bg-primary)",
                         },
                       }),
