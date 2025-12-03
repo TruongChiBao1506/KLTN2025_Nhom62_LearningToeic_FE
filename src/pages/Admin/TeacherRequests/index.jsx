@@ -288,11 +288,11 @@ const TeacherRequests = () => {
       {/* Breadcrumb */}
       <div
         style={{
-          background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+          background: 'var(--color-primary)',
           minHeight: 70,
           border: 'none',
           borderRadius: 16,
-          boxShadow: '0 2px 8px rgba(102,126,234,0.10)',
+          boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
           padding: '0 32px',
@@ -304,7 +304,7 @@ const TeacherRequests = () => {
       >
         <div style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)', display: 'flex', alignItems: 'center' }}>
           <span style={{
-            background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+            background: 'rgba(255, 255, 255, 0.25)',
             borderRadius: '50%',
             width: 40,
             height: 40,
@@ -312,7 +312,7 @@ const TeacherRequests = () => {
             alignItems: 'center',
             justifyContent: 'center',
             marginRight: 12,
-            boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <FontAwesomeIcon icon={faUserPlus} style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
           </span>

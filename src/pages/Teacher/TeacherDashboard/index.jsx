@@ -122,18 +122,18 @@ const TeacherDashboard = () => {
 
   // Colors for charts
   const CHART_COLORS = {
-    primary: ['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-danger)', 'var(--color-chart-4)'],
+    primary: ['var(--color-chart-1)', 'var(--color-chart-2)', 'var(--color-chart-3)', 'var(--color-chart-4)', 'var(--color-chart-5)'],
     status: {
-      approved: 'var(--color-success)',
-      pending: 'var(--color-warning)',
-      rejected: 'var(--color-danger)',
-      draft: 'var(--color-border)'
+      approved: 'var(--color-approved)',
+      pending: 'var(--color-pending)',
+      rejected: 'var(--color-rejected)',
+      draft: 'var(--color-draft)'
     },
     contentType: {
-      topics: 'var(--color-primary)',
-      lessons: 'var(--color-success)',
-      grammars: 'var(--color-chart-4)',
-      tests: 'var(--color-chart-6)',
+      topics: 'var(--color-chart-1)',
+      lessons: 'var(--color-chart-2)',
+      grammars: 'var(--color-chart-3)',
+      tests: 'var(--color-chart-4)',
       exams: 'var(--color-chart-5)'
     }
   };
@@ -445,10 +445,10 @@ const TeacherDashboard = () => {
       {/* Breadcrumb */}
       <div
         style={{
-          background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+          background: 'var(--color-primary)',
           minHeight: 70,
           borderRadius: 16,
-          boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+          boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
           padding: '0 32px',
@@ -458,7 +458,7 @@ const TeacherDashboard = () => {
         <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
           <Breadcrumb.Item>
             <span style={{
-              background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+              background: 'var(--color-primary-light)',
               borderRadius: '50%',
               width: 40,
               height: 40,
@@ -484,7 +484,7 @@ const TeacherDashboard = () => {
             style={{ 
               height: '100%',
               background: 'var(--color-bg-primary)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: 'var(--shadow-md)'
             }}
           >
             <Statistic
@@ -504,7 +504,7 @@ const TeacherDashboard = () => {
             style={{ 
               height: '100%',
               background: 'var(--color-bg-primary)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: 'var(--shadow-md)'
             }}
           >
             <Statistic
@@ -526,7 +526,7 @@ const TeacherDashboard = () => {
             style={{ 
               height: '100%',
               background: 'var(--color-bg-primary)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: 'var(--shadow-md)'
             }}
           >
             <Statistic
@@ -546,7 +546,7 @@ const TeacherDashboard = () => {
             style={{ 
               height: '100%',
               background: 'var(--color-bg-primary)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: 'var(--shadow-md)'
             }}
           >
             <Statistic

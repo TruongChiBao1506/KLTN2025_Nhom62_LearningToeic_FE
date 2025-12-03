@@ -14,7 +14,8 @@ const Part2QuestionList = ({
     getAudioUrl,
     sectionId,
     testId,
-    retrieveQuestions
+    retrieveQuestions,
+    allQuestions = [] // ✅ Add prop for all questions (not paginated)
 }) => {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
@@ -47,24 +48,39 @@ const Part2QuestionList = ({
 
     const autoRandom = () => {
         const maxSelected = 25;
-        const totalQuestions = paginatedQuestions.length;
+        // ✅ Use allQuestions (all questions, not paginated) for random selection
+        const totalQuestions = allQuestions.length || paginatedQuestions.length;
+        const questionsToRandomFrom = allQuestions.length > 0 ? allQuestions : paginatedQuestions;
+        
         if (totalQuestions < maxSelected) {
             Swal.fire({
                 icon: "error",
                 title: "Lỗi",
-                text: "Không đủ câu hỏi để random.",
+                text: `Không đủ câu hỏi để random. Cần ít nhất ${maxSelected} câu hỏi, hiện có ${totalQuestions} câu.`,
             });
             return;
         }
-        const randomIndexes = [];
-        while (randomIndexes.length < maxSelected) {
-            const randomIndex = Math.floor(Math.random() * totalQuestions);
-            if (!randomIndexes.includes(randomIndex)) {
-                randomIndexes.push(randomIndex);
-            }
+        
+        // ✅ Fisher-Yates shuffle algorithm for better randomization
+        const shuffledIndexes = Array.from({ length: totalQuestions }, (_, i) => i);
+        for (let i = shuffledIndexes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledIndexes[i], shuffledIndexes[j]] = [shuffledIndexes[j], shuffledIndexes[i]];
         }
-        setSelectedQuestions(randomIndexes.map(idx => paginatedQuestions[idx]._id));
+        
+        // ✅ Take first maxSelected items from shuffled array
+        const selectedIndexes = shuffledIndexes.slice(0, maxSelected);
+        setSelectedQuestions(selectedIndexes.map(idx => questionsToRandomFrom[idx]._id));
         setIsSubmitEnabled(true);
+        
+        // ✅ Show success message
+        Swal.fire({
+            icon: "success",
+            title: "Thành công",
+            text: `Đã random ${maxSelected} câu hỏi từ tổng số ${totalQuestions} câu hỏi.`,
+            timer: 2000,
+            showConfirmButton: false
+        });
     };
 
     const submitQuestions = async () => {

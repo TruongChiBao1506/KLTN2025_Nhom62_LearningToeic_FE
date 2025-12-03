@@ -10,48 +10,66 @@ const TeacherProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // ✅ Check sessionStorage instead of localStorage
         const teacherToken = sessionStorage.getItem("teacherToken");
-        const adminUser = localStorage.getItem("user"); // Teacher data cũng lưu trong 'user'
+        const adminToken = sessionStorage.getItem("adminToken");
+        const user = localStorage.getItem("user");
         
         console.log("🔍 TeacherProtectedRoute checking:", {
           teacherToken: !!teacherToken,
-          adminUser: !!adminUser
+          adminToken: !!adminToken,
+          user: !!user
         });
 
-        if (teacherToken && adminUser) {
+        if (user) {
           try {
-            const userObj = JSON.parse(adminUser);
+            const userObj = JSON.parse(user);
+            
+            // ✅ Check if user has ADMIN role (admin can access teacher routes)
+            const hasAdminRole = userObj.roles && userObj.roles.some(role => 
+              typeof role === 'string' ? role === 'ROLE_ADMIN' : role.name === 'ROLE_ADMIN'
+            );
+            
+            // ✅ Check if user has TEACHER role
             const hasTeacherRole = userObj.roles && userObj.roles.some(role => 
               typeof role === 'string' ? role === 'ROLE_TEACHER' : role.name === 'ROLE_TEACHER'
             );
             
-            console.log("�‍� Has teacher role:", hasTeacherRole);
+            console.log("👨‍💼 Has admin role:", hasAdminRole);
+            console.log("👨‍🏫 Has teacher role:", hasTeacherRole);
             
-            if (hasTeacherRole) {
-              // Check teacher token validity
+            // Admin can access teacher routes
+            if (hasAdminRole && adminToken) {
+              const isValid = await authService.checkTokensValidity('admin');
+              console.log("🔑 Admin token valid:", isValid);
+              setIsAuthenticated(isValid);
+              setIsLoading(false);
+              return;
+            }
+            
+            // Teacher can access their routes
+            if (hasTeacherRole && teacherToken) {
               const isValid = await authService.checkTokensValidity('teacher');
               console.log("🔑 Teacher token valid:", isValid);
               setIsAuthenticated(isValid);
               setIsLoading(false);
               return;
-            } else {
-              console.log("❌ User doesn't have teacher role");
-              setIsAuthenticated(false);
-              setIsLoading(false);
-              return;
             }
+            
+            console.log("❌ User doesn't have required role or token");
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            return;
           } catch (error) {
-            console.error("Error parsing teacher user data:", error);
+            console.error("Error parsing user data:", error);
           }
         }
 
-        // Không có teacher token hợp lệ
-        console.log("❌ No valid teacher tokens found");
+        // Không có token hợp lệ
+        console.log("❌ No valid tokens found");
         setIsAuthenticated(false);
         setIsLoading(false);
       } catch (error) {
-        console.error("Lỗi khi kiểm tra xác thực teacher:", error);
+        console.error("Lỗi khi kiểm tra xác thực:", error);
         setIsAuthenticated(false);
         setIsLoading(false);
       }

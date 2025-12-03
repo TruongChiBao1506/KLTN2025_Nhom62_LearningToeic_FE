@@ -71,7 +71,7 @@ const TeacherRoutes = () => {
         
         <Route path="questions" element={<QuestionBySection />} />
         <Route path="question-groups" element={<TestBySection />} />
-        <Route path="question-groups/:testId/indicate-questions" element={<IndicateQuestion />} />
+        <Route path="section/:sectionId/test/:testId/indicate-questions" element={<IndicateQuestion />} />
         
         {/* Reports & Statistics */}
         <Route path="user-progress" element={<Learner />} />

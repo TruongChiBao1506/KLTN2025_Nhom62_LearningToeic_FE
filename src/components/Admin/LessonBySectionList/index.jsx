@@ -136,6 +136,23 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
 
     const toggleStatus = async (lessonId, newStatus) => {
         try {
+            // ✅ Find the lesson to check approval status
+            const lesson = paginatedLessons.find(l => l._id === lessonId);
+            
+            // ✅ Block if not approved yet (includes both draft and pending)
+            if (!lesson.approvedAt) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa Được Phê Duyệt',
+                    text: lesson.isSubmitted 
+                        ? 'Lesson này đang chờ admin phê duyệt. Vui lòng chờ phê duyệt trước khi thay đổi trạng thái.'
+                        : 'Lesson này vẫn đang ở trạng thái bản nháp. Vui lòng gửi duyệt và chờ phê duyệt trước.',
+                    confirmButtonText: 'Đã Hiểu',
+                    timer: 3000
+                });
+                return;
+            }
+            
             await LessonService.updateStatus(lessonId, newStatus);
             retrieveLessons();
         } catch (error) {
@@ -585,17 +602,35 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                         <td>
                                             {lesson.lessonStatus === 1 ? (
                                                 <span
-                                                    onClick={() => toggleStatus(lesson._id, 0)}
+                                                    onClick={() => {
+                                                        if (!lesson.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(lesson._id, 0);
+                                                    }}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !lesson.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !lesson.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!lesson.approvedAt ? (lesson.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để disable'}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => toggleStatus(lesson._id, 1)}
+                                                    onClick={() => {
+                                                        if (!lesson.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(lesson._id, 1);
+                                                    }}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !lesson.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !lesson.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!lesson.approvedAt ? (lesson.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để enable'}
                                                 >
                                                     Disable
                                                 </span>
@@ -617,10 +652,10 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(lesson._id)}
                                                     title={`Chỉnh sửa [${lesson.lessonName}]`}
-                                                    disabled={lesson.isSubmitted && lesson.lessonStatus === 0}
+                                                    disabled={lesson.isSubmitted}
                                                     style={{ 
-                                                        opacity: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 0.5 : 1,
-                                                        cursor: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 'not-allowed' : 'pointer'
+                                                        opacity: lesson.isSubmitted ? 0.5 : 1,
+                                                        cursor: lesson.isSubmitted ? 'not-allowed' : 'pointer'
                                                     }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
@@ -632,10 +667,10 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                     onClick={() => deleteLesson(lesson._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${lesson.lessonName}]`}
-                                                    disabled={lesson.isSubmitted && lesson.lessonStatus === 0}
+                                                    disabled={lesson.isSubmitted}
                                                     style={{ 
-                                                        opacity: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 0.5 : 1,
-                                                        cursor: (lesson.isSubmitted && lesson.lessonStatus === 0) ? 'not-allowed' : 'pointer'
+                                                        opacity: lesson.isSubmitted ? 0.5 : 1,
+                                                        cursor: lesson.isSubmitted ? 'not-allowed' : 'pointer'
                                                     }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />

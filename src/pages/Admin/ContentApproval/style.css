@@ -95,6 +95,15 @@
   color: #f0f0f0;
 }
 
+/* ✅ Fix modal flicker - disable mask animation */
+.content-approval-container .ant-modal-mask {
+  animation: none !important;
+}
+
+.content-approval-container .ant-modal-wrap {
+  animation: none !important;
+}
+
 /* Badge animation */
 @keyframes badge-pulse {
   0%, 100% {
@@ -167,17 +176,30 @@
   font-size: 16px;
 }
 
-/* Tabs - disable hover for coming soon (only grammar, test, exam) */
-.content-approval-container .ant-tabs-tab[data-node-key="grammar"],
-.content-approval-container .ant-tabs-tab[data-node-key="test"],
-.content-approval-container .ant-tabs-tab[data-node-key="exam"] {
-  cursor: not-allowed;
+/* ✅ Fix cursor for all tabs - Always show pointer */
+.content-approval-container .ant-tabs-tab {
+  cursor: pointer !important;
 }
 
-.content-approval-container .ant-tabs-tab[data-node-key="grammar"]:hover,
-.content-approval-container .ant-tabs-tab[data-node-key="test"]:hover,
-.content-approval-container .ant-tabs-tab[data-node-key="exam"]:hover {
-  color: rgba(0, 0, 0, 0.45);
+.content-approval-container .ant-tabs-tab-btn {
+  cursor: pointer !important;
+}
+
+.content-approval-container .ant-tabs-nav-list .ant-tabs-tab {
+  cursor: pointer !important;
+}
+
+.content-approval-container .ant-tabs-tab:hover {
+  cursor: pointer !important;
+}
+
+/* Ensure badge and span don't interfere with click */
+.content-approval-container .ant-tabs-tab .ant-badge {
+  pointer-events: none;
+}
+
+.content-approval-container .ant-tabs-tab span {
+  pointer-events: none;
 }
 
 /* ✅ Action buttons - Match TopicList style */

@@ -141,6 +141,23 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
 
     const toggleStatus = async (topicId, newStatus) => {
         try {
+            // ✅ Find the topic to check approval status
+            const topic = paginatedTopics.find(t => t._id === topicId);
+            
+            // ✅ Block if not approved yet (includes both draft and pending)
+            if (!topic.approvedAt) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa Được Phê Duyệt',
+                    text: topic.isSubmitted 
+                        ? 'Topic này đang chờ admin phê duyệt. Vui lòng chờ phê duyệt trước khi thay đổi trạng thái.'
+                        : 'Topic này vẫn đang ở trạng thái bản nháp. Vui lòng gửi duyệt và chờ phê duyệt trước.',
+                    confirmButtonText: 'Đã Hiểu',
+                    timer: 3000
+                });
+                return;
+            }
+            
             console.log(topicId);
             console.log(newStatus);
             await TopicService.updateStatus(topicId, newStatus);
@@ -585,17 +602,35 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                         <td>
                                             {topic.topicStatus === 1 ? (
                                                 <span
-                                                    onClick={() => toggleStatus(topic._id, 0)}
+                                                    onClick={() => {
+                                                        if (!topic.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(topic._id, 0);
+                                                    }}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !topic.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !topic.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!topic.approvedAt ? (topic.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để disable'}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => toggleStatus(topic._id, 1)}
+                                                    onClick={() => {
+                                                        if (!topic.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(topic._id, 1);
+                                                    }}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !topic.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !topic.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!topic.approvedAt ? (topic.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để enable'}
                                                 >
                                                     Disable
                                                 </span>
@@ -615,10 +650,10 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(topic._id)}
                                                     title={`Chỉnh sửa [${topic.topicName}]`}
-                                                    disabled={topic.isSubmitted && topic.topicStatus === 0}
+                                                    disabled={topic.isSubmitted}
                                                     style={{ 
-                                                        opacity: (topic.isSubmitted && topic.topicStatus === 0) ? 0.5 : 1,
-                                                        cursor: (topic.isSubmitted && topic.topicStatus === 0) ? 'not-allowed' : 'pointer'
+                                                        opacity: topic.isSubmitted ? 0.5 : 1,
+                                                        cursor: topic.isSubmitted ? 'not-allowed' : 'pointer'
                                                     }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
@@ -630,10 +665,10 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     onClick={() => deleteTopic(topic._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${topic.topicName}]`}
-                                                    disabled={topic.isSubmitted && topic.topicStatus === 0}
+                                                    disabled={topic.isSubmitted}
                                                     style={{ 
-                                                        opacity: (topic.isSubmitted && topic.topicStatus === 0) ? 0.5 : 1,
-                                                        cursor: (topic.isSubmitted && topic.topicStatus === 0) ? 'not-allowed' : 'pointer'
+                                                        opacity: topic.isSubmitted ? 0.5 : 1,
+                                                        cursor: topic.isSubmitted ? 'not-allowed' : 'pointer'
                                                     }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />

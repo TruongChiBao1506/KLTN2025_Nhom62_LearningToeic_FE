@@ -134,6 +134,23 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
 
     const toggleStatus = async (grammarId, newStatus) => {
         try {
+            // ✅ Find the grammar to check approval status
+            const grammar = paginatedGrammars.find(g => g._id === grammarId);
+            
+            // ✅ Block if not approved yet (includes both draft and pending)
+            if (!grammar.approvedAt) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa Được Phê Duyệt',
+                    text: grammar.isSubmitted 
+                        ? 'Grammar này đang chờ admin phê duyệt. Vui lòng chờ phê duyệt trước khi thay đổi trạng thái.'
+                        : 'Grammar này vẫn đang ở trạng thái bản nháp. Vui lòng gửi duyệt và chờ phê duyệt trước.',
+                    confirmButtonText: 'Đã Hiểu',
+                    timer: 3000
+                });
+                return;
+            }
+            
             console.log(grammarId);
             console.log(newStatus);
             await GrammarService.updateStatus(grammarId, newStatus);
@@ -595,17 +612,35 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                         <td>
                                             {grammar.grammarStatus === 1 ? (
                                                 <span
-                                                    onClick={() => toggleStatus(grammar._id, 0)}
+                                                    onClick={() => {
+                                                        if (!grammar.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(grammar._id, 0);
+                                                    }}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !grammar.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !grammar.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!grammar.approvedAt ? (grammar.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để disable'}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => toggleStatus(grammar._id, 1)}
+                                                    onClick={() => {
+                                                        if (!grammar.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(grammar._id, 1);
+                                                    }}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !grammar.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !grammar.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!grammar.approvedAt ? (grammar.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để enable'}
                                                 >
                                                     Disable
                                                 </span>

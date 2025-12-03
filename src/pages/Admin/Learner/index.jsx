@@ -58,11 +58,11 @@ const Learner = () => {
             {/* Breadcrumb with AOS */}
                 <div
                     style={{
-                        background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                        background: 'var(--color-primary)',
                         minHeight: 70,
                         border: 'none',
                         borderRadius: 16,
-                        boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                        boxShadow: 'var(--shadow-md)',
                         display: 'flex',
                         alignItems: 'center',
                         padding: '0 32px',
@@ -75,7 +75,7 @@ const Learner = () => {
                     <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                         <Breadcrumb.Item>
                             <span style={{
-                                background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
+                                background: 'var(--color-primary-light)',
                                 borderRadius: '50%',
                                 width: 40,
                                 height: 40,
@@ -83,7 +83,7 @@ const Learner = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginRight: 12,
-                                boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
+                                boxShadow: 'var(--shadow-sm)'
                             }}>
                                 <TeamOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                             </span>

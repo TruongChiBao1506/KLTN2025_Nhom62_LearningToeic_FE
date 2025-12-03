@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   Badge,
@@ -40,6 +41,7 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const ContentApproval = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('topic'); // Default tab
   
   // Separate state for each content type
@@ -465,6 +467,85 @@ const ContentApproval = () => {
     return colors[type] || 'default';
   };
 
+  // ✅ Get content detail URL based on type
+  const getContentDetailUrl = (content, contentType, subType = null) => {
+    const baseUrl = '/teacher'; // Admin có thể truy cập route teacher
+    
+    if (subType) {
+      // Sub-content URLs (vocabularies, questions, contents)
+      switch(contentType) {
+        case 'topic':
+          if (subType === 'vocabulary') {
+            return `${baseUrl}/topics/${content._id}/vocabulary`;
+          } else if (subType === 'question') {
+            return `${baseUrl}/topics/${content._id}/vocabulary-question`;
+          }
+          return null;
+          
+        case 'lesson':
+          if (subType === 'content') {
+            const sectionId = content.section?._id || content.sectionId;
+            return sectionId ? `${baseUrl}/sections/${sectionId}/lesson/${content._id}/lesson-content` : null;
+          }
+          return null;
+          
+        case 'grammar':
+          if (subType === 'content') {
+            return `${baseUrl}/grammar/${content._id}/grammar-content`;
+          } else if (subType === 'question') {
+            return `${baseUrl}/grammar/${content._id}/grammar-question`;
+          }
+          return null;
+          
+        case 'test':
+          if (subType === 'question') {
+            const testSectionId = content.section?._id || content.sectionId;
+            return testSectionId ? `${baseUrl}/sections/${testSectionId}/test/${content._id}/indicate-questions` : null;
+          }
+          return null;
+          
+        case 'exam':
+          if (subType === 'question') {
+            return `${baseUrl}/exams/${content._id}/exam-question`;
+          }
+          return null;
+          
+        default:
+          return null;
+      }
+    }
+    
+    // Main content URLs
+    switch(contentType) {
+      case 'topic':
+        return `${baseUrl}/topics/${content._id}/vocabulary`;
+      case 'lesson':
+        const sectionId = content.section?._id || content.sectionId;
+        return sectionId ? `${baseUrl}/sections/${sectionId}/lesson/${content._id}/lesson-content` : null;
+      case 'grammar':
+        return `${baseUrl}/grammar/${content._id}/grammar-content`;
+      case 'test':
+        const testSectionId = content.section?._id || content.sectionId;
+        return testSectionId ? `${baseUrl}/sections/${testSectionId}/test/${content._id}/indicate-questions` : null;
+      case 'exam':
+        return `${baseUrl}/exams/${content._id}/exam-question`;
+      default:
+        return null;
+    }
+  };
+
+  // ✅ Navigate to content detail (same tab - preserves auth state)
+  const handleViewInNewTab = (content, contentType, subType = null) => {
+    const url = getContentDetailUrl(content, contentType, subType);
+    
+    if (url) {
+      // ✅ Navigate trong cùng tab để giữ sessionStorage
+      navigate(url);
+    } else {
+      message.warning('Không thể mở content này (thiếu thông tin cần thiết)');
+    }
+  };
+
   // ✅ Tab items with icons and badges
   const tabItems = [
     {
@@ -478,7 +559,7 @@ const ContentApproval = () => {
           )}
         </span>
       ),
-      children: null
+      children: <></>
     },
     {
       key: 'lesson',
@@ -491,7 +572,7 @@ const ContentApproval = () => {
           )}
         </span>
       ),
-      children: null
+      children: <></>
     },
     {
       key: 'grammar',
@@ -504,7 +585,7 @@ const ContentApproval = () => {
           )}
         </span>
       ),
-      children: null
+      children: <></>
     },
     {
       key: 'test',
@@ -517,7 +598,7 @@ const ContentApproval = () => {
           )}
         </span>
       ),
-      children: null
+      children: <></>
     },
     {
       key: 'exam',
@@ -530,7 +611,7 @@ const ContentApproval = () => {
           )}
         </span>
       ),
-      children: null
+      children: <></>
     }
   ];
 
@@ -539,11 +620,11 @@ const ContentApproval = () => {
       {/* Breadcrumb */}
       <div
         style={{
-          background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+          background: 'var(--color-primary)',
           minHeight: 70,
           border: 'none',
           borderRadius: 16,
-          boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+          boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
           padding: '0 32px',
@@ -758,8 +839,10 @@ const ContentApproval = () => {
                             type="link"
                             icon={<EyeOutlined />}
                             onClick={() => {
+                              // ✅ Set content first, then open modal after a tiny delay
                               setSelectedContent({ ...record, contentType: activeTab });
-                              setViewModalVisible(true);
+                              // Use setTimeout to ensure state is set before modal opens
+                              setTimeout(() => setViewModalVisible(true), 0);
                             }}
                             style={{ fontSize: '12px', color: 'var(--color-primary)', fontWeight: '500' }}
                           >
@@ -823,10 +906,21 @@ const ContentApproval = () => {
           </Space>
         }
         open={viewModalVisible}
-        onCancel={() => setViewModalVisible(false)}
+        onCancel={() => {
+          setViewModalVisible(false);
+          // Clear selected content after modal close animation
+          setTimeout(() => setSelectedContent(null), 300);
+        }}
         width={800}
+        destroyOnClose={false}
+        maskClosable={true}
+        transitionName=""
+        maskTransitionName=""
         footer={[
-          <Button key="close" onClick={() => setViewModalVisible(false)}>
+          <Button key="close" onClick={() => {
+            setViewModalVisible(false);
+            setTimeout(() => setSelectedContent(null), 300);
+          }}>
             Đóng
           </Button>,
           <Button
@@ -869,29 +963,63 @@ const ContentApproval = () => {
             {selectedContent.contentType === 'topic' && selectedContent.statistics && (
               <>
                 <Descriptions.Item label="Số Vocabularies">
-                  <Badge 
-                    count={selectedContent.statistics.vocabularyCount} 
-                    style={{ backgroundColor: 'var(--color-success)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.vocabularyCount} 
+                      style={{ backgroundColor: 'var(--color-success)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'topic', 'vocabulary')}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Tổng Số Questions">
-                  <Badge 
-                    count={selectedContent.statistics.totalQuestions} 
-                    style={{ backgroundColor: 'var(--color-primary)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.totalQuestions} 
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'topic', 'question')}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
               </>
             )}
             {selectedContent.contentType === 'lesson' && selectedContent.statistics && (
               <>
                 <Descriptions.Item label="Số Lesson Contents">
-                  <Badge 
-                    count={selectedContent.statistics.contentCount || 0} 
-                    style={{ backgroundColor: 'var(--color-success)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.contentCount || 0} 
+                      style={{ backgroundColor: 'var(--color-success)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'lesson', 'content')}
+                      disabled={!selectedContent.section && !selectedContent.sectionId}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="PDF File">
                   <Tag color={selectedContent.statistics.hasFile ? 'green' : 'default'}>
@@ -908,40 +1036,85 @@ const ContentApproval = () => {
             {selectedContent.contentType === 'grammar' && selectedContent.statistics && (
               <>
                 <Descriptions.Item label="Số Grammar Contents">
-                  <Badge 
-                    count={selectedContent.statistics.contentCount || 0} 
-                    style={{ backgroundColor: 'var(--color-success)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.contentCount || 0} 
+                      style={{ backgroundColor: 'var(--color-success)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'grammar', 'content')}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Số Grammar Questions">
-                  <Badge 
-                    count={selectedContent.statistics.questionCount || 0} 
-                    style={{ backgroundColor: 'var(--color-primary)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.questionCount || 0} 
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'grammar', 'question')}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
               </>
             )}
             {selectedContent.contentType === 'test' && (
               <>
                 <Descriptions.Item label="Số Test Questions">
-                  <Badge 
-                    count={selectedContent.statistics.questionCount || 0} 
-                    style={{ backgroundColor: 'var(--color-primary)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.questionCount || 0} 
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'test', 'question')}
+                      disabled={!selectedContent.section && !selectedContent.sectionId}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
               </>
             )}
             {selectedContent.contentType === 'exam' && (
               <>
                 <Descriptions.Item label="Số Exam Questions">
-                  <Badge 
-                    count={selectedContent.statistics.questionCount || 0} 
-                    style={{ backgroundColor: 'var(--color-primary)' }}
-                    showZero
-                  />
+                  <Space>
+                    <Badge 
+                      count={selectedContent.statistics.questionCount || 0} 
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                      showZero
+                    />
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<EyeOutlined />}
+                      onClick={() => handleViewInNewTab(selectedContent, 'exam', 'question')}
+                      style={{ fontSize: '12px', padding: '0 8px' }}
+                    >
+                      Xem Chi Tiết
+                    </Button>
+                  </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Loại Exam">
                   <Tag color={selectedContent.rawData?.examType === 1 ? 'blue' : 'green'}>

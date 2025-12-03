@@ -237,10 +237,10 @@ const Dashboard = () => {
             {/* Breadcrumb */}
             <div
                 style={{
-                    background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     borderRadius: 16,
-                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)',
+                    boxShadow: 'var(--shadow-md)',
                     display: 'flex',
                     alignItems: 'center',
                     padding: '0 32px',

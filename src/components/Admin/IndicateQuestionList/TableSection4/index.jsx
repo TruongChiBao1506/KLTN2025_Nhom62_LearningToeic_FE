@@ -18,7 +18,8 @@ const Part4QuestionList = ({
     getAudioUrl,
     sectionId,
     testId,
-    retrieveQuestions
+    retrieveQuestions,
+    allQuestions = [] // ✅ Add prop for all questions (not paginated)
 }) => {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
@@ -26,7 +27,9 @@ const Part4QuestionList = ({
     // Group questions by groupId
     const groupedQuestionMap = useMemo(() => {
         const groups = {};
-        for (const question of paginatedQuestions) {
+        // ✅ Use allQuestions if available, otherwise fallback to paginatedQuestions
+        const questionsToGroup = allQuestions.length > 0 ? allQuestions : paginatedQuestions;
+        for (const question of questionsToGroup) {
             const groupId = question.questionGroup._id;
             if (!groups[groupId]) {
                 groups[groupId] = [question];
@@ -35,7 +38,7 @@ const Part4QuestionList = ({
             }
         }
         return groups;
-    }, [paginatedQuestions]);
+    }, [paginatedQuestions, allQuestions]);
 
     // Fetch selected questions for this test
     useEffect(() => {
@@ -87,42 +90,47 @@ const Part4QuestionList = ({
             Swal.fire({
                 icon: "error",
                 title: "Lỗi",
-                text: "Không đủ nhóm câu hỏi để random.",
+                text: `Không đủ nhóm câu hỏi để random. Cần ${GROUP_COUNT} nhóm, hiện có ${groupIds.length} nhóm.`,
             });
             setSelectedQuestions([]);
             setIsSubmitEnabled(false);
             return;
         }
 
-        // Thử random tối đa 20 lần, nếu không đủ thì báo lỗi
-        let found = false;
-        for (let tryCount = 0; tryCount < 20; tryCount++) {
-            const randomGroups = [];
-            while (randomGroups.length < GROUP_COUNT) {
-                const idx = Math.floor(Math.random() * groupIds.length);
-                const groupId = groupIds[idx];
-                if (!randomGroups.includes(groupId)) {
-                    randomGroups.push(groupId);
-                }
-            }
-            // Lấy tất cả câu hỏi của các nhóm random
-            const randomQuestions = [];
-            for (const groupId of randomGroups) {
-                const groupQuestions = groupedQuestionMap[groupId];
-                randomQuestions.push(...groupQuestions.map(q => q._id));
-            }
-            if (randomQuestions.length >= MAX_SELECTED) {
-                setSelectedQuestions(randomQuestions.slice(0, MAX_SELECTED));
-                setIsSubmitEnabled(true);
-                found = true;
-                break;
-            }
+        // ✅ Fisher-Yates shuffle for group selection
+        const shuffledGroupIds = [...groupIds];
+        for (let i = shuffledGroupIds.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledGroupIds[i], shuffledGroupIds[j]] = [shuffledGroupIds[j], shuffledGroupIds[i]];
         }
-        if (!found) {
+        
+        // ✅ Take first GROUP_COUNT groups
+        const selectedGroupIds = shuffledGroupIds.slice(0, GROUP_COUNT);
+        
+        // Lấy tất cả câu hỏi của các nhóm random
+        const randomQuestions = [];
+        for (const groupId of selectedGroupIds) {
+            const groupQuestions = groupedQuestionMap[groupId];
+            randomQuestions.push(...groupQuestions.map(q => q._id));
+        }
+        
+        if (randomQuestions.length >= MAX_SELECTED) {
+            setSelectedQuestions(randomQuestions.slice(0, MAX_SELECTED));
+            setIsSubmitEnabled(true);
+            
+            // ✅ Show success message
+            Swal.fire({
+                icon: "success",
+                title: "Thành công",
+                text: `Đã random ${GROUP_COUNT} nhóm với tổng ${randomQuestions.length} câu hỏi (chọn ${MAX_SELECTED} câu).`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
             Swal.fire({
                 icon: "warning",
                 title: "Không thể random đủ câu hỏi",
-                text: `Không thể chọn ngẫu nhiên ${GROUP_COUNT} nhóm mà tổng số câu hỏi đủ ${MAX_SELECTED}. Vui lòng kiểm tra lại dữ liệu.`,
+                text: `${GROUP_COUNT} nhóm được chọn chỉ có ${randomQuestions.length}/${MAX_SELECTED} câu hỏi. Vui lòng kiểm tra lại dữ liệu.`,
             });
             setSelectedQuestions([]);
             setIsSubmitEnabled(false);

@@ -1,7 +1,8 @@
-﻿import React, { useMemo, useState } from "react";
+﻿import React, { useMemo, useState, useEffect } from "react";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import sectionsService from "../../../services/sectionsService";
 
 import TableSection1 from "../IndicateQuestionList/TableSection1";
 import TableSection2 from "../IndicateQuestionList/TableSection2";
@@ -30,6 +31,28 @@ const IndicateQuestion = ({
     const [searchText, setSearchText] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [section, setSection] = useState(null);
+    const [sectionLoading, setSectionLoading] = useState(false);
+
+    // Fetch section metadata
+    useEffect(() => {
+        const fetchSection = async () => {
+            if (!sectionId) return;
+            
+            setSectionLoading(true);
+            try {
+                const response = await sectionsService.get(sectionId);
+                setSection(response);
+            } catch (error) {
+                console.error("Error fetching section:", error);
+                setSection(null);
+            } finally {
+                setSectionLoading(false);
+            }
+        };
+
+        fetchSection();
+    }, [sectionId]);
 
     // Filtered questions based on search text
     const filteredQuestions = useMemo(() => {
@@ -64,98 +87,125 @@ const IndicateQuestion = ({
     const getAudioUrl = (audioName) =>
         audioName ? `http://localhost:9004/audios/${audioName}` : "";
 
-    // Table render by sectionId
+    // Table render by section metadata
     const renderTable = () => {
-        switch (sectionId) {
-            case "686ce171b614dda1fc08f1d0":
-                return (
-                    <TableSection1
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        getImageUrl={getImageUrl}
-                        getAudioUrl={getAudioUrl}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d1":
-                return (
-                    <TableSection2
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        getAudioUrl={getAudioUrl}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d2":
-                return (
-                    <TableSection3
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        getImageUrl={getImageUrl}
-                        getAudioUrl={getAudioUrl}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d3":
-                return (
-                    <TableSection4
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        getImageUrl={getImageUrl}
-                        getAudioUrl={getAudioUrl}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d4":
-                return (
-                    <TableSection5
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d5":
-                return (
-                    <TableSection6
-                        paginatedQuestions={paginatedQuestions}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            case "686007e22278739d2ceea780":
-                return (
-                    <TableSection7
-                        paginatedQuestions={paginatedQuestions}
-                        getImageUrl={getImageUrl}
-                        currentPage={currentPage}
-                        ITEMS_PER_PAGE={itemsPerPage}
-                        sectionId={sectionId}
-                        testId={testId}
-                        retrieveQuestions={retrieveQuestions}
-                    />
-                );
-            // ...case khác cho các bảng khác nếu có
-            default:
-                return <div className="text-center text-muted py-5">Không có dữ liệu phù hợp</div>;
+        if (sectionLoading) {
+            return <div className="text-center p-4">Đang tải thông tin phần thi...</div>;
         }
+        if (!section) {
+            return <div className="text-center p-4 text-danger">Không tìm thấy thông tin phần thi.</div>;
+        }
+
+        // Extract part number from name (e.g., "Part 1: Photographs" -> 1)
+        const partMatch = section.name.match(/Part (\d+)/i);
+        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+        // Determine table based on type and part number
+        if (section.type === 1) {  // Listening sections
+            switch (partNumber) {
+                case 1:
+                    return (
+                        <TableSection1
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            getImageUrl={getImageUrl}
+                            getAudioUrl={getAudioUrl}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                case 2:
+                    return (
+                        <TableSection2
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            getAudioUrl={getAudioUrl}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                case 3:
+                    return (
+                        <TableSection3
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            getImageUrl={getImageUrl}
+                            getAudioUrl={getAudioUrl}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                case 4:
+                    return (
+                        <TableSection4
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            getImageUrl={getImageUrl}
+                            getAudioUrl={getAudioUrl}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Listening này.</div>;
+            }
+        } else if (section.type === 2) {  // Reading sections
+            switch (partNumber) {
+                case 5:
+                    return (
+                        <TableSection5
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                case 6:
+                    return (
+                        <TableSection6
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                case 7:
+                    return (
+                        <TableSection7
+                            paginatedQuestions={paginatedQuestions}
+                            allQuestions={filteredQuestions}
+                            getImageUrl={getImageUrl}
+                            currentPage={currentPage}
+                            ITEMS_PER_PAGE={itemsPerPage}
+                            sectionId={sectionId}
+                            testId={testId}
+                            retrieveQuestions={retrieveQuestions}
+                        />
+                    );
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Reading này.</div>;
+            }
+        }
+
+        return <div className="text-center text-muted py-5">Không có dữ liệu phù hợp</div>;
     };
 
     return (

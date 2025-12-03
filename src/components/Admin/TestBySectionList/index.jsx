@@ -138,6 +138,23 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
 
     const toggleStatus = async (testId, newStatus) => {
         try {
+            // ✅ Find the test to check approval status
+            const test = paginatedTests.find(t => (t.testId || t._id) === testId);
+            
+            // ✅ Block if not approved yet (includes both draft and pending)
+            if (!test.approvedAt) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa Được Phê Duyệt',
+                    text: test.isSubmitted 
+                        ? 'Test này đang chờ admin phê duyệt. Vui lòng chờ phê duyệt trước khi thay đổi trạng thái.'
+                        : 'Test này vẫn đang ở trạng thái bản nháp. Vui lòng gửi duyệt và chờ phê duyệt trước.',
+                    confirmButtonText: 'Đã Hiểu',
+                    timer: 3000
+                });
+                return;
+            }
+            
             console.log('Test ID:', testId);
             console.log('New Status:', newStatus);
             await TestService.updateStatus(testId, newStatus);
@@ -596,17 +613,35 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                                         <td>
                                             {test.testStatus === 1 ? (
                                                 <span
-                                                    onClick={() => toggleStatus(test.testId || test._id, 0)}
+                                                    onClick={() => {
+                                                        if (!test.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(test.testId || test._id, 0);
+                                                    }}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !test.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !test.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!test.approvedAt ? (test.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để disable'}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => toggleStatus(test.testId || test._id, 1)}
+                                                    onClick={() => {
+                                                        if (!test.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(test.testId || test._id, 1);
+                                                    }}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !test.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !test.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!test.approvedAt ? (test.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để enable'}
                                                 >
                                                     Disable
                                                 </span>
@@ -646,7 +681,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 <Link
-                                                    to={`/admin/section/${sectionId}/test/${test.testId || test._id}/indicate-questions`}
+                                                    to={`/teacher/section/${sectionId}/test/${test.testId || test._id}/indicate-questions`}
                                                 >
                                                     <button className="glowing-button ms-2">
                                                         Indicate Questions

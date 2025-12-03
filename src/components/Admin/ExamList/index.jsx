@@ -135,6 +135,23 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
 
     const toggleStatus = async (examId, newStatus) => {
         try {
+            // ✅ Find the exam to check approval status
+            const exam = paginatedExams.find(e => e._id === examId);
+            
+            // ✅ Block if not approved yet (includes both draft and pending)
+            if (!exam.approvedAt) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa Được Phê Duyệt',
+                    text: exam.isSubmitted 
+                        ? 'Exam này đang chờ admin phê duyệt. Vui lòng chờ phê duyệt trước khi thay đổi trạng thái.'
+                        : 'Exam này vẫn đang ở trạng thái bản nháp. Vui lòng gửi duyệt và chờ phê duyệt trước.',
+                    confirmButtonText: 'Đã Hiểu',
+                    timer: 3000
+                });
+                return;
+            }
+            
             console.log(examId);
             console.log(newStatus);
             await ExamService.updateStatus(examId, newStatus);
@@ -625,17 +642,35 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
                                         <td>
                                             {exam.examStatus === 1 ? (
                                                 <span
-                                                    onClick={() => toggleStatus(exam._id, 0)}
+                                                    onClick={() => {
+                                                        if (!exam.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(exam._id, 0);
+                                                    }}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !exam.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !exam.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!exam.approvedAt ? (exam.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để disable'}
                                                 >
                                                     Enable
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => toggleStatus(exam._id, 1)}
+                                                    onClick={() => {
+                                                        if (!exam.approvedAt) {
+                                                            return;
+                                                        }
+                                                        toggleStatus(exam._id, 1);
+                                                    }}
                                                     className="btn badge text-bg-danger rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ 
+                                                        cursor: !exam.approvedAt ? 'not-allowed' : 'pointer',
+                                                        opacity: !exam.approvedAt ? 0.6 : 1
+                                                    }}
+                                                    title={!exam.approvedAt ? (exam.isSubmitted ? 'Chờ phê duyệt' : 'Bản nháp') : 'Click để enable'}
                                                 >
                                                     Disable
                                                 </span>
