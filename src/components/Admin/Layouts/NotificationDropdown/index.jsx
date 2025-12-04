@@ -305,7 +305,7 @@ const NotificationDropdown = ({ userId }) => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: '#2C5F8D',
+        background: 'var(--color-primary)',
         color: 'var(--color-bg-primary)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

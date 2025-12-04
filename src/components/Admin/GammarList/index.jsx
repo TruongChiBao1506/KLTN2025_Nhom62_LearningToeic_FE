@@ -681,11 +681,11 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
                                         <td>
                                             <div className="d-flex justify-content-center gap-1 flex-wrap">
                                                 <Link to={`/teacher/grammar/${grammar._id}/grammar-content`}>
-                                                    <button className="glowing-button-compact">Content</button>
+                                                    <button className="glowing-button-compact">Nội dung</button>
                                                 </Link>
 
                                                 <Link to={`/teacher/grammar/${grammar._id}/grammar-question`}>
-                                                    <button className="glowing-button-compact">Question</button>
+                                                    <button className="glowing-button-compact">Câu hỏi</button>
                                                 </Link>
                                             </div>
                                         </td>

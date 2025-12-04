@@ -17,7 +17,7 @@ const VocabularyQuestion = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        document.title = "Admin - Vocabulary Question";
+        document.title = "Câu hỏi từ vựng";
     }, []);
 
     // Initialize AOS
@@ -71,7 +71,7 @@ const VocabularyQuestion = () => {
                 {/* Breadcrumb with solid colors */}
                 <div
                     style={{
-                        background: '#2C5F8D',
+                        background: 'var(--color-primary)',
                         minHeight: 70,
                         border: 'none',
                         borderRadius: 16,
@@ -88,7 +88,7 @@ const VocabularyQuestion = () => {
                     <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                         <Breadcrumb.Item>
                             <span style={{
-                                background: '#3498DB',
+                                background: 'var(--color-primary-light)',
                                 borderRadius: '50%',
                                 width: 40,
                                 height: 40,
@@ -100,11 +100,11 @@ const VocabularyQuestion = () => {
                             }}>
                                 <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                             </span>
-                            <Link to="/admin/vocabulary" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Vocabulary</Link>
+                            <Link to="/admin/vocabulary" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Chủ đề từ vựng</Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
                             <span style={{
-                                background: '#3498DB',
+                                background: 'var(--color-primary-light)',
                                 borderRadius: '50%',
                                 width: 40,
                                 height: 40,
@@ -116,7 +116,7 @@ const VocabularyQuestion = () => {
                             }}>
                                 <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                             </span>
-                            <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Vocabulary Question</span>
+                            <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Câu hỏi từ vựng</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
@@ -151,7 +151,7 @@ const VocabularyQuestion = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -168,7 +168,7 @@ const VocabularyQuestion = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -180,11 +180,11 @@ const VocabularyQuestion = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/vocabulary" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Vocabulary</Link>
+                        <Link to="/admin/vocabulary" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Chủ đề từ vựng</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -196,7 +196,7 @@ const VocabularyQuestion = () => {
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Vocabulary Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Câu hỏi từ vựng</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

@@ -326,7 +326,7 @@ const BlogDetail = () => {
                 {/* Header */}
                 <div
                     style={{
-                        background: '#2C5F8D',
+                        background: 'var(--color-primary)',
                         borderRadius: 16,
                         padding: '24px 32px',
                         marginBottom: 24,

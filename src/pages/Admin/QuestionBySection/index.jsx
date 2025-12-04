@@ -47,7 +47,7 @@ const QuestionBySection = () => {
     }, [sectionId, retrieveQuestions]);
 
     useEffect(() => {
-        document.title = "Admin - Questions";
+        document.title = "Câu hỏi";
     }, []);
 
     return (
@@ -55,7 +55,7 @@ const QuestionBySection = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -72,7 +72,7 @@ const QuestionBySection = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -88,7 +88,7 @@ const QuestionBySection = () => {
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,

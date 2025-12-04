@@ -3,7 +3,7 @@
 .glowing-button {
   padding: 10px 20px;
   font-size: 12px;
-  background: linear-gradient(45deg, rgb(59, 99, 126), #0b3142);
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 25px;

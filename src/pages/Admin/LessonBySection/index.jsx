@@ -16,7 +16,7 @@ const Lesson = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Admin - Lesson";
+        document.title = "Bài học";
     }, []);
 
     // Initialize AOS
@@ -56,7 +56,7 @@ const Lesson = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -73,7 +73,7 @@ const Lesson = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -85,11 +85,11 @@ const Lesson = () => {
                         }}>
                             <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
+                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Phần thi</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -101,7 +101,7 @@ const Lesson = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Lesson</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Bài học</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

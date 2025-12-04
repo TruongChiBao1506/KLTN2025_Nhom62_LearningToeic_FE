@@ -282,7 +282,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
 
           {/* Table */}
           <div className="card-body">
-            <table className="table text-center table-hover shadow">
+            <table className="table text-center table-hover shadow section-list-table">
               <thead className="shadow">
                 <tr className="align-middle">
                   <th>
@@ -315,7 +315,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                       />
                     </td>
                     <td>{getSectionType(section.type)}</td>
-                    <td>{section.description}</td>
+                    <td title={section.description}>{section.description}</td>
                     <td>
                       {section.status === 1 ? (
                         <span
@@ -365,19 +365,19 @@ const SectionList = ({ sections = [], retrieveSections }) => {
                       </div>
                     </td>
                     <td>
-                      <div className="d-flex justify-content-center">
+                      <div className="d-flex justify-content-center gap-2">
                         <Link to={`/teacher/sections/${section._id}/lesson`}>
-                          <button className="glowing-button">Lesson</button>
+                          <button className="glowing-button">Bài học</button>
                         </Link>
 
                         <Link to={`/teacher/sections/${section._id}/question`}>
-                          <button className="glowing-button ms-2">
-                            Question
+                          <button className="glowing-button">
+                            Câu hỏi
                           </button>
                         </Link>
 
                         <Link to={`/teacher/sections/${section._id}/test`}>
-                          <button className="glowing-button ms-2">Test</button>
+                          <button className="glowing-button">Bài kiểm tra</button>
                         </Link>
                       </div>
                     </td>

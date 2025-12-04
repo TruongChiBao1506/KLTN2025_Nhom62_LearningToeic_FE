@@ -40,7 +40,7 @@ const TeacherDashboard = () => {
   const [stats, setStats] = useState(null);
   const [contentList, setContentList] = useState([]);
   const [contentPerformance, setContentPerformance] = useState([]);
-  
+
   // Filters for content list
   const [contentFilters, setContentFilters] = useState({
     page: 1,
@@ -49,10 +49,14 @@ const TeacherDashboard = () => {
     type: 'all'
   });
   const [pagination, setPagination] = useState(null);
-  
+
   // Loading states
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    document.title = "Dashboard";
+  }, []);
 
   // Fetch content list only
   const fetchContentList = useCallback(async () => {
@@ -68,7 +72,7 @@ const TeacherDashboard = () => {
   // Fetch all dashboard data
   const fetchDashboardData = useCallback(async () => {
     setIsLoading(true);
-    
+
     try {
       const results = await Promise.allSettled([
         teacherDashboardService.getStats(),
@@ -261,7 +265,7 @@ const TeacherDashboard = () => {
   // Performance insights
   const performanceInsights = {
     totalCompletions: contentPerformance.reduce((sum, item) => sum + item.completions, 0),
-    avgAllScores: contentPerformance.length > 0 
+    avgAllScores: contentPerformance.length > 0
       ? Math.round(contentPerformance.reduce((sum, item) => sum + (item.avgScore || 0), 0) / contentPerformance.length)
       : 0,
     topPerformer: contentPerformance[0] || null,
@@ -275,11 +279,11 @@ const TeacherDashboard = () => {
     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
 
     return percent > 0.05 ? (
-      <text 
-        x={x} 
-        y={y} 
-        fill="white" 
-        textAnchor={x > cx ? 'start' : 'end'} 
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
         style={{ fontSize: '12px', fontWeight: 'bold' }}
       >
@@ -479,9 +483,9 @@ const TeacherDashboard = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         {/* Total Content */}
         <Col xs={24} sm={12} lg={6}>
-          <Card 
+          <Card
             hoverable
-            style={{ 
+            style={{
               height: '100%',
               background: 'var(--color-bg-primary)',
               boxShadow: 'var(--shadow-md)'
@@ -499,9 +503,9 @@ const TeacherDashboard = () => {
 
         {/* Approved Content */}
         <Col xs={24} sm={12} lg={6}>
-          <Card 
+          <Card
             hoverable
-            style={{ 
+            style={{
               height: '100%',
               background: 'var(--color-bg-primary)',
               boxShadow: 'var(--shadow-md)'
@@ -521,9 +525,9 @@ const TeacherDashboard = () => {
 
         {/* Pending Approvals */}
         <Col xs={24} sm={12} lg={6}>
-          <Card 
+          <Card
             hoverable
-            style={{ 
+            style={{
               height: '100%',
               background: 'var(--color-bg-primary)',
               boxShadow: 'var(--shadow-md)'
@@ -541,9 +545,9 @@ const TeacherDashboard = () => {
 
         {/* Rejected Content */}
         <Col xs={24} sm={12} lg={6}>
-          <Card 
+          <Card
             hoverable
-            style={{ 
+            style={{
               height: '100%',
               background: 'var(--color-bg-primary)',
               boxShadow: 'var(--shadow-md)'
@@ -564,7 +568,7 @@ const TeacherDashboard = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         {/* Combined Stacked Bar Chart */}
         <Col xs={24} lg={12}>
-          <Card 
+          <Card
             title={
               <span>
                 <BarChartOutlined style={{ marginRight: 8, color: 'var(--color-primary)' }} />
@@ -590,7 +594,7 @@ const TeacherDashboard = () => {
 
         {/* Radar Chart for Content Balance */}
         <Col xs={24} lg={12}>
-          <Card 
+          <Card
             title={
               <span>
                 <PieChartOutlined style={{ marginRight: 8, color: 'var(--color-chart-4)' }} />
@@ -604,12 +608,12 @@ const TeacherDashboard = () => {
                 <PolarGrid />
                 <PolarAngleAxis dataKey="metric" />
                 <PolarRadiusAxis angle={90} domain={[0, 'dataMax']} />
-                <Radar 
-                  name="Số lượng" 
-                  dataKey="value" 
-                  stroke="var(--color-primary)" 
-                  fill="var(--color-primary)" 
-                  fillOpacity={0.6} 
+                <Radar
+                  name="Số lượng"
+                  dataKey="value"
+                  stroke="var(--color-primary)"
+                  fill="var(--color-primary)"
+                  fillOpacity={0.6}
                 />
                 <Tooltip />
                 <Legend wrapperStyle={{ paddingTop: '15px' }} />
@@ -626,7 +630,7 @@ const TeacherDashboard = () => {
       {contentPerformance.length > 0 && (
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col xs={24}>
-            <Card 
+            <Card
               title={
                 <span>
                   <TrophyOutlined style={{ marginRight: 8, color: 'var(--color-warning)' }} />
@@ -668,14 +672,14 @@ const TeacherDashboard = () => {
                   <div>
                     <div style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 8 }}>Điểm TB cao nhất</div>
                     <div style={{ fontSize: 16, fontWeight: 'bold', color: 'var(--color-success)' }}>
-                      {contentPerformance.reduce((max, item) => 
+                      {contentPerformance.reduce((max, item) =>
                         item.avgScore > max.avgScore ? item : max
-                      , contentPerformance[0])?.title?.substring(0, 30) || 'N/A'}
+                        , contentPerformance[0])?.title?.substring(0, 30) || 'N/A'}
                     </div>
                     <div style={{ fontSize: 12, color: 'var(--color-text-disabled)', marginTop: 4 }}>
-                      {contentPerformance.reduce((max, item) => 
+                      {contentPerformance.reduce((max, item) =>
                         item.avgScore > max.avgScore ? item : max
-                      , contentPerformance[0])?.avgScore || 0} điểm
+                        , contentPerformance[0])?.avgScore || 0} điểm
                     </div>
                   </div>
                 </Col>
@@ -689,13 +693,13 @@ const TeacherDashboard = () => {
       <Card>
         <Tabs activeKey={activeTab} onChange={setActiveTab}>
           {/* Detailed Analysis Tab */}
-          <TabPane 
+          <TabPane
             tab={
               <span>
                 <PieChartOutlined />
                 Phân tích chi tiết
               </span>
-            } 
+            }
             key="analysis"
           >
             <Row gutter={[16, 16]}>
@@ -719,8 +723,8 @@ const TeacherDashboard = () => {
                         ))}
                       </Pie>
                       <Tooltip />
-                      <Legend 
-                        verticalAlign="bottom" 
+                      <Legend
+                        verticalAlign="bottom"
                         height={50}
                         wrapperStyle={{ paddingTop: '20px' }}
                         formatter={(value, entry) => `${value}: ${entry.payload.value}`}
@@ -749,8 +753,8 @@ const TeacherDashboard = () => {
                         ))}
                       </Pie>
                       <Tooltip />
-                      <Legend 
-                        verticalAlign="bottom" 
+                      <Legend
+                        verticalAlign="bottom"
                         height={50}
                         wrapperStyle={{ paddingTop: '20px' }}
                         formatter={(value, entry) => `${value}: ${entry.payload.value}`}
@@ -763,13 +767,13 @@ const TeacherDashboard = () => {
           </TabPane>
 
           {/* Content List Tab */}
-          <TabPane 
+          <TabPane
             tab={
               <span>
                 <FileTextOutlined />
                 Danh sách nội dung
               </span>
-            } 
+            }
             key="content"
           >
             {/* Filters */}
@@ -836,13 +840,13 @@ const TeacherDashboard = () => {
           </TabPane>
 
           {/* Performance Tab */}
-          <TabPane 
+          <TabPane
             tab={
               <span>
                 <TrophyOutlined />
                 Hiệu suất nội dung
               </span>
-            } 
+            }
             key="performance"
           >
             {contentPerformance.length > 0 ? (
@@ -857,7 +861,7 @@ const TeacherDashboard = () => {
                 />
 
                 {/* Performance Chart */}
-                <Card 
+                <Card
                   title={
                     <span>
                       <BarChartOutlined style={{ marginRight: 8, color: 'var(--color-primary)' }} />
@@ -869,10 +873,10 @@ const TeacherDashboard = () => {
                   <ResponsiveContainer width="100%" height={450}>
                     <BarChart data={performanceChartData} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="name" 
-                        angle={-45} 
-                        textAnchor="end" 
+                      <XAxis
+                        dataKey="name"
+                        angle={-45}
+                        textAnchor="end"
                         height={120}
                         style={{ fontSize: '12px' }}
                       />
@@ -880,17 +884,17 @@ const TeacherDashboard = () => {
                       <YAxis yAxisId="right" orientation="right" stroke="var(--color-success)" />
                       <Tooltip />
                       <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                      <Bar 
-                        yAxisId="left" 
-                        dataKey="completions" 
-                        fill="var(--color-primary)" 
+                      <Bar
+                        yAxisId="left"
+                        dataKey="completions"
+                        fill="var(--color-primary)"
                         name="Lượt hoàn thành"
                         radius={[8, 8, 0, 0]}
                       />
-                      <Bar 
-                        yAxisId="right" 
-                        dataKey="avgScore" 
-                        fill="var(--color-success)" 
+                      <Bar
+                        yAxisId="right"
+                        dataKey="avgScore"
+                        fill="var(--color-success)"
                         name="Điểm trung bình"
                         radius={[8, 8, 0, 0]}
                       />

@@ -42,7 +42,7 @@ const ViewRequestModal = ({ visible, request, onClose }) => {
           textAlign: 'center', 
           marginBottom: 24,
           padding: 20,
-          background: '#2C5F8D',
+          background: 'var(--color-primary)',
           borderRadius: 16
         }}>
           <Avatar 

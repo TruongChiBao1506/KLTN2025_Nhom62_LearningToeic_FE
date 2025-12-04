@@ -23,7 +23,7 @@ const ExamQuestion = () => {
     });
 
     useEffect(() => {
-        document.title = "Admin - Exam Question";
+        document.title = "Câu hỏi bài thi";
     }, []);
 
     // Initialize AOS
@@ -232,7 +232,7 @@ const ExamQuestion = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -249,7 +249,7 @@ const ExamQuestion = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -261,11 +261,11 @@ const ExamQuestion = () => {
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Exam</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Bài thi</span>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -277,7 +277,7 @@ const ExamQuestion = () => {
                         }}>
                             <QuestionCircleOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Exam Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Câu hỏi bài thi</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

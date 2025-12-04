@@ -14,7 +14,7 @@ const LessonContent = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Admin - Lesson Content";
+        document.title = "Nội dung bài học";
     }, []);
 
     // Initialize AOS
@@ -66,7 +66,7 @@ const LessonContent = () => {
             {/* Breadcrumb Ant Design + Gradient */}
             <div
                 style={{
-                    background: 'linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%)',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -95,7 +95,7 @@ const LessonContent = () => {
                         }}>
                             <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Section</Link>
+                        <Link to="/admin/section" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Phần thi</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -111,7 +111,7 @@ const LessonContent = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to={`/admin/section/${sectionId}/lesson`} style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Lesson</Link>
+                        <Link to={`/admin/section/${sectionId}/lesson`} style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Bài học</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
@@ -127,7 +127,7 @@ const LessonContent = () => {
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Lesson Content</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Nội dung bài học</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

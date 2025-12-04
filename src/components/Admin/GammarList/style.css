@@ -24,7 +24,7 @@ td {
 .glowing-button {
     padding: 10px 20px;
     font-size: 12px;
-    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
+    background: var(--color-primary);
     color: white;
     border: none;
     border-radius: 25px;
@@ -42,7 +42,7 @@ td {
 .glowing-button-compact {
     padding: 6px 12px;
     font-size: 12px;
-    background: linear-gradient(45deg, var(--color-brand-blue), var(--color-brand-blue-dark));
+    background: var(--color-primary);
     color: white;
     border: none;
     border-radius: 20px;

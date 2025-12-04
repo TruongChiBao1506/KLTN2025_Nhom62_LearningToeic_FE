@@ -683,7 +683,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                     to={`/teacher/sections/${sectionId}/lesson/${lesson._id}/lesson-content`}
                                                 >
                                                     <button className="glowing-button">
-                                                        Lesson Content
+                                                        Nội dung bài học
                                                     </button>
                                                 </Link>
                                             </div>

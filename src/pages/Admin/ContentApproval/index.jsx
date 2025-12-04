@@ -701,7 +701,7 @@ const ContentApproval = () => {
               style={{ 
                 textAlign: 'center', 
                 padding: '60px 20px',
-                background: '#2C5F8D',
+                background: 'var(--color-primary)',
                 border: 'none'
               }}
             >

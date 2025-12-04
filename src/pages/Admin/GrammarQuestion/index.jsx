@@ -17,7 +17,7 @@ const GrammarQuestion = () => {
 
     // Set document title
     useEffect(() => {
-        document.title = "Admin - Grammar Question";
+        document.title = "Câu hỏi ngữ pháp";
     }, []);
 
     // Initialize AOS
@@ -57,7 +57,7 @@ const GrammarQuestion = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -74,7 +74,7 @@ const GrammarQuestion = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -86,11 +86,11 @@ const GrammarQuestion = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/grammar" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Grammar</Link>
+                        <Link to="/admin/grammar" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Bài học ngữ pháp</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -102,7 +102,7 @@ const GrammarQuestion = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Grammar Question</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Câu hỏi ngữ pháp</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

@@ -15,7 +15,7 @@ td {
 .glowing-button {
     padding: 10px 20px;
     font-size: 12px;
-    background: #2C5F8D;
+    background: var(--color-primary);
     color: var(--color-bg-primary);
     border: none;
     border-radius: 25px;

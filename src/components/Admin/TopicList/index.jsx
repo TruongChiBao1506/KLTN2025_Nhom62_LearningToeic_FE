@@ -678,11 +678,11 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 <Link to={`/teacher/topics/${topic._id}/vocabulary`}>
-                                                    <button className="glowing-button ms-2">Vocabulary</button>
+                                                    <button className="glowing-button ms-2">Từ vựng</button>
                                                 </Link>
 
                                                 <Link to={`/teacher/topics/${topic._id}/vocabulary-question`}>
-                                                    <button className="glowing-button ms-2">Question</button>
+                                                    <button className="glowing-button ms-2">Câu hỏi</button>
                                                 </Link>
                                             </div>
                                         </td>

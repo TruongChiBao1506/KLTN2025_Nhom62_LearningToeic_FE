@@ -16,7 +16,7 @@ const VocabularyByTopic = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Admin - Vocabulary";
+        document.title = "Từ vựng";
     }, []);
 
     // Initialize AOS
@@ -58,7 +58,7 @@ const VocabularyByTopic = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -75,7 +75,7 @@ const VocabularyByTopic = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -87,11 +87,11 @@ const VocabularyByTopic = () => {
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <Link to="/admin/topic" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Topic</Link>
+                        <Link to="/admin/topic" style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18, textDecoration: 'none', marginLeft: 4 }}>Chủ đề từ vựng</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -103,7 +103,7 @@ const VocabularyByTopic = () => {
                         }}>
                             <BookOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 20 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Vocabulary</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 18 }}>Từ vựng</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

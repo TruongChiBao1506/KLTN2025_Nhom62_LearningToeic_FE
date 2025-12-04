@@ -1,16 +1,15 @@
 ﻿/* ========================================
    TOEIC Admin - Color System
    Centralized Color Variables
-   Chỉ cần thay đổi màu ở đây để thay đổi toàn bộ theme
 ======================================== */
 
 :root {
   /* ===== Primary Colors - Professional Blue Navy ===== */
-  --color-primary: #2C5F8D;           /* Navy Blue - Chuyên nghiệp, học thuật */
-  --color-primary-light: #3498DB;     /* Ocean Blue - Sáng hơn, button hover */
+  --color-primary: #3B7EBD;           /* Navy Blue - Sáng hơn, chuyên nghiệp */
+  --color-primary-light: #4A90D9;     /* Ocean Blue - Sáng hơn, button hover */
   --color-primary-lighter: #5DADE2;   /* Light Blue - Backgrounds */
-  --color-primary-dark: #1E4766;      /* Dark Navy - Headings */
-  --color-primary-darker: #16324A;    /* Deeper Navy - Sidebar */
+  --color-primary-dark: #2C5F8D;      /* Dark Navy - Headings */
+  --color-primary-darker: #1E4766;    /* Deeper Navy - Sidebar */
   
   /* ===== Secondary Colors - Teal Accent ===== */
   --color-secondary: #16A085;         /* Teal - Accent color */

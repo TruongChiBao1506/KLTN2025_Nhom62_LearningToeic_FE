@@ -714,7 +714,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
                                         <td className="align-middle">
                                             <div className="d-flex justify-content-center">
                                                 <Link to={`/teacher/exams/${exam._id}/exam-question`}>
-                                                    <button className="glowing-button-compact">Questions</button>
+                                                    <button className="glowing-button-compact">Câu hỏi bài thi</button>
                                                 </Link>
                                             </div>
                                         </td>

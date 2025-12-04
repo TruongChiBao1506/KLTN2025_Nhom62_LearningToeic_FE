@@ -14,7 +14,7 @@ const Exam = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Admin - Exam";
+        document.title = "Bài thi";
     }, []);
 
     // Initialize AOS
@@ -82,7 +82,7 @@ const Exam = () => {
             {/* Breadcrumb with solid colors */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -99,7 +99,7 @@ const Exam = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -111,7 +111,7 @@ const Exam = () => {
                         }}>
                             <FileTextOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Exam</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Bài thi</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

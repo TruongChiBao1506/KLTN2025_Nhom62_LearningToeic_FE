@@ -13,7 +13,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-bg-primary)fff;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -24,7 +24,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -33,7 +33,7 @@
   align-items: center;
   gap: 12px;
   margin: 0;
-  color: var(--color-bg-primary)fff;
+  color: var(--color-bg-primary);
   font-size: 1.4rem;
   font-weight: 600;
 }
@@ -50,7 +50,7 @@
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
-  color: var(--color-bg-primary)fff;
+  color: var(--color-bg-primary);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -79,20 +79,20 @@
   align-items: flex-start;
   gap: 16px;
   padding: 18px;
-  background: var(--color-bg-primary)fff;
-  border: 1px solid #e8ebf0;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 .notif-card:hover {
-  border-color: #d0d5dd;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
 .notif-card.notif-unread {
-  background: linear-gradient(to right, #e7f3ff 0%, var(--color-bg-primary)fff 100%);
+  background: linear-gradient(to right, var(--color-info-bg) 0%, var(--color-bg-primary) 100%);
   border-left: 4px solid var(--color-primary);
 }
 
@@ -103,9 +103,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-brand-purple-dark) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-radius: 10px;
-  color: var(--color-bg-primary)fff;
+  color: var(--color-bg-primary);
   font-size: 1.1rem;
 }
 
@@ -116,7 +116,7 @@
 
 .notif-card-title {
   margin: 0 0 8px 0;
-  color: #1a202c;
+  color: var(--color-text-primary);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
@@ -124,14 +124,14 @@
 
 .notif-message {
   margin: 0 0 8px 0;
-  color: #4a5568;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.5;
 }
 
 .notif-timestamp {
   display: inline-block;
-  color: #a0aec0;
+  color: var(--color-text-light);
   font-size: 0.8rem;
 }
 
@@ -146,10 +146,10 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
   border: none;
   border-radius: 8px;
-  color: var(--color-bg-primary)fff;
+  color: var(--color-bg-primary);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;

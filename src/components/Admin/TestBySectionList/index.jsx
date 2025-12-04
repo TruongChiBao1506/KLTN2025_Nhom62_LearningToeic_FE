@@ -684,7 +684,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
                                                     to={`/teacher/section/${sectionId}/test/${test.testId || test._id}/indicate-questions`}
                                                 >
                                                     <button className="glowing-button ms-2">
-                                                        Indicate Questions
+                                                        Câu hỏi chỉ định
                                                     </button>
                                                 </Link>
                                             </div>

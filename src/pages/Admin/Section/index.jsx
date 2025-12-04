@@ -13,7 +13,7 @@ const Section = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        document.title = "Admin - Section";
+        document.title = "Phần thi";
     }, []);
 
     // Initialize AOS
@@ -47,11 +47,10 @@ const Section = () => {
 
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-            {/* 
-            crumb with AOS */}
+            {/* crumb with AOS */}
             <div
                 style={{
-                    background: '#2C5F8D',
+                    background: 'var(--color-primary)',
                     minHeight: 70,
                     border: 'none',
                     borderRadius: 16,
@@ -68,7 +67,7 @@ const Section = () => {
                 <Breadcrumb separator={null} style={{ fontSize: 22, fontWeight: 600, color: 'var(--color-bg-primary)' }}>
                     <Breadcrumb.Item>
                         <span style={{
-                            background: '#3498DB',
+                            background: 'var(--color-primary-light)',
                             borderRadius: '50%',
                             width: 40,
                             height: 40,
@@ -80,7 +79,7 @@ const Section = () => {
                         }}>
                             <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
                         </span>
-                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Section</span>
+                        <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Phần thi</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>

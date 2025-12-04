@@ -36,14 +36,14 @@ export const determineUserType = (roles) => {
 /**
  * Get success message based on user roles
  */
-export const getSuccessMessage = (roles) => {
+export const getSuccessMessage = (roles, userName = "bạn") => {
   if (roles.includes("ROLE_ADMIN")) {
-    return "🎉 Đăng nhập thành công với quyền Admin!";
+    return `🎉 Đăng nhập thành công, chào mừng ${userName}!`;
   }
   if (roles.includes("ROLE_TEACHER")) {
-    return "🎉 Đăng nhập thành công với quyền Teacher!";
+    return `🎉 Đăng nhập thành công, chào mừng ${userName}!`;
   }
-  return "🎉 Đăng nhập thành công! Chào mừng bạn đến với TOEIC Learning!";
+  return `🎉 Đăng nhập thành công, chào mừng ${userName} đến với TOEIC Learning!`;
 };
 
 /**

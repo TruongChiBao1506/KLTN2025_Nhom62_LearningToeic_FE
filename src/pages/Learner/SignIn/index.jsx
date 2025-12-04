@@ -171,7 +171,7 @@ const SignIn = () => {
           const route = getRedirectRoute(roles);
           
           if (route) {
-            toast.success(getSuccessMessage(roles), {
+            toast.success(getSuccessMessage(roles, user.name || user.username), {
               position: "top-right",
               autoClose: 2000,
             });
