@@ -66,8 +66,7 @@ const HeaderComponent = ({ toggleSidebar }) => {
     // ✅ Simplified image URL helper
     const getImageUrl = (imageName) => {
         if (!imageName) return "https://png.pngtree.com/png-vector/20190321/ourmid/pngtree-vector-users-icon-png-image_856952.jpg";
-        if (imageName.startsWith('http')) return imageName;
-        return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/images/${imageName}`;
+        return imageName;
     };
 
     // ❌ REMOVED: getUserById function - use Redux store instead
@@ -355,8 +354,8 @@ const HeaderComponent = ({ toggleSidebar }) => {
                     >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                             <Avatar
-                                size={48}
-                                src={getImageUrl(adminUserData?.avatar)}
+                                size={36}
+                                src={getImageUrl(adminUserData?.image)}
                                 style={{
                                     background: "#2C5F8D",
                                     border: "2px solid rgba(103, 126, 234, 0.1)",
@@ -626,8 +625,8 @@ const HeaderComponent = ({ toggleSidebar }) => {
                                     }}
                                 >
                                     <Avatar
-                                        size={32}
-                                        src={getImageUrl(adminUserData?.avatar)}
+                                        size={40}
+                                        src={getImageUrl(adminUserData?.image || adminUserData?.avatar)}
                                         style={{
                                             background: "#2C5F8D",
                                             color: "var(--color-bg-primary)",

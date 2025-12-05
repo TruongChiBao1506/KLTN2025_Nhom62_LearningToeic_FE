@@ -2,6 +2,8 @@
 import './style.css';
 import { useAuthStore } from '../../../hooks/useAuthStore';
 import leaderboardService from '../../../services/leaderboardService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy, faMedal, faClock, faCalendarWeek, faCalendarDays, faRotate, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -33,15 +35,16 @@ const Leaderboard = () => {
         const processedLeaderboard = Array.isArray(leaderboardData) ? leaderboardData : [];
 
         // Transform data to match component expectations
-        const transformedLeaderboard = processedLeaderboard.map(player => ({
+        const transformedLeaderboard = processedLeaderboard.map((player, index) => ({
           ...player,
-          name: player.username || player.name,
-          avatar: player.avatar,
-          achievementPoints: player.achievementPoints,
+          rank: player.rank || index + 1,
+          name: player.name || player.username,
+          avatar: player.image || player.avatar,
+          achievementPoints: player.achievementPoints || 0,
           userId: player.userId || player._id,
           email: player.email,
-          totalQuestions: player.totalQuestions,
-          currentStreak: player.currentStreak
+          totalQuestions: player.totalQuestions || 0,
+          currentStreak: player.currentStreak || 0
         }));
 
         setLeaderboard(transformedLeaderboard);
@@ -66,15 +69,16 @@ const Leaderboard = () => {
         const processedTopPlayers = Array.isArray(topPlayersData) ? topPlayersData : [];
 
         // Transform top players data
-        const transformedTopPlayers = processedTopPlayers.map(player => ({
+        const transformedTopPlayers = processedTopPlayers.map((player, index) => ({
           ...player,
-          name: player.username || player.name,
-          avatar: player.avatar,
-          achievementPoints: player.achievementPoints,
+          rank: player.rank || index + 1,
+          name: player.name || player.username,
+          avatar: player.image || player.avatar,
+          achievementPoints: player.achievementPoints || 0,
           userId: player.userId || player._id,
           email: player.email,
-          totalQuestions: player.totalQuestions,
-          currentStreak: player.currentStreak
+          totalQuestions: player.totalQuestions || 0,
+          currentStreak: player.currentStreak || 0
         }));
 
         setTopPlayers(transformedTopPlayers);
@@ -97,9 +101,9 @@ const Leaderboard = () => {
 
   const getRankIcon = (rank) => {
     switch (rank) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
+      case 1: return <FontAwesomeIcon icon={faMedal} style={{ color: '#FFD700' }} />;
+      case 2: return <FontAwesomeIcon icon={faMedal} style={{ color: '#C0C0C0' }} />;
+      case 3: return <FontAwesomeIcon icon={faMedal} style={{ color: '#CD7F32' }} />;
       default: return `#${rank}`;
     }
   };
@@ -129,7 +133,10 @@ const Leaderboard = () => {
   return (
     <div className="leaderboard-container">
       <div className="leaderboard-header">
-        <h1>🏆 Bảng Xếp Hạng</h1>
+        <h1>
+          <FontAwesomeIcon icon={faTrophy} style={{ marginRight: '12px' }} />
+          Bảng Xếp Hạng
+        </h1>
         <p>Đua top với cộng đồng TOEIC learners!</p>
       </div>
 
@@ -139,49 +146,83 @@ const Leaderboard = () => {
           className={`leaderboard-period-btn ${activePeriod === 'all' ? 'active' : ''}`}
           onClick={() => setActivePeriod('all')}
         >
-          🏅 Tất cả
+          <FontAwesomeIcon icon={faClock} style={{ marginRight: '8px' }} />
+          Tất cả
         </button>
         <button
           className={`leaderboard-period-btn ${activePeriod === 'month' ? 'active' : ''}`}
           onClick={() => setActivePeriod('month')}
         >
-          📅 Tháng này
+          <FontAwesomeIcon icon={faCalendarDays} style={{ marginRight: '8px' }} />
+          Tháng này
         </button>
         <button
           className={`leaderboard-period-btn ${activePeriod === 'week' ? 'active' : ''}`}
           onClick={() => setActivePeriod('week')}
         >
-          📊 Tuần này
+          <FontAwesomeIcon icon={faCalendarWeek} style={{ marginRight: '8px' }} />
+          Tuần này
         </button>
       </div>
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '20px' }}>⏳</div>
-          <div style={{ color: '#4f46e5', fontSize: '1.2rem', fontWeight: '600' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '20px', color: 'var(--color-primary)' }}>
+            <FontAwesomeIcon icon={faSpinner} spin />
+          </div>
+          <div style={{ color: 'var(--color-text-secondary)', fontSize: '1.2rem', fontWeight: '600' }}>
             Đang tải bảng xếp hạng...
           </div>
         </div>
       ) : error ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>❌</div>
-          <div style={{ color: '#e53e3e', fontSize: '1.2rem', fontWeight: '600', marginBottom: '20px' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '60px 20px',
+          background: 'var(--color-bg-primary)',
+          borderRadius: '12px',
+          maxWidth: '500px',
+          margin: '0 auto',
+          boxShadow: 'var(--shadow-md)'
+        }}>
+          <div style={{ 
+            width: '80px',
+            height: '80px',
+            margin: '0 auto 24px',
+            background: 'var(--color-error-lighter)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '2rem',
+            color: 'var(--color-error)'
+          }}>
+            ✕
+          </div>
+          <div style={{ 
+            color: 'var(--color-error)', 
+            fontSize: '1.1rem', 
+            fontWeight: '600', 
+            marginBottom: '24px' 
+          }}>
             {error}
           </div>
           <button
             onClick={retryFetch}
             style={{
-              background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+              background: 'var(--color-primary)',
               color: 'white',
               border: 'none',
               padding: '12px 24px',
               borderRadius: '8px',
               fontSize: '1rem',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'all 0.3s ease'
             }}
           >
-            🔄 Thử lại
+            <FontAwesomeIcon icon={faRotate} style={{ marginRight: '8px' }} />
+            Thử lại
           </button>
         </div>
       ) : (
@@ -293,9 +334,25 @@ const Leaderboard = () => {
           </div>
 
           {leaderboard.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '20px' }}>📊</div>
-              <div style={{ fontSize: '1.1rem' }}>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '60px 20px', 
+              background: 'var(--color-bg-primary)',
+              borderRadius: '12px',
+              boxShadow: 'var(--shadow-md)'
+            }}>
+              <div style={{ 
+                fontSize: '3rem', 
+                marginBottom: '20px',
+                color: 'var(--color-text-secondary)'
+              }}>
+                <FontAwesomeIcon icon={faTrophy} />
+              </div>
+              <div style={{ 
+                fontSize: '1.1rem',
+                color: 'var(--color-text-secondary)',
+                fontWeight: '500'
+              }}>
                 Chưa có dữ liệu bảng xếp hạng cho {formatPeriodLabel(activePeriod).toLowerCase()}
               </div>
             </div>

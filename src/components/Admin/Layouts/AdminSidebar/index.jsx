@@ -236,6 +236,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Badge } from 'antd';
 import './style.css';
+import toeicLogo from '../../../../assets/Toeic_logo.png';
 import { 
   HomeOutlined,
   FileTextOutlined,
@@ -464,9 +465,9 @@ const Sidebar = ({ isToggled, isAnimating }) => {
     // Get role display name and color
     const getRoleDisplay = () => {
         if (userRole === 'admin') {
-            return { name: 'Admin Panel', color: 'var(--color-danger)' };
+            return { name: 'Quản trị viên', color: 'var(--color-danger)' };
         }
-        return { name: 'Teacher Panel', color: 'var(--color-success)' };
+        return { name: 'Giáo viên', color: 'var(--color-success)' };
     };
 
     const roleDisplay = getRoleDisplay();
@@ -487,30 +488,36 @@ const Sidebar = ({ isToggled, isAnimating }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginRight: isToggled ? '12px' : '0',
-                        flexShrink: 0
+                        flexShrink: 0,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        border: '2px solid rgba(255,255,255,0.3)',
+                        padding: '4px'
                     }}>
-                        {userRole === 'admin' ? '👨‍💼' : '👨‍🏫'}
+                        <img 
+                            src={toeicLogo} 
+                            alt="TOEIC Logo" 
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain'
+                            }}
+                        />
                     </div>
                     {isToggled && (
                         <div style={{ overflow: 'hidden' }}>
                             <div style={{
-                                color: 'white',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                                lineHeight: '1.2'
-                            }}>
-                                TOEIC Learning
-                            </div>
-                            <div style={{
                                 color: roleDisplay.color,
-                                fontSize: '12px',
+                                fontSize: '13px',
                                 fontWeight: '600',
-                                marginTop: '2px',
-                                background: 'rgba(255,255,255,0.2)',
-                                padding: '2px 8px',
-                                borderRadius: '10px',
-                                display: 'inline-block'
+                                background: 'rgba(255,255,255,0.15)',
+                                padding: '6px 12px',
+                                borderRadius: '12px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                             }}>
+                                <span>{userRole === 'admin' ? '👨‍💼' : '👨‍🏫'}</span>
                                 {roleDisplay.name}
                             </div>
                         </div>
@@ -534,15 +541,24 @@ const Sidebar = ({ isToggled, isAnimating }) => {
                     transform: 'translateX(-50%)',
                     width: '40px',
                     height: '40px',
-                    background: roleDisplay.color,
+                    background: 'white',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '20px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    padding: '4px'
                 }}>
-                    {userRole === 'admin' ? '👨‍💼' : '👨‍🏫'}
+                    <img 
+                        src={toeicLogo} 
+                        alt="TOEIC Logo" 
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain'
+                        }}
+                    />
                 </div>
             )}
         </div>

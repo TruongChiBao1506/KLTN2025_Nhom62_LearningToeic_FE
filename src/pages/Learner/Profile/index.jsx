@@ -54,6 +54,7 @@ const Profile = () => {
   const [form] = Form.useForm();
   const [user, setUser] = useState(null);
   const [statistics, setStatistics] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null); // Dashboard data with skill analysis
   const [recentActivity, setRecentActivity] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [changePasswordMode, setChangePasswordMode] = useState(false);
@@ -229,9 +230,30 @@ const Profile = () => {
 
   const fetchUserStatistics = async () => {
     try {
-      const response = await userService.getUserStatistics();
-      if (response?.data) {
-        setStatistics(response.data);
+      // Fetch dashboard data with skill analysis
+      const dashboardResponse = await userService.getLearnerDashboard();
+      if (dashboardResponse?.data) {
+        setDashboardData(dashboardResponse.data);
+        
+        // Also set statistics for backward compatibility
+        const { overview, skillAnalysis } = dashboardResponse.data;
+        setStatistics({
+          totalExamsTaken: overview?.completedExamsCount || 0,
+          studyHours: overview?.studyHours || 0,
+          highestScore: overview?.bestScore || 0,
+          averageScore: overview?.averageScore || 0,
+          completedLessons: overview?.completedLessons || 0,
+          certificatesEarned: overview?.certificatesEarned || 0,
+          currentStreak: overview?.learningStreak || 0,
+          activeDays: overview?.activeDays || [],
+          listening: skillAnalysis?.listening || 0,
+          reading: skillAnalysis?.reading || 0,
+          listeningPercentage: skillAnalysis?.listeningPercentage || 0,
+          readingPercentage: skillAnalysis?.readingPercentage || 0,
+          overallAccuracy: overview?.overallAccuracy || 0,
+          goalProgress: overview?.goalProgress || 0,
+          goalScore: overview?.goalScore || 0
+        });
       }
     } catch (error) {
       console.error("Lỗi khi tải thống kê:", error);
@@ -244,7 +266,13 @@ const Profile = () => {
         completedLessons: 0,
         certificatesEarned: 0,
         currentStreak: 0,
-        activeDays: []
+        activeDays: [],
+        listening: 0,
+        reading: 0,
+        listeningPercentage: 0,
+        readingPercentage: 0,
+        overallAccuracy: 0,
+        goalProgress: 0
       });
     }
   };
@@ -768,6 +796,11 @@ const Profile = () => {
                           htmlType="submit" 
                           icon={<SaveOutlined />}
                           loading={loading}
+                          style={{ borderRadius: "8px",
+                            background: "var(--color-primary)",
+                            borderColor: "var(--color-primary)",
+                            color: "#fff"
+                          }}
                         >
                           {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
                         </Button>
@@ -845,7 +878,11 @@ const Profile = () => {
                       type="primary"
                       icon={<EditOutlined />}
                       onClick={() => setEditMode(true)}
-                      style={{ borderRadius: "8px" }}
+                      style={{ borderRadius: "8px",
+                        background: "var(--color-primary)",
+                        borderColor: "var(--color-primary)",
+                        color: "#fff"
+                       }}
                     >
                       Chỉnh sửa thông tin
                     </Button>
@@ -897,6 +934,11 @@ const Profile = () => {
                           block
                           loading={loading}
                           icon={<LockOutlined />}
+                          style={{ borderRadius: "8px",
+                            background: "var(--color-primary)",
+                            borderColor: "var(--color-primary)",
+                            color: "#fff"
+                          }}
                         >
                           Cập nhật mật khẩu
                         </Button>
@@ -909,97 +951,198 @@ const Profile = () => {
 
             {/* Right Column - Statistics and Activity */}
             <Col xs={24} lg={16}>
-              {/* Statistics */}
+              {/* Statistics Overview */}
               <Card 
-                title="Thống kê học tập"
+                title="Tổng quan thống kê"
                 style={{ marginBottom: "24px" }}
-                extra={
-                  <Button 
-                    type="text" 
-                    icon={<ReloadOutlined spin={loading || refreshing} />}
-                    onClick={refreshProfile}
-                    disabled={loading || refreshing}
-                  />
-                }
               >
                 <Row gutter={[16, 16]}>
-                  <Col xs={12} lg={8}>
+                  <Col xs={12} md={6}>
                     <Statistic
-                      title="Bài kiểm tra đã làm"
-                      value={statistics?.totalExamsTaken || user?.totalExamsTaken || 0}
+                      title="Bài kiểm tra"
+                      value={statistics?.totalExamsTaken || 0}
                       prefix={<BookOutlined style={{ color: "var(--color-primary)" }} />}
-                      valueStyle={{ color: "var(--color-primary)" }}
+                      valueStyle={{ color: "var(--color-primary)", fontSize: "28px" }}
                     />
                   </Col>
-                  <Col xs={12} lg={8}>
-                    <Statistic
-                      title="Giờ học tập"
-                      value={statistics?.studyHours || user?.studyHours || 0}
-                      prefix={<ClockCircleOutlined style={{ color: "var(--color-success)" }} />}
-                      valueStyle={{ color: "var(--color-success)" }}
-                    />
-                  </Col>
-                  <Col xs={12} lg={8}>
-                    <Statistic
-                      title="Điểm cao nhất"
-                      value={statistics?.highestScore || user?.highestScore || 0}
-                      prefix={<TrophyOutlined style={{ color: "var(--color-warning)" }} />}
-                      valueStyle={{ color: "var(--color-warning)" }}
-                    />
-                  </Col>
-                  <Col xs={12} lg={8}>
-                    <Statistic
-                      title="Bài học hoàn thành"
-                      value={statistics?.completedLessons || user?.completedLessons || 0}
-                      prefix={<StarOutlined style={{ color: "var(--color-chart-4)" }} />}
-                      valueStyle={{ color: "var(--color-chart-4)" }}
-                    />
-                  </Col>
-                  <Col xs={12} lg={8}>
+                  <Col xs={12} md={6}>
                     <Statistic
                       title="Điểm trung bình"
-                      value={Math.round(statistics?.averageScore || user?.averageScore || 0)}
-                      prefix={<FireOutlined style={{ color: "var(--color-chart-5)" }} />}
-                      valueStyle={{ color: "var(--color-chart-5)" }}
+                      value={Math.round(statistics?.averageScore || 0)}
+                      prefix={<FireOutlined style={{ color: "var(--color-success)" }} />}
+                      valueStyle={{ color: "var(--color-success)", fontSize: "28px" }}
                     />
                   </Col>
-                  <Col xs={12} lg={8}>
+                  <Col xs={12} md={6}>
                     <Statistic
-                      title="Chứng chỉ đạt được"
-                      value={statistics?.certificatesEarned || user?.certificatesEarned || 0}
-                      prefix={<TrophyOutlined style={{ color: "var(--color-chart-6)" }} />}
-                      valueStyle={{ color: "var(--color-chart-6)" }}
+                      title="Giờ học tập"
+                      value={statistics?.studyHours || 0}
+                      suffix="h"
+                      prefix={<ClockCircleOutlined style={{ color: "var(--color-info)" }} />}
+                      valueStyle={{ color: "var(--color-info)", fontSize: "28px" }}
+                    />
+                  </Col>
+                  <Col xs={12} md={6}>
+                    <Statistic
+                      title="Điểm cao nhất"
+                      value={statistics?.highestScore || 0}
+                      prefix={<TrophyOutlined style={{ color: "var(--color-warning)" }} />}
+                      valueStyle={{ color: "var(--color-warning)", fontSize: "28px" }}
                     />
                   </Col>
                 </Row>
+
+                {/* Additional metrics row */}
+                {(statistics?.overallAccuracy > 0 || statistics?.goalProgress > 0) && (
+                  <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
+                    {statistics?.overallAccuracy > 0 && (
+                      <Col xs={12} md={8}>
+                        <Statistic
+                          title="Độ chính xác"
+                          value={Math.round(statistics.overallAccuracy)}
+                          suffix="%"
+                          prefix={<StarOutlined style={{ color: "var(--color-secondary)" }} />}
+                          valueStyle={{ color: "var(--color-secondary)", fontSize: "24px" }}
+                        />
+                      </Col>
+                    )}
+                    {statistics?.goalProgress > 0 && (
+                      <Col xs={12} md={8}>
+                        <Statistic
+                          title="Tiến độ mục tiêu"
+                          value={Math.round(statistics.goalProgress)}
+                          suffix="%"
+                          prefix={<TrophyOutlined style={{ color: "var(--color-chart-4)" }} />}
+                          valueStyle={{ color: "var(--color-chart-4)", fontSize: "24px" }}
+                        />
+                        {statistics?.goalScore > 0 && (
+                          <Text type="secondary" style={{ fontSize: "12px" }}>
+                            Mục tiêu: {statistics.goalScore} điểm
+                          </Text>
+                        )}
+                      </Col>
+                    )}
+                    {statistics?.currentStreak > 0 && (
+                      <Col xs={12} md={8}>
+                        <Statistic
+                          title="Chuỗi học tập"
+                          value={statistics.currentStreak}
+                          suffix="ngày"
+                          prefix={<FireOutlined style={{ color: "var(--color-danger)" }} />}
+                          valueStyle={{ color: "var(--color-danger)", fontSize: "24px" }}
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                )}
+
+                <Divider />
+
+                {/* Skill Analysis - Listening & Reading */}
+                <div style={{ marginBottom: "24px" }}>
+                  <Title level={5} style={{ marginBottom: "16px" }}>
+                    <BookOutlined style={{ marginRight: "8px" }} />
+                    Phân tích kỹ năng
+                  </Title>
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} md={12}>
+                      <div style={{
+                        border: "2px solid var(--color-info)",
+                        borderRadius: "12px",
+                        padding: "20px",
+                        height: "100%"
+                      }}>
+                        <Title level={5} style={{ color: "var(--color-info)", marginBottom: "12px" }}>
+                          🎧 Listening
+                        </Title>
+                        <Title level={2} style={{ color: "var(--color-info)", marginBottom: "12px" }}>
+                          {statistics?.listening || 0}/495
+                        </Title>
+                        <div style={{
+                          height: "10px",
+                          background: "#e0e0e0",
+                          borderRadius: "5px",
+                          overflow: "hidden",
+                          marginBottom: "8px"
+                        }}>
+                          <div style={{
+                            width: `${statistics?.listeningPercentage || ((statistics?.listening || 0) / 495) * 100}%`,
+                            height: "100%",
+                            background: "var(--color-info)",
+                            transition: "width 0.3s ease"
+                          }} />
+                        </div>
+                        <Text type="secondary">
+                          {Math.round(statistics?.listeningPercentage || ((statistics?.listening || 0) / 495) * 100)}% hoàn thành
+                        </Text>
+                      </div>
+                    </Col>
+                    <Col xs={24} md={12}>
+                      <div style={{
+                        border: "2px solid var(--color-success)",
+                        borderRadius: "12px",
+                        padding: "20px",
+                        height: "100%"
+                      }}>
+                        <Title level={5} style={{ color: "var(--color-success)", marginBottom: "12px" }}>
+                          📖 Reading
+                        </Title>
+                        <Title level={2} style={{ color: "var(--color-success)", marginBottom: "12px" }}>
+                          {statistics?.reading || 0}/495
+                        </Title>
+                        <div style={{
+                          height: "10px",
+                          background: "#e0e0e0",
+                          borderRadius: "5px",
+                          overflow: "hidden",
+                          marginBottom: "8px"
+                        }}>
+                          <div style={{
+                            width: `${statistics?.readingPercentage || ((statistics?.reading || 0) / 495) * 100}%`,
+                            height: "100%",
+                            background: "var(--color-success)",
+                            transition: "width 0.3s ease"
+                          }} />
+                        </div>
+                        <Text type="secondary">
+                          {Math.round(statistics?.readingPercentage || ((statistics?.reading || 0) / 495) * 100)}% hoàn thành
+                        </Text>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
 
                 <Divider />
 
                 {/* Learning Streak */}
                 <div>
-                  <Title level={5}>Chuỗi ngày học</Title>
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+                  <Title level={5} style={{ marginBottom: "16px" }}>
+                    <FireOutlined style={{ marginRight: "8px", color: "var(--color-danger)" }} />
+                    Chuỗi ngày học
+                  </Title>
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
                     {Array(7).fill().map((_, index) => {
                       const today = new Date();
                       const dayIndex = (today.getDay() - 6 + index) % 7;
                       const dayName = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][dayIndex];
-                      const active = statistics?.activeDays?.includes(dayIndex) || 
-                                   user?.activeDays?.includes(dayIndex);
+                      const active = statistics?.activeDays?.includes(dayIndex);
 
                       return (
                         <div
                           key={index}
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "45px",
+                            height: "45px",
                             borderRadius: "8px",
-                            background: active ? "var(--color-success)" : "#f0f0f0",
+                            background: active ? "var(--color-success)" : "var(--color-bg-tertiary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             color: active ? "white" : "var(--color-text-disabled)",
-                            fontSize: "12px",
-                            fontWeight: "500"
+                            fontSize: "13px",
+                            fontWeight: "600",
+                            transition: "all 0.3s ease",
+                            cursor: "default"
                           }}
                         >
                           {dayName}
@@ -1007,46 +1150,119 @@ const Profile = () => {
                       );
                     })}
                   </div>
-                  <Text type="secondary">
-                    Streak hiện tại: <Text strong>{statistics?.currentStreak || user?.currentStreak || 0}</Text> ngày
-                  </Text>
+                  <Alert
+                    message={
+                      <Text>
+                        Streak hiện tại: <Text strong style={{ fontSize: "16px", color: "var(--color-success)" }}>
+                          {statistics?.currentStreak || 0}
+                        </Text> ngày 🔥
+                      </Text>
+                    }
+                    type="success"
+                    showIcon
+                  />
                 </div>
               </Card>
 
-              {/* Recent Activity */}
-              <Card title="Hoạt động gần đây">
-                {recentActivity && recentActivity.length > 0 ? (
-                  <Timeline>
-                    {recentActivity.map((activity, index) => (
-                      <Timeline.Item
-                        key={activity.id || index}
-                        color={activity.type === "exam" ? "blue" : 
-                               activity.type === "practice" ? "green" : "purple"}
-                      >
-                        <div>
-                          <Text strong>{activity.name || activity.title}</Text>
-                          {activity.score && (
-                            <Tag color="blue" style={{ marginLeft: "8px" }}>
-                              {activity.score} điểm
-                            </Tag>
-                          )}
-                          <div style={{ marginTop: "4px" }}>
-                            <Text type="secondary">
-                              {dayjs(activity.timestamp || activity.createdAt).format("DD/MM/YYYY HH:mm")}
-                            </Text>
-                            {activity.duration && (
-                              <Text type="secondary" style={{ marginLeft: "8px" }}>
-                                • {activity.duration} phút
+              {/* Recent Exams */}
+              <Card title={
+                <span>
+                  <TrophyOutlined style={{ marginRight: "8px" }} />
+                  Kết quả thi gần đây
+                </span>
+              }>
+                {dashboardData?.recentExams && dashboardData.recentExams.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {dashboardData.recentExams.map((exam, index) => {
+                      const getScoreColor = (score) => {
+                        if (score >= 800) return "var(--color-success)";
+                        if (score >= 650) return "var(--color-info)";
+                        if (score >= 500) return "var(--color-warning)";
+                        return "var(--color-danger)";
+                      };
+
+                      const getScoreStatus = (score) => {
+                        if (score >= 800) return "success";
+                        if (score >= 650) return "processing";
+                        if (score >= 500) return "warning";
+                        return "error";
+                      };
+
+                      return (
+                        <div
+                          key={exam.id || index}
+                          style={{
+                            padding: "16px",
+                            border: "1px solid var(--color-border-light)",
+                            borderRadius: "8px",
+                            transition: "all 0.3s ease",
+                            cursor: "pointer",
+                            background: "var(--color-bg-primary)"
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = "var(--color-primary)";
+                            e.currentTarget.style.boxShadow = "var(--shadow-md)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = "var(--color-border-light)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+                            <div style={{ flex: 1 }}>
+                              <Text strong style={{ fontSize: "15px", color: "var(--color-text-primary)" }}>
+                                {exam.examName || "Bài thi TOEIC"}
                               </Text>
-                            )}
+                              <div style={{ marginTop: "4px" }}>
+                                <Text type="secondary" style={{ fontSize: "13px" }}>
+                                  <ClockCircleOutlined style={{ marginRight: "4px" }} />
+                                  {dayjs(exam.completedAt).format("DD/MM/YYYY HH:mm")}
+                                </Text>
+                              </div>
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              <div style={{
+                                fontSize: "24px",
+                                fontWeight: "bold",
+                                color: getScoreColor(exam.totalScore)
+                              }}>
+                                {exam.totalScore}
+                              </div>
+                              <Tag color={getScoreStatus(exam.totalScore)} style={{ marginTop: "4px" }}>
+                                {exam.totalScore >= 800 ? "Xuất sắc" :
+                                 exam.totalScore >= 650 ? "Tốt" :
+                                 exam.totalScore >= 500 ? "Khá" : "Cần cải thiện"}
+                              </Tag>
+                            </div>
                           </div>
+                          
+                          <Divider style={{ margin: "12px 0" }} />
+                          
+                          <Row gutter={16}>
+                            <Col span={12}>
+                              <div style={{ textAlign: "center", padding: "8px", background: "var(--color-bg-secondary)", borderRadius: "6px" }}>
+                                <Text type="secondary" style={{ fontSize: "12px", display: "block" }}>🎧 Listening</Text>
+                                <Text strong style={{ fontSize: "16px", color: "var(--color-info)" }}>
+                                  {exam.listeningScore || 0}
+                                </Text>
+                              </div>
+                            </Col>
+                            <Col span={12}>
+                              <div style={{ textAlign: "center", padding: "8px", background: "var(--color-bg-secondary)", borderRadius: "6px" }}>
+                                <Text type="secondary" style={{ fontSize: "12px", display: "block" }}>📖 Reading</Text>
+                                <Text strong style={{ fontSize: "16px", color: "var(--color-success)" }}>
+                                  {exam.readingScore || 0}
+                                </Text>
+                              </div>
+                            </Col>
+                          </Row>
                         </div>
-                      </Timeline.Item>
-                    ))}
-                  </Timeline>
+                      );
+                    })}
+                  </div>
                 ) : (
                   <Empty 
-                    description="Chưa có hoạt động nào"
+                    description="Chưa có kết quả thi nào"
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                   />
                 )}

@@ -166,10 +166,11 @@ const AdminSignIn = () => {
         email: responseData.email,
         name: responseData.name,
         roles: responseData.roles,
-        avatar: responseData.image || responseData.avatar || responseData.profileImage || null, // ✅ Add avatar field
+        image: responseData.image || responseData.avatar || responseData.profileImage || null, // ✅ Add image field (primary)
+        avatar: responseData.image || responseData.avatar || responseData.profileImage || null, // ✅ Add avatar field (backward compatibility)
       };
       
-      console.log('💾 Saving to Redux store with avatar:', adminInfo.avatar);
+      console.log('💾 Saving to Redux store with image:', adminInfo.image);
       
       setInfo(adminInfo);
       setIsAuthenticated(true);
@@ -191,23 +192,22 @@ const AdminSignIn = () => {
         const userService = (await import('../../../services/userService')).default;
         const userProfile = await userService.getCurrentUser();
         
-        console.log('📥 Fetched user profile:', userProfile);
+        // Handle both response formats: direct or nested in data
+        const profileData = userProfile?.data || userProfile;
         
-        if (userProfile) {
-          const avatarUrl = userProfile.image || userProfile.avatar || userProfile.profileImage || null;
-          console.log('🖼️ Avatar URL from profile:', avatarUrl);
+        if (profileData) {
+          const imageUrl = profileData.image || profileData.avatar || profileData.profileImage || null;
           
-          // ✅ Update Redux store with complete user info including avatar
+          // ✅ Update Redux store with complete user info including image
           setInfo({
-            id: userProfile.id || userProfile._id,
-            username: userProfile.username,
-            email: userProfile.email,
-            name: userProfile.name || userProfile.fullName,
-            roles: userProfile.roles || responseData.roles,
-            avatar: avatarUrl, // ✅ Avatar from profile API
+            id: profileData.id || profileData._id,
+            username: profileData.username,
+            email: profileData.email,
+            name: profileData.name || profileData.fullName,
+            roles: profileData.roles || responseData.roles,
+            image: imageUrl, // ✅ Image from profile API (primary)
+            avatar: imageUrl, // ✅ Avatar from profile API (backward compatibility)
           });
-          
-          console.log('✅ Redux store updated with avatar from profile API');
         }
       } catch (profileError) {
         console.warn('⚠️ Failed to fetch user profile, avatar may not display:', profileError);

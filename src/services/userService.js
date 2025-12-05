@@ -70,7 +70,6 @@ class UserService {
   async getCurrentUser() {
     try {
       const response = await axiosClient.get(`/users/profile`);
-      console.log("Thông tin người dùng hiện tại:", response);
       return response;
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng:", error);

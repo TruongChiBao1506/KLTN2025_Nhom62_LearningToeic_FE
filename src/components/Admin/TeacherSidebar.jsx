@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../Admin/Layouts/AdminSidebar/style.css'; // Sử dụng chung CSS với AdminSidebar
+import toeicLogo from '../../assets/Toeic_logo.png';
 import { 
   HomeOutlined,
   FileTextOutlined,
@@ -111,31 +112,27 @@ const TeacherSidebar = ({ isToggled, isAnimating }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginRight: isToggled ? '12px' : '0',
-                        flexShrink: 0
+                        flexShrink: 0,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        border: '2px solid rgba(255,255,255,0.3)',
+                        padding: '4px'
                     }}>
-                        👨‍🏫
+                        <img src={toeicLogo} alt="TOEIC Logo" style={{width: "100%", height: "100%", objectFit: "contain"}} />
                     </div>
                     {isToggled && (
                         <div style={{ overflow: 'hidden' }}>
                             <div style={{
-                                color: 'white',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                                lineHeight: '1.2'
-                            }}>
-                                TOEIC Learning
-                            </div>
-                            <div style={{
                                 color: 'var(--color-success)',
-                                fontSize: '12px',
+                                fontSize: '13px',
                                 fontWeight: '600',
-                                marginTop: '2px',
                                 background: 'rgba(255,255,255,0.2)',
-                                padding: '2px 8px',
+                                padding: '6px 12px',
                                 borderRadius: '10px',
-                                display: 'inline-block'
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px'
                             }}>
-                                Teacher Panel
+                                👨‍🏫 Giáo viên
                             </div>
                         </div>
                     )}

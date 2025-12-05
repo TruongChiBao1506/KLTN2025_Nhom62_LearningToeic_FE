@@ -259,43 +259,6 @@ const Profile = () => {
     return (
         <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
             <div
-                className="mt-2 shadow-lg rounded-4 px-2 py-1"
-                style={{
-                    background: 'linear-gradient(90deg, #e0eaff 0%, #f8fbff 100%)',
-                    minHeight: 70,
-                    border: 'none'
-                }}
-                data-aos="fade-down"
-                data-aos-duration="400"
-                data-aos-delay="50"
-            >
-                <nav>
-                    <ol className="cd-breadcrumb custom-separator d-flex align-items-center mb-0" style={{ gap: 16 }}>
-                        <li className="current d-flex align-items-center">
-                            <span
-                                style={{
-                                    background: 'linear-gradient(135deg, #4f8cff 60%, #a6c1ee 100%)',
-                                    borderRadius: '50%',
-                                    width: 40,
-                                    height: 40,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginRight: 8,
-                                    boxShadow: '0 2px 8px rgba(80,120,255,0.10)'
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faUserCircle} color="var(--color-bg-primary)" />
-                            </span>
-                            <span className="fw-bold" style={{ color: '#4f8cff', fontSize: 22 }}>
-                                Profile
-                            </span>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-
-            <div
                 data-aos="fade-up"
                 data-aos-duration="500"
                 data-aos-delay="200"

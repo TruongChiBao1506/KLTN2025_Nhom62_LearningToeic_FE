@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import toeicLogo from "../assets/Toeic_logo.png";
 import {
   User,
   Settings,
@@ -215,9 +216,6 @@ const LearnerLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  );
   const [studyStreak, setStudyStreak] = useState(
     parseInt(localStorage.getItem("studyStreak") || "0")
   );
@@ -324,20 +322,6 @@ const LearnerLayout = () => {
       setOpenKeys(newOpenKeys);
     }
   }, [location.pathname]);
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    localStorage.setItem("darkMode", newDarkMode.toString());
-    document.documentElement.setAttribute(
-      "data-theme",
-      newDarkMode ? "dark" : "light"
-    );
-    toast.success(
-      `Đã chuyển sang ${newDarkMode ? "chế độ tối" : "chế độ sáng"}`
-    );
-  };
 
   // Update study progress
   const updateStudyProgress = () => {
@@ -1258,22 +1242,41 @@ const LearnerLayout = () => {
             <Space>
               <div
                 style={{
-                  background: "rgba(255,255,255,0.15)",
+                  background: "white",
                   borderRadius: "10px",
                   padding: "6px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  width: "40px",
+                  height: "40px"
                 }}
               >
-                <GraduationCap size={24} style={{ color: "var(--color-bg-primary)" }} />
+                <img 
+                  src={toeicLogo} 
+                  alt="TOEIC Logo" 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain"
+                  }}
+                />
               </div>
-              <Title
-                level={4}
-                style={{ margin: 0, color: "var(--color-bg-primary)", fontWeight: "600" }}
+              <div
+                style={{
+                  color: "var(--color-bg-primary)",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  background: "rgba(255,255,255,0.2)",
+                  padding: "6px 12px",
+                  borderRadius: "10px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
               >
-                TOEIC Learning
-              </Title>
+                📚 Học viên
+              </div>
             </Space>
             <Button
               type="text"
@@ -1335,31 +1338,39 @@ const LearnerLayout = () => {
                 justifyContent: "center",
                 marginRight: collapsed ? "0" : "12px",
                 flexShrink: 0,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                border: "2px solid rgba(255,255,255,0.3)",
+                padding: "4px"
               }}
             >
-              <GraduationCap size={24} style={{ color: "var(--color-brand-purple-dark)" }} />
+              <img 
+                src={toeicLogo} 
+                alt="TOEIC Logo" 
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain"
+                }}
+              />
             </div>
             {!collapsed && (
               <div style={{ overflow: "hidden" }}>
                 <div
                   style={{
-                    color: "white",
-                    fontSize: "16px",
+                    color: "#5DADE2",
+                    fontSize: "13px",
                     fontWeight: "600",
-                    lineHeight: "1.2",
+                    background: "rgba(255,255,255,0.15)",
+                    padding: "6px 12px",
+                    borderRadius: "12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
                   }}
                 >
-                  TOEIC Learning
-                </div>
-                <div
-                  style={{
-                    color: "rgba(255,255,255,0.8)",
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    marginTop: "2px",
-                  }}
-                >
-                  Learner Panel
+                  <span>📚</span>
+                  Học viên
                 </div>
               </div>
             )}
@@ -1673,26 +1684,6 @@ const LearnerLayout = () => {
                 </Space>
               </Card>
             </Space>
-
-            {/* Theme Toggle */}
-            <Button
-              type="text"
-              icon={darkMode ? <Sun size={18} /> : <Moon size={18} />}
-              onClick={toggleDarkMode}
-              style={{
-                background: "linear-gradient(135deg, #feca57, #ff9ff3)",
-                color: "var(--color-bg-primary)",
-                border: "none",
-                borderRadius: "8px",
-                width: "36px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 2px 8px rgba(254, 202, 87, 0.25)",
-                transition: "all 0.3s ease",
-              }}
-            />
 
             {/* Notifications */}
             <Dropdown
