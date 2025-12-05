@@ -11,6 +11,8 @@ import TestService from "../../../services/testService";
 
 const No1To2 = ({ testId }) => {
   const [questions, setQuestions] = useState([]);
+  console.log("🚀 ~ No1To2 ~ questions:", questions);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isReadyToTest, setIsReadyToTest] = useState(false);
   const [isReading, setIsReading] = useState([]);
@@ -33,58 +35,173 @@ const No1To2 = ({ testId }) => {
   const retrieveQuestions = async () => {
     try {
       const response = await TestService.getQuestionsByTestId(testId);
-      setQuestions(response);
+      console.log("🚀 ~ retrieveQuestions ~ response:", response);
 
-      // Khởi tạo các giá trị mặc định cho mỗi câu hỏi
-      setIsReading(response.map(() => false));
-      setIsPreparingCountDown(response.map(() => false));
-      setIsRecordingCountDown(response.map(() => false));
-      setPreparingCountdown(response.map(() => 45));
-      setRecordingCountdown(response.map(() => 45));
-      setIsRecording(response.map(() => false));
-      setRecordedAudios(response.map(() => null));
-      setRecordedText(response.map(() => ""));
+      // Kiểm tra nếu response là mảng và có dữ liệu
+      if (Array.isArray(response) && response.length > 0) {
+        setQuestions(response);
+
+        // Khởi tạo các giá trị mặc định cho mỗi câu hỏi
+        setIsReading(response.map(() => false));
+        setIsPreparingCountDown(response.map(() => false));
+        setIsRecordingCountDown(response.map(() => false));
+        setPreparingCountdown(response.map(() => 45));
+        setRecordingCountdown(response.map(() => 45));
+        setIsRecording(response.map(() => false));
+        setRecordedAudios(response.map(() => null));
+        setRecordedText(response.map(() => ""));
+      } else {
+        console.warn("⚠️ No questions received or invalid response format");
+        // Tạo questions mẫu cho development/testing
+        const sampleQuestions = createSampleQuestions();
+        setQuestions(sampleQuestions);
+
+        // Khởi tạo các giá trị mặc định cho questions mẫu
+        setIsReading(sampleQuestions.map(() => false));
+        setIsPreparingCountDown(sampleQuestions.map(() => false));
+        setIsRecordingCountDown(sampleQuestions.map(() => false));
+        setPreparingCountdown(sampleQuestions.map(() => 45));
+        setRecordingCountdown(sampleQuestions.map(() => 45));
+        setIsRecording(sampleQuestions.map(() => false));
+        setRecordedAudios(sampleQuestions.map(() => null));
+        setRecordedText(sampleQuestions.map(() => ""));
+      }
     } catch (error) {
       console.error("Error fetching questions:", error);
+      // Fallback to sample questions in case of API error
+      const sampleQuestions = createSampleQuestions();
+      setQuestions(sampleQuestions);
+
+      // Khởi tạo các giá trị mặc định cho questions mẫu
+      setIsReading(sampleQuestions.map(() => false));
+      setIsPreparingCountDown(sampleQuestions.map(() => false));
+      setIsRecordingCountDown(sampleQuestions.map(() => false));
+      setPreparingCountdown(sampleQuestions.map(() => 45));
+      setRecordingCountdown(sampleQuestions.map(() => 45));
+      setIsRecording(sampleQuestions.map(() => false));
+      setRecordedAudios(sampleQuestions.map(() => null));
+      setRecordedText(sampleQuestions.map(() => ""));
     }
   };
 
-  // Khởi tạo Speech Recognition API
-  const initSpeechRecognition = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-
-      recognition.onresult = (event) => {
-        let interimTranscript = "";
-        let finalTranscript = "";
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
-          } else {
-            interimTranscript += event.results[i][0].transcript;
-          }
-        }
-
-        // Cập nhật nội dung đã ghi âm
-        const newRecordedText = [...recordedText];
-        newRecordedText[currentIndex] = finalTranscript || interimTranscript;
-        setRecordedText(newRecordedText);
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
-      };
-
-      speechRecognitionRef.current = recognition;
-    } else {
-      alert("Trình duyệt của bạn không hỗ trợ Speech Recognition API");
-    }
+  // Tạo questions mẫu khi API không hoạt động
+  const createSampleQuestions = () => {
+    return [
+      {
+        _id: "sample1",
+        questionType: "speaking",
+        questionText: `<div class="speaking-task">
+          <h4>Speaking Task 1: Pronunciation Practice</h4>
+          <div class="task-header">
+            <div class="preparation-time">⏰ Preparation: 45 seconds</div>
+            <div class="speaking-time">🎤 Speaking: 45 seconds</div>
+          </div>
+          <div class="task-content">
+            <div class="instructions">
+              <p><strong>Instructions:</strong> Read this business announcement aloud with proper pronunciation and professional tone.</p>
+            </div>
+            <div class="passage-to-read">
+              <h5>Business Meeting Announcement:</h5>
+              <div class="passage-text">
+                "Good morning, colleagues. Today's meeting will focus on our quarterly sales performance and upcoming marketing strategies. We need to discuss the budget allocation for the next quarter and review our customer feedback data. Please prepare your department reports and be ready to present key findings during our session."
+              </div>
+            </div>
+            <div class="evaluation-criteria">
+              <h6>📋 Evaluation Criteria:</h6>
+              <ul>
+                <li>Pronunciation and intonation</li>
+                <li>Fluency and rhythm</li>
+                <li>Stress and emphasis</li>
+                <li>Overall clarity and confidence</li>
+              </ul>
+            </div>
+          </div>
+        </div>`,
+        questionImage:
+          "https://images.unsplash.com/photo-1560472355-a9a6ea7a8206?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        questionExplanation:
+          "This pronunciation practice evaluates your ability to read business-related content aloud with proper pronunciation, intonation, and professional delivery.",
+        questionAudio: "pronunciation_practice_1.mp3",
+        suggestedAnswer:
+          "Focus on clear pronunciation and natural intonation. Use appropriate stress on important words, maintain steady pace, use natural pauses at punctuation marks, project confidence in your voice.",
+      },
+      {
+        _id: "sample2",
+        questionType: "speaking",
+        questionText: `<div class="speaking-task">
+          <h4>Speaking Task 2: Product Announcement</h4>
+          <div class="task-header">
+            <div class="preparation-time">⏰ Preparation: 45 seconds</div>
+            <div class="speaking-time">🎤 Speaking: 45 seconds</div>
+          </div>
+          <div class="task-content">
+            <div class="instructions">
+              <p><strong>Instructions:</strong> Read this product announcement with enthusiasm and clear articulation.</p>
+            </div>
+            <div class="passage-to-read">
+              <h5>Product Launch Information:</h5>
+              <div class="passage-text">
+                "We are excited to announce the launch of our new software solution designed for small businesses. This innovative platform combines customer relationship management with advanced analytics to help companies streamline their operations and improve customer satisfaction."
+              </div>
+            </div>
+            <div class="evaluation-criteria">
+              <h6>📋 Evaluation Criteria:</h6>
+              <ul>
+                <li>Pronunciation and intonation</li>
+                <li>Fluency and rhythm</li>
+                <li>Stress and emphasis</li>
+                <li>Overall clarity and confidence</li>
+              </ul>
+            </div>
+          </div>
+        </div>`,
+        questionImage:
+          "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        questionExplanation:
+          "This task helps you practice reading product announcements with appropriate enthusiasm and technical accuracy.",
+        questionAudio: "pronunciation_practice_2.mp3",
+        suggestedAnswer:
+          "Focus on expressing enthusiasm while maintaining professional delivery. Pay attention to technical terms and maintain clear articulation throughout.",
+      },
+      {
+        _id: "sample3",
+        questionType: "speaking",
+        questionText: `<div class="speaking-task">
+          <h4>Speaking Task 3: Policy Update</h4>
+          <div class="task-header">
+            <div class="preparation-time">⏰ Preparation: 45 seconds</div>
+            <div class="speaking-time">🎤 Speaking: 45 seconds</div>
+          </div>
+          <div class="task-content">
+            <div class="instructions">
+              <p><strong>Instructions:</strong> Read this policy update with authority and clarity.</p>
+            </div>
+            <div class="passage-to-read">
+              <h5>Company Policy Update:</h5>
+              <div class="passage-text">
+                "Effective immediately, all employees must follow the updated safety protocols when working in the laboratory. These new guidelines ensure compliance with international standards and protect both staff and equipment. Please review the detailed instructions in your employee handbook."
+              </div>
+            </div>
+            <div class="evaluation-criteria">
+              <h6>📋 Evaluation Criteria:</h6>
+              <ul>
+                <li>Pronunciation and intonation</li>
+                <li>Fluency and rhythm</li>
+                <li>Stress and emphasis</li>
+                <li>Overall clarity and confidence</li>
+              </ul>
+            </div>
+          </div>
+        </div>`,
+        questionImage:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        questionExplanation:
+          "This task focuses on reading policy documents with appropriate authority and ensuring safety-related terminology is clearly communicated.",
+        questionAudio: "pronunciation_practice_3.mp3",
+        suggestedAnswer:
+          "Use authoritative tone while remaining professional. Emphasize key policy terms and ensure all safety-related words are clearly pronounced.",
+      },
+    ];
   };
 
   // Khởi tạo Media Recorder
@@ -328,6 +445,44 @@ const No1To2 = ({ testId }) => {
     startTest();
   };
 
+  // Khởi tạo Speech Recognition API
+  const initSpeechRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event) => {
+        let interimTranscript = "";
+        let finalTranscript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+
+        // Cập nhật nội dung đã ghi âm
+        const newRecordedText = [...recordedText];
+        newRecordedText[currentIndex] = finalTranscript || interimTranscript;
+        setRecordedText(newRecordedText);
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error", event.error);
+      };
+
+      speechRecognitionRef.current = recognition;
+    } else {
+      alert("Trình duyệt của bạn không hỗ trợ Speech Recognition API");
+    }
+  };
+
   // Khởi tạo khi component mount
   useEffect(() => {
     retrieveQuestions();
@@ -352,6 +507,7 @@ const No1To2 = ({ testId }) => {
         tracks.forEach((track) => track.stop());
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testId]);
 
   return (
