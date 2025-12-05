@@ -173,7 +173,7 @@ const EditExam = ({ examId, retrieveExams, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="examName" className="form-label">
-                        Name<span className="required-field">*</span>
+                        Tên<span className="required-field">*</span>
                     </label>
                     <input
                         name="examName"
@@ -193,7 +193,7 @@ const EditExam = ({ examId, retrieveExams, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="examType" className="form-label">
-                        Type<span className="required-field">*</span>
+                        Loại<span className="required-field">*</span>
                     </label>
                     <select
                         name="examType"
@@ -205,7 +205,7 @@ const EditExam = ({ examId, retrieveExams, onClose }) => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     >
-                        <option value="" disabled>Select an option</option>
+                        <option value="" disabled>Chọn một tùy chọn</option>
                         <option value="0">MiniTest</option>
                         <option value="1">FullTest</option>
                     </select>

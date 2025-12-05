@@ -235,7 +235,7 @@ const QuestionEditSection6 = ({ sectionId, groupId, retrieveQuestions, onClose }
         <div className="modal-body text-start p-4">
           <div className="form-group mb-3">
             <label htmlFor="groupImage">
-              Question Group Image<span className="required-field">*</span>
+              Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <input
               ref={imageInputRef}
@@ -281,7 +281,7 @@ const QuestionEditSection6 = ({ sectionId, groupId, retrieveQuestions, onClose }
           </div>
           <div className="form-group mb-3">
             <label htmlFor="groupAudio">
-              Question Group Audio<span className="required-field">*</span>
+              Âm thanh nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <input
               ref={audioInputRef}
@@ -323,7 +323,7 @@ const QuestionEditSection6 = ({ sectionId, groupId, retrieveQuestions, onClose }
           </div>
           <div className="form-group mb-3">
             <label className="form-label">
-              Question Group Passage<span className="required-field">*</span>
+              Đoạn văn nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <div className="ckeditor-container">
               <CKEditorOptimized

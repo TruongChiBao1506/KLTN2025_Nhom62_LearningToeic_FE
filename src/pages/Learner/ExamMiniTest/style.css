@@ -1,159 +1,24 @@
-﻿/* Container và layout chính */
-.exam-mini-test-container {
-  padding: 20px 0;
+﻿/* =====================================================
+   EXAM MINI TEST - REDESIGNED CLEAN STYLE
+   Shared styles with ExamFullTest - Using System Colors
+===================================================== */
+
+/* Import shared styles from ExamFullTest */
+@import '../ExamFullTest/style.css';
+
+/* Mini Test specific overrides if needed */
+.exam-minitest-container .exam-badge {
+  background: var(--color-secondary);
 }
 
-.exam-mini-test-container #test p {
-  font-size: 16px;
-  color: #8293d0;
-  text-align: center;
-  line-height: 1.5;
-  margin: 20px 100px;
-  font-weight: 700;
+.exam-minitest-container .info-icon {
+  color: var(--color-secondary);
 }
 
-/* Exam card styling - Scope trong container */
-.exam-mini-test-container .exam-card {
-  border: 1px solid #e3e6f0 !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 10px !important;
-  overflow: hidden !important;
-  background-color: var(--color-bg-primary) !important;
-  height: 100% !important;
+.exam-minitest-container .btn-start-exam {
+  background: var(--color-secondary);
 }
 
-.exam-mini-test-container .exam-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
-.exam-mini-test-container .card-image {
-  overflow: hidden !important;
-  position: relative !important;
-  height: 200px !important;
-}
-
-.exam-mini-test-container .card-image img {
-  width: 100% !important;
-  height: 200px !important;
-  object-fit: cover !important;
-  transition: transform 0.3s ease !important;
-}
-
-.exam-mini-test-container .card-image:hover img {
-  transform: scale(1.05) !important;
-}
-
-/* QUAN TRỌNG: Scope .card-body chỉ trong exam-mini-test-container */
-.exam-mini-test-container .card-body {
-  padding: 20px !important;
-  background-color: var(--color-bg-primary) !important;
-  min-height: 180px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-}
-
-.exam-mini-test-container .card-text {
-  font-size: 12px !important;
-  color: #555 !important;
-  margin-bottom: 8px !important;
-}
-
-.exam-mini-test-container .fw-bolder {
-  font-weight: 700 !important;
-  color: #34447c !important;
-  font-size: 16px !important;
-  margin-bottom: 15px !important;
-}
-
-.exam-mini-test-container h1 {
-  font-weight: 600 !important;
-  color: #34447c !important;
-  margin-bottom: 20px !important;
-}
-
-/* Button styling - Scope trong container */
-.exam-mini-test-container .button {
-  display: inline-block !important;
-  padding: 12px 20px !important;
-  background-color: var(--color-brand-navy) !important;
-  color: var(--color-bg-primary) !important;
-  font-size: 12px !important;
-  font-weight: bold !important;
-  text-decoration: none !important;
-  border-radius: 25px !important;
-  border: none !important;
-  transition: all 0.3s ease !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.exam-mini-test-container .button:hover {
-  background-color: var(--color-bg-primary) !important;
-  color: var(--color-brand-navy) !important;
-  border: 2px solid var(--color-brand-navy) !important;
-  transform: translateY(-2px) !important;
-}
-
-/* Icon colors - Scope trong container */
-.exam-mini-test-container .fa-solid.fa-user-pen {
-  color: chocolate !important;
-}
-
-.exam-mini-test-container .fas.fa-clock {
-  color: cornflowerblue !important;
-}
-
-/* Loading và error states - Scope trong container */
-.exam-mini-test-container .spinner-border {
-  width: 3rem !important;
-  height: 3rem !important;
-}
-
-.exam-mini-test-container .alert {
-  border-radius: 10px !important;
-  font-weight: 500 !important;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .exam-mini-test-container #test p {
-    margin: 20px 20px;
-    font-size: 12px;
-  }
-  
-  .exam-mini-test-container .card-image {
-    height: 150px !important;
-  }
-  
-  .exam-mini-test-container .card-image img {
-    height: 150px !important;
-  }
-  
-  .exam-mini-test-container .card-body {
-    padding: 15px !important;
-    min-height: 150px !important;
-  }
-}
-
-@media (max-width: 576px) {
-  .exam-mini-test-container {
-    padding: 15px 0;
-  }
-  
-  .exam-mini-test-container .fw-bolder {
-    font-size: 12px !important;
-  }
-  
-  .exam-mini-test-container .card-text {
-    font-size: 12px !important;
-  }
-  
-  .exam-mini-test-container .button {
-    padding: 10px 15px !important;
-    font-size: 12px !important;
-  }
+.exam-minitest-container .btn-start-exam:hover {
+  background: var(--color-secondary-light);
 }

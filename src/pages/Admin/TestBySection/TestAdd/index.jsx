@@ -114,7 +114,7 @@ const TestAdd = ({ sectionId, retrieveTests, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="testName" className="form-label">
-                        Test Name<span className="required-field">*</span>
+                        Tên bài kiểm tra<span className="required-field">*</span>
                     </label>
                     <input
                         name="testName"

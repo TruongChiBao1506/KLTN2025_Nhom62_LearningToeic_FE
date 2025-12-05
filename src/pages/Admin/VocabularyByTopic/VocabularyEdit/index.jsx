@@ -309,7 +309,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="edit-word" className="form-label">
-                        Word<span className="required-field">*</span>
+                        Từ vựng<span className="required-field">*</span>
                     </label>
                     <input
                         name="word"
@@ -351,7 +351,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-meaning" className="form-label">
-                        Meaning<span className="required-field">*</span>
+                        Nghĩa<span className="required-field">*</span>
                     </label>
                     <input
                         name="meaning"
@@ -372,7 +372,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-exampleSentence" className="form-label">
-                        Example Sentence<span className="required-field">*</span>
+                        Câu ví dụ<span className="required-field">*</span>
                     </label>
                     <textarea
                         name="exampleSentence"
@@ -393,7 +393,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-image" className="form-label">
-                        Image <small className="text-muted">(Để trống nếu không muốn thay đổi)</small>
+                        Hình ảnh <small className="text-muted">(Để trống nếu không muốn thay đổi)</small>
                     </label>
                     <input
                         name="image"
@@ -422,7 +422,7 @@ const VocabularyEdit = ({ vocabularyId, topicId, retrieveVocabularies, onClose }
 
                 {/* Current image display */}
                 <div className="form-group mb-3">
-                    <label className="form-label">Current Image:</label>
+                    <label className="form-label">Hình ảnh hiện tại:</label>
                     <div className="current-image-container">
                         {filePreview ? (
                             // Show new image preview

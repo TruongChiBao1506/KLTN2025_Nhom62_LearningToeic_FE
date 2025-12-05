@@ -226,7 +226,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
         <div className="modal-body text-start p-4">
           <div className="form-group mb-3">
             <label htmlFor="groupImage">
-              Question Group Image<span className="required-field">*</span>
+              Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <input
               ref={imageInputRef}
@@ -273,7 +273,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
           </div>
           <div className="form-group mb-3">
             <label htmlFor="groupAudio">
-              Question Group Audio<span className="required-field">*</span>
+              Âm thanh nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <input
               ref={audioInputRef}
@@ -316,7 +316,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
           </div>
           <div className="form-group mb-3">
             <label className="form-label">
-              Question Group Script<span className="required-field">*</span>
+              Kịch bản nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <div className="ckeditor-container">
               <CKEditorOptimized
@@ -336,7 +336,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
               <div key={idx} className="col-md-4 mb-4">
                 <div className="form-group mb-3">
                   <label htmlFor={`questionContent${idx}`}>
-                    Question Content {idx + 1}<span className="required-field">*</span>
+                    Nội dung câu hỏi {idx + 1}<span className="required-field">*</span>
                   </label>
                   <input
                     name={`questionContent${idx}`}
@@ -378,7 +378,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
                 ))}
                 <div className="form-group mb-3">
                   <label>
-                    Correct Option<span className="required-field">*</span>
+                    Đáp án đúng<span className="required-field">*</span>
                   </label>
                   <div className="d-flex">
                     {["A", "B", "C", "D"].map((opt) => (
@@ -403,7 +403,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor={`questionType${idx}`} className="form-label">
-                    Type<span className="required-field">*</span>
+                    Loại<span className="required-field">*</span>
                   </label>
                   <select
                     name={`questionType${idx}`}
@@ -415,7 +415,7 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
-                    <option value="" disabled>Select an option</option>
+                    <option value="" disabled>Chọn một tùy chọn</option>
                     <option value="[Part 3] Câu hỏi kết hợp bảng biểu">[Part 3] Câu hỏi kết hợp bảng biểu</option>
                     <option value="[Part 3] Câu hỏi về chi tiết cuộc hội thoại">[Part 3] Câu hỏi về chi tiết cuộc hội thoại</option>
                     <option value="[Part 3] Câu hỏi về chủ đề, mục đích">[Part 3] Câu hỏi về chủ đề, mục đích</option>

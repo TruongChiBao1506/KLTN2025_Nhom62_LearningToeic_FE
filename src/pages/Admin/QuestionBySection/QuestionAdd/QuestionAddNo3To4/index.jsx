@@ -144,7 +144,7 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Image Field - Optional */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionImage" className="form-label">
-                                    Question Image<span className="optional-field">(Optional)</span>
+                                    Hình ảnh câu hỏi<span className="optional-field">(Tùy chọn)</span>
                                 </label>
                                 <input
                                     ref={fileInputRef}

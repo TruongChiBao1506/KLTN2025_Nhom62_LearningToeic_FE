@@ -115,7 +115,7 @@ const GrammarAdd = ({ retrieveGrammars, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="grammarName" className="form-label">
-                        Grammar Name<span className="required-field">*</span>
+                        Tên ngữ pháp<span className="required-field">*</span>
                     </label>
                     <input
                         name="grammarName"

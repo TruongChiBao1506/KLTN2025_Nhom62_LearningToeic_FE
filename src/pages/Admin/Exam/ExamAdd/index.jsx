@@ -127,7 +127,7 @@ const AddExam = ({ retrieveExams, onClose, setShowFullTest }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="examName" className="form-label">
-                        Exam Name<span className="required-field">*</span>
+                        Tên bài thi<span className="required-field">*</span>
                     </label>
                     <input
                         name="examName"
@@ -147,7 +147,7 @@ const AddExam = ({ retrieveExams, onClose, setShowFullTest }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="examType" className="form-label">
-                        Type<span className="required-field">*</span>
+                        Loại<span className="required-field">*</span>
                     </label>
                     <select
                         name="examType"
@@ -159,7 +159,7 @@ const AddExam = ({ retrieveExams, onClose, setShowFullTest }) => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     >
-                        <option value="" disabled>Select an option</option>
+                        <option value="" disabled>Chọn một tùy chọn</option>
                         <option value="0">MiniTest</option>
                         <option value="1">FullTest</option>
                     </select>

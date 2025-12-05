@@ -236,7 +236,7 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Topic Name<span className="required-field">*</span>
+                        Tên chủ đề<span className="required-field">*</span>
                     </label>
                     <input
                         name="topicName"
@@ -255,7 +255,7 @@ const EditTopic = ({ topicId, retrieveTopics, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="image" className="form-label">
-                        Image
+                        Hình ảnh
                     </label>
                     <input
                         name="image"

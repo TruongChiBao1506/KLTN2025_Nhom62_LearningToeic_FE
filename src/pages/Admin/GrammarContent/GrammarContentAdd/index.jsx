@@ -159,7 +159,7 @@ const GrammarContentAdd = ({ grammarId, retrieveGrammarContents, onClose }) => {
                     {/* Title Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="title" className="form-label">
-                            Title<span className="required-field">*</span>
+                            Tiêu đề<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -181,7 +181,7 @@ const GrammarContentAdd = ({ grammarId, retrieveGrammarContents, onClose }) => {
                     {/* Content Field with CKEditor */}
                     <div className="form-group mb-3">
                         <label className="form-label">
-                            Content<span className="required-field">*</span>
+                            Nội dung<span className="required-field">*</span>
                         </label>
                         <div className={`ckeditor-wrapper ${
                             formik.touched.content && formik.errors.content ? 'is-invalid' : ''

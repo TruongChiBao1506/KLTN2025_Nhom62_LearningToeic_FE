@@ -124,7 +124,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                     {/* Name Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="name" className="form-label">
-                            Name<span className="required-field">*</span>
+                            Tên<span className="required-field">*</span>
                         </label>
                         <input
                             name="name"
@@ -145,7 +145,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                     {/* Description Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="description" className="form-label">
-                            Description<span className="required-field">*</span>
+                            Mô tả<span className="required-field">*</span>
                         </label>
                         <textarea
                             name="description"
@@ -166,7 +166,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                     {/* Image Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="image" className="form-label">
-                            Image<span className="required-field">*</span>
+                            Hình ảnh<span className="required-field">*</span>
                         </label>
                         <input
                             name="image"
@@ -187,7 +187,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                     {/* Type Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="type" className="form-label">
-                            Type<span className="required-field">*</span>
+                            Loại<span className="required-field">*</span>
                         </label>
                         <select
                             name="type"
@@ -199,7 +199,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         >
-                            <option value="" disabled>Select an option</option>
+                            <option value="" disabled>Chọn một tùy chọn</option>
                             <option value="1">Nghe</option>
                             <option value="2">Đọc</option>
                             <option value="3">Nói</option>

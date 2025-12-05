@@ -650,11 +650,6 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(topic._id)}
                                                     title={`Chỉnh sửa [${topic.topicName}]`}
-                                                    disabled={topic.isSubmitted}
-                                                    style={{ 
-                                                        opacity: topic.isSubmitted ? 0.5 : 1,
-                                                        cursor: topic.isSubmitted ? 'not-allowed' : 'pointer'
-                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
@@ -665,11 +660,6 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
                                                     onClick={() => deleteTopic(topic._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${topic.topicName}]`}
-                                                    disabled={topic.isSubmitted}
-                                                    style={{ 
-                                                        opacity: topic.isSubmitted ? 0.5 : 1,
-                                                        cursor: topic.isSubmitted ? 'not-allowed' : 'pointer'
-                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                 </button>

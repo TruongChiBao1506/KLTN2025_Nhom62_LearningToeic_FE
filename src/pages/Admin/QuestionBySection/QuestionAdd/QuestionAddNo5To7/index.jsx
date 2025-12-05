@@ -148,7 +148,7 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Question Group Text với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupText" className="form-label">
-                            Question Group Text<span className="required-field">*</span>
+                            Đoạn văn nhóm câu hỏi<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
                             <CKEditorOptimized
@@ -173,7 +173,7 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Content */}
                                 <div className="form-group">
                                     <label htmlFor={`questionContent${index}`}>
-                                        Question Content {index + 1}<span className="required-field">*</span>
+                                        Nội dung câu hỏi {index + 1}<span className="required-field">*</span>
                                     </label>
                                     <input
                                         name={`questionContent${index}`}
@@ -198,7 +198,7 @@ const QuestionAddNo5To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Suggested Answer */}
                                 <div className="form-group mb-3">
                                     <label htmlFor={`suggestedAnswer${index}`}>
-                                        Suggested Answer<span className="required-field">*</span>
+                                        Gợi ý trả lời<span className="required-field">*</span>
                                     </label>
                                     <textarea
                                         name={`suggestedAnswer${index}`}

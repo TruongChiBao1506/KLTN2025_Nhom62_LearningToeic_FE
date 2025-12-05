@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -7,262 +7,93 @@ import {
   faClock,
   faMedal,
   faCalendarCheck,
+  faTrophy,
+  faFire,
+  faBullseye,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import Highcharts from "highcharts";
-import AOS from "aos";
-import "aos/dist/aos.css";
-
-// Import services
 import userService from "../../../services/userService";
 import "./style.css";
 
 const LearnerDashboard = () => {
-  console.log("🚀 LearnerDashboard component rendered");
-  
-  // State for statistics
-  const [totalExams, setTotalExams] = useState(0);
-  const [averageScore, setAverageScore] = useState(0);
-  const [studyHours, setStudyHours] = useState(0);
-  const [nextExam, setNextExam] = useState(null);
-  const [recentExams, setRecentExams] = useState([]);
-  const [performanceData, setPerformanceData] = useState({});
+  // State for all dashboard data
+  const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    document.title = "Trang Chủ | Nền Tảng Học TOEIC";
+    fetchDashboardData();
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
+      setError(null);
 
-      // Gọi các API thật từ backend
-      const [statisticsResponse, activityResponse] = await Promise.allSettled([
-        userService.getUserStatistics(),
-        userService.getRecentActivity(10)
-      ]);
+      const response = await userService.getLearnerDashboard();
+      console.log("✅ Dashboard data loaded:", response);
 
-      let statsData = {};
-      let activityData = [];
-
-      // Xử lý statistics data
-      if (statisticsResponse.status === 'fulfilled') {
-        statsData = statisticsResponse.value;
-        console.log("✅ Dashboard statistics loaded:", statsData);
-      } else {
-        console.warn("⚠️ Statistics API failed:", statisticsResponse.reason?.message);
-      }
-
-      // Xử lý activity data
-      if (activityResponse.status === 'fulfilled') {
-        activityData = Array.isArray(activityResponse.value) ? activityResponse.value : [];
-        console.log("✅ Dashboard activity loaded:", activityData);
-      } else {
-        console.warn("⚠️ Activity API failed:", activityResponse.reason?.message);
-      }
-
-      // Map dữ liệu thật từ backend
-      setTotalExams(statsData.examsCompleted || 0);
-      setAverageScore(Math.round(statsData.averageScore || 0));
-      setStudyHours(statsData.totalStudyTime || 0);
-
-      // Tạo mock data cho next exam (có thể implement endpoint riêng sau)
-      setNextExam({
-        date: "2025-07-15",
-        name: "TOEIC Official Test"
-      });
-
-      // Map activity data thành format cho recent exams
-      const mappedExams = activityData
-        .filter(activity => activity.type === 'exam' && activity.score)
-        .slice(0, 5)
-        .map(activity => ({
-          date: activity.timestamp || activity.date,
-          name: activity.title || activity.name || "TOEIC Test",
-          score: activity.score
-        }));
-
-      setRecentExams(mappedExams);
-
-      // Mock performance data (có thể implement endpoint riêng sau)
-      const mockPerformanceData = {
-        listening: Math.round((statsData.averageScore || 0) * 0.45 / 495 * 100), // Listening = 45% của total
-        reading: Math.round((statsData.averageScore || 0) * 0.55 / 495 * 100), // Reading = 55% của total  
-        speaking: Math.round(Math.random() * 30 + 70), // Mock data
-        writing: Math.round(Math.random() * 30 + 70) // Mock data
-      };
-
-      setPerformanceData(mockPerformanceData);
-
-      // Create charts với dữ liệu thật
-      createScoreProgressChart(mappedExams);
-      createSkillPerformanceChart(mockPerformanceData);
-
+      setDashboardData(response.data);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-
-      // Fallback với mock data nếu API fails
-      setTotalExams(5);
-      setAverageScore(650);
-      setStudyHours(24);
-      setNextExam({
-        date: "2025-07-15",
-        name: "TOEIC Official Test"
-      });
-      setRecentExams([
-        { date: "2025-06-25", name: "Practice Test 1", score: 720 },
-        { date: "2025-06-20", name: "Practice Test 2", score: 680 },
-        { date: "2025-06-15", name: "Practice Test 3", score: 650 }
-      ]);
-
-      const fallbackPerformance = {
-        listening: 75,
-        reading: 70,
-        speaking: 65,
-        writing: 68
-      };
-      setPerformanceData(fallbackPerformance);
-
-      createScoreProgressChart([
-        { date: "2025-06-25", name: "Practice Test 1", score: 720 },
-        { date: "2025-06-20", name: "Practice Test 2", score: 680 },
-        { date: "2025-06-15", name: "Practice Test 3", score: 650 }
-      ]);
-      createSkillPerformanceChart(fallbackPerformance);
-
+      console.error("❌ Error fetching dashboard data:", error);
+      setError("Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    document.title = "Trang Chủ | Nền Tảng Học TOEIC";
-
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-
-    // Call fetchDashboardData directly
-    fetchDashboardData();
-    
-    // Disable exhaustive-deps warning for this specific case
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const createScoreProgressChart = (examData) => {
-    const dates = examData.map((exam) => exam.date);
-    const scores = examData.map((exam) => exam.score);
-
-    setTimeout(() => {
-      const chartElem = document.getElementById("scoreProgressChart");
-      if (chartElem) {
-        Highcharts.chart("scoreProgressChart", {
-          title: {
-            text: "Your Recent TOEIC Score Progress",
-          },
-          xAxis: {
-            categories: dates,
-            title: {
-              text: "Exam Date",
-            },
-          },
-          yAxis: {
-            title: {
-              text: "Score",
-            },
-            min: 0,
-            max: 990,
-          },
-          series: [
-            {
-              name: "Điểm TOEIC",
-              data: scores,
-              color: "#17a2b8",
-            },
-          ],
-          credits: {
-            enabled: false,
-          },
-          accessibility: {
-            enabled: false,
-          },
-        });
-      }
-    }, 300);
-  };
-
-  const createSkillPerformanceChart = (skillData) => {
-    setTimeout(() => {
-      const chartElem = document.getElementById("skillPerformanceChart");
-      if (chartElem) {
-        Highcharts.chart("skillPerformanceChart", {
-          chart: {
-            type: "column",
-          },
-          title: {
-            text: "Hiệu suất theo kỹ năng",
-          },
-          xAxis: {
-            categories: ["Nghe", "Đọc", "Nói", "Viết"],
-            crosshair: true,
-          },
-          yAxis: {
-            min: 0,
-            max: 100,
-            title: {
-              text: "Hiệu suất (%)",
-            },
-          },
-          series: [
-            {
-              name: "Hiệu suất kỹ năng",
-              data: [
-                skillData.listening || 0,
-                skillData.reading || 0,
-                skillData.speaking || 0,
-                skillData.writing || 0,
-              ],
-              colorByPoint: true,
-              colors: ["#17a2b8", "var(--color-approved)", "#ffc107", "var(--color-danger)"],
-            },
-          ],
-          credits: {
-            enabled: false,
-          },
-          accessibility: {
-            enabled: false,
-          },
-        });
-      }
-    }, 300);
-  };
-
-  // Format date to readable format
   const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
     const options = { year: "numeric", month: "short", day: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-US", options);
+    return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
 
-  // Calculate time remaining until next exam
-  const getTimeRemaining = (examDate) => {
-    if (!examDate) return "Not scheduled";
+  const getScoreColor = (score) => {
+    if (score >= 800) return "#10b981"; // green
+    if (score >= 650) return "#3b82f6"; // blue
+    if (score >= 500) return "#f59e0b"; // yellow
+    return "#ef4444"; // red
+  };
 
-    const now = new Date();
-    const exam = new Date(examDate);
-    const diffTime = exam - now;
+  const getAccuracyColor = (accuracy) => {
+    if (accuracy >= 80) return "#10b981";
+    if (accuracy >= 60) return "#f59e0b";
+    return "#ef4444";
+  };
 
-    if (diffTime < 0) return "Expired";
-
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(
-      (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  if (isLoading) {
+    return (
+      <div className="learner-dashboard-container learner-dashboard">
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
+          <div className="spinner-border text-primary" role="status" style={{ width: "3rem", height: "3rem" }}>
+            <span className="visually-hidden">Đang tải...</span>
+          </div>
+        </div>
+      </div>
     );
+  }
 
-    return `${diffDays}d ${diffHours}h remaining`;
-  };
+  if (error) {
+    return (
+      <div className="learner-dashboard-container learner-dashboard">
+        <div className="alert alert-danger m-4" role="alert">
+          <h4 className="alert-heading">Lỗi!</h4>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={fetchDashboardData}>
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { overview, skillAnalysis, accuracyByPart, scoreProgress, recentExams, insights } = dashboardData || {};
 
   return (
     <div className="learner-dashboard-container learner-dashboard">
       {/* Breadcrumb */}
-      <div className="breadcrumb-container" data-aos="fade-down">
+      <div className="breadcrumb-container">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item active">
@@ -271,245 +102,377 @@ const LearnerDashboard = () => {
             </li>
           </ol>
         </nav>
-      </div>{" "}
+      </div>
+
       {/* Welcome Banner */}
-      <div style={{padding:"24px"}}>
-        <div className="welcome-banner" data-aos="fade-up">
+      <div style={{ padding: "24px" }}>
+        <div className="welcome-banner">
           <div className="banner-content">
-            <h2 style={{color:"var(--color-bg-primary)"}}>Chào mừng đến với Bảng điều khiển học TOEIC</h2>
-            <p style={{color:"var(--color-bg-primary)"}}>
-              Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi
-              TOEIC tiếp theo của bạn.
+            <h2 style={{ color: "var(--color-bg-primary)" }}>
+              Chào mừng đến với Bảng điều khiển học TOEIC
+            </h2>
+            <p style={{ color: "var(--color-bg-primary)" }}>
+              Theo dõi tiến độ, truy cập tài liệu học tập và chuẩn bị cho kỳ thi TOEIC tiếp theo của bạn.
             </p>
           </div>
         </div>
-  {/* Statistics Cards */}
-  <div className="row mt-4 d-flex align-items-stretch">
-          {/* Completed Exams Card */}
-          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="100">
-            <div className="stat-card w-100 d-flex flex-column justify-content-between">
-              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
+
+        {/* Main Statistics Cards */}
+        <div className="row mt-4 g-4">
+          {/* Completed Exams */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
                 <div className="stat-card-icon bg-primary">
                   <FontAwesomeIcon icon={faFileAlt} />
-                </div>{" "}
+                </div>
                 <div className="stat-card-info">
                   <h5>Bài thi đã hoàn thành</h5>
-                  <h3>{isLoading ? "-" : totalExams}</h3>
+                  <h3>{overview?.completedExamsCount || 0}</h3>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Average Score Card */}
-          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="200">
-            <div className="stat-card w-100 d-flex flex-column justify-content-between">
-              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
+          {/* Average Score */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
                 <div className="stat-card-icon bg-success">
                   <FontAwesomeIcon icon={faChartLine} />
-                </div>{" "}
+                </div>
                 <div className="stat-card-info">
                   <h5>Điểm trung bình</h5>
-                  <h3>{isLoading ? "-" : averageScore}</h3>
+                  <h3>{overview?.averageScore || 0}</h3>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Study Hours Card */}
-          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="300">
-            <div className="stat-card w-100 d-flex flex-column justify-content-between">
-              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
+          {/* Study Hours */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
                 <div className="stat-card-icon bg-info">
                   <FontAwesomeIcon icon={faClock} />
-                </div>{" "}
+                </div>
                 <div className="stat-card-info">
                   <h5>Giờ học tập</h5>
-                  <h3>{isLoading ? "-" : studyHours}</h3>
+                  <h3>{overview?.studyHours || 0}h</h3>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Next Exam Card */}
-          <div className="col-md-3 d-flex" data-aos="fade-up" data-aos-delay="400">
-            <div className="stat-card w-100 d-flex flex-column justify-content-between">
-              <div className="stat-card-body flex-grow-1 d-flex align-items-center">
-                <div className="stat-card-icon bg-warning">
-                  <FontAwesomeIcon icon={faCalendarCheck} />
-                </div>{" "}
+          {/* Best Score */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
+                <div className="stat-card-icon" style={{ backgroundColor: "#10b981" }}>
+                  <FontAwesomeIcon icon={faTrophy} />
+                </div>
                 <div className="stat-card-info">
-                  <h5>Kỳ thi tiếp theo</h5>
-                  <h3>
-                    {isLoading
-                      ? "-"
-                      : nextExam
-                        ? formatDate(nextExam.date)
-                        : "Chưa có lịch"}
-                  </h3>
-                  {nextExam && <p>{getTimeRemaining(nextExam.date)}</p>}
+                  <h5>Điểm cao nhất</h5>
+                  <h3>{overview?.bestScore || 0}</h3>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* Charts and Tables */}
-        <div className="row mt-4">
-          {/* Score Progress Chart */}
-          <div className="col-md-8" data-aos="fade-up" data-aos-delay="100">
-            <div className="chart-container">
-              {" "}
-              <div className="chart-header">
-                <h5>Tiến độ điểm TOEIC của bạn</h5>
-              </div>
-              <div className="chart-body">
-                {isLoading ? (
-                  <div className="loader-container">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div id="scoreProgressChart" style={{ height: "300px" }}></div>
-                )}
+
+        {/* Secondary Statistics Cards */}
+        <div className="row mt-4 g-4">
+          {/* Learning Streak */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
+                <div className="stat-card-icon" style={{ backgroundColor: "#ff6b6b" }}>
+                  <FontAwesomeIcon icon={faFire} />
+                </div>
+                <div className="stat-card-info">
+                  <h5>Chuỗi học tập</h5>
+                  <h3>{overview?.learningStreak || 0} ngày</h3>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Recent Exam Results */}
-          <div className="col-md-4" data-aos="fade-up" data-aos-delay="200">
-            <div className="chart-container">
-              {" "}
-              <div className="chart-header">
-                <h5>Kết quả thi gần đây</h5>
+          {/* Goal Progress */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
+                <div className="stat-card-icon" style={{ backgroundColor: "#4ecdc4" }}>
+                  <FontAwesomeIcon icon={faBullseye} />
+                </div>
+                <div className="stat-card-info">
+                  <h5>Tiến độ mục tiêu</h5>
+                  <h3>{overview?.goalProgress || 0}%</h3>
+                  {overview?.goalScore > 0 && <p className="mb-0">Mục tiêu: {overview.goalScore}</p>}
+                </div>
               </div>
-              <div className="chart-body">
-                {isLoading ? (
-                  <div className="loader-container">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          {/* Overall Accuracy */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
+                <div className="stat-card-icon" style={{ backgroundColor: "#a29bfe" }}>
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                </div>
+                <div className="stat-card-info">
+                  <h5>Độ chính xác chung</h5>
+                  <h3>{overview?.overallAccuracy || 0}%</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Next Exam */}
+          <div className="col-md-3">
+            <div className="stat-card h-100">
+              <div className="stat-card-body d-flex align-items-center">
+                <div className="stat-card-icon bg-warning">
+                  <FontAwesomeIcon icon={faCalendarCheck} />
+                </div>
+                <div className="stat-card-info">
+                  <h5>Kỳ thi tiếp theo</h5>
+                  <h3>{overview?.nextExamDate ? formatDate(overview.nextExamDate) : "Chưa có lịch"}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Skill Analysis Section */}
+        {skillAnalysis && (
+          <div className="row mt-4">
+            <div className="col-12">
+              <div className="chart-container">
+                <div className="chart-header">
+                  <h5>Phân tích kỹ năng</h5>
+                </div>
+                <div className="chart-body p-4">
+                  <div className="row g-4">
+                    <div className="col-md-6">
+                      <div className="skill-card p-4" style={{ border: "2px solid #17a2b8", borderRadius: "12px" }}>
+                        <h6 className="mb-3">🎧 Listening</h6>
+                        <h2 className="mb-2" style={{ color: "#17a2b8" }}>
+                          {skillAnalysis.listening}/495
+                        </h2>
+                        <div className="progress mb-2" style={{ height: "10px" }}>
+                          <div
+                            className="progress-bar"
+                            role="progressbar"
+                            style={{ width: `${skillAnalysis.listeningPercentage}%`, backgroundColor: "#17a2b8" }}
+                          />
+                        </div>
+                        <small className="text-muted">{skillAnalysis.listeningPercentage}% hoàn thành</small>
+                        {skillAnalysis.improvement && (
+                          <p className="mt-2 mb-0 text-success">
+                            ↗ Cải thiện: +{skillAnalysis.improvement.listening} điểm
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="skill-card p-4" style={{ border: "2px solid #28a745", borderRadius: "12px" }}>
+                        <h6 className="mb-3">📖 Reading</h6>
+                        <h2 className="mb-2" style={{ color: "#28a745" }}>
+                          {skillAnalysis.reading}/495
+                        </h2>
+                        <div className="progress mb-2" style={{ height: "10px" }}>
+                          <div
+                            className="progress-bar bg-success"
+                            role="progressbar"
+                            style={{ width: `${skillAnalysis.readingPercentage}%` }}
+                          />
+                        </div>
+                        <small className="text-muted">{skillAnalysis.readingPercentage}% hoàn thành</small>
+                        {skillAnalysis.improvement && (
+                          <p className="mt-2 mb-0 text-success">
+                            ↗ Cải thiện: +{skillAnalysis.improvement.reading} điểm
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                ) : recentExams.length > 0 ? (
+
+                  {skillAnalysis.strongerSkill && (
+                    <div className="alert alert-info mt-4 mb-0">
+                      <strong>Kỹ năng mạnh:</strong> {skillAnalysis.strongerSkill}
+                      {skillAnalysis.improvement && (
+                        <span className="ms-3">
+                          <strong>Tổng cải thiện:</strong> +{skillAnalysis.improvement.overall} điểm
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Accuracy by Part */}
+        {accuracyByPart && accuracyByPart.length > 0 && (
+          <div className="row mt-4">
+            <div className="col-12">
+              <div className="chart-container">
+                <div className="chart-header">
+                  <h5>Độ chính xác theo từng phần</h5>
+                </div>
+                <div className="chart-body p-4">
+                  <div className="row g-3">
+                    {accuracyByPart.map((part, index) => (
+                      <div className="col-md-3 col-sm-6" key={index}>
+                        <div className="part-card p-3" style={{ border: "1px solid #ddd", borderRadius: "8px" }}>
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h6 className="mb-0">{part.part}</h6>
+                            <span
+                              className="badge"
+                              style={{ backgroundColor: getAccuracyColor(part.accuracy), fontSize: "14px" }}
+                            >
+                              {part.accuracy}%
+                            </span>
+                          </div>
+                          <div className="progress mb-2" style={{ height: "8px" }}>
+                            <div
+                              className="progress-bar"
+                              role="progressbar"
+                              style={{
+                                width: `${part.accuracy}%`,
+                                backgroundColor: getAccuracyColor(part.accuracy),
+                              }}
+                            />
+                          </div>
+                          <small className="text-muted">
+                            {part.correctAnswers}/{part.totalQuestions} câu đúng
+                          </small>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Recent Exams and Score Progress */}
+        <div className="row mt-4 g-4">
+          {/* Score Progress */}
+          {scoreProgress && scoreProgress.length > 0 && (
+            <div className="col-md-8">
+              <div className="chart-container">
+                <div className="chart-header">
+                  <h5>Tiến độ điểm số (6 tháng gần đây)</h5>
+                </div>
+                <div className="chart-body p-4">
+                  <div className="table-responsive">
+                    <table className="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Tháng</th>
+                          <th>Listening</th>
+                          <th>Reading</th>
+                          <th>Tổng điểm</th>
+                          <th>Số bài thi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scoreProgress.map((item, index) => (
+                          <tr key={index}>
+                            <td>{item.month}</td>
+                            <td>{item.listening}</td>
+                            <td>{item.reading}</td>
+                            <td>
+                              <strong style={{ color: getScoreColor(item.totalScore) }}>{item.totalScore}</strong>
+                            </td>
+                            <td>{item.examCount}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Recent Exams */}
+          {recentExams && recentExams.length > 0 && (
+            <div className="col-md-4">
+              <div className="chart-container">
+                <div className="chart-header">
+                  <h5>Kết quả thi gần đây</h5>
+                </div>
+                <div className="chart-body">
                   <div className="recent-exams-list">
                     {recentExams.map((exam, index) => (
                       <div className="recent-exam-item" key={index}>
-                        <div className="exam-date">{formatDate(exam.date)}</div>
-                        <div className="exam-name">{exam.name}</div>
+                        <div className="exam-date">{formatDate(exam.completedAt)}</div>
+                        <div className="exam-name">{exam.examName}</div>
                         <div className="exam-score">
-                          {exam.score}
+                          <strong style={{ color: getScoreColor(exam.totalScore) }}>{exam.totalScore}</strong>
                           <FontAwesomeIcon
                             icon={faMedal}
-                            className={`ms-2 ${exam.score >= 800
-                                ? "text-warning"
-                                : exam.score >= 700
-                                  ? "text-secondary"
-                                  : exam.score >= 600
-                                    ? "text-bronze"
-                                    : ""
-                              }`}
+                            className="ms-2"
+                            style={{ color: exam.totalScore >= 800 ? "#ffc107" : "#6c757d" }}
                           />
                         </div>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="no-data-message">
-                    Không tìm thấy bài thi nào gần đây. Hãy làm bài thi thực hành
-                    đầu tiên của bạn để xem kết quả ở đây.
-                  </div>
-                )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-        {/* Skill Performance Chart */}
-        <div className="row mt-4">
-          <div className="col-12" data-aos="fade-up" data-aos-delay="300">
-            <div className="chart-container">
-              <div className="chart-header">
-                <h5>Performance by Skill</h5>
-              </div>
-              <div className="chart-body">
-                {isLoading ? (
-                  <div className="loader-container">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
+
+        {/* Insights Section */}
+        {insights && (
+          <div className="row mt-4">
+            <div className="col-12">
+              <div className="chart-container">
+                <div className="chart-header">
+                  <h5>Nhận xét & Gợi ý</h5>
+                </div>
+                <div className="chart-body p-4">
+                  <div className="row g-4">
+                    <div className="col-md-3 text-center">
+                      <div className="insight-card p-3">
+                        <h6 className="mb-2">Điểm mạnh nhất</h6>
+                        <h4 style={{ color: "#10b981" }}>{insights.strongestPart}</h4>
+                      </div>
+                    </div>
+                    <div className="col-md-3 text-center">
+                      <div className="insight-card p-3">
+                        <h6 className="mb-2">Điểm yếu nhất</h6>
+                        <h4 style={{ color: "#ef4444" }}>{insights.weakestPart}</h4>
+                      </div>
+                    </div>
+                    <div className="col-md-3 text-center">
+                      <div className="insight-card p-3">
+                        <h6 className="mb-2">Tổng số câu đã làm</h6>
+                        <h4 style={{ color: "#3b82f6" }}>{insights.totalQuestionsAttempted}</h4>
+                      </div>
+                    </div>
+                    <div className="col-md-3 text-center">
+                      <div className="insight-card p-3">
+                        <h6 className="mb-2">Cần cải thiện?</h6>
+                        <h4 style={{ color: insights.needsImprovement === "Yes" ? "#ef4444" : "#10b981" }}>
+                          {insights.needsImprovement === "Yes" ? "Có" : "Không"}
+                        </h4>
+                      </div>
                     </div>
                   </div>
-                ) : (
-                  <div
-                    id="skillPerformanceChart"
-                    style={{ height: "300px" }}
-                  ></div>
-                )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* Study Recommendations */}
-        <div className="row mt-4" data-aos="fade-up" data-aos-delay="400">
-          <div className="col-12">
-            <div className="recommendations-container">
-              <div className="recommendations-header">
-                <h5>Recommended Study Focus</h5>
-              </div>
-              <div className="recommendations-body">
-                {isLoading ? (
-                  <div className="loader-container">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    {performanceData &&
-                      Object.entries({
-                        listening: performanceData.listening || 0,
-                        reading: performanceData.reading || 0,
-                        speaking: performanceData.speaking || 0,
-                        writing: performanceData.writing || 0,
-                      })
-                        .sort(([_, a], [__, b]) => a - b)
-                        .slice(0, 2)
-                        .map(([skill, score], index) => (
-                          <div className="col-md-6" key={index}>
-                            <div className="recommendation-card">
-                              <h6>
-                                Improve your{" "}
-                                {skill.charAt(0).toUpperCase() + skill.slice(1)}{" "}
-                                Skills
-                              </h6>
-                              <div className="progress mb-3">
-                                <div
-                                  className="progress-bar"
-                                  role="progressbar"
-                                  style={{ width: `${score}%` }}
-                                  aria-valuenow={score}
-                                  aria-valuemin="0"
-                                  aria-valuemax="100"
-                                >
-                                  {score}%
-                                </div>
-                              </div>
-                              <p>
-                                Your performance in this area is below average.
-                                Focus on practicing more {skill} exercises.
-                              </p>
-                              <a
-                                href={`/learner/materials?skill=${skill}`}
-                                className="btn btn-sm btn-outline-primary"
-                              >
-                                View Study Materials
-                              </a>
-                            </div>
-                          </div>
-                        ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

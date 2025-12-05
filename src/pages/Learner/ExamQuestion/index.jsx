@@ -8,6 +8,7 @@ import userGoalService from "../../../services/userGoalService";
 import examService from "../../../services/examService";
 import userService from "../../../services/userService";
 import scoreTableService from "../../../services/scoreTableService";
+import learnerExamService from "../../../services/learnerExamService";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -425,86 +426,69 @@ const ExamQuestion = () => {
       // Dừng đếm ngược
       clearInterval(timerRef.current);
 
-      // Đánh dấu câu trả lời đã được chọn và nộp cho từng câu hỏi
-      const userExamQuestionsData = examQuestions
-        .filter((question) => question.selectedOption)
-        .map((question) => ({
-          userExamId: userExamId,
-          examQuestionId: question.examQuestionId,
-          selectedOption: question.selectedOption || null,
-        }));
+      // Chuẩn bị dữ liệu câu trả lời để gửi lên backend
+      const answersArray = examQuestions.map((question) => ({
+        questionId: question.examQuestionId,
+        selectedOption: question.selectedOption || null,
+        timeSpent: 60, // Default time per question
+      }));
 
-      // Lưu lại các câu trả lời của người dùng
-      await userExamQuestionService.createBatch(userExamQuestionsData);
+      console.log("📤 Submitting exam with answers:", answersArray);
 
-      // Đánh dấu bài thi đã hoàn thành
-      const endTime = new Date().toISOString();
+      // Gọi API submit exam - Backend sẽ tính điểm và trả về kết quả
+      const response = await learnerExamService.submitExam(examId, answersArray);
+      
+      console.log("✅ Exam submission response:", response);
 
       // Xóa dữ liệu lưu tạm
       localStorage.removeItem(`exam_${userExamId}_state`);
+      localStorage.removeItem(`exam_${examId}_answers`);
+      localStorage.removeItem(`exam_${examId}_viewed`);
 
-      // Tính điểm cho từng phần và tổng điểm
-      const listeningQuestions = examQuestions.filter(
-        (q) =>
-          q.questionPart === "PART1" ||
-          q.questionPart === "PART2" ||
-          q.questionPart === "PART3" ||
-          q.questionPart === "PART4"
-      );
+      // Lấy dữ liệu từ response theo structure thực tế
+      // API trả về: numCorrectAnswers, numWrongAnswers, numSkippedQuestions,
+      // numListeningCorrectAnswers, numReadingCorrectAnswers
+      const {
+        success,
+        userExamId: returnedUserExamId,
+        scores = {},
+        details = {},
+        completedAt,
+        message
+      } = response;
 
-      const readingQuestions = examQuestions.filter(
-        (q) =>
-          q.questionPart === "PART5" ||
-          q.questionPart === "PART6" ||
-          q.questionPart === "PART7"
-      );
+      const { listening = 0, reading = 0, total = 0 } = scores;
+      const {
+        numCorrectAnswers = 0,
+        numWrongAnswers = 0,
+        numSkippedQuestions = 0,
+        numListeningCorrectAnswers = 0,
+        numReadingCorrectAnswers = 0,
+        totalQuestions = examQuestions.length
+      } = details;
+      
+      // Map to consistent variable names
+      const correct = numCorrectAnswers;
+      const wrong = numWrongAnswers;
+      const skipped = numSkippedQuestions;
+      const listeningCorrect = numListeningCorrectAnswers;
+      const readingCorrect = numReadingCorrectAnswers;
 
-      const correctListeningCount = listeningQuestions.filter(
-        (q) => q.selectedOption === q.correctOption
-      ).length;
-
-      const correctReadingCount = readingQuestions.filter(
-        (q) => q.selectedOption === q.correctOption
-      ).length;
-
-      // Thống kê theo từng phần
+      // Thống kê theo từng phần (để hiển thị UI)
       const partStatistics = {};
       parts.forEach((part) => {
         const questionsOfPart = examQuestions.filter(
-          (q) => q.questionPart === part
+          (q) => String(q.questionPart) === String(part)
         );
         const answeredQuestionsOfPart = questionsOfPart.filter(
           (q) => q.selectedOption
-        );
-        const correctQuestionsOfPart = questionsOfPart.filter(
-          (q) => q.selectedOption === q.correctOption
         );
 
         partStatistics[part] = {
           total: questionsOfPart.length,
           answered: answeredQuestionsOfPart.length,
-          correct: correctQuestionsOfPart.length,
+          correct: 0, // Backend đã tính rồi, không cần tính lại
         };
-      });
-
-      // Tính điểm TOEIC dựa trên số câu đúng và bảng quy đổi
-      const listeningScore = calculateToeicScore(
-        correctListeningCount,
-        tableListeningScores
-      );
-      const readingScore = calculateToeicScore(
-        correctReadingCount,
-        tableReadingScores
-      );
-      const totalScore = listeningScore + readingScore;
-
-      // Cập nhật dữ liệu bài thi người dùng với điểm số
-      await userExamService.update(userExamId, {
-        endTime: endTime,
-        status: "COMPLETED",
-        listeningScore: listeningScore,
-        readingScore: readingScore,
-        totalScore: totalScore,
       });
 
       // Đánh dấu các câu đã chấm điểm
@@ -517,55 +501,37 @@ const ExamQuestion = () => {
       });
 
       setExamQuestions(gradedQuestions);
-      setHasSubmitted(true); // Xóa tất cả dữ liệu lưu tạm và trạng thái
-      localStorage.removeItem(`exam_${examId}_answers`);
-      localStorage.removeItem(`exam_${examId}_viewed`);
-      localStorage.removeItem(`exam_${userExamId}_state`);
+      setHasSubmitted(true);
 
       // Phân tích điểm yếu
       const weaknesses = analyzeWeaknesses(partStatistics);
 
       // Thông báo hoàn thành bài thi
       let goalMessage = "";
-      if (goalScore && totalScore >= goalScore) {
+      if (goalScore && total >= goalScore) {
         goalMessage = `<p class="text-success"><i class="fas fa-trophy me-1"></i> Chúc mừng! Bạn đã đạt mục tiêu điểm số ${goalScore} của mình.</p>`;
       } else if (goalScore) {
-        const diffToGoal = goalScore - totalScore;
+        const diffToGoal = goalScore - total;
         goalMessage = `<p>Mục tiêu của bạn là: <strong>${goalScore}</strong> điểm. Còn thiếu <strong>${diffToGoal}</strong> điểm nữa. Hãy tiếp tục cố gắng!</p>`;
       }
 
       // Chi tiết thống kê
+      const listeningTotal = Math.floor(totalQuestions / 2);
+      const readingTotal = totalQuestions - listeningTotal;
+      
       let statisticsHtml =
         '<div class="mt-3"><h6>Thống kê chi tiết:</h6><ul style="text-align: left;">';
 
-      // Điểm nghe và đọc
-      statisticsHtml += `<li>Nghe: ${correctListeningCount}/${
-        listeningQuestions.length
-      } câu đúng (${Math.round(
-        (correctListeningCount / listeningQuestions.length) * 100
-      )}%) - <strong>${listeningScore}</strong> điểm</li>`;
-      statisticsHtml += `<li>Đọc: ${correctReadingCount}/${
-        readingQuestions.length
-      } câu đúng (${Math.round(
-        (correctReadingCount / readingQuestions.length) * 100
-      )}%) - <strong>${readingScore}</strong> điểm</li>`;
-
-      // Chi tiết từng phần
-      for (const part in partStatistics) {
-        const stats = partStatistics[part];
-        const percent =
-          stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-        let colorClass = "text-success";
-        if (percent < 60) colorClass = "text-danger";
-        else if (percent < 80) colorClass = "text-warning";
-
-        statisticsHtml += `<li>Phần ${part.replace(
-          "PART",
-          ""
-        )}: <span class="${colorClass}">${stats.correct}/${
-          stats.total
-        } câu đúng (${percent}%)</span></li>`;
-      }
+      // Điểm nghe và đọc từ backend
+      statisticsHtml += `<li>Nghe: ${listeningCorrect}/${listeningTotal} câu đúng (${Math.round(
+        (listeningCorrect / listeningTotal) * 100
+      )}%) - <strong>${listening}</strong> điểm</li>`;
+      statisticsHtml += `<li>Đọc: ${readingCorrect}/${readingTotal} câu đúng (${Math.round(
+        (readingCorrect / readingTotal) * 100
+      )}%) - <strong>${reading}</strong> điểm</li>`;
+      statisticsHtml += `<li>Tổng số câu đúng: ${correct}/${totalQuestions}</li>`;
+      statisticsHtml += `<li>Số câu sai: ${wrong}</li>`;
+      statisticsHtml += `<li>Số câu bỏ qua: ${skipped}</li>`;
       statisticsHtml += "</ul></div>";
 
       // Đề xuất cải thiện
@@ -574,7 +540,7 @@ const ExamQuestion = () => {
         suggestionsHtml =
           '<div class="mt-3"><h6>Đề xuất ôn tập:</h6><ul style="text-align: left;">';
         weaknesses.forEach((weak) => {
-          const partName = weak.part.replace("PART", "");
+          const partName = String(weak.part).replace("PART", "");
           suggestionsHtml += `<li><strong>Phần ${partName}:</strong> ${weak.suggestion}</li>`;
         });
         suggestionsHtml += "</ul></div>";
@@ -585,23 +551,23 @@ const ExamQuestion = () => {
         title: "Nộp bài thành công!",
         html: `
           <div style="text-align: center; margin-bottom: 15px;">
-            <h5>Tổng điểm: <strong>${totalScore}</strong>/990</h5>
+            <h5>Tổng điểm: <strong>${total}</strong>/990</h5>
             <div class="progress my-2">
               <div class="progress-bar" role="progressbar" 
                 style="width: ${Math.round(
-                  (totalScore / 990) * 100
+                  (total / 990) * 100
                 )}%; background-color: #34447c;" 
-                aria-valuenow="${totalScore}" aria-valuemin="0" aria-valuemax="990">
+                aria-valuenow="${total}" aria-valuemin="0" aria-valuemax="990">
               </div>
             </div>
             <div class="row">
               <div class="col-6 text-center border-end">
                 <div>Listening</div>
-                <div class="h4">${listeningScore}</div>
+                <div class="h4">${listening}</div>
               </div>
               <div class="col-6 text-center">
                 <div>Reading</div>
-                <div class="h4">${readingScore}</div>
+                <div class="h4">${reading}</div>
               </div>
             </div>
           </div>
@@ -617,7 +583,9 @@ const ExamQuestion = () => {
         focusConfirm: true,
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = `/exam-result/${userExamId}`;
+          // Sử dụng userExamId từ response hoặc state
+          const examResultId = returnedUserExamId || userExamId;
+          window.location.href = `/exam-result/${examResultId}`;
         }
       });
     } catch (error) {

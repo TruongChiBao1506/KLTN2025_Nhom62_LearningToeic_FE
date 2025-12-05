@@ -129,6 +129,17 @@ class UserService {
     }
   }
 
+  // Lấy dữ liệu dashboard đầy đủ (API mới)
+  async getLearnerDashboard() {
+    try {
+      const response = await axiosClient.get(`/learner/dashboard`);
+      return response;
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu dashboard:", error);
+      throw error;
+    }
+  }
+
   // Lấy thống kê học tập của người dùng
   async getUserStatistics() {
     try {

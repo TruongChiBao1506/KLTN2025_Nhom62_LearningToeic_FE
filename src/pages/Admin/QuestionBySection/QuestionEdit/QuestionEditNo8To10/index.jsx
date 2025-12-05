@@ -131,7 +131,7 @@ const QuestionEditNo8To10 = ({ sectionId, groupId, retrieveQuestions, onClose })
             <div className="modal-body text-start p-4">
               <div className="form-group mb-3">
                 <label htmlFor="groupImage">
-                  Question Group Image<span className="required-field">*</span>
+                  Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
                 </label>
                 <input
                   type="file"
@@ -144,7 +144,7 @@ const QuestionEditNo8To10 = ({ sectionId, groupId, retrieveQuestions, onClose })
               </div>
               <div className="form-group mb-3">
                 <label htmlFor="groupText" className="form-label">
-                  Question Group Text<span className="required-field">*</span>
+                  Đoạn văn nhóm câu hỏi<span className="required-field">*</span>
                 </label>
                 <div className="ckeditor-container">
                   <CKEditorOptimized
@@ -165,7 +165,7 @@ const QuestionEditNo8To10 = ({ sectionId, groupId, retrieveQuestions, onClose })
                   <div className="col-md-4 mb-4" key={q.questionId}>
                     <div className="form-group mb-3">
                       <label htmlFor={`questionContent${idx}`}>
-                        Question Content {idx + 1}
+                        Nội dung câu hỏi {idx + 1}
                         <span className="required-field">*</span>
                       </label>
                       <Field
@@ -181,7 +181,7 @@ const QuestionEditNo8To10 = ({ sectionId, groupId, retrieveQuestions, onClose })
                     </div>
                     <div className="form-group mb-3">
                       <label htmlFor={`suggestedAnswer${idx}`}>
-                        Suggested Answer<span className="required-field">*</span>
+                        Gợi ý trả lời<span className="required-field">*</span>
                       </label>
                       <Field
                         as="textarea"

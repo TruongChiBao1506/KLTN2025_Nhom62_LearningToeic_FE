@@ -311,7 +311,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="edit-questionContent" className="form-label">
-                        Question Content<span className="required-field">*</span>
+                        Nội dung câu hỏi<span className="required-field">*</span>
                     </label>
                     <input
                         name="questionContent"
@@ -331,7 +331,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-optionA" className="form-label">
-                        Option A<span className="required-field">*</span>
+                        Lựa chọn A<span className="required-field">*</span>
                     </label>
                     <input
                         name="optionA"
@@ -351,7 +351,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-optionB" className="form-label">
-                        Option B<span className="required-field">*</span>
+                        Lựa chọn B<span className="required-field">*</span>
                     </label>
                     <input
                         name="optionB"
@@ -371,7 +371,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-optionC" className="form-label">
-                        Option C<span className="required-field">*</span>
+                        Lựa chọn C<span className="required-field">*</span>
                     </label>
                     <input
                         name="optionC"
@@ -391,7 +391,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label htmlFor="edit-optionD" className="form-label">
-                        Option D<span className="required-field">*</span>
+                        Lựa chọn D<span className="required-field">*</span>
                     </label>
                     <input
                         name="optionD"
@@ -411,7 +411,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Correct Option<span className="required-field">*</span>
+                        Đáp án đúng<span className="required-field">*</span>
                     </label>
                     <div className="d-flex">
                         <div className="form-check me-3">
@@ -482,7 +482,7 @@ const VocabularyQuestionEdit = ({ vocabularyQuestionId, topicId, retrieveVocabul
 
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Question Explanation<span className="required-field">*</span>
+                        Giải thích câu hỏi<span className="required-field">*</span>
                     </label>
                     <div className={`ckeditor-wrapper ${formik.touched.questionExplanation && formik.errors.questionExplanation ? 'is-invalid' : ''
                         }`}>

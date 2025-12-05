@@ -121,7 +121,7 @@ const QuestionEditNo3To4 = ({ sectionId, questionId, retrieveQuestions, onClose 
             <div className="col">
               <div className="form-group mb-3">
                 <label htmlFor="questionImage" className="form-label">
-                  Question Image<span className="required-field">*</span>
+                  Hình ảnh câu hỏi<span className="required-field">*</span>
                 </label>
                 <input
                   ref={imageInputRef}
@@ -157,7 +157,7 @@ const QuestionEditNo3To4 = ({ sectionId, questionId, retrieveQuestions, onClose 
                 {/* Current Image preview */}
                 {question?.questionImage && (
                   <div className="mt-2">
-                    <label className="form-label">Current Image</label>
+                    <label className="form-label">Hình ảnh hiện tại</label>
                     <img
                       src={getImageUrl(question.questionImage)}
                       alt="Current Question"
@@ -170,7 +170,7 @@ const QuestionEditNo3To4 = ({ sectionId, questionId, retrieveQuestions, onClose 
 
               <div className="form-group mb-3">
                 <label htmlFor="suggestedAnswer" className="form-label">
-                  Suggested Answer<span className="required-field">*</span>
+                  Gợi ý trả lời<span className="required-field">*</span>
                 </label>
                 <div className="ckeditor-container">
                   <CKEditorOptimized

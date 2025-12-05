@@ -115,7 +115,7 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Text Field với CKEditorOptimized */}
                             <div className="form-group-6-7 mb-3">
                                 <label htmlFor="questionText" className="form-label">
-                                    Text<span className="required-field">*</span>
+                                    Nội dung<span className="required-field">*</span>
                                 </label>
                                 <div className={`ckeditor-container${!questionTextData && formik.submitCount > 0 ? ' is-invalid' : ''}`}>
                                     <CKEditorOptimized
@@ -130,14 +130,14 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     />
                                 </div>
                                 {!questionTextData && formik.submitCount > 0 && (
-                                    <div className="error-feedback">Text phải có giá trị.</div>
+                                    <div className="error-feedback">Nội dung phải có giá trị.</div>
                                 )}
                             </div>
 
                             {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group-6-7 mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
-                                    Suggested Answer<span className="required-field">*</span>
+                                    Gợi ý trả lời<span className="required-field">*</span>
                                 </label>
                                 <div className={`ckeditor-container${!suggestedAnswerData && formik.submitCount > 0 ? ' is-invalid' : ''}`}>
                                     <CKEditorOptimized
@@ -152,7 +152,7 @@ const QuestionAddNo6To7 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     />
                                 </div>
                                 {!suggestedAnswerData && formik.submitCount > 0 && (
-                                    <div className="error-feedback">Suggested Answer phải có giá trị.</div>
+                                    <div className="error-feedback">Gợi ý trả lời phải có giá trị.</div>
                                 )}
                             </div>
                         </div>

@@ -223,7 +223,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="word" className="form-label">
-                        Word<span className="required-field">*</span>
+                        Từ vựng<span className="required-field">*</span>
                     </label>
                     <input
                         name="word"
@@ -265,7 +265,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="meaning" className="form-label">
-                        Meaning<span className="required-field">*</span>
+                        Nghĩa<span className="required-field">*</span>
                     </label>
                     <input
                         name="meaning"
@@ -286,7 +286,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="exampleSentence" className="form-label">
-                        Example Sentence<span className="required-field">*</span>
+                        Câu ví dụ<span className="required-field">*</span>
                     </label>
                     <textarea
                         name="exampleSentence"
@@ -307,7 +307,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="image" className="form-label">
-                        Image<span className="required-field">*</span>
+                        Hình ảnh<span className="required-field">*</span>
                     </label>
                     <input
                         name="image"
@@ -336,7 +336,7 @@ const VocabularyAdd = ({ topicId, retrieveVocabularies, onClose }) => {
                     {/* Image preview */}
                     {filePreview && (
                         <div className="mt-3">
-                            <label className="form-label">Image Preview:</label>
+                            <label className="form-label">Xem trước hình ảnh:</label>
                             <div className="image-preview-container">
                                 <img 
                                     src={filePreview} 

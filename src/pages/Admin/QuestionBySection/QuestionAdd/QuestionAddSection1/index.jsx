@@ -250,7 +250,7 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Option A */}
                             <div className="form-group mb-3">
                                 <label htmlFor="optionA" className="form-label">
-                                    Option A<span className="required-field">*</span>
+                                    Lựa chọn A<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="optionA"
@@ -271,7 +271,7 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Option B */}
                             <div className="form-group mb-3">
                                 <label htmlFor="optionB" className="form-label">
-                                    Option B<span className="required-field">*</span>
+                                    Lựa chọn B<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="optionB"
@@ -292,7 +292,7 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Option C */}
                             <div className="form-group mb-3">
                                 <label htmlFor="optionC" className="form-label">
-                                    Option C<span className="required-field">*</span>
+                                    Lựa chọn C<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="optionC"
@@ -313,7 +313,7 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Option D */}
                             <div className="form-group mb-3">
                                 <label htmlFor="optionD" className="form-label">
-                                    Option D<span className="required-field">*</span>
+                                    Lựa chọn D<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="optionD"
@@ -334,7 +334,7 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Correct Option Radio Buttons */}
                             <div className="form-group mb-3">
                                 <label className="form-label">
-                                    Correct Option<span className="required-field">*</span>
+                                    Đáp án đúng<span className="required-field">*</span>
                                 </label>
                                 <div className="d-flex">
                                     <div className="form-check">

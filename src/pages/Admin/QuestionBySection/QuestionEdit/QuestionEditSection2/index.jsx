@@ -287,7 +287,7 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Correct Option Radio Buttons */}
               <div className="form-group mb-3">
                 <label className="form-label">
-                  Correct Option<span className="required-field">*</span>
+                  Đáp án đúng<span className="required-field">*</span>
                 </label>
                 <div className="d-flex">
                   <div className="form-check">
@@ -373,7 +373,7 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Current Question Audio */}
               {question?.questionAudio && (
                 <div className="form-group mb-3">
-                  <label className="form-label">Current Audio</label>
+                  <label className="form-label">Âm thanh hiện tại</label>
                   <div>
                     <audio controls className="w-100">
                       <source src={getAudioUrl(question.questionAudio)} type="audio/mpeg" />
@@ -386,7 +386,7 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Question Audio */}
               <div className="form-group mb-3">
                 <label htmlFor="questionAudio" className="form-label">
-                  Question Audio {!question?.questionAudio && <span className="required-field">*</span>}
+                  Âm thanh câu hỏi {!question?.questionAudio && <span className="required-field">*</span>}
                   {question?.questionAudio && <small className="text-muted"> (Chọn file mới để thay đổi)</small>}
                 </label>
                 <input
@@ -423,7 +423,7 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Question Script với CKEditor */}
               <div className="form-group mb-3">
                 <label className="form-label">
-                  Question Script<span className="required-field">*</span>
+                  Kịch bản câu hỏi<span className="required-field">*</span>
                 </label>
                 <div className="ckeditor-container">
                   {editorReady ? (

@@ -279,8 +279,8 @@ const CommentsList = ({ examId }) => {
                   disabled={!newCommentText.trim() || isSubmittingComment}
                   loading={isSubmittingComment} // Hiển thị loading trên button
                   style={{ 
-                    borderRadius: "6px",
-                    background: "linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)",
+                    borderRadius: "20px",
+                    background: "var(--color-primary)",
                     border: "none"
                   }}
                 >

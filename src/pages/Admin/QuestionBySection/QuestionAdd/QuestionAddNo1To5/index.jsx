@@ -148,7 +148,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Image Field */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionImage" className="form-label">
-                                    Question Image<span className="required-field">*</span>
+                                    Hình ảnh câu hỏi<span className="required-field">*</span>
                                 </label>
                                 <input
                                     ref={fileInputRef}
@@ -188,7 +188,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Content Field */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionContent" className="form-label">
-                                    Question Content<span className="required-field">*</span>
+                                    Nội dung câu hỏi<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="questionContent"
@@ -210,7 +210,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
-                                    Suggested Answer<span className="required-field">*</span>
+                                    Gợi ý trả lời<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
                                     <CKEditorOptimized

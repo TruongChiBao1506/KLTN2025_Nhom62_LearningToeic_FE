@@ -250,7 +250,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Question Content Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="questionContent" className="form-label">
-                            Question Content<span className="required-field">*</span>
+                            Nội dung câu hỏi<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -271,7 +271,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Option A Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="optionA" className="form-label">
-                            Option A<span className="required-field">*</span>
+                            Lựa chọn A<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -292,7 +292,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Option B Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="optionB" className="form-label">
-                            Option B<span className="required-field">*</span>
+                            Lựa chọn B<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -313,7 +313,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Option C Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="optionC" className="form-label">
-                            Option C<span className="required-field">*</span>
+                            Lựa chọn C<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -334,7 +334,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Option D Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="optionD" className="form-label">
-                            Option D<span className="required-field">*</span>
+                            Lựa chọn D<span className="required-field">*</span>
                         </label>
                         <input
                             type="text"
@@ -355,7 +355,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Correct Option Field */}
                     <div className="form-group mb-3">
                         <label className="form-label">
-                            Correct Option<span className="required-field">*</span>
+                            Đáp án đúng<span className="required-field">*</span>
                         </label>
                         <div className="d-flex">
                             <div className="form-check">
@@ -438,7 +438,7 @@ const GrammarQuestionEdit = ({ grammarQuestionId, grammarId, retrieveGrammarQues
                     {/* Question Explanation Field with CKEditor */}
                     <div className="form-group mb-3">
                         <label className="form-label">
-                            Question Explanation<span className="required-field">*</span>
+                            Giải thích<span className="required-field">*</span>
                         </label>
                         <div className={`ckeditor-wrapper ${formik.touched.questionExplanation && formik.errors.questionExplanation ? 'is-invalid' : ''
                             }`}>

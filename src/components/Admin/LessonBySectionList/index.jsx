@@ -652,11 +652,6 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                     className="btn btn-white border-0"
                                                     onClick={() => handleShowEditModal(lesson._id)}
                                                     title={`Chỉnh sửa [${lesson.lessonName}]`}
-                                                    disabled={lesson.isSubmitted}
-                                                    style={{ 
-                                                        opacity: lesson.isSubmitted ? 0.5 : 1,
-                                                        cursor: lesson.isSubmitted ? 'not-allowed' : 'pointer'
-                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} style={{ color: 'rgb(192, 129, 13)' }} />
                                                 </button>
@@ -667,11 +662,6 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
                                                     onClick={() => deleteLesson(lesson._id)}
                                                     className="btn btn-white border-0"
                                                     title={`Xóa [${lesson.lessonName}]`}
-                                                    disabled={lesson.isSubmitted}
-                                                    style={{ 
-                                                        opacity: lesson.isSubmitted ? 0.5 : 1,
-                                                        cursor: lesson.isSubmitted ? 'not-allowed' : 'pointer'
-                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} className="text-danger" />
                                                 </button>

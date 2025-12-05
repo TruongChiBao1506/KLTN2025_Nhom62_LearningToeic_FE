@@ -233,6 +233,11 @@ const AudioPlayer = ({ src, style = {}, questionId }) => {
         loading={loading}
         size="small"
         data-question-id={questionId}
+        style={{
+          backgroundColor: "var(--color-primary)",
+          borderColor: "var(--color-primary)",
+          color: "#ffffff",
+        }}
       >
         {loading ? "Đang tải..." : isPlaying ? "Dừng" : "Phát"}
       </Button>

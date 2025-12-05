@@ -201,7 +201,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Image */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupImage">
-                            Question Group Image<span className="required-field">*</span>
+                            Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
                         </label>
                         <input
                             ref={imageInputRef}
@@ -237,7 +237,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Audio */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupAudio">
-                            Question Group Audio<span className="required-field">*</span>
+                            Âm thanh nhóm câu hỏi<span className="required-field">*</span>
                         </label>
                         <input
                             ref={audioInputRef}
@@ -271,7 +271,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Script với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label className="form-label">
-                            Question Group Script<span className="required-field">*</span>
+                            Kịch bản nhóm câu hỏi<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
                             <CKEditorOptimized
@@ -295,7 +295,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Content */}
                                 <div className="form-group">
                                     <label htmlFor={`questionContent${index}`}>
-                                        Question Content {index + 1}<span className="required-field">*</span>
+                                        Nội dung câu hỏi {index + 1}<span className="required-field">*</span>
                                     </label>
                                     <input
                                         name={`questionContent${index}`}
@@ -414,7 +414,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 </div>
                                 {/* Correct Answer Radio Buttons */}
                                 <div className="form-group">
-                                    <label>Correct Answer<span className="required-field">*</span></label>
+                                    <label>Đáp án đúng<span className="required-field">*</span></label>
                                     <div>
                                         {['A', 'B', 'C', 'D'].map((option) => (
                                             <div key={option} className="form-check form-check-inline">
@@ -444,7 +444,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Type */}
                                 <div className="form-group mb-3">
                                     <label htmlFor={`questionType${index}`} className="form-label">
-                                        Type<span className="required-field">*</span>
+                                        Loại<span className="required-field">*</span>
                                     </label>
                                     <select
                                         name={`questionType${index}`}
@@ -459,7 +459,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         }}
                                         onBlur={formik.handleBlur}
                                     >
-                                        <option value="" disabled>Select an option</option>
+                                        <option value="" disabled>Chọn một tùy chọn</option>
                                         <option value="[Part 3] Câu hỏi kết hợp bảng biểu">[Part 3] Câu hỏi kết hợp bảng biểu</option>
                                         <option value="[Part 3] Câu hỏi về chi tiết cuộc hội thoại">[Part 3] Câu hỏi về chi tiết cuộc hội thoại</option>
                                         <option value="[Part 3] Câu hỏi về chủ đề, mục đích">[Part 3] Câu hỏi về chủ đề, mục đích</option>

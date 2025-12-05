@@ -224,8 +224,8 @@ const EditLessonContent = ({ lessonContentId, lessonId, retrieveLessonContents, 
             {/* Modal Body */}
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
-                    <label htmlFor="edit-title" className="form-label">
-                        Title<span className="required-field">*</span>
+                    <label htmlFor="title" className="form-label">
+                        Tiêu đề<span className="required-field">*</span>
                     </label>
                     <input
                         name="title"
@@ -246,7 +246,7 @@ const EditLessonContent = ({ lessonContentId, lessonId, retrieveLessonContents, 
 
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Content<span className="required-field">*</span>
+                        Nội dung<span className="required-field">*</span>
                     </label>
                     
                     {/* Optimized CKEditor */}

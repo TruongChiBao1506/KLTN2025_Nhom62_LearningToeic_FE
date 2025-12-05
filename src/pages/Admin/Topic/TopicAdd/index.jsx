@@ -221,7 +221,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Topic Name<span className="required-field">*</span>
+                        Tên chủ đề<span className="required-field">*</span>
                     </label>
                     <input
                         name="topicName"
@@ -239,7 +239,7 @@ const AddTopic = ({ retrieveTopics, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label htmlFor="image" className="form-label">
-                        Image<span className="required-field">*</span>
+                        Hình ảnh<span className="required-field">*</span>
                     </label>
                     <input
                         name="image"

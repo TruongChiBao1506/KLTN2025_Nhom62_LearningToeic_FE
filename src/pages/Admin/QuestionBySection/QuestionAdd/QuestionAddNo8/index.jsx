@@ -120,7 +120,7 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Text Field */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionText" className="form-label">
-                                    Text<span className="required-field">*</span>
+                                    Nội dung<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="questionText"
@@ -142,7 +142,7 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Suggested Answer Field với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label htmlFor="suggestedAnswer" className="form-label">
-                                    Suggested Answer<span className="required-field">*</span>
+                                    Gợi ý trả lời<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
                                     <CKEditorOptimized

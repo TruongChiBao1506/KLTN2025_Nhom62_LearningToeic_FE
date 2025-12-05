@@ -194,7 +194,7 @@ const LessonEdit = ({ lessonId, sectionId, retrieveLessons, onClose }) => {
             <div className="modal-body text-start p-4">
                 <div className="form-group mb-3">
                     <label htmlFor="lessonName" className="form-label">
-                        Lesson Name<span className="required-field">*</span>
+                        Tên bài học<span className="required-field">*</span>
                     </label>
                     <input
                         name="lessonName"

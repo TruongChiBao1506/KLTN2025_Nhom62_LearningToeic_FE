@@ -64,7 +64,7 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
                         <div className="col">
                             <div className="form-group mb-3">
                                 <label htmlFor="questionText" className="form-label">
-                                    Question Group Text<span className="required-field">*</span>
+                                    Nội dung nhóm câu hỏi<span className="required-field">*</span>
                                 </label>
                                 <div className='ckeditor-container'>
                                     <CKEditorOptimized

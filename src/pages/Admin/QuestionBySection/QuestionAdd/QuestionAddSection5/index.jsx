@@ -154,7 +154,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Content */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionContent" className="form-label">
-                                    Question Content<span className="required-field">*</span>
+                                    Nội dung câu hỏi<span className="required-field">*</span>
                                 </label>
                                 <input
                                     name="questionContent"
@@ -264,7 +264,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Correct Option Radio Buttons */}
                             <div className="form-group mb-3">
                                 <label className="form-label">
-                                    Correct Option<span className="required-field">*</span>
+                                    Đáp án đúng<span className="required-field">*</span>
                                 </label>
                                 <div className="d-flex">
                                     {['A', 'B', 'C', 'D'].map((option) => (
@@ -293,7 +293,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Type */}
                             <div className="form-group mb-3">
                                 <label htmlFor="questionType" className="form-label">
-                                    Type<span className="required-field">*</span>
+                                    Loại<span className="required-field">*</span>
                                 </label>
                                 <select
                                     name="questionType"
@@ -305,7 +305,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 >
-                                    <option value="" disabled>Select an option</option>
+                                    <option value="" disabled>Chọn một tùy chọn</option>
                                     <option value="[Part 5] Câu hỏi ngữ pháp">[Part 5] Câu hỏi ngữ pháp</option>
                                     <option value="[Part 5] Câu hỏi từ vựng">[Part 5] Câu hỏi từ vựng</option>
                                     <option value="[Part 5] Câu hỏi từ loại">[Part 5] Câu hỏi từ loại</option>
@@ -318,7 +318,7 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                             {/* Question Explanation với CKEditorOptimized */}
                             <div className="form-group mb-3">
                                 <label className="form-label">
-                                    Question Explanation<span className="required-field">*</span>
+                                    Giải thích câu hỏi<span className="required-field">*</span>
                                 </label>
                                 <div className="ckeditor-container">
                                     <CKEditorOptimized

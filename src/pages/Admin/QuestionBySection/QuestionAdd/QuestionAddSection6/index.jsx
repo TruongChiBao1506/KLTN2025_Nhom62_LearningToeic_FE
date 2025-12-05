@@ -218,7 +218,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Passage với CKEditorOptimized */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupPassage" className="form-label">
-                            Question Group Passage<span className="required-field">*</span>
+                            Đoạn văn nhóm câu hỏi<span className="required-field">*</span>
                         </label>
                         <div className="ckeditor-container">
                             <CKEditorOptimized
@@ -245,7 +245,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Content */}
                                 <div className="form-group">
                                     <label htmlFor={`questionContent${index}`}>
-                                        Question Content {index + 1}<span className="required-field">*</span>
+                                        Nội dung câu hỏi {index + 1}<span className="required-field">*</span>
                                     </label>
                                     <input
                                         name={`questionContent${index}`}
@@ -369,7 +369,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
 
                                 {/* Correct Answer Radio Buttons */}
                                 <div className="form-group">
-                                    <label>Correct Answer<span className="required-field">*</span></label>
+                                    <label>Đáp án đúng<span className="required-field">*</span></label>
                                     <div>
                                         {['A', 'B', 'C', 'D'].map((option) => (
                                             <div key={option} className="form-check form-check-inline">
@@ -400,7 +400,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Type với Part 6 options */}
                                 <div className="form-group mb-3">
                                     <label htmlFor={`questionType${index}`} className="form-label">
-                                        Type<span className="required-field">*</span>
+                                        Loại<span className="required-field">*</span>
                                     </label>
                                     <select
                                         name={`questionType${index}`}
@@ -415,7 +415,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                         }}
                                         onBlur={formik.handleBlur}
                                     >
-                                        <option value="" disabled>Select an option</option>
+                                        <option value="" disabled>Chọn một tùy chọn</option>
                                         <option value="[Part 6] Câu hỏi ngữ pháp">[Part 6] Câu hỏi ngữ pháp</option>
                                         <option value="[Part 6] Câu hỏi từ vựng">[Part 6] Câu hỏi từ vựng</option>
                                         <option value="[Part 6] Câu hỏi từ loại">[Part 6] Câu hỏi từ loại</option>
@@ -429,7 +429,7 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 {/* Question Explanation */}
                                 <div className="form-group">
                                     <label htmlFor={`questionExplanation${index}`}>
-                                        Question Explanation<span className="required-field">*</span>
+                                        Giải thích câu hỏi<span className="required-field">*</span>
                                     </label>
                                     <input
                                         name={`questionExplanation${index}`}

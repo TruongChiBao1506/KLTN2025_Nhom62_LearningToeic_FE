@@ -311,7 +311,7 @@ const Dictionary = () => {
           result.data.translations[0]
         ) {
           setTranslatedTextTemp(result.data.translations[0].translatedText);
-          message.success("Dịch thành công!");
+          // message.success("Dịch thành công!");
         }
       } catch (error) {
         console.error("Lỗi khi dịch văn bản:", error);

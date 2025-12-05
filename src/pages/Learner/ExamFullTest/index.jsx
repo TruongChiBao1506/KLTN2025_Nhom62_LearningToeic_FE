@@ -1,39 +1,17 @@
 ﻿import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Space,
-  Spin,
-  Alert,
-  Tag,
-  Avatar,
-  Divider,
-  Badge,
-  Tooltip,
-} from "antd";
-import {
-  Clock,
-  Users,
-  BookOpen,
-  Trophy,
-  Star,
-  ArrowRight,
-  Timer,
-  Target,
-  Award,
-  Play,
-  FileText,
-  MessageSquare,
-} from "lucide-react";
+  faHouse,
+  faFileAlt,
+  faClock,
+  faUsers,
+  faQuestionCircle,
+  faPlayCircle,
+  faCalendarAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import examService from "../../../services/examService";
-import Comment from "../../../components/Learner/Comment";
 import "./style.css";
-
-const { Title, Text, Paragraph } = Typography;
 
 const ExamFullTest = () => {
   const [exams, setExams] = useState([]);
@@ -66,239 +44,124 @@ const ExamFullTest = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "60vh",
-          flexDirection: "column",
-        }}
-      >
-        <Spin size="large" />
-        <Text style={{ marginTop: 16, fontSize: 16 }}>
-          Đang tải danh sách bài thi...
-        </Text>
+      <div className="exam-fulltest-container">
+        <div className="loading-container">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Đang tải...</span>
+          </div>
+          <p className="mt-3">Đang tải danh sách bài thi...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ padding: "24px" }}>
-        <Alert
-          message="Lỗi tải dữ liệu"
-          description={error}
-          type="error"
-          showIcon
-          style={{ maxWidth: 600, margin: "0 auto" }}
-        />
+      <div className="exam-fulltest-container">
+        <div className="alert alert-danger m-4" role="alert">
+          <h4 className="alert-heading">Lỗi!</h4>
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "24px", background: "var(--color-bg-secondary)", minHeight: "100vh" }}>
-      {/* Header Section */}
-      <div
-        style={{
-          textAlign: "center",
-          marginBottom: "48px",
-          background: "#2C5F8D",
-          padding: "48px 24px",
-          borderRadius: "16px",
-          boxShadow: "0 8px 24px rgba(102, 126, 234, 0.25)",
-        }}
-      >
-        <Space direction="vertical" size={24}>
-          <Title level={1} style={{ color: "var(--color-bg-primary)", margin: 0 }}>
-            <Trophy
-              size={36}
-              style={{ marginRight: "12px", verticalAlign: "middle" }}
-            />
-            Bài thi TOEIC® đầy đủ
-          </Title>
-          <Paragraph
-            style={{
-              color: "rgba(255, 255, 255, 0.85)",
-              fontSize: "18px",
-              maxWidth: "800px",
-              margin: "0 auto",
-            }}
-          >
-            Trải nghiệm mô phỏng hoàn chỉnh của bài thi TOEIC® với đầy đủ các
-            phần Nghe và Đọc. Thử thách bản thân và chuẩn bị tốt nhất cho kỳ thi
-            thực tế!
-          </Paragraph>
-          <Space>
-            <Tag color="#f50" style={{ padding: "4px 12px" }}>
-              <FileText
-                size={16}
-                style={{ verticalAlign: "middle", marginRight: "6px" }}
-              />
-              Đầy đủ 200 câu hỏi
-            </Tag>
-            <Tag color="#108ee9" style={{ padding: "4px 12px" }}>
-              <Clock
-                size={16}
-                style={{ verticalAlign: "middle", marginRight: "6px" }}
-              />
-              Thời gian thực: 120 phút
-            </Tag>
-            <Tag color="#87d068" style={{ padding: "4px 12px" }}>
-              <Target
-                size={16}
-                style={{ verticalAlign: "middle", marginRight: "6px" }}
-              />
-              Kết quả & phân tích chi tiết
-            </Tag>
-          </Space>
-        </Space>
+    <div className="exam-fulltest-container">
+      {/* Breadcrumb */}
+      <div className="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <Link to="/learner/dashboard">
+                <FontAwesomeIcon icon={faHouse} className="me-2" />
+                Dashboard
+              </Link>
+            </li>
+            <li className="breadcrumb-item active">
+              <FontAwesomeIcon icon={faFileAlt} className="me-2" />
+              Bài thi Full Test
+            </li>
+          </ol>
+        </nav>
       </div>
 
-      {/* Exam Cards */}
-      <div style={{ marginBottom: "48px" }}>
+      {/* Header */}
+      <div className="exam-header">
+        <div className="exam-header-content">
+          <h2>Bài thi TOEIC® Full Test</h2>
+          <p>Trải nghiệm mô phỏng hoàn chỉnh bài thi TOEIC® với 200 câu hỏi trong 120 phút</p>
+        </div>
+      </div>
+
+      {/* Exam List */}
+      <div className="exam-list">
         {exams.length > 0 ? (
-          <Row gutter={[24, 24]} justify="start">
+          <div className="row g-4">
             {exams.map((exam) => (
-              <Col xs={24} sm={12} md={8} lg={6} key={exam._id}>
-                <Card
-                  hoverable
-                  cover={
-                    <div
-                      style={{
-                        height: "160px",
-                        backgroundImage:
-                          "url(https://th.bing.com/th/id/R.50feae0671a4ce982b6db0bc095d95ae?rik=eVczvOwjlhkXdw&pid=ImgRaw&r=0)",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        position: "relative",
-                        borderTopLeftRadius: "8px",
-                        borderTopRightRadius: "8px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "12px",
-                          right: "12px",
-                          background: "#f50",
-                          color: "white",
-                          padding: "2px 10px",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        FULL TEST
+              <div className="col-12 col-md-6 col-lg-4" key={exam._id}>
+                <div className="exam-card">
+                  <div className="exam-card-header">
+                    <div className="exam-badge">FULL TEST</div>
+                    <h5>{exam.examName}</h5>
+                  </div>
+                  
+                  <div className="exam-card-body">
+                    <div className="exam-info-grid">
+                      <div className="exam-info-item">
+                        <FontAwesomeIcon icon={faClock} className="info-icon" />
+                        <div className="info-content">
+                          <span className="info-label">Thời gian</span>
+                          <span className="info-value">{exam.examDurationMinutes || 120} phút</span>
+                        </div>
+                      </div>
+                      
+                      <div className="exam-info-item">
+                        <FontAwesomeIcon icon={faQuestionCircle} className="info-icon" />
+                        <div className="info-content">
+                          <span className="info-label">Số câu hỏi</span>
+                          <span className="info-value">{exam.questionCount || 200} câu</span>
+                        </div>
+                      </div>
+                      
+                      <div className="exam-info-item">
+                        <FontAwesomeIcon icon={faUsers} className="info-icon" />
+                        <div className="info-content">
+                          <span className="info-label">Đã tham gia</span>
+                          <span className="info-value">{exam.participantCount || 0} người</span>
+                        </div>
+                      </div>
+                      
+                      <div className="exam-info-item">
+                        <FontAwesomeIcon icon={faCalendarAlt} className="info-icon" />
+                        <div className="info-content">
+                          <span className="info-label">Cập nhật</span>
+                          <span className="info-value">
+                            {new Date(exam.updatedAt).toLocaleDateString("vi-VN")}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  }
-                  bodyStyle={{ padding: "16px" }}
-                  style={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <Title
-                      level={4}
-                      style={{ marginTop: 0, marginBottom: "16px" }}
-                    >
-                      {exam.examName}
-                    </Title>
-
-                    <Space
-                      direction="vertical"
-                      size={12}
-                      style={{ width: "100%" }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Text type="secondary">
-                          <Users
-                            size={14}
-                            style={{
-                              marginRight: "6px",
-                              verticalAlign: "middle",
-                            }}
-                          />
-                          3 người tham gia
-                        </Text>
-                        <Tag color="blue">
-                          <Clock
-                            size={14}
-                            style={{
-                              marginRight: "4px",
-                              verticalAlign: "middle",
-                            }}
-                          />
-                          120 phút
-                        </Tag>
-                      </div>
-
-                      <Space size={16} style={{ marginTop: "6px" }}>
-                        <Badge count={7} color="#87d068" size="small" />
-                        <Text type="secondary">Phần nghe</Text>
-                        <Badge count={8} color="#108ee9" size="small" />
-                        <Text type="secondary">Phần đọc</Text>
-                      </Space>
-
-                      <Divider style={{ margin: "12px 0" }} />
-
-                      <Space align="center">
-                        <Avatar
-                          size="small"
-                          icon={<Trophy size={12} />}
-                          style={{ backgroundColor: "#ffd700" }}
-                        />
-                        <Text type="secondary" style={{ fontSize: "12px" }}>
-                          Cập nhật{" "}
-                          {new Date(exam.updatedAt).toLocaleDateString("vi-VN")}
-                        </Text>
-                      </Space>
-                    </Space>
                   </div>
-
-                  <div style={{ marginTop: "16px" }}>
-                    <Link to={`/learner/exams/${exam._id}`}>
-                      <Button
-                        type="primary"
-                        block
-                        icon={<Play size={16} />}
-                        style={{
-                          background:
-                            "linear-gradient(90deg, #1890ff 0%, #52c41a 100%)",
-                          height: "40px",
-                          border: "none",
-                        }}
-                      >
-                        Bắt đầu thi ngay
-                      </Button>
+                  
+                  <div className="exam-card-footer">
+                    <Link to={`/learner/exams/${exam._id}`} className="btn-start-exam">
+                      <FontAwesomeIcon icon={faPlayCircle} className="me-2" />
+                      Bắt đầu làm bài
                     </Link>
                   </div>
-                </Card>
-              </Col>
+                </div>
+              </div>
             ))}
-          </Row>
+          </div>
         ) : (
-          <Alert
-            message="Không có bài thi"
-            description="Hiện tại không có bài thi nào. Vui lòng quay lại sau."
-            type="info"
-            showIcon
-            style={{ maxWidth: "600px", margin: "0 auto" }}
-          />
+          <div className="no-exams">
+            <FontAwesomeIcon icon={faFileAlt} size="3x" className="mb-3" />
+            <h5>Chưa có bài thi</h5>
+            <p>Hiện tại chưa có bài thi Full Test nào. Vui lòng quay lại sau!</p>
+          </div>
         )}
       </div>
-
-  {/* Đã chuyển comment sang ExamDetail, không hiển thị ở đây nữa */}
     </div>
   );
 };

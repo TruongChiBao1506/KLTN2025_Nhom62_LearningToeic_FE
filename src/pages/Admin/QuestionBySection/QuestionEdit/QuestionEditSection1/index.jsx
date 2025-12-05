@@ -360,7 +360,7 @@ const QuestionEditSection1 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Correct Option Radio Buttons */}
               <div className="form-group mb-3">
                 <label className="form-label">
-                  Correct Option<span className="required-field">*</span>
+                  Đáp án đúng<span className="required-field">*</span>
                 </label>
                 <div className="d-flex">
                   <div className="form-check">
@@ -451,7 +451,7 @@ const QuestionEditSection1 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Current Question Image */}
               {question?.questionImage && (
                 <div className="form-group mb-3">
-                  <label className="form-label">Current Image</label>
+                  <label className="form-label">Hình ảnh hiện tại</label>
                   <div>
                     <img
                       src={getImageUrl(question.questionImage)}
@@ -466,7 +466,7 @@ const QuestionEditSection1 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Question Image */}
               <div className="form-group mb-3">
                 <label htmlFor="questionImage" className="form-label">
-                  Question Image {!question?.questionImage && <span className="required-field">*</span>}
+                  Hình ảnh câu hỏi {!question?.questionImage && <span className="required-field">*</span>}
                   {question?.questionImage && <small className="text-muted"> (Chọn file mới để thay đổi)</small>}
                 </label>
                 <input

@@ -496,7 +496,7 @@ const LearnerLayout = () => {
     {
       key: "practice-tests",
       icon: <ClipboardList size={18} />,
-      label: "Làm đề thi thử",
+      label: "Thi mô phỏng",
       children: [
         {
           key: "/learner/mini-test",

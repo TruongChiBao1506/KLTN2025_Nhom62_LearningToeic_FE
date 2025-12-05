@@ -196,7 +196,7 @@ const QuestionAddSection7_3 = ({ sectionId, retrieveQuestions, onClose }) => {
   };
 
   const questionTypeOptions = [
-    { value: "", label: "Select an option", disabled: true },
+    { value: "", label: "Chọn một tùy chọn", disabled: true },
     { value: "[Part 7] Câu hỏi điền câu", label: "[Part 7] Câu hỏi điền câu" },
     { value: "[Part 7] Câu hỏi suy luận", label: "[Part 7] Câu hỏi suy luận" },
     { value: "[Part 7] Câu hỏi tìm thông tin", label: "[Part 7] Câu hỏi tìm thông tin" },
@@ -213,7 +213,7 @@ const QuestionAddSection7_3 = ({ sectionId, retrieveQuestions, onClose }) => {
           {/* Group Image */}
           <div className="form-group mb-3">
             <label htmlFor="groupImage">
-              Question Group Image<span className="required-field">*</span>
+              Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <input
               type="file"
@@ -244,7 +244,7 @@ const QuestionAddSection7_3 = ({ sectionId, retrieveQuestions, onClose }) => {
           {/* Group Passage với CKEditorOptimized */}
           <div className="form-group mb-3">
             <label htmlFor="groupPassage" className="form-label">
-              Question Group Passage<span className="required-field">*</span>
+              Đoạn văn nhóm câu hỏi<span className="required-field">*</span>
             </label>
             <div className="ckeditor-container">
               <CKEditorOptimized
