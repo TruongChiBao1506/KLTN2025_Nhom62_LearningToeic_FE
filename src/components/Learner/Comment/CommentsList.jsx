@@ -183,7 +183,14 @@ const CommentsList = ({ examId }) => {
         // API thất bại: Remove optimistic comment
         console.error("❌ Failed to create comment:", createResult.reason);
         setComments(prev => prev.filter(comment => comment.commentId !== optimisticComment.commentId));
-        toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+        
+        // Kiểm tra lý do từ chối
+        const errorMessage = createResult.reason?.response?.data?.message || createResult.reason?.message;
+        if (errorMessage && errorMessage.includes('inappropriate language')) {
+          toast.error("Bình luận của bạn chứa ngôn từ không phù hợp và không được duyệt. Vui lòng sử dụng ngôn từ lịch sự!");
+        } else {
+          toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+        }
       }
 
       // Log achievement result (không ảnh hưởng UX)
@@ -193,7 +200,14 @@ const CommentsList = ({ examId }) => {
 
     } catch (error) {
       console.error("Lỗi khi bình luận:", error);
-      toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+      
+      // Kiểm tra lý do từ chối
+      const errorMessage = error?.response?.data?.message || error?.message;
+      if (errorMessage && errorMessage.includes('inappropriate language')) {
+        toast.error("Bình luận của bạn chứa ngôn từ không phù hợp và không được duyệt. Vui lòng sử dụng ngôn từ lịch sự!");
+      } else {
+        toast.error("Lỗi khi bình luận, vui lòng thử lại sau");
+      }
       
       // Revert optimistic update nếu có lỗi unexpected
       setComments(prev => prev.filter(comment => comment.commentId !== `temp-${Date.now()}`));

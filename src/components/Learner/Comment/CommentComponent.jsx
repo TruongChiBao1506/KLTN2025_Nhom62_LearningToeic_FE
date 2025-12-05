@@ -109,7 +109,14 @@ const CommentComponent = ({ comment, parentId, retrieveComments, examId }) => {
       toast.success("Đã thêm phản hồi");
     } catch (error) {
       console.error("Lỗi khi phản hồi bình luận:", error);
-      toast.error("Lỗi khi phản hồi, vui lòng thử lại sau");
+      
+      // Kiểm tra lý do từ chối
+      const errorMessage = error?.response?.data?.message || error?.message;
+      if (errorMessage && errorMessage.includes('inappropriate language')) {
+        toast.error("Phản hồi của bạn chứa ngôn từ không phù hợp và không được duyệt. Vui lòng sử dụng ngôn từ lịch sự!");
+      } else {
+        toast.error("Lỗi khi phản hồi, vui lòng thử lại sau");
+      }
     }
   };
 

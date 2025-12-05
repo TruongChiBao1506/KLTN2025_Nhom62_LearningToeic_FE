@@ -1478,6 +1478,8 @@ const LearnerLayout = () => {
             overflow: "hidden",
             height: "70px",
             minHeight: 64,
+            margin: "5px 25px",
+            borderRadius: "10px",
           }}
         >
           {/* Background decoration */}
