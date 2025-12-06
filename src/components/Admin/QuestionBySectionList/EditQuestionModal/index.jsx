@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import sectionsService from '../../../../services/sectionsService';
 
 // Import tất cả các QuestionEdit components
 import QuestionEditSection1 from '../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditSection1';
@@ -23,90 +24,148 @@ import QuestionEditNo6To7 from '../../../../pages/Admin/QuestionBySection/Questi
 import QuestionEditNo8 from '../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditNo8';
 
 const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuestions }) => {
+    const [section, setSection] = useState(null);
+    const [sectionLoading, setSectionLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchSection = async () => {
+            if (!sectionId || !show) return;
+            
+            setSectionLoading(true);
+            try {
+                const response = await sectionsService.get(sectionId);
+                setSection(response);
+            } catch (error) {
+                console.error("Error fetching section:", error);
+                setSection(null);
+            } finally {
+                setSectionLoading(false);
+            }
+        };
+
+        fetchSection();
+    }, [sectionId, show]);
+
     const renderQuestionEditComponent = () => {
-        switch (sectionId) {
-            case "686ce171b614dda1fc08f1d0":
-                return (
-                    <QuestionEditSection1
-                        sectionId={sectionId}
-                        questionId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d1":
-                return (
-                    <QuestionEditSection2
-                        sectionId={sectionId}
-                        questionId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d2":
-                return (
-                    <QuestionEditSection3
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d3":
-                return (
-                    <QuestionEditSection4
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d4":
-                return (
-                    <QuestionEditSection5
-                        sectionId={sectionId}
-                        questionId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d5":
-                return (
-                    <QuestionEditSection6
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d6":
-                return (
-                    <QuestionEditSection7Single
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d10f3abd7f3cf92add620":
-                return (
-                    <QuestionEditSection7Double
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d12f0abd7f3cf92add643":
-                return (
-                    <QuestionEditSection7Triple
-                        sectionId={sectionId}
-                        groupId={questionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d16f6abd7f3cf92add64a":
+        if (sectionLoading) {
+            return <div className="text-center p-4">Đang tải thông tin phần thi...</div>;
+        }
+        if (!section) {
+            return <div className="text-center p-4 text-danger">Không tìm thấy thông tin phần thi.</div>;
+        }
+
+        // Extract part number from name
+        const partMatch = section.name.match(/Part (\d+)/i);
+        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+        // Determine component based on type and part number
+        if (section.type === 1) {  // Listening sections
+            switch (partNumber) {
+                case 1:
+                    return (
+                        <QuestionEditSection1
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 2:
+                    return (
+                        <QuestionEditSection2
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 3:
+                    return (
+                        <QuestionEditSection3
+                            sectionId={sectionId}
+                            groupId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 4:
+                    return (
+                        <QuestionEditSection4
+                            sectionId={sectionId}
+                            groupId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần thi Listening này.</div>;
+            }
+        } else if (section.type === 2) {  // Reading sections
+            switch (partNumber) {
+                case 5:
+                    return (
+                        <QuestionEditSection5
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 6:
+                    return (
+                        <QuestionEditSection6
+                            sectionId={sectionId}
+                            groupId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 7:
+                    // Handle Part 7 variants based on name keywords
+                    if (section.name.toLowerCase().includes("single")) {
+                        return (
+                            <QuestionEditSection7Single
+                                sectionId={sectionId}
+                                groupId={questionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else if (section.name.toLowerCase().includes("double")) {
+                        return (
+                            <QuestionEditSection7Double
+                                sectionId={sectionId}
+                                groupId={questionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else if (section.name.toLowerCase().includes("triple")) {
+                        return (
+                            <QuestionEditSection7Triple
+                                sectionId={sectionId}
+                                groupId={questionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else {
+                        return (
+                            <QuestionEditSection7Single
+                                sectionId={sectionId}
+                                groupId={questionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    }
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần thi Reading này.</div>;
+            }
+        } else if (section.type === 3) {  // Grammar sections
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("2")) {
                 return (
                     <QuestionEditNo1To2
                         sectionId={sectionId}
@@ -115,7 +174,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d170eabd7f3cf92add651":
+            } else if (nameLower.includes("3") && nameLower.includes("4")) {
                 return (
                     <QuestionEditNo3To4
                         sectionId={sectionId}
@@ -124,7 +183,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d1721abd7f3cf92add658":
+            } else if (nameLower.includes("5") && nameLower.includes("7")) {
                 return (
                     <QuestionEditNo5To7
                         sectionId={sectionId}
@@ -133,7 +192,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d1732abd7f3cf92add65f":
+            } else if (nameLower.includes("8") && nameLower.includes("10")) {
                 return (
                     <QuestionEditNo8To10
                         sectionId={sectionId}
@@ -142,7 +201,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d1744abd7f3cf92add666":
+            } else if (nameLower.includes("11")) {
                 return (
                     <QuestionEditNo11
                         sectionId={sectionId}
@@ -151,7 +210,12 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d1761abd7f3cf92add66d":
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần ngữ pháp này.</div>;
+        } else if (section.type === 4) {  // Vocabulary sections
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("5")) {
                 return (
                     <QuestionEditNo1To5
                         sectionId={sectionId}
@@ -160,7 +224,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d1773abd7f3cf92add674":
+            } else if (nameLower.includes("6") && nameLower.includes("7")) {
                 return (
                     <QuestionEditNo6To7
                         sectionId={sectionId}
@@ -169,7 +233,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            case "685d178babd7f3cf92add67b":
+            } else if (nameLower.includes("8")) {
                 return (
                     <QuestionEditNo8
                         sectionId={sectionId}
@@ -178,12 +242,20 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                         onClose={onHide}
                     />
                 );
-            default:
-                return null;
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần từ vựng này.</div>;
         }
+
+        return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;
     };
 
     const getModalTitle = () => {
+        if (!section) return "Chỉnh sửa câu hỏi";
+        return `Chỉnh sửa câu hỏi - ${section.name}`;
+    };
+
+    // Keep old hardcoded version as fallback (commented out)
+    const getModalTitleOld = () => {
         switch (sectionId) {
             case "686ce171b614dda1fc08f1d0":
                 return "Chỉnh sửa câu hỏi Section 1";
@@ -222,7 +294,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
             default:
                 return "Chỉnh sửa câu hỏi";
         }
-    };
+    }; // End of old version
 
     return (
         <Modal 
