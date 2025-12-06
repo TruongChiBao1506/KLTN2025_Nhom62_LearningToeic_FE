@@ -89,18 +89,32 @@ const TestPart1 = ({
     });
   };
 
+  // ✅ Helper function để kiểm tra câu trả lời đúng - hỗ trợ cả 2 format
+  const isAnswerCorrect = (question) => {
+    if (!question.answered || !question.isGraded) return false;
+    
+    const correctOpt = question.correctOption;
+    
+    // Trường hợp 1: correctOption là chữ cái "A", "B", "C", "D"
+    if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+      return question.selectedLetter === correctOpt;
+    }
+    
+    // Trường hợp 2: correctOption là nội dung đầy đủ (database cũ)
+    return question.selectedOption === correctOpt;
+  };
+
   // Tính số câu đúng - chỉ sau khi isGraded = true
-  const getCorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
-  ).length;
+  const getCorrectCount = questions.filter((q) => isAnswerCorrect(q)).length;
 
   // Tính số câu sai - chỉ sau khi isGraded = true
   const getIncorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
+    (q) => q.isGraded && q.answered && !isAnswerCorrect(q)
   ).length;
 
   // Get button style based on question state
   const getQuestionButtonStyle = (question) => {
+    // Chưa chọn đáp án - màu xám
     if (!question.selectedOption) {
       return {
         backgroundColor: "var(--color-bg-secondary)",
@@ -109,8 +123,9 @@ const TestPart1 = ({
       };
     }
 
+    // Đã nộp bài - hiển thị đúng/sai
     if (question.isGraded) {
-      if (question.selectedLetter === question.correctOption) {
+      if (isAnswerCorrect(question)) {
         return {
           backgroundColor: "var(--color-success)",
           color: "white",
@@ -125,10 +140,11 @@ const TestPart1 = ({
       }
     }
 
+    // ✅ Đã chọn đáp án nhưng chưa nộp bài - màu xanh dương
     return {
-      backgroundColor: "var(--color-chart-6)",
+      backgroundColor: "#1890ff", // Xanh dương
       color: "white",
-      border: "1px solid #fa8c16",
+      border: "1px solid #1890ff",
     };
   };
 
@@ -225,19 +241,6 @@ const TestPart1 = ({
                           />
                           Trình duyệt của bạn không hỗ trợ phát âm thanh.
                         </audio>
-
-                        {/* Debug info - remove in production */}
-                        {process.env.NODE_ENV === "development" && (
-                          <div
-                            style={{
-                              fontSize: "10px",
-                              color: "var(--color-text-secondary)",
-                              marginTop: "4px",
-                            }}
-                          >
-                            Audio URL: {getAudioUrl(question.questionAudio)}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </Col>
@@ -286,18 +289,25 @@ const TestPart1 = ({
                           65 + optionIndex
                         );
 
-                        // Check if this option is correct by comparing option letter with correctOption
-                        const isCorrect =
-                          question.isGraded &&
-                          optionLabel === question.correctOption;
+                        // ✅ Check if this option is correct - hỗ trợ cả 2 format
+                        const correctOpt = question.correctOption;
+                        let isCorrect = false;
+                        
+                        if (question.isGraded) {
+                          // Format 1: correctOption là chữ cái "A", "B", "C", "D"
+                          if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+                            isCorrect = optionLabel === correctOpt;
+                          }
+                          // Format 2: correctOption là nội dung đầy đủ
+                          else {
+                            isCorrect = option === correctOpt;
+                          }
+                        }
 
                         const isSelected = question.selectedOption === option;
 
-                        // Check if this selected option is wrong
-                        const isWrong =
-                          question.isGraded &&
-                          isSelected &&
-                          question.selectedLetter !== question.correctOption;
+                        // ✅ Check if this selected option is wrong
+                        const isWrong = question.isGraded && isSelected && !isAnswerCorrect(question);
 
                         return (
                           <div
@@ -326,14 +336,9 @@ const TestPart1 = ({
                             }}
                           >
                             <Radio value={option} style={{ width: "100%" }}>
-                              <Space align="start">
-                                <Text strong style={{ fontSize: "16px" }}>
-                                  {optionLabel}.
-                                </Text>
-                                <Text style={{ fontSize: "16px" }}>
-                                  {option}
-                                </Text>
-                              </Space>
+                              <Text strong style={{ fontSize: "18px" }}>
+                                {optionLabel}
+                              </Text>
                             </Radio>
 
                             {isCorrect && (
@@ -542,17 +547,23 @@ const TestPart1 = ({
                 style={{ width: "100%" }}
               >
                 <Button
-                  type={isSubmited ? "default" : "primary"}
+                  type={questions.some(q => q.isGraded) ? "default" : "primary"}
                   size="large"
                   onClick={submitAnswers}
                   block
+                  disabled={questions.some(q => q.isGraded)}
                   style={{
                     height: "48px",
                     fontSize: "16px",
                     fontWeight: "600",
+                    borderRadius: "20px",
+                    background: questions.some(q => q.isGraded) ? "#d9d9d9" : "var(--color-primary)",
+                    borderColor: questions.some(q => q.isGraded) ? "#d9d9d9" : "var(--color-primary)",
+                    color: "#fff",
+                    marginBottom: "15px",
                   }}
                 >
-                  {isSubmited ? "Đã nộp bài" : "Chấm điểm"}
+                  {questions.some(q => q.isGraded) ? "Đã nộp bài" : "Chấm điểm"}
                 </Button>
                 <Button
                   type="default"
@@ -564,6 +575,7 @@ const TestPart1 = ({
                     height: "48px",
                     fontSize: "16px",
                     fontWeight: "600",
+                    borderRadius: "20px",
                   }}
                 >
                   Làm lại

@@ -164,10 +164,11 @@ const TestPart3 = ({
       }
     }
 
+    // Đã chọn đáp án nhưng chưa nộp bài - màu xanh dương
     return {
-      backgroundColor: "var(--color-chart-6)",
+      backgroundColor: "#1890ff",
       color: "white",
-      border: "1px solid #fa8c16",
+      border: "1px solid #1890ff",
     };
   };
 
@@ -365,19 +366,9 @@ const TestPart3 = ({
                                               value={option}
                                               style={{ width: "100%" }}
                                             >
-                                              <Space align="start" size="small">
-                                                <Text
-                                                  strong
-                                                  style={{ fontSize: "12px" }}
-                                                >
-                                                  {optionLabel}.
-                                                </Text>
-                                                <Text
-                                                  style={{ fontSize: "12px" }}
-                                                >
-                                                  {option}
-                                                </Text>
-                                              </Space>
+                                              <Text strong style={{ fontSize: "14px" }}>
+                                                {optionLabel}
+                                              </Text>
                                             </Radio>
 
                                             {isCorrect && (
@@ -534,10 +525,9 @@ const TestPart3 = ({
                                           value={option}
                                           style={{ width: "100%" }}
                                         >
-                                          <Space align="start">
-                                            <Text strong>{optionLabel}.</Text>
-                                            <Text>{option}</Text>
-                                          </Space>
+                                          <Text strong style={{ fontSize: "16px" }}>
+                                            {optionLabel}
+                                          </Text>
                                         </Radio>
 
                                         {isCorrect && (
@@ -785,6 +775,10 @@ const TestPart3 = ({
                   height: "48px",
                   fontSize: "16px",
                   fontWeight: "600",
+                  borderRadius: "20px",
+                  background:  "var(--color-primary)",
+                  borderColor:  "var(--color-primary)",
+                  color: "#fff",
                 }}
               >
                 {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}

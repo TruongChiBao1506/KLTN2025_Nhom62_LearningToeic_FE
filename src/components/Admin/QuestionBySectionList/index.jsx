@@ -129,11 +129,33 @@ const QuestionSectionPage = ({
     setSelectedQuestionId(null);
   };
 
-  const getImageUrl = (imageName) =>
-    imageName ? `http://localhost:9004/images/${imageName}` : "https://demofree.sirv.com/nope-not-here.jpg";
+  // ✅ Hỗ trợ cả S3 URL và local URL
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "https://demofree.sirv.com/nope-not-here.jpg";
+    
+    // Nếu đã là URL đầy đủ (S3 hoặc HTTP/HTTPS), trả về trực tiếp
+    if (imageName.startsWith('http://') || imageName.startsWith('https://')) {
+      return imageName;
+    }
+    
+    // Nếu chỉ là tên file, tạo URL local
+    return `http://localhost:9004/images/${imageName}`;
+  };
 
-  const getAudioUrl = (audioName) =>
-    audioName ? `http://localhost:9004/audios/${audioName}` : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+  // ✅ Hỗ trợ cả S3 URL và local URL
+  const getAudioUrl = (audioName) => {
+    if (!audioName) {
+      return "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+    }
+    
+    // Nếu đã là URL đầy đủ (S3 hoặc HTTP/HTTPS), trả về trực tiếp
+    if (audioName.startsWith('http://') || audioName.startsWith('https://')) {
+      return audioName;
+    }
+    
+    // Nếu chỉ là tên file, tạo URL local
+    return `http://localhost:9004/audios/${audioName}`;
+  };
 
   // Table selection logic based on section metadata
   const renderTable = () => {

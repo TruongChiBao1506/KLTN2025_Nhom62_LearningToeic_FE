@@ -85,23 +85,8 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("optionC", values.optionC);
             formData.append("optionD", values.optionD);
 
-            // Xác định đáp án được chọn và đặt giá trị cho correctOption
-            switch (values.correctOption) {
-                case "A":
-                    formData.append("correctOption", values.optionA);
-                    break;
-                case "B":
-                    formData.append("correctOption", values.optionB);
-                    break;
-                case "C":
-                    formData.append("correctOption", values.optionC);
-                    break;
-                case "D":
-                    formData.append("correctOption", values.optionD);
-                    break;
-                default:
-                    formData.append("correctOption", "");
-            }
+            // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+            formData.append("correctOption", values.correctOption);
 
             formData.append("questionType", values.questionType);
             formData.append("questionExplanation", editorData);

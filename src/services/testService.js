@@ -46,12 +46,31 @@ class TestService {
     return response.data;
   }
 
-  async addOrUpdateQuestionToTest(id, data) {
-    const response = await axiosClient.put(
-      `${this.baseUrl}/${id}/add-questions`,
-      data
-    );
-    return response;
+  async addOrUpdateQuestionToTest(testId, questionIds) {
+    console.log('📤 API Request:', {
+      endpoint: `${this.baseUrl}/${testId}/add-questions`,
+      method: 'PUT',
+      payload: { questionIds },
+      count: questionIds.length
+    });
+
+    try {
+      const response = await axiosClient.put(
+        `${this.baseUrl}/${testId}/add-questions`,
+        { questionIds } // ✅ Gửi đúng format: { questionIds: [...] }
+      );
+      
+      console.log('📥 API Response:', response);
+      return response;
+      
+    } catch (error) {
+      console.error('❌ API Error:', {
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        data: error.response?.data
+      });
+      throw error;
+    }
   }
   async getQuestionsByTestId(testId) {
     const response = await axiosClient.get(

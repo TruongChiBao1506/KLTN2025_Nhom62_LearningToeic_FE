@@ -163,24 +163,14 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                 formData.append("optionB", values[`optionB${i}`]);
                 formData.append("optionC", values[`optionC${i}`]);
                 formData.append("optionD", values[`optionD${i}`]);
-                // Xác định đáp án được chọn và đặt giá trị cho correctOption
-                switch (values[`correctOption${i}`]) {
-                    case "A":
-                        formData.append("correctOption", values[`optionA${i}`]);
-                        break;
-                    case "B":
-                        formData.append("correctOption", values[`optionB${i}`]);
-                        break;
-                    case "C":
-                        formData.append("correctOption", values[`optionC${i}`]);
-                        break;
-                    case "D":
-                        formData.append("correctOption", values[`optionD${i}`]);
-                        break;
-                    default:
-                        formData.append("correctOption", "");
-                }
-                formData.append("questionType", values[`questionType${i}`]);
+                
+                // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+                formData.append("correctOption", values[`correctOption${i}`]);
+                
+                // ✅ Thêm questionSubType (giá trị chi tiết)
+                formData.append("questionSubType", values[`questionType${i}`]);
+                // ✅ Tự động set questionType là "reading" cho Part 6
+                formData.append("questionType", "reading");
                 formData.append("questionExplanation", values[`questionExplanation${i}`]);
                 await QuestionService.create(formData);
             }

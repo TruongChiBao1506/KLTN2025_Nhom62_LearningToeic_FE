@@ -67,6 +67,43 @@ class QuestionService {
     return response;
   }
 
+  // ✅ MỚI: Lấy câu hỏi theo practice filter (sectionId + subType)
+  async getQuestionsByPracticeFilter(params) {
+    const { sectionId, subType, limit = 20 } = params;
+    
+    // ✅ Build URL manually để tránh vấn đề encoding với dấu []
+    const queryParts = [];
+    if (sectionId) queryParts.push(`sectionId=${sectionId}`);
+    if (subType) queryParts.push(`subType=${encodeURIComponent(subType)}`);
+    if (limit) queryParts.push(`limit=${limit}`);
+    
+    const queryString = queryParts.join('&');
+    const url = `${this.baseUrl}/practice?${queryString}`;
+    
+    console.log('🔵 [questionService] Practice API URL:', url);
+    
+    const response = await axiosClient.get(url);
+    console.log('🟢 [questionService] Practice API response:', response);
+    return response;
+  }
+
+  // ✅ MỚI: Lấy danh sách subTypes của section
+  async getSubTypesBySectionId(sectionId, withStats = false) {
+    const queryParams = withStats ? '?stats=true' : '';
+    const response = await axiosClient.get(
+      `${this.baseUrl}/subtypes-by-section/${sectionId}${queryParams}`
+    );
+    return response;
+  }
+
+  // ✅ MỚI: Lấy thống kê subTypes
+  async getSubTypeStatistics() {
+    const response = await axiosClient.get(
+      `${this.baseUrl}/statistics/subtypes`
+    );
+    return response;
+  }
+
   // Lấy câu hỏi theo section
   async getQuestionsBySection(sectionId) {
     const response = await axiosClient.get(`${this.baseUrl}/by-section/${sectionId}`);
@@ -79,9 +116,18 @@ class QuestionService {
     return response;
   }
 
-  // Lấy chi tiết câu hỏi theo ID (alias cho getById)
+  // ✅ MỚI: Lấy chi tiết câu hỏi theo ID (alias cho getById)
   async get(id) {
     return this.getById(id);
+  }
+
+  // ✅ MỚI: Lấy danh sách subTypes theo Part Number từ database
+  async getSubTypesByPartNumber(partNumber) {
+    const response = await axiosClient.get(
+      `${this.baseUrl}/subtypes/part/${partNumber}`
+    );
+    console.log(`🔵 [questionService] SubTypes for Part ${partNumber}:`, response);
+    return response;
   }
 }
 

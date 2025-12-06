@@ -154,20 +154,8 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
       formData.append("optionB", values.optionB);
       formData.append("optionC", values.optionC);
 
-      // Xác định đáp án đúng dựa trên radio
-      switch (values.correctOption) {
-        case "A":
-          formData.append("correctOption", values.optionA);
-          break;
-        case "B":
-          formData.append("correctOption", values.optionB);
-          break;
-        case "C":
-          formData.append("correctOption", values.optionC);
-          break;
-        default:
-          formData.append("correctOption", values.correctOption);
-      }
+      // ✅ Lưu correctOption là chữ cái A/B/C (KHÔNG phải nội dung đầy đủ)
+      formData.append("correctOption", values.correctOption);
 
       formData.append("questionType", values.questionType);
 

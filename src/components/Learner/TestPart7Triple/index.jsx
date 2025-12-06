@@ -521,7 +521,8 @@ const TestPart7Triple = ({
                               : "var(--color-danger)";
                           color = "white";
                         } else {
-                          backgroundColor = "var(--color-chart-6)";
+                          // Đã chọn đáp án nhưng chưa nộp bài - màu xanh dương
+                          backgroundColor = "#1890ff";
                           color = "white";
                         }
                       }
@@ -594,7 +595,7 @@ const TestPart7Triple = ({
               </div>
 
               {/* Action Button */}
-              {isSubmited ? (
+              {questions.some(q => q.isGraded) ? (
                 <Button
                   type="default"
                   size="large"

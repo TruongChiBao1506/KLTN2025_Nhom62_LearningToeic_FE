@@ -140,23 +140,10 @@ const EditQuestionSection7_1 = ({ sectionId, groupId, retrieveQuestions, onClose
         formData.append("optionB", values[`optionB${idx}`]);
         formData.append("optionC", values[`optionC${idx}`]);
         formData.append("optionD", values[`optionD${idx}`]);
-        // Xác định đáp án đúng dựa trên radio
-        switch (values[`correctOption${idx}`]) {
-          case "A":
-            formData.append("correctOption", values[`optionA${idx}`]);
-            break;
-          case "B":
-            formData.append("correctOption", values[`optionB${idx}`]);
-            break;
-          case "C":
-            formData.append("correctOption", values[`optionC${idx}`]);
-            break;
-          case "D":
-            formData.append("correctOption", values[`optionD${idx}`]);
-            break;
-          default:
-            formData.append("correctOption", values[`correctOption${idx}`]);
-        }
+        
+        // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+        formData.append("correctOption", values[`correctOption${idx}`]);
+        
         formData.append("questionType", values[`questionType${idx}`]);
         formData.append("questionExplanation", values[`questionExplanation${idx}`]);
         await QuestionService.update(q._id || q.questionId, formData);
@@ -335,12 +322,20 @@ const EditQuestionSection7_1 = ({ sectionId, groupId, retrieveQuestions, onClose
                     onBlur={formik.handleBlur}
                   >
                     <option value="" disabled>Select an option</option>
-                    <option value="[Part 7] Câu hỏi điền câu">[Part 7] Câu hỏi điền câu</option>
-                    <option value="[Part 7] Câu hỏi suy luận">[Part 7] Câu hỏi suy luận</option>
                     <option value="[Part 7] Câu hỏi tìm thông tin">[Part 7] Câu hỏi tìm thông tin</option>
                     <option value="[Part 7] Câu hỏi tìm chi tiết sai">[Part 7] Câu hỏi tìm chi tiết sai</option>
-                    <option value="[Part 7] Câu hỏi tìm từ đồng nghĩa">[Part 7] Câu hỏi tìm từ đồng nghĩa</option>
                     <option value="[Part 7] Câu hỏi về chủ đề, mục đích">[Part 7] Câu hỏi về chủ đề, mục đích</option>
+                    <option value="[Part 7] Câu hỏi suy luận">[Part 7] Câu hỏi suy luận</option>
+                    <option value="[Part 7] Câu hỏi điền câu">[Part 7] Câu hỏi điền câu</option>
+                    <option value="[Part 7] Cấu trúc: một đoạn">[Part 7] Cấu trúc: một đoạn</option>
+                    <option value="[Part 7] Cấu trúc: nhiều đoạn">[Part 7] Cấu trúc: nhiều đoạn</option>
+                    <option value="[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay">[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay</option>
+                    <option value="[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu">[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu</option>
+                    <option value="[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá">[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá</option>
+                    <option value="[Part 7] Dạng bài: Advertisement - Quảng cáo">[Part 7] Dạng bài: Advertisement - Quảng cáo</option>
+                    <option value="[Part 7] Dạng bài: Announcement/ Notice: Thông báo">[Part 7] Dạng bài: Announcement/ Notice: Thông báo</option>
+                    <option value="[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn">[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn</option>
+                    <option value="[Part 7] Câu hỏi tìm từ đồng nghĩa">[Part 7] Câu hỏi tìm từ đồng nghĩa</option>
                     <option value="[Part 7] Câu hỏi về hàm ý câu nói">[Part 7] Câu hỏi về hàm ý câu nói</option>
                   </select>
                   {formik.touched[`questionType${idx}`] && formik.errors[`questionType${idx}`] && (

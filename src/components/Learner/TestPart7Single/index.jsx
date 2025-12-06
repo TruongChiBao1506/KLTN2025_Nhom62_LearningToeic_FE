@@ -574,7 +574,8 @@ const TestPart7Single = ({
                               : "var(--color-danger)";
                           color = "white";
                         } else {
-                          backgroundColor = "var(--color-chart-6)";
+                          // Đã chọn đáp án nhưng chưa nộp bài - màu xanh dương
+                          backgroundColor = "#1890ff";
                           color = "white";
                         }
                       }
@@ -669,16 +670,16 @@ const TestPart7Single = ({
                 block
                 style={{
                   height: "48px",
-                  borderRadius: "8px",
-                  background: questions.some((q) => q.isGraded)
-                    ? undefined
-                    : "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)",
                   border: "none",
                   fontWeight: "bold",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: questions.some((q) => q.isGraded) ? 8 : 0,
+                  borderRadius: "20px",
+                  background:  "var(--color-primary)",
+                  borderColor:  "var(--color-primary)",
+                  color: "#fff",
                 }}
               >
                 {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}

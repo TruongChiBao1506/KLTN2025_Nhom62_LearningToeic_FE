@@ -157,25 +157,14 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("optionC", values.optionC);
             formData.append("optionD", values.optionD);
 
-            // Xác định đáp án được chọn và đặt giá trị cho correctOption
-            switch (values.correctOption) {
-                case "A":
-                    formData.append("correctOption", values.optionA);
-                    break;
-                case "B":
-                    formData.append("correctOption", values.optionB);
-                    break;
-                case "C":
-                    formData.append("correctOption", values.optionC);
-                    break;
-                case "D":
-                    formData.append("correctOption", values.optionD);
-                    break;
-                default:
-                    formData.append("correctOption", "");
-            }
+            // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+            formData.append("correctOption", values.correctOption);
 
-            formData.append("questionType", values.questionType);
+            // ✅ Thêm questionSubType (giá trị chi tiết như "[Part 1] Tranh tả người")
+            formData.append("questionSubType", values.questionType);
+            
+            // ✅ Tự động set questionType là "listening" cho Part 1
+            formData.append("questionType", "listening");
 
             // Add files
             if (selectedImage) {
@@ -410,7 +399,6 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value="" disabled>Select an option</option>
-                                    <option value="[Part 1] Tranh tả cả người và vật">[Part 1] Tranh tả cả người và vật</option>
                                     <option value="[Part 1] Tranh tả người">[Part 1] Tranh tả người</option>
                                     <option value="[Part 1] Tranh tả vật">[Part 1] Tranh tả vật</option>
                                 </select>

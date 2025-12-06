@@ -172,23 +172,10 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
         formData.append("optionB", values[`optionB${idx}`]);
         formData.append("optionC", values[`optionC${idx}`]);
         formData.append("optionD", values[`optionD${idx}`]);
-        // Xác định đáp án đúng dựa trên radio
-        switch (values[`correctOption${idx}`]) {
-          case "A":
-            formData.append("correctOption", values[`optionA${idx}`]);
-            break;
-          case "B":
-            formData.append("correctOption", values[`optionB${idx}`]);
-            break;
-          case "C":
-            formData.append("correctOption", values[`optionC${idx}`]);
-            break;
-          case "D":
-            formData.append("correctOption", values[`optionD${idx}`]);
-            break;
-          default:
-            formData.append("correctOption", values[`correctOption${idx}`]);
-        }
+        
+        // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+        formData.append("correctOption", values[`correctOption${idx}`]);
+        
         formData.append("questionType", values[`questionType${idx}`]);
         await QuestionService.update(q._id, formData);
       }

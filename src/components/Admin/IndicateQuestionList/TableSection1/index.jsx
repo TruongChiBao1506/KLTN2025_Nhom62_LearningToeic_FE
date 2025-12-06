@@ -94,15 +94,62 @@ const IndicateQuestionList = ({
             });
             return;
         }
+
         try {
+            // ✅ Show loading
+            Swal.fire({
+                title: 'Đang xử lý...',
+                text: 'Vui lòng đợi',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            console.log('🚀 Submitting questions:', {
+                testId,
+                questionIds: selectedQuestions,
+                count: selectedQuestions.length
+            });
+
             await TestService.addOrUpdateQuestionToTest(testId, selectedQuestions);
+            
+            console.log('✅ Submit successful');
+            
+            Swal.close();
             toast.success("Chỉ định câu hỏi Phần 1 thành công", { autoClose: 1000 });
+            
+            // ✅ CHỈ reset khi thành công
+            setSelectedQuestions([]);
+            setIsSubmitEnabled(false);
+            if (retrieveQuestions) retrieveQuestions();
+            
         } catch (error) {
-            toast.error("Chỉ định câu hỏi Phần 1 thất bại", { autoClose: 1000 });
+            console.error('❌ Submit failed:', error);
+            
+            Swal.close();
+            
+            // ✅ Hiển thị chi tiết lỗi và KHÔNG reset selection
+            Swal.fire({
+                icon: "error",
+                title: "Chỉ định câu hỏi thất bại",
+                html: `
+                    <p><strong>Lỗi:</strong> ${error.message || 'Không xác định'}</p>
+                    <p><small>Test ID: ${testId}</small></p>
+                    <p><small>Số câu hỏi đã chọn: ${selectedQuestions.length}</small></p>
+                    ${error.response?.data?.message ? `<p><small>Chi tiết: ${error.response.data.message}</small></p>` : ''}
+                `,
+                confirmButtonText: 'Thử lại',
+                showCancelButton: true,
+                cancelButtonText: 'Đóng'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitQuestions(); // ✅ Retry
+                }
+            });
+            
+            // ✅ KHÔNG reset - giữ nguyên selectedQuestions để retry
         }
-        setSelectedQuestions([]);
-        setIsSubmitEnabled(false);
-        if (retrieveQuestions) retrieveQuestions();
     };
 
     return (

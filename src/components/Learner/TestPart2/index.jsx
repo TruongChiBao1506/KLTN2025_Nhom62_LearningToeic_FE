@@ -122,10 +122,11 @@ const TestPart2 = ({
       }
     }
 
+    // Đã chọn đáp án nhưng chưa nộp bài - màu xanh dương
     return {
-      backgroundColor: "var(--color-chart-6)",
+      backgroundColor: "#1890ff",
       color: "white",
-      border: "1px solid #fa8c16",
+      border: "1px solid #1890ff",
     };
   };
 
@@ -219,19 +220,6 @@ const TestPart2 = ({
                       />
                       Trình duyệt của bạn không hỗ trợ phát âm thanh.
                     </audio>
-
-                    {/* Debug info - remove in production */}
-                    {process.env.NODE_ENV === "development" && (
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          color: "var(--color-text-secondary)",
-                          marginTop: "4px",
-                        }}
-                      >
-                        Audio URL: {getAudioUrl(question.questionAudio)}
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -293,14 +281,9 @@ const TestPart2 = ({
                             }}
                           >
                             <Radio value={option} style={{ width: "100%" }}>
-                              <Space align="start">
-                                <Text strong style={{ fontSize: "16px" }}>
-                                  {optionLabel}.
-                                </Text>
-                                <Text style={{ fontSize: "16px" }}>
-                                  {option}
-                                </Text>
-                              </Space>
+                              <Text strong style={{ fontSize: "18px" }}>
+                                {optionLabel}
+                              </Text>
                             </Radio>
 
                             {isCorrect && (
@@ -521,6 +504,11 @@ const TestPart2 = ({
                   height: "48px",
                   fontSize: "16px",
                   fontWeight: "600",
+                  borderRadius: "20px",
+                  background:  "var(--color-primary)",
+                  borderColor:  "var(--color-primary)",
+                  color: "#fff",
+
                 }}
               >
                 {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}

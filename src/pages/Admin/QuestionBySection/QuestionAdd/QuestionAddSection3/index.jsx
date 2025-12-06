@@ -138,23 +138,10 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                 formData.append("optionB", values[`optionB${i}`]);
                 formData.append("optionC", values[`optionC${i}`]);
                 formData.append("optionD", values[`optionD${i}`]);
-                // Xác định đáp án được chọn và đặt giá trị cho correctOption
-                switch (values[`correctOption${i}`]) {
-                    case "A":
-                        formData.append("correctOption", values[`optionA${i}`]);
-                        break;
-                    case "B":
-                        formData.append("correctOption", values[`optionB${i}`]);
-                        break;
-                    case "C":
-                        formData.append("correctOption", values[`optionC${i}`]);
-                        break;
-                    case "D":
-                        formData.append("correctOption", values[`optionD${i}`]);
-                        break;
-                    default:
-                        formData.append("correctOption", "");
-                }
+                
+                // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+                formData.append("correctOption", values[`correctOption${i}`]);
+                
                 formData.append("questionType", values[`questionType${i}`]);
                 await QuestionService.create(formData);
             }

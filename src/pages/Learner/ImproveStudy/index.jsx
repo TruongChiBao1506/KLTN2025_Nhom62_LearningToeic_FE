@@ -123,14 +123,12 @@ const ImproveStudy = () => {
   }, [sections]);
 
   const updateQuestionTypeOptions = useCallback(
-    (sectionId) => {
+    async (sectionId) => {
       console.log(
         "🚀 ~ updateQuestionTypeOptions ~ called with sectionId:",
         sectionId
       );
       console.log("🚀 ~ updateQuestionTypeOptions ~ sections:", sections);
-
-      let options = [];
 
       // Find the section by _id to get the part number
       const selectedSectionData = sections.find(
@@ -156,185 +154,53 @@ const ImproveStudy = () => {
 
       console.log("🚀 ~ updateQuestionTypeOptions ~ partNumber:", partNumber);
 
-      switch (partNumber) {
-        case 1:
-          options = [
-            {
-              value: "[Part 1] Tranh tả cả người và vật",
-              text: "[Part 1] Tranh tả cả người và vật",
-            },
-            {
-              value: "[Part 1] Tranh tả người",
-              text: "[Part 1] Tranh tả người",
-            },
-            { value: "[Part 1] Tranh tả vật", text: "[Part 1] Tranh tả vật" },
-          ];
-          break;
-        case 2:
-          options = [
-            { value: "[Part 2] Câu hỏi đuôi", text: "[Part 2] Câu hỏi đuôi" },
-            { value: "[Part 2] Câu hỏi HOW", text: "[Part 2] Câu hỏi HOW" },
-            {
-              value: "[Part 2] Câu hỏi lựa chọn",
-              text: "[Part 2] Câu hỏi lựa chọn",
-            },
-            { value: "[Part 2] Câu hỏi WHAT", text: "[Part 2] Câu hỏi WHAT" },
-            { value: "[Part 2] Câu hỏi WHEN", text: "[Part 2] Câu hỏi WHEN" },
-            { value: "[Part 2] Câu hỏi WHERE", text: "[Part 2] Câu hỏi WHERE" },
-            { value: "[Part 2] Câu hỏi WHO", text: "[Part 2] Câu hỏi WHO" },
-            { value: "[Part 2] Câu hỏi WHY", text: "[Part 2] Câu hỏi WHY" },
-            {
-              value: "[Part 2] Câu hỏi YES/NO",
-              text: "[Part 2] Câu hỏi YES/NO",
-            },
-            {
-              value: "[Part 2] Câu yêu cầu, đề nghị",
-              text: "[Part 2] Câu yêu cầu, đề nghị",
-            },
-          ];
-          break;
-        case 3:
-          options = [
-            {
-              value: "[Part 3] Câu hỏi kết hợp bảng biểu",
-              text: "[Part 3] Câu hỏi kết hợp bảng biểu",
-            },
-            {
-              value: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại",
-              text: "[Part 3] Câu hỏi về chi tiết cuộc hội thoại",
-            },
-            {
-              value: "[Part 3] Câu hỏi về chủ đề, mục đích",
-              text: "[Part 3] Câu hỏi về chủ đề, mục đích",
-            },
-            {
-              value: "[Part 3] Câu hỏi về danh tính người nói",
-              text: "[Part 3] Câu hỏi về danh tính người nói",
-            },
-            {
-              value: "[Part 3] Câu hỏi về địa điểm hội thoại",
-              text: "[Part 3] Câu hỏi về địa điểm hội thoại",
-            },
-            {
-              value: "[Part 3] Câu hỏi về hàm ý câu nói",
-              text: "[Part 3] Câu hỏi về hàm ý câu nói",
-            },
-            {
-              value: "[Part 3] Câu hỏi về hành động tương lai",
-              text: "[Part 3] Câu hỏi về hành động tương lai",
-            },
-            {
-              value: "[Part 3] Câu hỏi về yêu cầu, gợi ý",
-              text: "[Part 3] Câu hỏi về yêu cầu, gợi ý",
-            },
-          ];
-          break;
-        case 4:
-          options = [
-            {
-              value: "[Part 4] Câu hỏi kết hợp bảng biểu",
-              text: "[Part 4] Câu hỏi kết hợp bảng biểu",
-            },
-            {
-              value: "[Part 4] Câu hỏi về chi tiết",
-              text: "[Part 4] Câu hỏi về chi tiết",
-            },
-            {
-              value: "[Part 4] Câu hỏi về chủ đề, mục đích",
-              text: "[Part 4] Câu hỏi về chủ đề, mục đích",
-            },
-            {
-              value: "[Part 4] Câu hỏi về danh tính, địa điểm",
-              text: "[Part 4] Câu hỏi về danh tính, địa điểm",
-            },
-            {
-              value: "[Part 4] Câu hỏi về hàm ý câu nói",
-              text: "[Part 4] Câu hỏi về hàm ý câu nói",
-            },
-            {
-              value: "[Part 4] Câu hỏi về hành động tương lai",
-              text: "[Part 4] Câu hỏi về hành động tương lai",
-            },
-            {
-              value: "[Part 4] Câu hỏi yêu cầu, gợi ý",
-              text: "[Part 4] Câu hỏi yêu cầu, gợi ý",
-            },
-          ];
-          break;
-        case 5:
-          options = [
-            {
-              value: "[Part 5] Câu hỏi ngữ pháp",
-              text: "[Part 5] Câu hỏi ngữ pháp",
-            },
-            {
-              value: "[Part 5] Câu hỏi từ vựng",
-              text: "[Part 5] Câu hỏi từ vựng",
-            },
-            {
-              value: "[Part 5] Câu hỏi từ loại",
-              text: "[Part 5] Câu hỏi từ loại",
-            },
-          ];
-          break;
-        case 6:
-          options = [
-            {
-              value: "[Part 6] Câu hỏi ngữ pháp",
-              text: "[Part 6] Câu hỏi ngữ pháp",
-            },
-            {
-              value: "[Part 6] Câu hỏi từ vựng",
-              text: "[Part 6] Câu hỏi từ vựng",
-            },
-            {
-              value: "[Part 6] Câu hỏi từ loại",
-              text: "[Part 6] Câu hỏi từ loại",
-            },
-            {
-              value: "[Part 6] Câu hỏi điền câu",
-              text: "[Part 6] Câu hỏi điền câu",
-            },
-          ];
-          break;
-        case 7:
-          options = [
-            {
-              value: "[Part 7] Câu hỏi điền câu",
-              text: "[Part 7] Câu hỏi điền câu",
-            },
-            {
-              value: "[Part 7] Câu hỏi suy luận",
-              text: "[Part 7] Câu hỏi suy luận",
-            },
-            {
-              value: "[Part 7] Câu hỏi tìm thông tin",
-              text: "[Part 7] Câu hỏi tìm thông tin",
-            },
-            {
-              value: "[Part 7] Câu hỏi tìm chi tiết sai",
-              text: "[Part 7] Câu hỏi tìm chi tiết sai",
-            },
-            {
-              value: "[Part 7] Câu hỏi tìm từ đồng nghĩa",
-              text: "[Part 7] Câu hỏi tìm từ đồng nghĩa",
-            },
-            {
-              value: "[Part 7] Câu hỏi về chủ đề, mục đích",
-              text: "[Part 7] Câu hỏi về chủ đề, mục đích",
-            },
-            {
-              value: "[Part 7] Câu hỏi về hàm ý câu nói",
-              text: "[Part 7] Câu hỏi về hàm ý câu nói",
-            },
-          ];
-          break;
-        default:
-          options = [];
+      if (!partNumber) {
+        console.log("❌ Cannot extract part number from section name");
+        setQuestionTypeOptions([]);
+        return;
       }
 
-      console.log("🚀 ~ updateQuestionTypeOptions ~ options:", options);
-      setQuestionTypeOptions(options);
+      try {
+        // ✅ Gọi API để lấy subTypes từ database
+        const response = await questionService.getSubTypesByPartNumber(partNumber);
+        
+        if (response?.success && response?.data?.subTypes) {
+          const options = response.data.subTypes.map(subType => ({
+            value: subType,
+            text: subType
+          }));
+          
+          console.log("✅ ~ updateQuestionTypeOptions ~ options from API:", options);
+          
+          if (options.length === 0) {
+            // Hiển thị cảnh báo nếu không có subType nào
+            Swal.fire({
+              icon: "warning",
+              title: "Chưa có dữ liệu",
+              text: `Chưa có loại câu hỏi nào cho ${selectedSectionData.name}. Vui lòng thêm câu hỏi vào hệ thống!`,
+              timer: 3000,
+            });
+          }
+          
+          setQuestionTypeOptions(options);
+        } else {
+          console.log("❌ ~ No subTypes found in API response");
+          Swal.fire({
+            icon: "info",
+            title: "Không có dữ liệu",
+            text: `Chưa có loại câu hỏi nào cho ${selectedSectionData.name} trong hệ thống.`,
+          });
+          setQuestionTypeOptions([]);
+        }
+      } catch (error) {
+        console.error("❌ ~ Error fetching subTypes:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text: "Không thể tải danh sách loại câu hỏi. Vui lòng thử lại!",
+        });
+        setQuestionTypeOptions([]);
+      }
     },
     [sections]
   );
@@ -381,63 +247,107 @@ const ImproveStudy = () => {
         selectedSectionData
       );
 
-      // Map questionType to the format expected by backend
-      let mappedQuestionType;
-      if (selectedSectionData) {
-        const partMatch = selectedSectionData.name.match(/Part (\d+)/);
-        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
-
-        // Parts 1-4 are listening, Parts 5-7 are reading
-        if (partNumber >= 1 && partNumber <= 4) {
-          mappedQuestionType = "listening";
-        } else if (partNumber >= 5 && partNumber <= 7) {
-          mappedQuestionType = "reading";
-        } else {
-          mappedQuestionType = selectedQuestionType; // fallback
-        }
-      } else {
-        mappedQuestionType = selectedQuestionType; // fallback
-      }
-
-      const requestData = {
+      // ✅ SỬ DỤNG API MỚI: Gửi chính xác subType (selectedQuestionType)
+      const requestParams = {
         sectionId: selectedSection,
-        questionType: mappedQuestionType,
+        subType: selectedQuestionType, // ✅ Gửi đúng subType như "[Part 1] Tranh tả người"
+        limit: 30, // Giới hạn số câu hỏi trả về
       };
 
-      console.log("🚀 ~ startPractice ~ Request Data:", requestData);
+      console.log("🚀 ~ startPractice ~ Request Params:", requestParams);
       console.log("🚀 ~ startPractice ~ selectedSection:", selectedSection);
       console.log(
-        "🚀 ~ startPractice ~ selectedQuestionType:",
+        "🚀 ~ startPractice ~ selectedQuestionType (subType):",
         selectedQuestionType
-      );
-      console.log(
-        "🚀 ~ startPractice ~ mappedQuestionType:",
-        mappedQuestionType
       );
 
       try {
-        console.log("🚀 ~ startPractice ~ Making API call...");
-        const fetchedQuestions =
-          await questionService.getQuestionsBySectionIdAndType(requestData);
-        console.log("🚀 ~ startPractice ~ fetchedQuestions:", fetchedQuestions);
-        console.log(
-          "🚀 ~ startPractice ~ fetchedQuestions type:",
-          typeof fetchedQuestions
-        );
-        console.log(
-          "🚀 ~ startPractice ~ fetchedQuestions length:",
-          fetchedQuestions?.length
-        );
+        console.log("🚀 ~ startPractice ~ Calling practice API...");
+        
+        // ✅ Debug: Log chính xác URL sẽ gọi
+        console.log("📍 API Endpoint will call:", {
+          baseURL: "http://localhost:5000/api/questions/practice",
+          params: requestParams,
+          fullURL: `http://localhost:5000/api/questions/practice?sectionId=${requestParams.sectionId}&subType=${encodeURIComponent(requestParams.subType)}&limit=${requestParams.limit}`
+        });
+        
+        // ✅ GỌI API MỚI: GET /api/questions/practice
+        let apiResponse = await questionService.getQuestionsByPracticeFilter(requestParams);
+        
+        console.log("🚀 ~ startPractice ~ API Response:", apiResponse);
+        
+        // ✅ Extract questions array from response structure
+        let fetchedQuestions = apiResponse?.data?.questions || apiResponse?.questions || apiResponse;
+        
+        console.log("🚀 ~ startPractice ~ Extracted questions:", fetchedQuestions);
+        console.log("🚀 ~ startPractice ~ Questions type:", typeof fetchedQuestions);
+        console.log("🚀 ~ startPractice ~ Questions isArray:", Array.isArray(fetchedQuestions));
+        console.log("🚀 ~ startPractice ~ Questions length:", fetchedQuestions?.length);
+
+        // 🔄 FALLBACK: Nếu API mới không trả về kết quả, thử API cũ
+        if (!fetchedQuestions || fetchedQuestions.length === 0) {
+          console.log("🔄 ~ startPractice ~ Trying fallback with old API...");
+          
+          // Map questionType cho API cũ
+          const partMatch = selectedSectionData?.name.match(/Part (\d+)/);
+          const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+          let fallbackQuestionType = "listening";
+          
+          if (partNumber >= 5 && partNumber <= 7) {
+            fallbackQuestionType = "reading";
+          }
+          
+          const fallbackRequest = {
+            sectionId: selectedSection,
+            questionType: fallbackQuestionType,
+          };
+          
+          console.log("🔄 ~ startPractice ~ Fallback request:", fallbackRequest);
+          
+          try {
+            fetchedQuestions = await questionService.getQuestionsBySectionIdAndType(fallbackRequest);
+            console.log("🔄 ~ startPractice ~ Fallback questions:", fetchedQuestions);
+            
+            // Lọc client-side theo subType nếu có kết quả
+            if (fetchedQuestions && fetchedQuestions.length > 0) {
+              fetchedQuestions = fetchedQuestions.filter(q => 
+                q.questionSubType === selectedQuestionType || 
+                q.questionType === selectedQuestionType
+              );
+              console.log("🔄 ~ startPractice ~ Filtered questions:", fetchedQuestions.length);
+            }
+          } catch (fallbackError) {
+            console.error("🔄 ~ startPractice ~ Fallback error:", fallbackError);
+          }
+        }
 
         if (fetchedQuestions && fetchedQuestions.length > 0) {
           setQuestions(fetchedQuestions);
           setShowImproveTest(true);
+          
+          // Hiển thị thông báo thành công
+          // Swal.fire({
+          //   icon: "success",
+          //   title: "Bắt đầu luyện tập!",
+          //   text: `Đã tải ${fetchedQuestions.length} câu hỏi`,
+          //   timer: 1500,
+          //   showConfirmButton: false,
+          // });
         } else {
-          console.log("🚀 ~ startPractice ~ No questions returned from API");
+          console.log("🚀 ~ startPractice ~ No questions found even after fallback");
           Swal.fire({
             icon: "info",
             title: "Thông báo",
             text: "Không tìm thấy câu hỏi nào phù hợp với tiêu chí bạn chọn!",
+            html: `<p>Không tìm thấy câu hỏi cho:</p>
+                   <p><strong>Section:</strong> ${selectedSectionData?.name}</p>
+                   <p><strong>Loại:</strong> ${selectedQuestionType}</p>
+                   <p><strong>Debug info:</strong></p>
+                   <ul style="text-align: left; font-size: 12px;">
+                     <li>Section ID: ${selectedSection}</li>
+                     <li>SubType: ${selectedQuestionType}</li>
+                   </ul>
+                   <p>Vui lòng chọn loại câu hỏi khác hoặc kiểm tra dữ liệu backend.</p>`,
           });
         }
       } catch (error) {
@@ -535,6 +445,18 @@ const ImproveStudy = () => {
           selectedLetter = "D";
         }
 
+        // 🔍 Debug log
+        console.log("🎯 Question grading debug:", {
+          questionId: question._id,
+          selectedOption: question.selectedOption,
+          selectedLetter: selectedLetter,
+          correctOption: question.correctOption,
+          optionA: question.optionA,
+          optionB: question.optionB,
+          optionC: question.optionC,
+          optionD: question.optionD,
+        });
+
         return {
           ...question,
           answered: true,
@@ -547,16 +469,47 @@ const ImproveStudy = () => {
 
     setQuestions(updatedQuestions);
 
-    // Tính điểm - sử dụng selectedLetter để so sánh với correctOption
-    const correctCount = updatedQuestions.filter(
-      (question) =>
-        question.answered && question.selectedLetter === question.correctOption
-    ).length;
+    // ✅ Tính điểm - hỗ trợ CẢ 2 định dạng correctOption (chữ cái "A" HOẶC nội dung đầy đủ)
+    const correctCount = updatedQuestions.filter((question) => {
+      if (!question.answered) return false;
+      
+      // ✅ Kiểm tra correctOption là chữ cái (A/B/C/D) hay nội dung đầy đủ
+      const correctOpt = question.correctOption;
+      
+      // 🔍 Debug mỗi câu hỏi
+      const isCorrect = (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D")
+        ? question.selectedLetter === correctOpt
+        : question.selectedOption === correctOpt;
+      
+      console.log("✅ Checking question:", {
+        correctOption: correctOpt,
+        selectedLetter: question.selectedLetter,
+        selectedOption: question.selectedOption,
+        isCorrect: isCorrect
+      });
+      
+      // Trường hợp 1: correctOption là chữ cái "A", "B", "C", "D"
+      if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+        return question.selectedLetter === correctOpt;
+      }
+      
+      // Trường hợp 2: correctOption là nội dung đầy đủ (database cũ)
+      return question.selectedOption === correctOpt;
+    }).length;
 
-    const incorrectCount = updatedQuestions.filter(
-      (question) =>
-        question.answered && question.selectedLetter !== question.correctOption
-    ).length;
+    const incorrectCount = updatedQuestions.filter((question) => {
+      if (!question.answered) return false;
+      
+      const correctOpt = question.correctOption;
+      
+      // Trường hợp 1: correctOption là chữ cái
+      if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+        return question.selectedLetter !== correctOpt;
+      }
+      
+      // Trường hợp 2: correctOption là nội dung đầy đủ
+      return question.selectedOption !== correctOpt;
+    }).length;
 
     // Hiển thị kết quả
     Swal.fire({
@@ -579,110 +532,27 @@ const ImproveStudy = () => {
   };
 
   const getImageUrl = (imageName) => {
-    if (imageName) {
-      // Check if imageName already includes full path
-      if (imageName.startsWith("http")) {
-        return imageName;
-      }
-
-      // Handle different path formats
-      let fileName = imageName;
-
-      // If it's a full path like "/images/toeic/part1/office_meeting.jpg", extract filename
-      if (imageName.startsWith("/images/")) {
-        fileName = imageName.split("/").pop();
-
-        // Try to map old path structure to new filenames
-        if (fileName === "office_meeting.jpg") {
-          fileName = "fulltest01_number1.png"; // Map to actual file
-        }
-        // Add more mappings as needed for other images
-      }
-
-      console.log("🖼️ Image URL Debug:", {
-        originalImageName: imageName,
-        finalFileName: fileName,
-        fullUrl: `http://localhost:5000/images/${fileName}`,
-      });
-
-      // Use the backend server on port 5000
-      return `http://localhost:5000/images/${fileName}`;
+    if (!imageName) return "";
+    
+    // ✅ Nếu đã có URL đầy đủ (http/https), dùng luôn
+    if (imageName.startsWith("http")) {
+      return imageName;
     }
-    return "";
+
+    // ✅ Nếu chưa có, thêm localhost prefix
+    return `http://localhost:5000/images/${imageName}`;
   };
 
   const getAudioUrl = (audioName) => {
-    if (audioName) {
-      // Extract filename from full path (e.g., "/audio/toeic/part4/announcement_01.mp3" -> "announcement_01.mp3")
-      let fileName = audioName.includes("/")
-        ? audioName.split("/").pop()
-        : audioName;
-
-      // Comprehensive mapping logic based on TOEIC structure
-      // Part 1: Questions 1-6 (Individual pictures)
-      if (fileName.includes("part1") || fileName.includes("001.mp3")) {
-        fileName = "fulltest01_number1.mp3"; // Single audio for Part 1
-      }
-
-      // Part 2: Questions 7-31 (Question-Response)
-      else if (
-        fileName.includes("part2") ||
-        fileName.includes("q001") ||
-        fileName.includes("q002") ||
-        fileName.includes("questions_01-05")
-      ) {
-        fileName = "fulltest01_number7.mp3"; // Single audio for Part 2 questions
-      }
-
-      // Part 3: Questions 32-70 (Conversations)
-      else if (
-        fileName.includes("part3") ||
-        fileName.includes("conversation_01")
-      ) {
-        fileName = "fulltest01_number32to34.mp3"; // First conversation group
-      }
-
-      // Part 4: Questions 71-100 (Talks/Announcements)
-      else if (
-        fileName.includes("part4") ||
-        fileName.includes("announcement_01")
-      ) {
-        fileName = "fulltest01_number71to73.mp3"; // First announcement group
-      }
-
-      // Additional specific mappings for other conversations/announcements
-      else if (fileName.includes("conversation_02")) {
-        fileName = "fulltest01_number35to37.mp3";
-      } else if (fileName.includes("conversation_03")) {
-        fileName = "fulltest01_number38to40.mp3";
-      } else if (fileName.includes("announcement_02")) {
-        fileName = "fulltest01_number74to76.mp3";
-      } else if (fileName.includes("announcement_03")) {
-        fileName = "fulltest01_number77to79.mp3";
-      }
-
-      // Fallback for unknown patterns
-      else {
-        console.warn(
-          "No mapping found for audio:",
-          fileName,
-          "using Part 1 fallback"
-        );
-        fileName = "fulltest01_number1.mp3";
-      }
-
-      const finalUrl = `http://localhost:5000/audios/${fileName}`;
-      console.log("Audio URL mapping:", {
-        original: audioName,
-        extracted: audioName.includes("/")
-          ? audioName.split("/").pop()
-          : audioName,
-        mapped: fileName,
-        finalUrl,
-      });
-      return finalUrl;
+    if (!audioName) return "";
+    
+    // ✅ Nếu đã có URL đầy đủ (http/https), dùng luôn
+    if (audioName.startsWith("http")) {
+      return audioName;
     }
-    return "";
+
+    // ✅ Nếu chưa có, thêm localhost prefix
+    return `http://localhost:5000/audios/${audioName}`;
   };
 
   const getOptions = (question) => {

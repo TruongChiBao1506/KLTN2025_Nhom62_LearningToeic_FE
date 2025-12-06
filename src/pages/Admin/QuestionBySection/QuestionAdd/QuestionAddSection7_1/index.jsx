@@ -18,7 +18,7 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
     const baseSchema = {
       groupImage: yup
         .mixed()
-        .required("Vui lòng chọn một tệp ảnh.")
+        .nullable()
         .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
           const file = value && value.length ? value[0] : value;
           if (!file) return true;
@@ -163,25 +163,13 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
         formData.append("optionC", question.optionC);
         formData.append("optionD", question.optionD);
 
-        // Set correct option based on selection
-        switch (question.correctOption) {
-          case "A":
-            formData.append("correctOption", question.optionA);
-            break;
-          case "B":
-            formData.append("correctOption", question.optionB);
-            break;
-          case "C":
-            formData.append("correctOption", question.optionC);
-            break;
-          case "D":
-            formData.append("correctOption", question.optionD);
-            break;
-          default:
-            formData.append("correctOption", "");
-        }
+        // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
+        formData.append("correctOption", question.correctOption);
 
-        formData.append("questionType", question.questionType);
+        // ✅ Thêm questionSubType (giá trị chi tiết)
+        formData.append("questionSubType", question.questionType);
+        // ✅ Tự động set questionType là "reading" cho Part 7
+        formData.append("questionType", "reading");
         formData.append("questionExplanation", question.questionExplanation);
 
         await QuestionService.create(formData);
@@ -203,12 +191,20 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
 
   const questionTypeOptions = [
     { value: "", label: "Chọn một tùy chọn", disabled: true },
-    { value: "[Part 7] Câu hỏi điền câu", label: "[Part 7] Câu hỏi điền câu" },
-    { value: "[Part 7] Câu hỏi suy luận", label: "[Part 7] Câu hỏi suy luận" },
     { value: "[Part 7] Câu hỏi tìm thông tin", label: "[Part 7] Câu hỏi tìm thông tin" },
     { value: "[Part 7] Câu hỏi tìm chi tiết sai", label: "[Part 7] Câu hỏi tìm chi tiết sai" },
-    { value: "[Part 7] Câu hỏi tìm từ đồng nghĩa", label: "[Part 7] Câu hỏi tìm từ đồng nghĩa" },
     { value: "[Part 7] Câu hỏi về chủ đề, mục đích", label: "[Part 7] Câu hỏi về chủ đề, mục đích" },
+    { value: "[Part 7] Câu hỏi suy luận", label: "[Part 7] Câu hỏi suy luận" },
+    { value: "[Part 7] Câu hỏi điền câu", label: "[Part 7] Câu hỏi điền câu" },
+    { value: "[Part 7] Cấu trúc: một đoạn", label: "[Part 7] Cấu trúc: một đoạn" },
+    { value: "[Part 7] Cấu trúc: nhiều đoạn", label: "[Part 7] Cấu trúc: nhiều đoạn" },
+    { value: "[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay", label: "[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay" },
+    { value: "[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu", label: "[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu" },
+    { value: "[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá", label: "[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá" },
+    { value: "[Part 7] Dạng bài: Advertisement - Quảng cáo", label: "[Part 7] Dạng bài: Advertisement - Quảng cáo" },
+    { value: "[Part 7] Dạng bài: Announcement/ Notice: Thông báo", label: "[Part 7] Dạng bài: Announcement/ Notice: Thông báo" },
+    { value: "[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn", label: "[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn" },
+    { value: "[Part 7] Câu hỏi tìm từ đồng nghĩa", label: "[Part 7] Câu hỏi tìm từ đồng nghĩa" },
     { value: "[Part 7] Câu hỏi về hàm ý câu nói", label: "[Part 7] Câu hỏi về hàm ý câu nói" }
   ];
 
@@ -225,17 +221,24 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
         </button>
         <button
           type="button"
-          className={`button mx-3${numberOfQuestions === 3 ? ' active' : ''}`}
+          className={`button mx-2${numberOfQuestions === 3 ? ' active' : ''}`}
           onClick={() => handleSetNumberOfQuestions(3)}
         >
           3 Câu Hỏi
         </button>
         <button
           type="button"
-          className={`button${numberOfQuestions === 4 ? ' active' : ''}`}
+          className={`button mx-2${numberOfQuestions === 4 ? ' active' : ''}`}
           onClick={() => handleSetNumberOfQuestions(4)}
         >
           4 Câu Hỏi
+        </button>
+        <button
+          type="button"
+          className={`button${numberOfQuestions === 5 ? ' active' : ''}`}
+          onClick={() => handleSetNumberOfQuestions(5)}
+        >
+          5 Câu Hỏi
         </button>
       </div>
 

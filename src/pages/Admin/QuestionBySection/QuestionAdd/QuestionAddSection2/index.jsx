@@ -105,22 +105,14 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("optionB", values.optionB);
             formData.append("optionC", values.optionC);
 
-            // Xác định đáp án được chọn và đặt giá trị cho correctOption
-            switch (values.correctOption) {
-                case "A":
-                    formData.append("correctOption", values.optionA);
-                    break;
-                case "B":
-                    formData.append("correctOption", values.optionB);
-                    break;
-                case "C":
-                    formData.append("correctOption", values.optionC);
-                    break;
-                default:
-                    formData.append("correctOption", "");
-            }
+            // ✅ Lưu correctOption là chữ cái A/B/C (KHÔNG phải nội dung đầy đủ)
+            formData.append("correctOption", values.correctOption);
 
-            formData.append("questionType", values.questionType);
+            // ✅ Thêm questionSubType (giá trị chi tiết)
+            formData.append("questionSubType", values.questionType);
+            
+            // ✅ Tự động set questionType là "listening" cho Part 2
+            formData.append("questionType", "listening");
 
             if (selectedAudio) {
                 formData.append("questionAudio", selectedAudio, selectedAudio.name);
