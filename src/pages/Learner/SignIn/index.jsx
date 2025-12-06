@@ -74,15 +74,15 @@ const SignIn = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // ✅ Check rate limiting
-      const lockoutStatus = rateLimiter.checkLockout();
-      if (lockoutStatus.isLocked) {
-        toast.error(`❌ Tài khoản bị khóa. Vui lòng thử lại sau ${lockoutStatus.remainingTime} phút.`, {
-          position: "top-right",
-          autoClose: 4000,
-        });
-        return;
-      }
+      // ✅ Check rate limiting (TEMPORARILY DISABLED)
+      // const lockoutStatus = rateLimiter.checkLockout();
+      // if (lockoutStatus.isLocked) {
+      //   toast.error(`❌ Tài khoản bị khóa. Vui lòng thử lại sau ${lockoutStatus.remainingTime} phút.`, {
+      //     position: "top-right",
+      //     autoClose: 4000,
+      //   });
+      //   return;
+      // }
 
       setLoading(true);
       try {
@@ -164,8 +164,8 @@ const SignIn = () => {
             localStorage.removeItem("rememberedUsername");
           }
 
-          // ✅ Reset login attempts on success
-          rateLimiter.resetAttempts();
+          // ✅ Reset login attempts on success (TEMPORARILY DISABLED)
+          // rateLimiter.resetAttempts();
 
           // ✅ Get redirect route and show success message
           const route = getRedirectRoute(roles);
@@ -190,28 +190,29 @@ const SignIn = () => {
       } catch (error) {
         console.error("Đăng nhập thất bại:", error);
         
-        // ✅ Record failed attempt
-        const attemptStatus = rateLimiter.recordAttempt();
+        // ✅ Record failed attempt (TEMPORARILY DISABLED)
+        // const attemptStatus = rateLimiter.recordAttempt();
         
         // ✅ Get error message using helper
         const errorMessage = getErrorMessage(error);
         
-        if (attemptStatus.shouldLockout) {
-          toast.error(`❌ Quá nhiều lần đăng nhập thất bại. Tài khoản bị khóa 15 phút.`, {
-            position: "top-right",
-            autoClose: 5000,
-          });
-        } else if (attemptStatus.attemptsLeft > 0) {
-          toast.error(`${errorMessage} Còn ${attemptStatus.attemptsLeft} lần thử.`, {
-            position: "top-right",
-            autoClose: 4000,
-          });
-        } else {
+        // Rate limiting error messages (TEMPORARILY DISABLED)
+        // if (attemptStatus.shouldLockout) {
+        //   toast.error(`❌ Quá nhiều lần đăng nhập thất bại. Tài khoản bị khóa 15 phút.`, {
+        //     position: "top-right",
+        //     autoClose: 5000,
+        //   });
+        // } else if (attemptStatus.attemptsLeft > 0) {
+        //   toast.error(`${errorMessage} Còn ${attemptStatus.attemptsLeft} lần thử.`, {
+        //     position: "top-right",
+        //     autoClose: 4000,
+        //   });
+        // } else {
           toast.error(errorMessage, {
             position: "top-right",
             autoClose: 4000,
           });
-        }
+        // }
       } finally {
         setLoading(false);
       }
