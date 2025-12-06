@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import sectionsService from '../../../../services/sectionsService';
 
 // Import tất cả các QuestionAdd components
 import QuestionAddSection1 from '../../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddSection1';
@@ -23,81 +24,137 @@ import QuestionAddNo6To7 from '../../../../pages/Admin/QuestionBySection/Questio
 import QuestionAddNo8 from '../../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo8';
 
 const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
+    const [section, setSection] = useState(null);
+    const [sectionLoading, setSectionLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchSection = async () => {
+            if (!sectionId || !show) return;
+            
+            setSectionLoading(true);
+            try {
+                const response = await sectionsService.get(sectionId);
+                setSection(response);
+            } catch (error) {
+                console.error("Error fetching section:", error);
+                setSection(null);
+            } finally {
+                setSectionLoading(false);
+            }
+        };
+
+        fetchSection();
+    }, [sectionId, show]);
     const renderQuestionAddComponent = () => {
-        switch (sectionId) {
-            case "686ce171b614dda1fc08f1d0":
-                return (
-                    <QuestionAddSection1
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d1":
-                return (
-                    <QuestionAddSection2
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d2":
-                return (
-                    <QuestionAddSection3
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d3":
-                return (
-                    <QuestionAddSection4
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d4":
-                return (
-                    <QuestionAddSection5
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d5":
-                return (
-                    <QuestionAddSection6
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "686ce171b614dda1fc08f1d6":
-                return (
-                    <QuestionAddSection7Single
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d10f3abd7f3cf92add620":
-                return (
-                    <QuestionAddSection7Double
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d12f0abd7f3cf92add643":
-                return (
-                    <QuestionAddSection7Triple
-                        sectionId={sectionId}
-                        retrieveQuestions={retrieveQuestions}
-                        onClose={onHide}
-                    />
-                );
-            case "685d16f6abd7f3cf92add64a":
+        if (sectionLoading) {
+            return <div className="text-center p-4">Đang tải thông tin phần thi...</div>;
+        }
+        if (!section) {
+            return <div className="text-center p-4 text-danger">Không tìm thấy thông tin phần thi.</div>;
+        }
+
+        // Extract part number from name (e.g., "Part 1: Photographs" -> 1)
+        const partMatch = section.name.match(/Part (\d+)/i);
+        const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+        // Determine component based on type and part number
+        if (section.type === 1) {  // Listening sections
+            switch (partNumber) {
+                case 1:
+                    return (
+                        <QuestionAddSection1
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 2:
+                    return (
+                        <QuestionAddSection2
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 3:
+                    return (
+                        <QuestionAddSection3
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 4:
+                    return (
+                        <QuestionAddSection4
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần thi Listening này.</div>;
+            }
+        } else if (section.type === 2) {  // Reading sections
+            switch (partNumber) {
+                case 5:
+                    return (
+                        <QuestionAddSection5
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 6:
+                    return (
+                        <QuestionAddSection6
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                case 7:
+                    // Handle Part 7 variants based on name keywords
+                    if (section.name.toLowerCase().includes("single")) {
+                        return (
+                            <QuestionAddSection7Single
+                                sectionId={sectionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else if (section.name.toLowerCase().includes("double")) {
+                        return (
+                            <QuestionAddSection7Double
+                                sectionId={sectionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else if (section.name.toLowerCase().includes("triple")) {
+                        return (
+                            <QuestionAddSection7Triple
+                                sectionId={sectionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    } else {
+                        return (
+                            <QuestionAddSection7Single
+                                sectionId={sectionId}
+                                retrieveQuestions={retrieveQuestions}
+                                onClose={onHide}
+                            />
+                        );
+                    }
+                default:
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần thi Reading này.</div>;
+            }
+        } else if (section.type === 3) {  // Grammar sections
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("2")) {
                 return (
                     <QuestionAddNo1To2
                         sectionId={sectionId}
@@ -105,7 +162,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d170eabd7f3cf92add651":
+            } else if (nameLower.includes("3") && nameLower.includes("4")) {
                 return (
                     <QuestionAddNo3To4
                         sectionId={sectionId}
@@ -113,7 +170,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d1721abd7f3cf92add658":
+            } else if (nameLower.includes("5") && nameLower.includes("7")) {
                 return (
                     <QuestionAddNo5To7
                         sectionId={sectionId}
@@ -121,7 +178,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d1732abd7f3cf92add65f":
+            } else if (nameLower.includes("8") && nameLower.includes("10")) {
                 return (
                     <QuestionAddNo8To10
                         sectionId={sectionId}
@@ -129,7 +186,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d1744abd7f3cf92add666":
+            } else if (nameLower.includes("11")) {
                 return (
                     <QuestionAddNo11
                         sectionId={sectionId}
@@ -137,7 +194,12 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d1761abd7f3cf92add66d":
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần ngữ pháp này.</div>;
+        } else if (section.type === 4) {  // Vocabulary sections
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("5")) {
                 return (
                     <QuestionAddNo1To5
                         sectionId={sectionId}
@@ -145,7 +207,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d1773abd7f3cf92add674":
+            } else if (nameLower.includes("6") && nameLower.includes("7")) {
                 return (
                     <QuestionAddNo6To7
                         sectionId={sectionId}
@@ -153,7 +215,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            case "685d178babd7f3cf92add67b":
+            } else if (nameLower.includes("8")) {
                 return (
                     <QuestionAddNo8
                         sectionId={sectionId}
@@ -161,12 +223,20 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                         onClose={onHide}
                     />
                 );
-            default:
-                return null;
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần từ vựng này.</div>;
         }
+
+        return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;
     };
 
     const getModalTitle = () => {
+        if (!section) return "Thêm câu hỏi";
+        return `Thêm câu hỏi - ${section.name}`;
+    };
+
+    // Keep old hardcoded version as fallback (commented out)
+    const getModalTitleOld = () => {
         switch (sectionId) {
             case "686ce171b614dda1fc08f1d0":
                 return "Thêm câu hỏi Section 1";
@@ -205,7 +275,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
             default:
                 return "Thêm câu hỏi";
         }
-    };
+    }; // End of old version
 
     return (
         <Modal 
