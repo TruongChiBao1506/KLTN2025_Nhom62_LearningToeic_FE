@@ -84,7 +84,7 @@ const TopicDetail = () => {
 
         // Get user's favorite vocabularies (optional - user might not be logged in)
         try {
-          const token = localStorage.getItem("learnerToken");
+          const token = sessionStorage.getItem("learnerToken");
           if (token) {
             console.log("🚀 ~ fetchData ~ Loading user favorites...");
             // Sử dụng hàm refreshFavorites để tái sử dụng logic
@@ -146,7 +146,7 @@ const TopicDetail = () => {
     }
 
     // Check if user is authenticated
-    const token = localStorage.getItem("learnerToken");
+    const token = sessionStorage.getItem("learnerToken");
     if (!token) {
       message.warning("Vui lòng đăng nhập để sử dụng tính năng yêu thích");
       return;
@@ -184,15 +184,21 @@ const TopicDetail = () => {
       } else {
         // Add to favorites
         try {
-          await userVocabularyService.addToFavorites(vocabularyId);
+          console.log("🔵 Attempting to add vocabulary to favorites:", vocabularyId);
+          const response = await userVocabularyService.addToFavorites(vocabularyId);
+          console.log("🟢 Add to favorites successful:", response);
+          
           // Thành công - cập nhật state frontend
           if (!favoriteVocabs.includes(vocabularyId)) {
             setFavoriteVocabs([...favoriteVocabs, vocabularyId]);
           }
           message.success("Đã thêm từ vựng vào danh sách yêu thích");
         } catch (addError) {
-          console.warn("Add error:", addError);
-          console.warn("Add error details:", addError.response?.data);
+          console.error("🔴 Add error:", addError);
+          console.error("🔴 Add error response:", addError.response);
+          console.error("🔴 Add error data:", addError.response?.data);
+          console.error("🔴 Add error status:", addError.response?.status);
+          console.error("🔴 Add error message:", addError.message);
 
           // Xử lý trường hợp từ vựng đã tồn tại trong backend
           if (
@@ -214,16 +220,22 @@ const TopicDetail = () => {
               await refreshFavorites();
             }, 300);
           } else {
-            // Lỗi khác - hiển thị thông báo lỗi
+            // Lỗi khác - hiển thị thông báo lỗi chi tiết hơn
             console.error("Unexpected add error:", addError);
             if (addError.response?.status === 401) {
               message.error(
                 "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
               );
+            } else if (addError.response?.status === 400) {
+              const errorMsg = addError.response?.data?.message || "Có lỗi xảy ra với từ vựng này";
+              message.error(errorMsg);
+            } else if (addError.response?.status === 500) {
+              message.error("Lỗi máy chủ. Vui lòng thử lại sau.");
             } else {
-              message.error(
-                "Không thể thêm từ vựng vào danh sách yêu thích. Vui lòng thử lại."
-              );
+              const errorMsg = addError.response?.data?.message || 
+                             addError.message || 
+                             "Không thể thêm từ vựng vào danh sách yêu thích. Vui lòng thử lại.";
+              message.error(errorMsg);
             }
           }
         }
@@ -245,7 +257,7 @@ const TopicDetail = () => {
   // Refresh favorites from backend
   const refreshFavorites = async () => {
     try {
-      const token = localStorage.getItem("learnerToken");
+      const token = sessionStorage.getItem("learnerToken");
       if (!token) {
         console.log("🚀 ~ refreshFavorites ~ No token, skipping");
         return [];

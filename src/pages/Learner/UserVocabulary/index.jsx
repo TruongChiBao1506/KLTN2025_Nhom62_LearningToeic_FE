@@ -185,7 +185,7 @@ const UserVocabulary = () => {
     }
 
     window.speechSynthesis.speak(utterance);
-    message.success(`Đang phát âm: ${vocabulary.word}`);
+    // message.success(`Đang phát âm: ${vocabulary.word}`);
   };
 
   const practicePronunciation = (record, displayIndex) => {

@@ -363,7 +363,7 @@ const Dictionary = () => {
 
     window.speechSynthesis.speak(utterance);
     setIsPlaying(true);
-    message.info("Đang phát âm...");
+    // message.info("Đang phát âm...");
 
     utterance.onend = () => {
       setIsPlaying(false);
@@ -591,7 +591,7 @@ const Dictionary = () => {
   const playSound = () => {
     if (audioRef.current && audioSrc) {
       audioRef.current.play();
-      message.info("Đang phát âm từ vựng");
+      // message.info("Đang phát âm từ vựng");
     } else {
       message.warning("Không có âm thanh cho từ này");
     }

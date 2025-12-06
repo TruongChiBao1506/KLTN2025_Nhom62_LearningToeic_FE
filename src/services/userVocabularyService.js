@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 // Hàm helper để lấy userId từ token
 const getUserIdFromToken = () => {
   try {
-    const token = localStorage.getItem("learnerToken");
+    const token = sessionStorage.getItem("learnerToken");
     if (token) {
       const decoded = jwtDecode(token);
       return decoded.id;
@@ -118,7 +118,19 @@ const userVocabularyService = {
   // Thêm từ vựng vào danh sách yêu thích
   addToFavorites: async (vocabularyId) => {
     try {
+      console.log("🔵 [addToFavorites] Starting with vocabularyId:", vocabularyId);
+      
+      // Check token first
+      const token = sessionStorage.getItem("learnerToken");
+      console.log("🔵 [addToFavorites] Token exists:", !!token);
+      
+      if (!token) {
+        throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
+      }
+      
       const userId = getUserIdFromToken();
+      console.log("🔵 [addToFavorites] UserId from token:", userId);
+      
       if (!userId) {
         throw new Error("Không thể lấy thông tin người dùng. Vui lòng đăng nhập lại.");
       }
@@ -133,17 +145,18 @@ const userVocabularyService = {
         vocabulary: vocabularyId,
       };
       
-      console.log("Adding to favorites with data:", requestData);
-      console.log("VocabularyId:", vocabularyId);
+      console.log("🔵 [addToFavorites] Request data:", requestData);
+      console.log("🔵 [addToFavorites] Sending POST to /user-vocabularies");
       
       const response = await axiosClient.post("/user-vocabularies", requestData);
-      console.log("Add to favorites response:", response);
+      console.log("🟢 [addToFavorites] Success response:", response);
       return response;
     } catch (error) {
-      console.error("Lỗi khi thêm từ vựng vào danh sách yêu thích:", error);
-      console.error("Error details:", error.response?.data);
-      console.error("Error status:", error.response?.status);
-      console.error("Error message:", error.message);
+      console.error("🔴 [addToFavorites] Error:", error);
+      console.error("🔴 [addToFavorites] Error response:", error.response);
+      console.error("🔴 [addToFavorites] Error data:", error.response?.data);
+      console.error("🔴 [addToFavorites] Error status:", error.response?.status);
+      console.error("🔴 [addToFavorites] Error message:", error.message);
       throw error;
     }
   },
