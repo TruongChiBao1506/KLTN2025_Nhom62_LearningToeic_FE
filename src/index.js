@@ -9,6 +9,7 @@ import { store, persistor } from './store/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'antd/dist/reset.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // Suppress ResizeObserver console errors
 const originalError = console.error;

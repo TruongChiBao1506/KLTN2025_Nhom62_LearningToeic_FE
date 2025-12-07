@@ -73,6 +73,7 @@ const QuestionAddNo8 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("sectionId", sectionId);
             formData.append("questionText", values.questionText);
             formData.append("suggestedAnswer", suggestedAnswerData);
+            formData.append("questionType", "writing"); // ✅ Writing Question 8
 
             await QuestionService.create(formData);
             retrieveQuestions();

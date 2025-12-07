@@ -4,14 +4,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import sectionsService from "../../../services/sectionsService";
 
-import TableSection1 from "../IndicateQuestionList/TableSection1";
-import TableSection2 from "../IndicateQuestionList/TableSection2";
-import TableSection3 from "../IndicateQuestionList/TableSection3";
-import TableSection4 from "../IndicateQuestionList/TableSection4";
-import TableSection5 from "../IndicateQuestionList/TableSection5";
-import TableSection6 from "../IndicateQuestionList/TableSection6";
-import TableSection7 from "../IndicateQuestionList/TableSection7";
-// ...import các bảng khác nếu có
+import TableSection1 from "./TableSection1";
+import TableSection2 from "./TableSection2";
+import TableSection3 from "./TableSection3";
+import TableSection4 from "./TableSection4";
+import TableSection5 from "./TableSection5";
+import TableSection6 from "./TableSection6";
+import TableSection7 from "./TableSection7";
+import TableSectionNo1To2 from "./TableSectionNo1To2";
+import TableSectionNo3To4 from "./TableSectionNo3To4";
+import TableSectionNo5To7 from "./TableSectionNo5To7";
+import TableSectionNo8To10 from "./TableSectionNo8To10";
+import TableSectionNo1To5 from "./TableSectionNo1To5";
+import TableSectionNo6To7 from "./TableSectionNo6To7";
+import TableSectionNo8 from "./TableSectionNo8";
+import TableSectionNo11 from "./TableSectionNo11";
 
 import "./../SectionList/style.css";
 
@@ -81,11 +88,33 @@ const IndicateQuestion = ({
     const firstRowNumber = (currentPage - 1) * itemsPerPage + 1;
     const lastRowNumber = Math.min((currentPage - 1) * itemsPerPage + itemsPerPage, filteredQuestions.length);
 
-    // Helpers
-    const getImageUrl = (imageName) =>
-        imageName ? `http://localhost:9004/images/${imageName}` : "";
-    const getAudioUrl = (audioName) =>
-        audioName ? `http://localhost:9004/audios/${audioName}` : "";
+    // ✅ Hỗ trợ cả S3 URL và local URL
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "https://demofree.sirv.com/nope-not-here.jpg";
+    
+    // Nếu đã là URL đầy đủ (S3 hoặc HTTP/HTTPS), trả về trực tiếp
+    if (imageName.startsWith('http://') || imageName.startsWith('https://')) {
+      return imageName;
+    }
+    
+    // Nếu chỉ là tên file, tạo URL local
+    return `http://localhost:9004/images/${imageName}`;
+  };
+
+  // ✅ Hỗ trợ cả S3 URL và local URL
+  const getAudioUrl = (audioName) => {
+    if (!audioName) {
+      return "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+    }
+    
+    // Nếu đã là URL đầy đủ (S3 hoặc HTTP/HTTPS), trả về trực tiếp
+    if (audioName.startsWith('http://') || audioName.startsWith('https://')) {
+      return audioName;
+    }
+    
+    // Nếu chỉ là tên file, tạo URL local
+    return `http://localhost:9004/audios/${audioName}`;
+  };
 
     // Table render by section metadata
     const renderTable = () => {
@@ -203,6 +232,121 @@ const IndicateQuestion = ({
                 default:
                     return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Reading này.</div>;
             }
+        } else if (section.type === 3) {  // Grammar sections
+            // Determine by section name patterns
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("2")) {
+                return (
+                    <TableSectionNo1To2
+                        paginatedQuestions={paginatedQuestions}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("3") && nameLower.includes("4")) {
+                return (
+                    <TableSectionNo3To4
+                        paginatedQuestions={paginatedQuestions}
+                        getImageUrl={getImageUrl}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("5") && nameLower.includes("7")) {
+                return (
+                    <TableSectionNo5To7
+                        paginatedQuestions={paginatedQuestions}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("8") && nameLower.includes("10")) {
+                return (
+                    <TableSectionNo8To10
+                        paginatedQuestions={paginatedQuestions}
+                        getImageUrl={getImageUrl}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("11")) {
+                return (
+                    <TableSectionNo11
+                        paginatedQuestions={paginatedQuestions}
+                        getImageUrl={getImageUrl}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần này.</div>;
+        } else if (section.type === 4) {  // Vocabulary sections
+            const nameLower = section.name.toLowerCase();
+            
+            if (nameLower.includes("1") && nameLower.includes("5")) {
+                return (
+                    <TableSectionNo1To5
+                        paginatedQuestions={paginatedQuestions}
+                        getImageUrl={getImageUrl}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("6") && nameLower.includes("7")) {
+                return (
+                    <TableSectionNo6To7
+                        paginatedQuestions={paginatedQuestions}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            } else if (nameLower.includes("8")) {
+                return (
+                    <TableSectionNo8
+                        paginatedQuestions={paginatedQuestions}
+                        currentPage={currentPage}
+                        ITEMS_PER_PAGE={itemsPerPage}
+                        sectionId={sectionId}
+                        testId={testId}
+                        retrieveQuestions={retrieveQuestions}
+                    />
+                );
+            }
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần này.</div>;
+        } else if (section.type === 5) {  // Speaking sections
+            return (
+                <TableSectionNo11
+                    paginatedQuestions={paginatedQuestions}
+                    currentPage={currentPage}
+                    ITEMS_PER_PAGE={itemsPerPage}
+                    getImageUrl={getImageUrl}
+                    sectionId={sectionId}
+                    testId={testId}
+                    retrieveQuestions={retrieveQuestions}
+                />
+            );
         }
 
         return <div className="text-center text-muted py-5">Không có dữ liệu phù hợp</div>;

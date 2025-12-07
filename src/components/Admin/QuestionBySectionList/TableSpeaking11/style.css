@@ -1,0 +1,22 @@
+.table-speaking11 {
+    padding: 20px;
+}
+
+.table-speaking11 .table {
+    font-size: 14px;
+}
+
+.table-speaking11 .table th,
+.table-speaking11 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-speaking11 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+
+
+
+

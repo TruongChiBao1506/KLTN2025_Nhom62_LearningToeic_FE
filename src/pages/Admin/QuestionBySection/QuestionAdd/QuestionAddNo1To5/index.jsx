@@ -87,6 +87,7 @@ const QuestionAddNo1To5 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("sectionId", sectionId);
             formData.append("questionContent", values.questionContent);
             formData.append("suggestedAnswer", editorData);
+            formData.append("questionType", "writing"); // ✅ Writing Questions 1-5
 
             if (selectedFile) {
                 formData.append("questionImage", selectedFile, selectedFile.name);

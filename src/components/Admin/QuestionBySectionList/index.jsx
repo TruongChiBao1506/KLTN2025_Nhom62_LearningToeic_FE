@@ -316,7 +316,7 @@ const QuestionSectionPage = ({
         default:
           return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần thi Reading này.</div>;
       }
-    } else if (section.type === 3) {  // Grammar sections (types 1-2, 3-4, 5-7, 8-10, 11)
+    } else if (section.type === 3) {  // Grammar sections
       // Determine by section name patterns
       const nameLower = section.name.toLowerCase();
       
@@ -383,8 +383,8 @@ const QuestionSectionPage = ({
           />
         );
       }
-      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần ngữ pháp này.</div>;
-    } else if (section.type === 4) {  // Vocabulary sections (types 1-5, 6-7, 8)
+      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần này.</div>;
+    } else if (section.type === 4) {  // Vocabulary sections
       const nameLower = section.name.toLowerCase();
       
       if (nameLower.includes("1") && nameLower.includes("5")) {
@@ -425,7 +425,7 @@ const QuestionSectionPage = ({
           />
         );
       }
-      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần từ vựng này.</div>;
+      return <div className="text-center p-4 text-warning">Chưa hỗ trợ hiển thị cho phần này.</div>;
     }
 
     return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;

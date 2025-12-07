@@ -1,0 +1,22 @@
+.table-writing8 {
+    padding: 20px;
+}
+
+.table-writing8 .table {
+    font-size: 14px;
+}
+
+.table-writing8 .table th,
+.table-writing8 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-writing8 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+
+
+
+

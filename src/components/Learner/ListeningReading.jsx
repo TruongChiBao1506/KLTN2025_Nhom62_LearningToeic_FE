@@ -28,12 +28,13 @@ const ListeningReading = () => {
   const ngheSections = sections.filter((section) => section.type === 1);
   const docSections = sections.filter((section) => section.type === 2);
 
-  const getImageUrl = (imageName) => {
-    if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
-    }
-    return "http://localhost:5000/images/default-image.png";
-  };
+    const getImageUrl = (imageName) => {
+      if (!imageName) return '';
+      const isFullUrl = /^(https?:)?\/\//i.test(imageName) || /^data:/i.test(imageName);
+      if (isFullUrl) return imageName;
+      const base = process.env.REACT_APP_URL || 'http://localhost:9004';
+      return `${base.replace(/\/$/, '')}/images/${imageName}`;
+    };
 
   if (loading) {
     return (

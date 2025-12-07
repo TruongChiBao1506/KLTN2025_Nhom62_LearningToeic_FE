@@ -31,6 +31,8 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
             const formData = new FormData();
             formData.append("sectionId", sectionId);
             formData.append("questionText", values.questionText);
+            formData.append("questionType", "speaking"); // ✅ Speaking Questions 1-2
+            
             await QuestionService.create(formData);
             retrieveQuestions();
             toast.success('Thêm câu hỏi thành công', { autoClose: 1000 });
@@ -41,6 +43,7 @@ const QuestionAddNo1To2 = ({ sectionId, retrieveQuestions, onClose }) => {
             }
             if (onClose) onClose();
         } catch (error) {
+            console.error('❌ Add question error:', error);
             toast.error('Lỗi khi thêm câu hỏi', { autoClose: 1000 });
         }
     };

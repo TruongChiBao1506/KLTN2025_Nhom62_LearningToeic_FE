@@ -127,6 +127,7 @@ const QuestionAddNo8To10 = ({ sectionId, retrieveQuestions, onClose }) => {
                 formData.append("groupId", groupId);
                 formData.append("questionContent", questionContent);
                 formData.append("suggestedAnswer", suggestedAnswer);
+                formData.append("questionType", "speaking"); // ✅ Speaking Questions 8-10
 
                 await QuestionService.create(formData);
             }

@@ -1,0 +1,33 @@
+.table-speaking1to2 {
+    padding: 20px;
+}
+
+.table-speaking1to2 .question-image {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+}
+
+.table-speaking1to2 audio {
+    width: 100%;
+    max-width: 200px;
+}
+
+.table-speaking1to2 .table {
+    font-size: 14px;
+}
+
+.table-speaking1to2 .table th,
+.table-speaking1to2 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-speaking1to2 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+
+
+
+

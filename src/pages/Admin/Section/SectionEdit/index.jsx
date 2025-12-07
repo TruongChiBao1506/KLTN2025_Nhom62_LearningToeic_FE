@@ -34,7 +34,7 @@ const SectionEdit = ({ sectionId, retrieveSections, onClose }) => {
         name: Yup.string()
             .required("Tên phải có giá trị.")
             .min(2, "Tên phải ít nhất 2 ký tự.")
-            .max(50, "Tên có nhiều nhất 50 ký tự."),
+            .max(100, "Tên có nhiều nhất 100 ký tự."),
         description: Yup.string()
             .required("Mô tả phải có giá trị.")
             .min(2, "Mô tả phải ít nhất 2 ký tự.")
@@ -69,9 +69,14 @@ const SectionEdit = ({ sectionId, retrieveSections, onClose }) => {
                 formData.append("name", values.name);
                 formData.append("description", values.description);
                 formData.append("type", values.type);
-                if (selectedFile) {
+                
+                // Chỉ append image nếu có file mới được chọn
+                // Nếu không có file, không append field image vào FormData
+                // Backend sẽ giữ nguyên image cũ
+                if (selectedFile && selectedFile instanceof File) {
                     formData.append("image", selectedFile, selectedFile.name);
                 }
+
                 await SectionService.update(sectionId, formData);
                 retrieveSections();
                 toast.success("Chỉnh sửa dạng phần thành công", { autoClose: 2000 });

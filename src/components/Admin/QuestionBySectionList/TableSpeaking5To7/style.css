@@ -1,0 +1,36 @@
+.table-speaking5to7 {
+    padding: 20px;
+}
+
+.table-speaking5to7 audio {
+    width: 100%;
+    max-width: 200px;
+}
+
+.table-speaking5to7 .table {
+    font-size: 14px;
+}
+
+.table-speaking5to7 .table th,
+.table-speaking5to7 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-speaking5to7 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+.table-speaking5to7 .table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-speaking5to7 .table-bordered td,
+.table-speaking5to7 .table-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+
+
+
+

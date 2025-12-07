@@ -131,8 +131,8 @@ const SectionSW = () => {
               {sectionName
                 ? `Luyện tập: ${sectionName}`
                 : section?.name
-                ? `Luyện tập: ${section.name}`
-                : "Nâng cao kỹ năng Speaking và Writing TOEIC"}
+                  ? `Luyện tập: ${section.name}`
+                  : "Nâng cao kỹ năng Speaking và Writing TOEIC"}
             </Paragraph>
           </div>
 
@@ -205,6 +205,11 @@ const SectionSW = () => {
                                 type="primary"
                                 block
                                 className="test-button"
+                                style={{
+                                  background: "var(--color-primary)",
+                                  borderColor: "var(--color-primary)",
+                                  color: "#fff"
+                                }}
                               >
                                 <PlayCircleOutlined /> Làm bài
                               </Button>

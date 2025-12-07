@@ -14,7 +14,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
             .string()
             .required("Tên phải có giá trị.")
             .min(2, "Tên phải ít nhất 2 ký tự.")
-            .max(50, "Tên có nhiều nhất 50 ký tự."),
+            .max(100, "Tên có nhiều nhất 100 ký tự."),
         description: Yup
             .string()
             .required("Mô tả phải có giá trị.")
@@ -76,7 +76,11 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
             formData.append("name", values.name);
             formData.append("description", values.description);
             formData.append("type", values.type);
-            if (selectedFile) {
+            
+            // Chỉ append image nếu có file được chọn
+            // Nếu không có file, không append field image vào FormData
+            // Backend sẽ hiểu đây là optional field
+            if (selectedFile && selectedFile instanceof File) {
                 formData.append("image", selectedFile, selectedFile.name);
             }
 
@@ -166,7 +170,7 @@ const SectionAdd = ({ retrieveSections, onClose }) => {
                     {/* Image Field */}
                     <div className="form-group mb-3">
                         <label htmlFor="image" className="form-label">
-                            Hình ảnh<span className="required-field">*</span>
+                            Hình ảnh
                         </label>
                         <input
                             name="image"

@@ -1,0 +1,31 @@
+.table-writing6to7 {
+    padding: 20px;
+}
+
+.table-writing6to7 .table {
+    font-size: 14px;
+}
+
+.table-writing6to7 .table th,
+.table-writing6to7 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-writing6to7 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+.table-writing6to7 .table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-writing6to7 .table-bordered td,
+.table-writing6to7 .table-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+
+
+
+

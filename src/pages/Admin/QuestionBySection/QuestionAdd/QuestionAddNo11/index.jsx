@@ -54,6 +54,7 @@ const QuestionAddNo11 = ({ sectionId, retrieveQuestions, onClose }) => {
             formData.append("sectionId", sectionId);
             formData.append("questionText", questionTextData);
             formData.append("suggestedAnswer", suggestedAnswerData);
+            formData.append("questionType", "speaking"); // ✅ Speaking Question 11
 
             await QuestionService.create(formData);
             retrieveQuestions();

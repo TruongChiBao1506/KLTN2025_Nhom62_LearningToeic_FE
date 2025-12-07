@@ -95,7 +95,10 @@ const SpeakingWriting = () => {
           overflow: 'hidden',
           transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
           background: 'white',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+          boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+          minHeight: '450px',
+          display: 'flex',
+          flexDirection: 'column'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
@@ -112,7 +115,8 @@ const SpeakingWriting = () => {
           position: 'relative',
           background: sectionType === 3
             ? '#2C5F8D'
-            : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+            : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          flexShrink: 0
         }}>
           <img
             src={getImageUrl(section.image, sectionType)}
@@ -141,7 +145,7 @@ const SpeakingWriting = () => {
             {sectionType === 3 ? '🗣️ Nói' : '✍️ Viết'}
           </div>
         </div>
-        <div className="card-body" style={{ padding: '1.5rem' }}>
+        <div className="card-body" style={{ padding: '1.5rem', flex: 1 }}>
           <h5 className="card-title fw-bold mb-3" style={{
             color: '#1e293b',
             fontSize: '1.1rem',
@@ -163,7 +167,7 @@ const SpeakingWriting = () => {
           >
             {section.description}
           </p>
-          <div className="d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center justify-content-between" style={{ marginTop: 'auto' }}>
             <small className="text-muted">
               <i className="fas fa-clock me-1"></i>
               ~30 phút

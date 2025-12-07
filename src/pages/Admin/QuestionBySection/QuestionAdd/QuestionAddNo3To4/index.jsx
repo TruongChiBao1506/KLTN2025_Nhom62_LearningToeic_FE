@@ -77,6 +77,7 @@ const QuestionAddNo3To4 = ({ sectionId, retrieveQuestions, onClose }) => {
             const formData = new FormData();
             formData.append("sectionId", sectionId);
             formData.append("suggestedAnswer", editorData);
+            formData.append("questionType", "speaking"); // ✅ Speaking Questions 3-4
 
             // Add image if selected (optional)
             if (selectedFile) {

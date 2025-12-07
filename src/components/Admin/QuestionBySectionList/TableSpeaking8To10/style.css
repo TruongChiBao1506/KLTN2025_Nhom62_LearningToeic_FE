@@ -1,0 +1,42 @@
+.table-speaking8to10 {
+    padding: 20px;
+}
+
+.table-speaking8to10 .question-image {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+}
+
+.table-speaking8to10 audio {
+    width: 100%;
+    max-width: 200px;
+}
+
+.table-speaking8to10 .table {
+    font-size: 14px;
+}
+
+.table-speaking8to10 .table th,
+.table-speaking8to10 .table td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.table-speaking8to10 .table-row:hover {
+    background-color: #f8f9fa;
+}
+
+.table-speaking8to10 .table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-speaking8to10 .table-bordered td,
+.table-speaking8to10 .table-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+
+
+
+

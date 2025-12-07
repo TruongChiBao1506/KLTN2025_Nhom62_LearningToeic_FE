@@ -22,6 +22,10 @@ import QuestionEditNo11 from '../../../../pages/Admin/QuestionBySection/Question
 import QuestionEditNo1To5 from '../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditNo1To5';
 import QuestionEditNo6To7 from '../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditNo6To7';
 import QuestionEditNo8 from '../../../../pages/Admin/QuestionBySection/QuestionEdit/QuestionEditNo8';
+// Speaking Edit components
+// Speaking Edit components were removed; fallback message will be shown for Speaking sections.
+// Writing Edit components
+// Writing Edit components removed. Use existing "No" based editors instead (No1To5, No6To7, No8)
 
 const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuestions }) => {
     const [section, setSection] = useState(null);
@@ -162,9 +166,17 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                 default:
                     return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần thi Reading này.</div>;
             }
-        } else if (section.type === 3) {  // Grammar sections
+        } else if (section.type === 3) {  // Grammar sections hoặc Speaking sections
             const nameLower = section.name.toLowerCase();
             
+            // Kiểm tra nếu là Speaking section (ưu tiên kiểm tra Speaking trước)
+                if (nameLower.includes("speaking") || nameLower.includes("nói") || nameLower.includes("speak")) {
+                // Speaking sections
+                // Speaking edit components were removed from the repo. Show a warning fallback.
+                return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi Speaking cho phần này.</div>;
+            }
+            
+            // Nếu không phải Speaking, xử lý như Grammar sections
             if (nameLower.includes("1") && nameLower.includes("2")) {
                 return (
                     <QuestionEditNo1To2
@@ -211,10 +223,46 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                     />
                 );
             }
-            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần ngữ pháp này.</div>;
-        } else if (section.type === 4) {  // Vocabulary sections
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần này.</div>;
+        } else if (section.type === 4) {  // Vocabulary sections hoặc Writing sections
             const nameLower = section.name.toLowerCase();
             
+            // Kiểm tra nếu là Writing section (ưu tiên kiểm tra Writing trước)
+            if (nameLower.includes("writing") || nameLower.includes("viết") || nameLower.includes("write")) {
+                // Writing sections
+                // Writing: use the No* edit forms that exist in the project
+                if (nameLower.includes("1") && nameLower.includes("5")) {
+                    return (
+                        <QuestionEditNo1To5
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                } else if (nameLower.includes("6") && nameLower.includes("7")) {
+                    return (
+                        <QuestionEditNo6To7
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                } else if (nameLower.includes("8")) {
+                    return (
+                        <QuestionEditNo8
+                            sectionId={sectionId}
+                            questionId={questionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                }
+                return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi Writing cho phần này.</div>;
+            }
+            
+            // Nếu không phải Writing, xử lý như Vocabulary sections
             if (nameLower.includes("1") && nameLower.includes("5")) {
                 return (
                     <QuestionEditNo1To5
@@ -243,7 +291,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                     />
                 );
             }
-            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần từ vựng này.</div>;
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ chỉnh sửa câu hỏi cho phần này.</div>;
         }
 
         return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;
@@ -255,7 +303,9 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
     };
 
     // Keep old hardcoded version as fallback (commented out)
-    const getModalTitleOld = () => {
+        // Legacy fallback titles (not used) - removed to reduce lint warnings
+        /*
+        const getModalTitleOld = () => {
         switch (sectionId) {
             case "686ce171b614dda1fc08f1d0":
                 return "Chỉnh sửa câu hỏi Section 1";
@@ -295,6 +345,7 @@ const EditQuestionModal = ({ show, onHide, sectionId, questionId, retrieveQuesti
                 return "Chỉnh sửa câu hỏi";
         }
     }; // End of old version
+        */
 
     return (
         <Modal 

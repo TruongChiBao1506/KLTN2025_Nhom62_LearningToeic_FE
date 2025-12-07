@@ -135,22 +135,91 @@ const ExamResult = () => {
 
   const filteredQuestionsByPart = () => {
     return questions.filter((question) => {
-      return question.examQuestion.questionPart === `PART${selectedPart}`;
+      // questionPart có thể là Number hoặc String, xử lý cả hai trường hợp
+      const questionPart = question.examQuestion.questionPart;
+      return (
+        questionPart === selectedPart ||
+        questionPart === `PART${selectedPart}` ||
+        questionPart === `Part${selectedPart}`
+      );
     });
   };
 
   const groupQuestionsByAudioOrPassage = (questions) => {
     const grouped = {};
+    console.log("🚀 ~ groupQuestionsByAudioOrPassage ~ questions:", questions);
+    
     for (const question of questions) {
-      const groupKey =
-        question.examQuestion.questionAudio ||
-        question.examQuestion.questionPassage ||
-        "default";
+      if (!question?.examQuestion) {
+        console.warn("Question missing examQuestion:", question);
+        continue;
+      }
+      
+      const examQuestion = question.examQuestion;
+      const audio = examQuestion.questionAudio;
+      const passage = examQuestion.questionPassage;
+      
+      // Debug: Log thông tin để kiểm tra
+      if (selectedPart === 7) {
+        console.log("🔍 Part 7 Question Debug:", {
+          orderNumber: examQuestion.orderNumber,
+          questionId: examQuestion.examQuestionId || examQuestion._id,
+          hasAudio: !!audio,
+          hasPassage: !!passage,
+          passageLength: passage ? passage.length : 0,
+          passagePreview: passage ? passage.substring(0, 50) : null,
+          questionGroup: examQuestion.questionGroup || question.questionGroup,
+        });
+      }
+      
+      // Xử lý nhóm: ưu tiên questionGroup (nếu có), sau đó audio, sau đó passage
+      let groupKey = null;
+      
+      // Kiểm tra questionGroup trước (nếu có)
+      const questionGroup = examQuestion.questionGroup || question.questionGroup;
+      if (questionGroup) {
+        const groupId = questionGroup._id || questionGroup.groupId || questionGroup;
+        if (groupId) {
+          groupKey = `group-${groupId}`;
+        }
+      }
+      
+      // Nếu không có group, thử dùng audio
+      if (!groupKey && audio && audio !== null && audio !== undefined && audio.trim() !== "") {
+        groupKey = `audio-${audio}`;
+      }
+      
+      // Nếu không có audio, thử dùng passage
+      if (!groupKey && passage && passage !== null && passage !== undefined && passage.trim() !== "") {
+        // Normalize passage: loại bỏ HTML tags, whitespace thừa để so sánh chính xác hơn
+        // Tạo một hash đơn giản từ nội dung passage để nhóm các câu hỏi có cùng passage
+        const normalizedPassage = passage
+          .trim()
+          .replace(/\s+/g, ' ') // Thay thế nhiều whitespace bằng 1 space
+          .replace(/<[^>]*>/g, '') // Loại bỏ HTML tags
+          .substring(0, 200); // Lấy 200 ký tự đầu để tạo key (đủ để phân biệt)
+        
+        // Sử dụng normalized passage làm key
+        groupKey = `passage-${normalizedPassage}`;
+      }
+      
+      // Nếu vẫn không có key, tạo key riêng cho từng câu hỏi độc lập
+      if (!groupKey) {
+        groupKey = `standalone-${examQuestion.examQuestionId || examQuestion._id || Date.now()}-${Math.random()}`;
+      }
+      
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
       }
       grouped[groupKey].push(question);
     }
+    
+    console.log("🚀 ~ groupQuestionsByAudioOrPassage ~ grouped:", grouped);
+    console.log("🚀 ~ Number of groups:", Object.keys(grouped).length);
+    Object.entries(grouped).forEach(([key, questions]) => {
+      console.log(`   Group "${key}": ${questions.length} questions`);
+    });
+    
     return grouped;
   };
   const groupedQuestions = groupQuestionsByAudioOrPassage(

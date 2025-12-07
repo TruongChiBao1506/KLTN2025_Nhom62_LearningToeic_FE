@@ -22,6 +22,10 @@ import QuestionAddNo11 from '../../../../pages/Admin/QuestionBySection/QuestionA
 import QuestionAddNo1To5 from '../../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo1To5';
 import QuestionAddNo6To7 from '../../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo6To7';
 import QuestionAddNo8 from '../../../../pages/Admin/QuestionBySection/QuestionAdd/QuestionAddNo8';
+// Speaking components
+// Speaking Add components removed - not supported
+// Writing components
+// Writing Add components removed - not supported
 
 const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
     const [section, setSection] = useState(null);
@@ -151,9 +155,15 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                 default:
                     return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần thi Reading này.</div>;
             }
-        } else if (section.type === 3) {  // Grammar sections
+        } else if (section.type === 3) {  // Grammar sections hoặc Speaking sections
             const nameLower = section.name.toLowerCase();
             
+            // Speaking Add components are no longer available; show fallback message
+            if (nameLower.includes("speaking") || nameLower.includes("nói") || nameLower.includes("speak")) {
+                return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi Speaking cho phần này.</div>;
+            }
+            
+            // Nếu không phải Speaking, xử lý như Grammar sections
             if (nameLower.includes("1") && nameLower.includes("2")) {
                 return (
                     <QuestionAddNo1To2
@@ -195,10 +205,36 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                     />
                 );
             }
-            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần ngữ pháp này.</div>;
-        } else if (section.type === 4) {  // Vocabulary sections
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần này.</div>;
+        } else if (section.type === 4) {  // Vocabulary sections hoặc Writing sections
             const nameLower = section.name.toLowerCase();
             
+            // Kiểm tra nếu là Writing section (ưu tiên kiểm tra Writing trước)
+            if (nameLower.includes("writing") || nameLower.includes("viết") || nameLower.includes("write")) {
+                // Writing sections
+                if (nameLower.includes("1") && nameLower.includes("5")) {
+                    return (
+                        <QuestionAddNo1To5
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                } else if (nameLower.includes("6") && nameLower.includes("7")) {
+                    return (
+                        <QuestionAddNo6To7
+                            sectionId={sectionId}
+                            retrieveQuestions={retrieveQuestions}
+                            onClose={onHide}
+                        />
+                    );
+                } else if (nameLower.includes("8")) {
+                    return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi Writing cho phần này.</div>;
+                }
+                return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi Writing cho phần này.</div>;
+            }
+            
+            // Nếu không phải Writing, xử lý như Vocabulary sections
             if (nameLower.includes("1") && nameLower.includes("5")) {
                 return (
                     <QuestionAddNo1To5
@@ -224,7 +260,7 @@ const AddQuestionModal = ({ show, onHide, sectionId, retrieveQuestions }) => {
                     />
                 );
             }
-            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần từ vựng này.</div>;
+            return <div className="text-center p-4 text-warning">Chưa hỗ trợ thêm câu hỏi cho phần này.</div>;
         }
 
         return <div className="text-center p-4 text-warning">Không xác định được loại phần thi.</div>;
