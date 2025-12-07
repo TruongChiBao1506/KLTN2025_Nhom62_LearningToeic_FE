@@ -7,6 +7,7 @@ const No1To2 = ({ testId }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isRecording, setIsRecording] = useState([]);
     const [isReadyToTest, setIsReadyToTest] = useState(false);
+    const [isStarting, setIsStarting] = useState(false);
     const [recordedAudios, setRecordedAudios] = useState([]);
     const [recordedText, setRecordedText] = useState([]);
 
@@ -167,6 +168,19 @@ const No1To2 = ({ testId }) => {
         };
     }, [retrieveQuestions]);
 
+    const handleStartTest = async () => {
+        if (isStarting) return;
+        setIsStarting(true);
+        try {
+            if (testId) await TestService.incrementParticipants(testId);
+        } catch (err) {
+            console.warn('Could not increment test participants:', err);
+        } finally {
+            setIsStarting(false);
+        }
+        setIsReadyToTest(true);
+    };
+
     return (
         <div className="container">
             <div className="row">
@@ -188,7 +202,7 @@ const No1To2 = ({ testId }) => {
 
                     <div className="card mt-3" style={{ transform: 'none', minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
                         <div className="card-body" style={{ flex: 1 }}>
-                            <button className="button" onClick={() => setIsReadyToTest(true)} style={{ display: isReadyToTest ? 'none' : 'block' }}>
+                            <button className="button" onClick={handleStartTest} style={{ display: isReadyToTest ? 'none' : 'block' }} disabled={isStarting}>
                                 Sẵn sàng luyện tập
                             </button>
                             {isReadyToTest && (

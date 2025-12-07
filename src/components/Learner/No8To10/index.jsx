@@ -9,6 +9,7 @@ const No8To10 = ({ testId }) => {
     const [recordedAudios, setRecordedAudios] = useState([]);
     const [recordedText, setRecordedText] = useState([]);
     const [isReadyToTest, setIsReadyToTest] = useState(false);
+    const [isStarting, setIsStarting] = useState(false);
 
     const mediaRecorderRef = useRef(null);
     const streamRef = useRef(null);
@@ -28,6 +29,18 @@ const No8To10 = ({ testId }) => {
             console.log(error);
         }
     }, [testId]);
+
+    const handleStartTest = async () => {
+        if (isStarting) return;
+        setIsStarting(true);
+        try {
+            if (testId) await TestService.incrementParticipants(testId);
+        } catch (err) {
+            console.warn('Could not increment test participants:', err);
+        }
+        setIsReadyToTest(true);
+        setIsStarting(false);
+    };
 
     const setupMediaRecorder = (index) => {
         return new Promise((resolve, reject) => {
@@ -268,7 +281,7 @@ const No8To10 = ({ testId }) => {
 
                     <div className="card specific-card mt-3" style={{ minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
                         <div className="card-body" style={{ flex: 1 }}>
-                            <button className="button" onClick={() => setIsReadyToTest(true)} style={{ display: isReadyToTest ? 'none' : 'block' }}>
+                            <button className="button" onClick={handleStartTest} style={{ display: isReadyToTest ? 'none' : 'block' }} disabled={isStarting}>
                                 Sẵn sàng luyện tập
                             </button>
                             {isReadyToTest && (

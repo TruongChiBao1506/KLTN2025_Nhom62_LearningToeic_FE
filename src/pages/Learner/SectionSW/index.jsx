@@ -1,20 +1,17 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
   Col,
   Typography,
   Button,
-  Spin,
   Tag,
   Empty,
-  Divider,
   Space,
 } from "antd";
 import {
   PlayCircleOutlined,
-  BookOutlined,
   FileTextOutlined,
   UserOutlined,
   ReadOutlined,
@@ -47,7 +44,8 @@ const SectionSW = () => {
   const [sections, setSections] = useState([]);
   const [tests, setTests] = useState([]);
   const [sectionName, setSectionName] = useState("");
-  const [currentSection, setCurrentSection] = useState(null);
+  const [startingTestId, setStartingTestId] = useState(null);
+  const navigate = useNavigate();
 
   // Lấy danh sách tất cả sections đã được kích hoạt
   const retrieveSections = useCallback(async () => {
@@ -72,7 +70,14 @@ const SectionSW = () => {
     try {
       const response = await TestService.getEnableTestsBySection(sectionId);
       console.log("🚀 ~ SectionSW ~ tests response:", response);
-      setTests(response);
+      // Normalize: axiosClient already returns response.data if available, but
+      // this function may return { tests: [...]} or the array directly.
+      const data = response?.data || response;
+      if (Array.isArray(data)) {
+        setTests(data);
+      } else {
+        setTests(data?.tests || data?.data || []);
+      }
     } catch (error) {
       console.log("Error fetching tests:", error);
       // Set empty tests if API fails (404 means no tests for this section yet)
@@ -87,7 +92,6 @@ const SectionSW = () => {
     if (!sectionId) return;
     try {
       const response = await SectionService.get(sectionId);
-      setCurrentSection(response);
       setSectionName(response.name);
     } catch (error) {
       console.log("Lỗi khi lấy thông tin section:", error);
@@ -158,7 +162,7 @@ const SectionSW = () => {
                 {tests.length > 0 ? (
                   <Row gutter={[20, 20]}>
                     {tests.map((test) => (
-                      <Col xs={24} sm={12} lg={12} key={test._id}>
+                      <Col xs={24} sm={12} lg={12} key={test.testId || test._id}>
                         <Card
                           className="test-card"
                           bodyStyle={{
@@ -196,25 +200,37 @@ const SectionSW = () => {
                           </div>
 
                           {/* Footer */}
-                          <div style={{ marginTop: "auto" }}>
-                            <Link
-                              to={`/learner/section/${sectionId}/study-sw/${test._id}`}
-                              style={{ textDecoration: "none" }}
-                            >
+                            <div style={{ marginTop: "auto" }}>
                               <Button
                                 type="primary"
                                 block
                                 className="test-button"
+                                onClick={async () => {
+                                  if (startingTestId === test._id) return;
+                                  // Use test.testId if present, fallback to test._id
+                                  const idToUse = test.testId || test._id;
+                                  if (idToUse === sectionId) {
+                                    console.warn('Potential id mismatch: test id is same as section id, skipping increment', {idToUse, sectionId, test});
+                                  }
+                                  if (!idToUse) {
+                                    console.warn('No valid test id found for', test);
+                                    return;
+                                  }
+                                  if (startingTestId === idToUse) return;
+                                  // set starting id to avoid double-clicks and navigate to study page
+                                  setStartingTestId(idToUse);
+                                  navigate(`/learner/section/${sectionId}/study-sw/${idToUse}`);
+                                }}
+                                disabled={startingTestId === (test.testId || test._id)}
                                 style={{
                                   background: "var(--color-primary)",
                                   borderColor: "var(--color-primary)",
-                                  color: "#fff"
+                                  color: "#fff",
                                 }}
                               >
-                                <PlayCircleOutlined /> Làm bài
+                                <PlayCircleOutlined /> {startingTestId === (test.testId || test._id) ? 'Đang chuyển...' : 'Làm bài'}
                               </Button>
-                            </Link>
-                          </div>
+                            </div>
                         </Card>
                       </Col>
                     ))}

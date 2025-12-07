@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const No6To7 = ({ testId }) => {
     const [questions, setQuestions] = useState([]);
     const [isReadyToTest, setIsReadyToTest] = useState(false);
+    const [isStarting, setIsStarting] = useState(false);
     const [totalTime, setTotalTime] = useState(1200);
     const [timerRef] = useState(useRef(null));
     const [isTestSubmitted, setIsTestSubmitted] = useState(false);
@@ -27,8 +28,16 @@ const No6To7 = ({ testId }) => {
         retrieveQuestions();
     }, [retrieveQuestions]);
 
-    const startTest = () => {
+    const startTest = async () => {
+        if (isStarting) return;
+        setIsStarting(true);
+        try {
+            if (testId) await TestService.incrementParticipants(testId);
+        } catch (err) {
+            console.warn('Could not increment test participants:', err);
+        }
         setIsReadyToTest(true);
+        setIsStarting(false);
         timerRef.current = setInterval(() => {
             setTotalTime(prev => {
                 if (prev <= 1) {
@@ -142,7 +151,7 @@ const No6To7 = ({ testId }) => {
 
                     <div className="card specific-card mt-3">
                         <div className="card-body">
-                            <button className="button" onClick={startTest} style={{ display: isReadyToTest ? 'none' : 'block' }}>
+                            <button className="button" onClick={startTest} style={{ display: isReadyToTest ? 'none' : 'block' }} disabled={isStarting}>
                                 Sẵn sàng luyện tập
                             </button>
 

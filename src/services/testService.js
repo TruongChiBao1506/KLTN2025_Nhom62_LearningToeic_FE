@@ -85,6 +85,38 @@ class TestService {
     );
     return response;
   }
+
+  async incrementParticipants(testId) {
+    // Backend does not provide an atomic increment endpoint by default, so we
+    // read the current test and then update the `testParticipants` value.
+    // NOTE: This approach is NOT atomic and may lead to race conditions if
+    // multiple clients call this concurrently. A backend endpoint such as
+    // PUT /tests/:id/participants/increment or a PATCH with atomic operators
+    // is recommended to avoid lost increments.
+    if (!testId) throw new Error('Invalid test id for incrementParticipants');
+    let test;
+    try {
+      test = await this.get(testId);
+    } catch (err) {
+      // Provide clearer message for 404
+      if (err?.response?.status === 404) {
+        throw new Error(`Test not found: ${testId}`);
+      }
+      throw err;
+    }
+    const current = (test.testParticipants || 0) + 1;
+    // Try the new backend endpoint: PUT /tests/:id/update-participants
+    try {
+      const response = await axiosClient.put(`${this.baseUrl}/${testId}/update-participants`, { participants: current });
+      return response;
+    } catch (err) {
+      // If the new endpoint is not available, fallback to the old `update` endpoint
+      console.warn('update-participants endpoint failed or not available, falling back to update():', err?.message || err);
+      const updated = await this.update(testId, { testParticipants: current });
+      return updated;
+    }
+  }
 }
 
-export default new TestService();
+const testService = new TestService();
+export default testService;

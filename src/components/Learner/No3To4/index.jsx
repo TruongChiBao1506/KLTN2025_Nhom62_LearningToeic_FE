@@ -80,7 +80,18 @@ const No3To4 = ({ testId }) => {
 
     // Removed countdown helpers
 
-    const startTest = () => {
+    const [isStarting, setIsStarting] = useState(false);
+
+    const handleStartTest = async () => {
+        if (isStarting) return;
+        setIsStarting(true);
+        try {
+            if (testId) await TestService.incrementParticipants(testId);
+        } catch (err) {
+            console.warn('Could not increment test participants:', err);
+        } finally {
+            setIsStarting(false);
+        }
         setIsReadyToTest(true);
     };
 
@@ -209,7 +220,7 @@ const No3To4 = ({ testId }) => {
         setCurrentIndex(0);
         // Clear any intervals - no countdown usage in simplified flow
         retrieveQuestions();
-        startTest();
+        handleStartTest();
     };
 
     const getImageUrl = (imageName) => {
@@ -269,7 +280,7 @@ const No3To4 = ({ testId }) => {
 
                     <div className="card specific-card mt-3" style={{ minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
                         <div className="card-body" style={{ flex: 1 }}>
-                            <button className="button" onClick={startTest} style={{ display: isReadyToTest ? 'none' : 'block' }}>
+                            <button className="button" onClick={handleStartTest} style={{ display: isReadyToTest ? 'none' : 'block' }} disabled={isStarting}>
                                 Sẵn sàng luyện tập
                             </button>
                             {isReadyToTest && (
