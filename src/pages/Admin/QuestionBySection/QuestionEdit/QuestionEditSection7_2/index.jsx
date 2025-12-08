@@ -71,7 +71,7 @@ const EditQuestionSection7_2 = ({ sectionId, groupId, retrieveQuestions, onClose
             acc[`optionC${idx}`] = q.optionC || "";
             acc[`optionD${idx}`] = q.optionD || "";
             acc[`correctOption${idx}`] = getCorrectOptionLetter(q);
-            acc[`questionType${idx}`] = q.questionType || "";
+            acc[`questionType${idx}`] = q.questionSubType || "";
             acc[`questionExplanation${idx}`] = q.questionExplanation || "";
             return acc;
           }, {}),
@@ -86,11 +86,7 @@ const EditQuestionSection7_2 = ({ sectionId, groupId, retrieveQuestions, onClose
   }, [groupId]);
 
   function getCorrectOptionLetter(item) {
-    if (item.correctOption === item.optionA) return "A";
-    if (item.correctOption === item.optionB) return "B";
-    if (item.correctOption === item.optionC) return "C";
-    if (item.correctOption === item.optionD) return "D";
-    return "";
+    return item.correctOption || "";
   }
 
   // File change handlers
@@ -147,7 +143,8 @@ const EditQuestionSection7_2 = ({ sectionId, groupId, retrieveQuestions, onClose
         // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
         formData.append("correctOption", values[`correctOption${idx}`]);
         
-        formData.append("questionType", values[`questionType${idx}`]);
+        formData.append("questionType", "reading"); // ✅ Set questionType là "reading" cho Part 7
+        formData.append("questionSubType", values[`questionType${idx}`]); // ✅ Thêm questionSubType từ form
         formData.append("questionExplanation", values[`questionExplanation${idx}`]);
         await QuestionService.update(q._id || q.questionId, formData);
       }
@@ -316,35 +313,20 @@ const EditQuestionSection7_2 = ({ sectionId, groupId, retrieveQuestions, onClose
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor={`questionType${idx}`} className="form-label">
-                    Type<span className="required-field">*</span>
+                    Loại<span className="required-field">*</span>
                   </label>
-                  <select
+                  <input
                     name={`questionType${idx}`}
+                    type="text"
                     id={`questionType${idx}`}
-                    className={`form-select border-secondary custom-font ${
+                    className={`form-control border-secondary custom-font ${
                       formik.touched[`questionType${idx}`] && formik.errors[`questionType${idx}`] ? 'is-invalid' : ''
                     }`}
                     value={formik.values[`questionType${idx}`]}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                  >
-                    <option value="" disabled>Select an option</option>
-                    <option value="[Part 7] Câu hỏi tìm thông tin">[Part 7] Câu hỏi tìm thông tin</option>
-                    <option value="[Part 7] Câu hỏi tìm chi tiết sai">[Part 7] Câu hỏi tìm chi tiết sai</option>
-                    <option value="[Part 7] Câu hỏi về chủ đề, mục đích">[Part 7] Câu hỏi về chủ đề, mục đích</option>
-                    <option value="[Part 7] Câu hỏi suy luận">[Part 7] Câu hỏi suy luận</option>
-                    <option value="[Part 7] Câu hỏi điền câu">[Part 7] Câu hỏi điền câu</option>
-                    <option value="[Part 7] Cấu trúc: một đoạn">[Part 7] Cấu trúc: một đoạn</option>
-                    <option value="[Part 7] Cấu trúc: nhiều đoạn">[Part 7] Cấu trúc: nhiều đoạn</option>
-                    <option value="[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay">[Part 7] Dạng bài: Email/ Letter: Thư điện tử/ Thư tay</option>
-                    <option value="[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu">[Part 7] Dạng bài: Form - Đơn từ, biểu mẫu</option>
-                    <option value="[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá">[Part 7] Dạng bài: Article/ Review: Bài báo/ Bài đánh giá</option>
-                    <option value="[Part 7] Dạng bài: Advertisement - Quảng cáo">[Part 7] Dạng bài: Advertisement - Quảng cáo</option>
-                    <option value="[Part 7] Dạng bài: Announcement/ Notice: Thông báo">[Part 7] Dạng bài: Announcement/ Notice: Thông báo</option>
-                    <option value="[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn">[Part 7] Dạng bài: Text message chain - Chuỗi tin nhắn</option>
-                    <option value="[Part 7] Câu hỏi tìm từ đồng nghĩa">[Part 7] Câu hỏi tìm từ đồng nghĩa</option>
-                    <option value="[Part 7] Câu hỏi về hàm ý câu nói">[Part 7] Câu hỏi về hàm ý câu nói</option>
-                  </select>
+                    placeholder="Nhập loại câu hỏi"
+                  />
                   {formik.touched[`questionType${idx}`] && formik.errors[`questionType${idx}`] && (
                     <div className="error-feedback">{formik.errors[`questionType${idx}`]}</div>
                   )}

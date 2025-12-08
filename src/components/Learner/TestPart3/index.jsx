@@ -42,16 +42,17 @@ const TestPart3 = ({
   const [showGroupScript, setShowGroupScript] = useState({});
 
   // Debug logs for component props
-  console.log("🎯 TestPart3 Component Debug:", {
-    questionsCount: questions?.length || 0,
-    hasGetAudioUrl: typeof getAudioUrl === "function",
-    firstQuestion: questions?.[0] || null,
-    timestamp: new Date().toISOString(),
-  });
+  // console.log("🎯 TestPart3 Component Debug:", {
+  //   questionsCount: questions?.length || 0,
+  //   hasGetAudioUrl: typeof getAudioUrl === "function",
+  //   firstQuestion: questions?.[0] || null,
+  //   timestamp: new Date().toISOString(),
+  // });
 
   // Nhóm các câu hỏi theo groupId
   const groupQuestionsByGroupId = (questions) => {
     const grouped = {};
+    const groupOrder = [];
     for (const question of questions) {
       const groupKey =
         question.questionGroup?.groupId ||
@@ -60,10 +61,16 @@ const TestPart3 = ({
         "default";
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
+        groupOrder.push(groupKey);
       }
       grouped[groupKey].push(question);
     }
-    return grouped;
+    // Sort groups by order of appearance and reverse questions in each group
+    const sortedGrouped = {};
+    groupOrder.forEach(key => {
+      sortedGrouped[key] = grouped[key].reverse();
+    });
+    return sortedGrouped;
   };
 
   const groupedQuestions = useMemo(
@@ -105,14 +112,20 @@ const TestPart3 = ({
   };
 
   // Tính số thứ tự câu hỏi
-  const calculateQuestionNumber = (groupId, questionIndex) => {
-    let questionNumber = questionIndex;
-    for (let i = 0; i < groupId; i++) {
-      if (groupedQuestions[i]) {
-        questionNumber += groupedQuestions[i].length;
-      }
-    }
-    return questionNumber;
+  const questionNumbers = useMemo(() => {
+    const numbers = {};
+    let currentNumber = 0;
+    Object.entries(groupedQuestions).forEach(([groupId, groupQuestions]) => {
+      groupQuestions.forEach((_, index) => {
+        numbers[`${groupId}-${index}`] = currentNumber + index + 1;
+      });
+      currentNumber += groupQuestions.length;
+    });
+    return numbers;
+  }, [groupedQuestions]);
+
+  const getQuestionNumber = (groupId, questionIndex) => {
+    return questionNumbers[`${groupId}-${questionIndex}`] || 0;
   };
 
   // Cuộn đến câu hỏi được chọn
@@ -129,14 +142,20 @@ const TestPart3 = ({
   };
 
   // Tính số câu đúng - chỉ sau khi isGraded = true
-  const getCorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
-  ).length;
+  const getCorrectCount = useMemo(() =>
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Tính số câu sai - chỉ sau khi isGraded = true
-  const getIncorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
-  ).length;
+  const getIncorrectCount = useMemo(() =>
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Get button style based on question state
   const getQuestionButtonStyle = (question) => {
@@ -217,7 +236,7 @@ const TestPart3 = ({
                       <source
                         src={getAudioUrl(
                           groupQuestions[0].questionGroup?.groupAudio ||
-                            groupQuestions[0].questionAudio
+                          groupQuestions[0].questionAudio
                         )}
                         type="audio/mpeg"
                       />
@@ -282,12 +301,19 @@ const TestPart3 = ({
                                 <Button
                                   type="primary"
                                   shape="circle"
-                                  size="small"
+                                  size="large"
+                                  style={{
+                                    backgroundColor: "var(--color-primary)",
+                                    borderColor: "var(--color-primary)",
+                                    color: "#fff",
+                                    borderWidth: "2px",
+                                    fontWeight: "bold",
+                                  }}
                                 >
-                                  {calculateQuestionNumber(
-                                    parseInt(groupId),
+                                  {getQuestionNumber(
+                                    groupId,
                                     index
-                                  ) + 1}
+                                  )}
                                 </Button>
                                 <Badge
                                   color="blue"
@@ -326,7 +352,7 @@ const TestPart3 = ({
                                         const isCorrect =
                                           question.isGraded &&
                                           optionLabel ===
-                                            question.correctOption;
+                                          question.correctOption;
 
                                         const isSelected =
                                           question.selectedOption === option;
@@ -335,7 +361,7 @@ const TestPart3 = ({
                                           question.isGraded &&
                                           isSelected &&
                                           question.selectedLetter !==
-                                            question.correctOption;
+                                          question.correctOption;
 
                                         return (
                                           <div
@@ -343,22 +369,21 @@ const TestPart3 = ({
                                             style={{
                                               padding: "8px",
                                               borderRadius: "6px",
-                                              border: `2px solid ${
-                                                isCorrect
+                                              border: `2px solid ${isCorrect
                                                   ? "var(--color-success)"
                                                   : isWrong
-                                                  ? "var(--color-danger)"
-                                                  : isSelected
-                                                  ? "var(--color-primary)"
-                                                  : "#f0f0f0"
-                                              }`,
+                                                    ? "var(--color-danger)"
+                                                    : isSelected
+                                                      ? "var(--color-primary)"
+                                                      : "#f0f0f0"
+                                                }`,
                                               backgroundColor: isCorrect
                                                 ? "var(--color-success-bg)"
                                                 : isWrong
-                                                ? "var(--color-danger-bg)"
-                                                : isSelected
-                                                ? "var(--color-info-bg)"
-                                                : "var(--color-bg-hover)",
+                                                  ? "var(--color-danger-bg)"
+                                                  : isSelected
+                                                    ? "var(--color-info-bg)"
+                                                    : "var(--color-bg-hover)",
                                               position: "relative",
                                             }}
                                           >
@@ -446,11 +471,22 @@ const TestPart3 = ({
                         >
                           {/* Question Header */}
                           <Space align="center">
-                            <Button type="primary" shape="circle" size="large">
-                              {calculateQuestionNumber(
-                                parseInt(groupId),
+                            <Button
+                              type="primary"
+                              shape="circle"
+                              size="large"
+                              style={{
+                                backgroundColor: "var(--color-primary)",
+                                borderColor: "var(--color-primary)",
+                                color: "#fff",
+                                borderWidth: "2px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {getQuestionNumber(
+                                groupId,
                                 index
-                              ) + 1}
+                              )}
                             </Button>
                             <Badge color="blue" text="Part 3: Conversations" />
                           </Space>
@@ -494,7 +530,7 @@ const TestPart3 = ({
                                       question.isGraded &&
                                       isSelected &&
                                       question.selectedLetter !==
-                                        question.correctOption;
+                                      question.correctOption;
 
                                     return (
                                       <div
@@ -502,22 +538,21 @@ const TestPart3 = ({
                                         style={{
                                           padding: "12px",
                                           borderRadius: "8px",
-                                          border: `2px solid ${
-                                            isCorrect
+                                          border: `2px solid ${isCorrect
                                               ? "var(--color-success)"
                                               : isWrong
-                                              ? "var(--color-danger)"
-                                              : isSelected
-                                              ? "var(--color-primary)"
-                                              : "#f0f0f0"
-                                          }`,
+                                                ? "var(--color-danger)"
+                                                : isSelected
+                                                  ? "var(--color-primary)"
+                                                  : "#f0f0f0"
+                                            }`,
                                           backgroundColor: isCorrect
                                             ? "var(--color-success-bg)"
                                             : isWrong
-                                            ? "var(--color-danger-bg)"
-                                            : isSelected
-                                            ? "var(--color-info-bg)"
-                                            : "var(--color-bg-hover)",
+                                              ? "var(--color-danger-bg)"
+                                              : isSelected
+                                                ? "var(--color-info-bg)"
+                                                : "var(--color-bg-hover)",
                                           position: "relative",
                                         }}
                                       >
@@ -610,23 +645,23 @@ const TestPart3 = ({
                         {/* Transcript */}
                         {(groupQuestions[0].questionScript ||
                           groupQuestions[0].questionGroup?.groupScript) && (
-                          <Alert
-                            message="📄 Transcript"
-                            description={
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html:
-                                    groupQuestions[0].questionScript ||
-                                    groupQuestions[0].questionGroup
-                                      ?.groupScript ||
-                                    "",
-                                }}
-                              />
-                            }
-                            type="info"
-                            showIcon
-                          />
-                        )}
+                            <Alert
+                              message="📄 Transcript"
+                              description={
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      groupQuestions[0].questionScript ||
+                                      groupQuestions[0].questionGroup
+                                        ?.groupScript ||
+                                      "",
+                                  }}
+                                />
+                              }
+                              type="info"
+                              showIcon
+                            />
+                          )}
 
                         {/* Translated Transcript */}
                         {groupQuestions[0].translatedQuestionScript && (
@@ -656,12 +691,11 @@ const TestPart3 = ({
                             question.questionExplanation && (
                               <Alert
                                 key={index}
-                                message={`💡 Giải thích câu ${
-                                  calculateQuestionNumber(
-                                    parseInt(groupId),
-                                    index
-                                  ) + 1
-                                }`}
+                                message={`💡 Giải thích câu ${getQuestionNumber(
+                                  groupId,
+                                  index
+                                )
+                                  }`}
                                 description={
                                   <div>
                                     <strong>Câu hỏi:</strong>{" "}
@@ -728,11 +762,11 @@ const TestPart3 = ({
                         style={{
                           ...getQuestionButtonStyle(question),
                           aspectRatio: "1",
-                          fontWeight: "bold",
+                          fontWeight: "bold"
                         }}
                         size="large"
                       >
-                        {calculateQuestionNumber(parseInt(groupId), index) + 1}
+                        {getQuestionNumber(groupId, index)}
                       </Button>
                     ))
                 )}
@@ -776,8 +810,8 @@ const TestPart3 = ({
                   fontSize: "16px",
                   fontWeight: "600",
                   borderRadius: "20px",
-                  background:  "var(--color-primary)",
-                  borderColor:  "var(--color-primary)",
+                  background: "var(--color-primary)",
+                  borderColor: "var(--color-primary)",
                   color: "#fff",
                 }}
               >

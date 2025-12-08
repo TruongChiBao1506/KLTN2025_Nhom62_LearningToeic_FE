@@ -29,7 +29,7 @@ const QuestionListSection4 = ({
   const groupedQuestionMap = useMemo(() => {
     const groups = {};
     paginatedQuestions.forEach((question) => {
-      const groupId = question.questionGroup.groupId;
+      const groupId = question.questionGroup._id;
       if (!groups[groupId]) {
         groups[groupId] = [question];
       } else {
@@ -131,7 +131,7 @@ const QuestionListSection4 = ({
                 {index === 0 && (
                   <td className="question-image" rowSpan={groupedQuestions.length}>
                     <img
-                      src={getImageUrl(question.questionGroup.groupImage) || ""}
+                      src={getImageUrl(question.questionGroup.questionImage) || ""}
                       style={{ width: "100px" }}
                       alt=""
                     />

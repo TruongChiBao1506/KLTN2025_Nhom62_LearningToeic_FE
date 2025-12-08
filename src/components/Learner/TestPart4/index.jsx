@@ -42,26 +42,16 @@ const TestPart4 = ({
   const [showGroupScript, setShowGroupScript] = useState({});
 
   // Debug logs for component props
-  console.log("🎯 TestPart4 Component Debug:", {
-    questionsCount: questions?.length || 0,
-    hasGetAudioUrl: typeof getAudioUrl === "function",
-    firstQuestion: questions?.[0] || null,
-    timestamp: new Date().toISOString(),
-  });
+  // console.log("🎯 TestPart4 Component Debug:", {
+  //   questionsCount: questions?.length || 0,
+  //   hasGetAudioUrl: typeof getAudioUrl === "function",
+  //   timestamp: new Date().toISOString(),
+  // });
 
   // Nhóm các câu hỏi theo groupId
   const groupQuestionsByGroupId = (questions) => {
     const grouped = {};
     for (const question of questions) {
-      // Debug question structure
-      console.log("🔍 Question structure:", {
-        questionId: question._id,
-        questionGroup: question.questionGroup,
-        questionGroupType: typeof question.questionGroup,
-        hasGroupAudio:
-          question.questionGroup?.groupAudio || "No groupAudio found",
-      });
-
       const groupKey =
         question.questionGroup?.groupId ||
         question.questionGroup?._id ||
@@ -116,14 +106,20 @@ const TestPart4 = ({
   };
 
   // Tính số thứ tự câu hỏi
-  const calculateQuestionNumber = (groupId, questionIndex) => {
-    let questionNumber = questionIndex;
-    for (let i = 0; i < groupId; i++) {
-      if (groupedQuestions[i]) {
-        questionNumber += groupedQuestions[i].length;
-      }
-    }
-    return questionNumber;
+  const questionNumbers = useMemo(() => {
+    const numbers = {};
+    let currentNumber = 0;
+    Object.entries(groupedQuestions).forEach(([groupId, groupQuestions]) => {
+      groupQuestions.forEach((_, index) => {
+        numbers[`${groupId}-${index}`] = currentNumber + index + 1;
+      });
+      currentNumber += groupQuestions.length;
+    });
+    return numbers;
+  }, [groupedQuestions]);
+
+  const getQuestionNumber = (groupId, questionIndex) => {
+    return questionNumbers[`${groupId}-${questionIndex}`] || 0;
   };
 
   // Kiểm tra xem có nên hiển thị nội dung nhóm không
@@ -148,14 +144,20 @@ const TestPart4 = ({
   };
 
   // Tính số câu đúng - chỉ sau khi isGraded = true
-  const getCorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
-  ).length;
+  const getCorrectCount = useMemo(() => 
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Tính số câu sai - chỉ sau khi isGraded = true
-  const getIncorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
-  ).length;
+  const getIncorrectCount = useMemo(() => 
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Get button style based on question state
   const getQuestionButtonStyle = (question) => {
@@ -224,24 +226,6 @@ const TestPart4 = ({
                 >
                   <Volume2 size={20} color="var(--color-primary)" />
                   <div style={{ flex: 1 }}>
-                    {/* Debug logs before audio element */}
-                    {(() => {
-                      const groupAudio =
-                        groupQuestions[0].questionGroup?.groupAudio ||
-                        groupQuestions[0].questionAudio ||
-                        "No audio";
-                      const audioUrl = getAudioUrl(groupAudio);
-                      console.log("🎵 TestPart4 Audio Debug:", {
-                        groupId,
-                        questionGroup: groupQuestions[0].questionGroup,
-                        groupAudio,
-                        questionAudio: groupQuestions[0].questionAudio,
-                        audioUrl,
-                        hasAudio: !!audioUrl,
-                      });
-                      return null;
-                    })()}
-
                     <audio
                       controls
                       preload="metadata"
@@ -374,10 +358,10 @@ const TestPart4 = ({
                                     fontWeight: "bold",
                                   }}
                                 >
-                                  {calculateQuestionNumber(
+                                  {getQuestionNumber(
                                     parseInt(groupId),
                                     index
-                                  ) + 1}
+                                  )}
                                 </Button>
                                 <Badge
                                   color="blue"
@@ -550,10 +534,10 @@ const TestPart4 = ({
                                 fontWeight: "bold",
                               }}
                             >
-                              {calculateQuestionNumber(
+                              {getQuestionNumber(
                                 parseInt(groupId),
                                 index
-                              ) + 1}
+                              )}
                             </Button>
                             <Badge
                               color="blue"
@@ -760,10 +744,10 @@ const TestPart4 = ({
                               <Alert
                                 key={index}
                                 message={`💡 Giải thích câu ${
-                                  calculateQuestionNumber(
+                                  getQuestionNumber(
                                     parseInt(groupId),
                                     index
-                                  ) + 1
+                                  )
                                 }`}
                                 description={
                                   <div>
@@ -835,7 +819,7 @@ const TestPart4 = ({
                         }}
                         size="large"
                       >
-                        {calculateQuestionNumber(parseInt(groupId), index) + 1}
+                        {getQuestionNumber(parseInt(groupId), index)}
                       </Button>
                     ))
                 )}

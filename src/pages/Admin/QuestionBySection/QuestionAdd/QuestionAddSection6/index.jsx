@@ -392,10 +392,11 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     <label htmlFor={`questionType${index}`} className="form-label">
                                         Loại<span className="required-field">*</span>
                                     </label>
-                                    <select
+                                    <input
                                         name={`questionType${index}`}
+                                        type="text"
                                         id={`questionType${index}`}
-                                        className={`form-select border-secondary custom-font ${
+                                        className={`form-control border-secondary custom-font ${
                                             formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] ? 'is-invalid' : ''
                                         }`}
                                         value={formik.values[`questionType${index}`]}
@@ -404,13 +405,8 @@ const QuestionAddSection6 = ({ sectionId, retrieveQuestions, onClose }) => {
                                             updateQuestion(index, 'questionType', e.target.value);
                                         }}
                                         onBlur={formik.handleBlur}
-                                    >
-                                        <option value="" disabled>Chọn một tùy chọn</option>
-                                        <option value="[Part 6] Câu hỏi ngữ pháp">[Part 6] Câu hỏi ngữ pháp</option>
-                                        <option value="[Part 6] Câu hỏi từ vựng">[Part 6] Câu hỏi từ vựng</option>
-                                        <option value="[Part 6] Câu hỏi từ loại">[Part 6] Câu hỏi từ loại</option>
-                                        <option value="[Part 6] Câu hỏi điền câu">[Part 6] Câu hỏi điền câu</option>
-                                    </select>
+                                        placeholder="Nhập loại câu hỏi (ví dụ: [Part 6] Câu hỏi ngữ pháp)"
+                                    />
                                     {formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] && (
                                         <div className="error-feedback">{formik.errors[`questionType${index}`]}</div>
                                     )}

@@ -418,20 +418,12 @@ const QuestionAddSection7_1 = ({ sectionId, retrieveQuestions, onClose }) => {
                   <label htmlFor={`questionType${index}`} className="form-label">
                     Type<span className="required-field">*</span>
                   </label>
-                  <select
-                    className="form-select border-secondary custom-font"
+                  <input
+                    type="text"
+                    className="form-control border-secondary custom-font"
                     {...register(`questionType${index}`)}
-                  >
-                    {questionTypeOptions.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        disabled={option.disabled}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Nhập loại câu hỏi (ví dụ: [Part 7] Câu hỏi tìm thông tin)"
+                  />
                   {errors[`questionType${index}`] && (
                     <div className="error-feedback">{errors[`questionType${index}`].message}</div>
                   )}

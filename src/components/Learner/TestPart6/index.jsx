@@ -37,16 +37,17 @@ const TestPart6 = ({
 }) => {
   const [showExplanation, setShowExplanation] = useState({});
 
-  // Debug logs for component props
-  console.log("🎯 TestPart6 Component Debug:", {
-    questionsCount: questions?.length || 0,
-    firstQuestion: questions?.[0] || null,
-    timestamp: new Date().toISOString(),
-  });
+  // Debug logs for component props (commented out for performance)
+  // console.log("🎯 TestPart6 Component Debug:", {
+  //   questionsCount: questions?.length || 0,
+  //   firstQuestion: questions?.[0] || null,
+  //   timestamp: new Date().toISOString(),
+  // });
 
   // Nhóm các câu hỏi theo groupId
   const groupQuestionsByGroupId = (questions) => {
     const grouped = {};
+    const groupOrder = [];
     for (const question of questions) {
       const groupKey =
         question.questionGroup?.groupId ||
@@ -55,10 +56,16 @@ const TestPart6 = ({
         "default";
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
+        groupOrder.push(groupKey);
       }
       grouped[groupKey].push(question);
     }
-    return grouped;
+    // Reverse the questions in each group to match desired order
+    const sortedGrouped = {};
+    groupOrder.forEach((key) => {
+      sortedGrouped[key] = grouped[key].reverse();
+    });
+    return sortedGrouped;
   };
 
   const groupedQuestions = useMemo(
@@ -74,22 +81,26 @@ const TestPart6 = ({
 
     // Dịch phần giải thích nếu hiển thị
     if (!showExplanation[groupId]) {
-      const groupQuestions = groupedQuestions[groupId];
-      for (const question of groupQuestions) {
-        if (question.questionExplanation && !question.translatedExplanation) {
-          try {
-            const translatedExplanation = await translateText(
-              question.questionExplanation,
-              "vi"
-            );
-            question.translatedExplanation = translatedExplanation;
-          } catch (error) {
-            console.error("Lỗi khi dịch:", error);
+      const groupQuestionsArr = groupedQuestions[groupId];
+      await Promise.all(
+        groupQuestionsArr.map(async (question) => {
+          if (question.questionExplanation && !question.translatedExplanation) {
+            try {
+              const translatedExplanation = await translateText(
+                question.questionExplanation,
+                "vi"
+              );
+              question.translatedExplanation = translatedExplanation;
+            } catch (error) {
+              console.error("Lỗi khi dịch:", error);
+            }
           }
-        }
-      }
+        })
+      );
     }
   };
+
+  
 
   // Kiểm tra xem tất cả các câu hỏi trong nhóm đã được trả lời chưa
   const isGroupAnswered = (groupQuestions) => {
@@ -97,14 +108,20 @@ const TestPart6 = ({
   };
 
   // Tính số thứ tự câu hỏi
-  const calculateQuestionNumber = (groupId, questionIndex) => {
-    let questionNumber = questionIndex;
-    for (let i = 0; i < groupId; i++) {
-      if (groupedQuestions[i]) {
-        questionNumber += groupedQuestions[i].length;
-      }
-    }
-    return questionNumber;
+  const questionNumbers = useMemo(() => {
+    const numbers = {};
+    let currentNumber = 0;
+    Object.entries(groupedQuestions).forEach(([groupId, groupQuestions]) => {
+      groupQuestions.forEach((_, index) => {
+        numbers[`${groupId}-${index}`] = currentNumber + index + 1;
+      });
+      currentNumber += groupQuestions.length;
+    });
+    return numbers;
+  }, [groupedQuestions]);
+
+  const getQuestionNumber = (groupId, questionIndex) => {
+    return questionNumbers[`${groupId}-${questionIndex}`] || 0;
   };
 
   // Cuộn đến câu hỏi được chọn
@@ -121,14 +138,20 @@ const TestPart6 = ({
   };
 
   // Tính số câu đúng - chỉ sau khi isGraded = true
-  const getCorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
-  ).length;
+  const getCorrectCount = useMemo(() =>
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Tính số câu sai - chỉ sau khi isGraded = true
-  const getIncorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
-  ).length;
+  const getIncorrectCount = useMemo(() =>
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Get button style based on question state
   const getQuestionButtonStyle = (question) => {
@@ -248,8 +271,7 @@ const TestPart6 = ({
                               fontWeight: "bold",
                             }}
                           >
-                            {calculateQuestionNumber(parseInt(groupId), index) +
-                              1}
+                            {getQuestionNumber(groupId, index)}
                           </Button>
                           <Badge
                             color="purple"
@@ -422,10 +444,10 @@ const TestPart6 = ({
                               <Alert
                                 key={index}
                                 message={`💡 Giải thích câu ${
-                                  calculateQuestionNumber(
-                                    parseInt(groupId),
+                                  getQuestionNumber(
+                                    groupId,
                                     index
-                                  ) + 1
+                                  )
                                 }`}
                                 description={
                                   <div>
@@ -508,7 +530,7 @@ const TestPart6 = ({
                         }}
                         size="large"
                       >
-                        {calculateQuestionNumber(parseInt(groupId), index) + 1}
+                        {getQuestionNumber(groupId, index)}
                       </Button>
                     ))
                 )}

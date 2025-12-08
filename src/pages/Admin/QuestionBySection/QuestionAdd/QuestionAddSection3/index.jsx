@@ -26,7 +26,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
     const questionFormSchema = Yup.object().shape({
         groupImage: Yup
             .mixed()
-            .required("Vui lòng chọn một tệp ảnh.")
+            .nullable()
             .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
                 if (!value) return true;
                 const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
@@ -117,16 +117,31 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                 return;
             }
 
+            // Debug logs
+            console.log('Debug: selectedImage =', selectedImage);
+            console.log('Debug: selectedAudio =', selectedAudio);
+
             // Tạo thông tin nhóm câu hỏi trước
             const groupFormData = new FormData();
             groupFormData.append("sectionId", sectionId);
-            if (selectedImage) groupFormData.append("groupImage", selectedImage, selectedImage.name);
-            if (selectedAudio) groupFormData.append("groupAudio", selectedAudio, selectedAudio.name);
+            if (selectedImage) {
+                groupFormData.append("groupImage", selectedImage, selectedImage.name);
+                console.log('Debug: Appended groupImage:', selectedImage.name);
+            }
+            if (selectedAudio) {
+                groupFormData.append("groupAudio", selectedAudio, selectedAudio.name);
+                console.log('Debug: Appended groupAudio:', selectedAudio.name);
+            }
             groupFormData.append("groupScript", editorData);
+
+            console.log('Debug: groupFormData entries:', Array.from(groupFormData.entries()));
 
             // Gửi dữ liệu nhóm câu hỏi lên server và lấy groupId
             const response = await QuestionGroupService.create(groupFormData);
+            console.log('Debug: Group creation response:', response);
             const groupId = response.groupId;
+
+            console.log('Debug: Group created with groupId:', groupId);
 
             // Gửi dữ liệu từng câu hỏi con lên server
             for (let i = 0; i < 3; i++) {
@@ -142,7 +157,8 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                 // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
                 formData.append("correctOption", values[`correctOption${i}`]);
                 
-                formData.append("questionType", values[`questionType${i}`]);
+                formData.append("questionType", "listening"); // ✅ Set questionType là "listening" cho Part 3
+                formData.append("questionSubType", values[`questionType${i}`]); // ✅ Thêm questionSubType từ form
                 await QuestionService.create(formData);
             }
 
@@ -188,7 +204,7 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Image */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupImage">
-                            Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
+                            Hình ảnh nhóm câu hỏi
                         </label>
                         <input
                             ref={imageInputRef}
@@ -433,10 +449,11 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     <label htmlFor={`questionType${index}`} className="form-label">
                                         Loại<span className="required-field">*</span>
                                     </label>
-                                    <select
+                                    <input
                                         name={`questionType${index}`}
+                                        type="text"
                                         id={`questionType${index}`}
-                                        className={`form-select border-secondary custom-font ${
+                                        className={`form-control border-secondary custom-font ${
                                             formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] ? 'is-invalid' : ''
                                         }`}
                                         value={formik.values[`questionType${index}`]}
@@ -445,17 +462,8 @@ const QuestionAddSection3 = ({ sectionId, retrieveQuestions, onClose }) => {
                                             updateQuestion(index, 'questionType', e.target.value);
                                         }}
                                         onBlur={formik.handleBlur}
-                                    >
-                                        <option value="" disabled>Chọn một tùy chọn</option>
-                                        <option value="[Part 3] Câu hỏi kết hợp bảng biểu">[Part 3] Câu hỏi kết hợp bảng biểu</option>
-                                        <option value="[Part 3] Câu hỏi về chi tiết cuộc hội thoại">[Part 3] Câu hỏi về chi tiết cuộc hội thoại</option>
-                                        <option value="[Part 3] Câu hỏi về chủ đề, mục đích">[Part 3] Câu hỏi về chủ đề, mục đích</option>
-                                        <option value="[Part 3] Câu hỏi về danh tính người nói">[Part 3] Câu hỏi về danh tính người nói</option>
-                                        <option value="[Part 3] Câu hỏi về địa điểm hội thoại">[Part 3] Câu hỏi về địa điểm hội thoại</option>
-                                        <option value="[Part 3] Câu hỏi về hàm ý câu nói">[Part 3] Câu hỏi về hàm ý câu nói</option>
-                                        <option value="[Part 3] Câu hỏi về hành động tương lai">[Part 3] Câu hỏi về hành động tương lai</option>
-                                        <option value="[Part 3] Câu hỏi về yêu cầu, gợi ý">[Part 3] Câu hỏi về yêu cầu, gợi ý</option>
-                                    </select>
+                                        placeholder="Nhập loại câu hỏi (ví dụ: [Part 3] Câu hỏi về chi tiết)"
+                                    />
                                     {formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] && (
                                         <div className="error-feedback">{formik.errors[`questionType${index}`]}</div>
                                     )}

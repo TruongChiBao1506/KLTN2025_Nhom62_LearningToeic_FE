@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useMemo, useState } from "react";
 import {
   Card,
   Button,
@@ -67,33 +67,39 @@ const TestPart5 = ({
   };
 
   // Tính số câu đúng - so sánh selectedLetter với correctOption
-  const getCorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
-  ).length;
+  const getCorrectCount = useMemo(() => 
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter === q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Tính số câu sai - so sánh selectedLetter với correctOption
-  const getIncorrectCount = questions.filter(
-    (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
-  ).length;
+  const getIncorrectCount = useMemo(() => 
+    questions.filter(
+      (q) => q.isGraded && q.answered && q.selectedLetter !== q.correctOption
+    ).length,
+    [questions]
+  );
 
   // Debug logs
-  console.log("🎯 TestPart5 Debug:", {
-    questionsCount: questions.length,
-    gradedQuestions: questions.filter((q) => q.isGraded).length,
-    correctCount: getCorrectCount,
-    incorrectCount: getIncorrectCount,
-    isSubmited,
-    questionsWithSelectedOption: questions.filter((q) => q.selectedOption)
-      .length,
-    firstQuestionData: questions[0]
-      ? {
-          selectedOption: questions[0].selectedOption,
-          selectedLetter: questions[0].selectedLetter,
-          correctOption: questions[0].correctOption,
-          isGraded: questions[0].isGraded,
-        }
-      : null,
-  });
+  // console.log("🎯 TestPart5 Debug:", {
+  //   questionsCount: questions.length,
+  //   gradedQuestions: questions.filter((q) => q.isGraded).length,
+  //   correctCount: getCorrectCount,
+  //   incorrectCount: getIncorrectCount,
+  //   isSubmited,
+  //   questionsWithSelectedOption: questions.filter((q) => q.selectedOption)
+  //     .length,
+  //   firstQuestionData: questions[0]
+  //     ? {
+  //         selectedOption: questions[0].selectedOption,
+  //         selectedLetter: questions[0].selectedLetter,
+  //         correctOption: questions[0].correctOption,
+  //         isGraded: questions[0].isGraded,
+  //       }
+  //     : null,
+  // });
 
   // Get button style based on question state
   const getQuestionButtonStyle = (question) => {
@@ -214,17 +220,17 @@ const TestPart5 = ({
                           optionLabel !== question.correctOption;
 
                         // Debug log for each option
-                        if (optionIndex === 0) {
-                          console.log(`🔍 Question ${index + 1} Debug:`, {
-                            isGraded: question.isGraded,
-                            selectedOption: question.selectedOption,
-                            correctOption: question.correctOption,
-                            answered: question.answered,
-                            optionLabel,
-                            isCorrect,
-                            isWrong,
-                          });
-                        }
+                        // if (optionIndex === 0) {
+                        //   console.log(`🔍 Question ${index + 1} Debug:`, {
+                        //     isGraded: question.isGraded,
+                        //     selectedOption: question.selectedOption,
+                        //     correctOption: question.correctOption,
+                        //     answered: question.answered,
+                        //     optionLabel,
+                        //     isCorrect,
+                        //     isWrong,
+                        //   });
+                        // }
 
                         return (
                           <div

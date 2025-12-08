@@ -26,7 +26,8 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
     const questionFormSchema = Yup.object().shape({
         groupImage: Yup
             .mixed()
-            .required("Vui lòng chọn một tệp ảnh.")
+            // .required("Vui lòng chọn một tệp ảnh.")
+            .nullable()
             .test("fileType", "Chỉ chấp nhận tệp ảnh jpeg, png hoặc gif", (value) => {
                 if (!value) return true;
                 const allowedFormats = ["image/jpeg", "image/png", "image/gif"];
@@ -189,7 +190,8 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                     {/* Group Image */}
                     <div className="form-group mb-3">
                         <label htmlFor="groupImage">
-                            Hình ảnh nhóm câu hỏi<span className="required-field">*</span>
+                            Hình ảnh nhóm câu hỏi
+                            {/* <span className="required-field"></span> */}
                         </label>
                         <input
                             ref={imageInputRef}
@@ -434,10 +436,11 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                     <label htmlFor={`questionType${index}`} className="form-label">
                                         Loại<span className="required-field">*</span>
                                     </label>
-                                    <select
+                                    <input
                                         name={`questionType${index}`}
+                                        type="text"
                                         id={`questionType${index}`}
-                                        className={`form-select border-secondary custom-font ${
+                                        className={`form-control border-secondary custom-font ${
                                             formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] ? 'is-invalid' : ''
                                         }`}
                                         value={formik.values[`questionType${index}`]}
@@ -446,16 +449,8 @@ const QuestionAddSection4 = ({ sectionId, retrieveQuestions, onClose }) => {
                                             updateQuestion(index, 'questionType', e.target.value);
                                         }}
                                         onBlur={formik.handleBlur}
-                                    >
-                                        <option value="" disabled>Chọn một tùy chọn</option>
-                                        <option value="[Part 4] Câu hỏi kết hợp bảng biểu">[Part 4] Câu hỏi kết hợp bảng biểu</option>
-                                        <option value="[Part 4] Câu hỏi về chi tiết">[Part 4] Câu hỏi về chi tiết</option>
-                                        <option value="[Part 4] Câu hỏi về chủ đề, mục đích">[Part 4] Câu hỏi về chủ đề, mục đích</option>
-                                        <option value="[Part 4] Câu hỏi về danh tính, địa điểm">[Part 4] Câu hỏi về danh tính, địa điểm</option>
-                                        <option value="[Part 4] Câu hỏi về hàm ý câu nói">[Part 4] Câu hỏi về hàm ý câu nói</option>
-                                        <option value="[Part 4] Câu hỏi về hành động tương lai">[Part 4] Câu hỏi về hành động tương lai</option>
-                                        <option value="[Part 4] Câu hỏi yêu cầu, gợi ý">[Part 4] Câu hỏi yêu cầu, gợi ý</option>
-                                    </select>
+                                        placeholder="Nhập loại câu hỏi (ví dụ: [Part 4] Câu hỏi về chi tiết)"
+                                    />
                                     {formik.touched[`questionType${index}`] && formik.errors[`questionType${index}`] && (
                                         <div className="error-feedback">{formik.errors[`questionType${index}`]}</div>
                                     )}

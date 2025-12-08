@@ -88,7 +88,8 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
             // ✅ Lưu correctOption là chữ cái A/B/C/D (KHÔNG phải nội dung đầy đủ)
             formData.append("correctOption", values.correctOption);
 
-            formData.append("questionType", values.questionType);
+            formData.append("questionType", "reading"); // ✅ Set questionType là "reading" cho Part 5
+            formData.append("questionSubType", values.questionType); // ✅ Thêm questionSubType từ form
             formData.append("questionExplanation", editorData);
 
             await QuestionService.create(formData);
@@ -280,21 +281,18 @@ const QuestionAddSection5 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 <label htmlFor="questionType" className="form-label">
                                     Loại<span className="required-field">*</span>
                                 </label>
-                                <select
+                                <input
                                     name="questionType"
+                                    type="text"
                                     id="questionType"
-                                    className={`form-select border-secondary custom-font ${
+                                    className={`form-control border-secondary custom-font ${
                                         formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
                                     }`}
                                     value={formik.values.questionType}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                >
-                                    <option value="" disabled>Chọn một tùy chọn</option>
-                                    <option value="[Part 5] Câu hỏi ngữ pháp">[Part 5] Câu hỏi ngữ pháp</option>
-                                    <option value="[Part 5] Câu hỏi từ vựng">[Part 5] Câu hỏi từ vựng</option>
-                                    <option value="[Part 5] Câu hỏi từ loại">[Part 5] Câu hỏi từ loại</option>
-                                </select>
+                                    placeholder="Nhập loại câu hỏi (ví dụ: [Part 5] Câu hỏi ngữ pháp)"
+                                />
                                 {formik.touched.questionType && formik.errors.questionType && (
                                     <div className="error-feedback">{formik.errors.questionType}</div>
                                 )}

@@ -289,28 +289,17 @@ const QuestionAddSection2 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 <label htmlFor="questionType" className="form-label">
                                     Type<span className="required-field">*</span>
                                 </label>
-                                <select
+                                <input
                                     name="questionType"
+                                    type="text"
                                     id="questionType"
-                                    className={`form-select border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
+                                    className={`form-control border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
                                         }`}
                                     value={formik.values.questionType}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                >
-                                    <option value="" disabled>Select an option</option>
-                                    <option value="[Part 2] Câu hỏi đuôi">[Part 2] Câu hỏi đuôi</option>
-                                    <option value="[Part 2] Câu hỏi HOW">[Part 2] Câu hỏi HOW</option>
-                                    <option value="[Part 2] Câu hỏi lựa chọn">[Part 2] Câu hỏi lựa chọn</option>
-                                    <option value="[Part 2] Câu hỏi WHAT">[Part 2] Câu hỏi WHAT</option>
-                                    <option value="[Part 2] Câu hỏi WHEN">[Part 2] Câu hỏi WHEN</option>
-                                    <option value="[Part 2] Câu hỏi WHERE">[Part 2] Câu hỏi WHERE</option>
-                                    <option value="[Part 2] Câu hỏi WHO">[Part 2] Câu hỏi WHO</option>
-                                    <option value="[Part 2] Câu hỏi WHY">[Part 2] Câu hỏi WHY</option>
-                                    <option value="[Part 2] Câu hỏi YES/NO">[Part 2] Câu hỏi YES/NO</option>
-                                    <option value="[Part 2] Câu trần thuật">[Part 2] Câu trần thuật</option>
-                                    <option value="[Part 2] Câu yêu cầu, đề nghị">[Part 2] Câu yêu cầu, đề nghị</option>
-                                </select>
+                                    placeholder="Nhập loại câu hỏi (ví dụ: [Part 2] Câu hỏi đuôi)"
+                                />
                                 {formik.touched.questionType && formik.errors.questionType && (
                                     <div className="error-feedback">{formik.errors.questionType}</div>
                                 )}

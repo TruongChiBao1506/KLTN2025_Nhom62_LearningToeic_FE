@@ -389,19 +389,17 @@ const QuestionAddSection1 = ({ sectionId, retrieveQuestions, onClose }) => {
                                 <label htmlFor="questionType" className="form-label">
                                     Type<span className="required-field">*</span>
                                 </label>
-                                <select
+                                <input
                                     name="questionType"
+                                    type="text"
                                     id="questionType"
-                                    className={`form-select border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
+                                    className={`form-control border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
                                         }`}
                                     value={formik.values.questionType}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                >
-                                    <option value="" disabled>Select an option</option>
-                                    <option value="[Part 1] Tranh tả người">[Part 1] Tranh tả người</option>
-                                    <option value="[Part 1] Tranh tả vật">[Part 1] Tranh tả vật</option>
-                                </select>
+                                    placeholder="Nhập loại câu hỏi (ví dụ: [Part 1] Tranh tả người)"
+                                />
                                 {formik.touched.questionType && formik.errors.questionType && (
                                     <div className="error-feedback">{formik.errors.questionType}</div>
                                 )}

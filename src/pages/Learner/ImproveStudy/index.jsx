@@ -163,7 +163,6 @@ const ImproveStudy = () => {
       try {
         // ✅ Gọi API để lấy subTypes từ database
         const response = await questionService.getSubTypesByPartNumber(partNumber);
-        
         if (response?.success && response?.data?.subTypes) {
           const options = response.data.subTypes.map(subType => ({
             value: subType,
@@ -322,7 +321,15 @@ const ImproveStudy = () => {
         }
 
         if (fetchedQuestions && fetchedQuestions.length > 0) {
-          setQuestions(fetchedQuestions);
+          // ✅ Lấy partNumber để quyết định có group hay không
+          const partMatch = selectedSectionData?.name.match(/Part (\d+)/);
+          const partNumber = partMatch ? parseInt(partMatch[1]) : null;
+
+          let finalQuestions;
+          finalQuestions = fetchedQuestions;
+          console.log("🚀 ~ startPractice ~ Final questions:", finalQuestions);
+
+          setQuestions(finalQuestions); // Lưu final data
           setShowImproveTest(true);
           
           // Hiển thị thông báo thành công
@@ -392,7 +399,8 @@ const ImproveStudy = () => {
 
   const submitAnswers = async () => {
     // Kiểm tra xem người dùng đã trả lời ít nhất một câu hỏi chưa
-    const answeredQuestions = questions.filter(
+    const allQuestions = questions.filter(q => q);
+    const answeredQuestions = allQuestions.filter(
       (question) => question.selectedOption
     );
     if (answeredQuestions.length === 0) {
@@ -401,7 +409,7 @@ const ImproveStudy = () => {
         title: "Oops...",
         text: "Bạn chưa trả lời bất kỳ câu nào. Vui lòng chọn đáp án!",
       });
-    } else if (answeredQuestions.length < questions.length) {
+    } else if (answeredQuestions.length < allQuestions.length) {
       const result = await Swal.fire({
         icon: "question",
         title: "Bạn chưa hoàn thành tất cả câu hỏi",
@@ -430,7 +438,8 @@ const ImproveStudy = () => {
   };
 
   const continueSubmit = () => {
-    const updatedQuestions = [...questions].map((question) => {
+    const allQuestions = questions.filter(q => q);
+    const updatedAllQuestions = allQuestions.map((question) => {
       if (question.selectedOption) {
         // Convert selected option content to letter for comparison
         let selectedLetter = null;
@@ -446,16 +455,16 @@ const ImproveStudy = () => {
         }
 
         // 🔍 Debug log
-        console.log("🎯 Question grading debug:", {
-          questionId: question._id,
-          selectedOption: question.selectedOption,
-          selectedLetter: selectedLetter,
-          correctOption: question.correctOption,
-          optionA: question.optionA,
-          optionB: question.optionB,
-          optionC: question.optionC,
-          optionD: question.optionD,
-        });
+        // console.log("🎯 Question grading debug:", {
+        //   questionId: question._id,
+        //   selectedOption: question.selectedOption,
+        //   selectedLetter: selectedLetter,
+        //   correctOption: question.correctOption,
+        //   optionA: question.optionA,
+        //   optionB: question.optionB,
+        //   optionC: question.optionC,
+        //   optionD: question.optionD,
+        // });
 
         return {
           ...question,
@@ -467,11 +476,11 @@ const ImproveStudy = () => {
       return { ...question, isGraded: true };
     });
 
-    setQuestions(updatedQuestions);
+    setQuestions(updatedAllQuestions);
 
     // ✅ Tính điểm - hỗ trợ CẢ 2 định dạng correctOption (chữ cái "A" HOẶC nội dung đầy đủ)
-    const correctCount = updatedQuestions.filter((question) => {
-      if (!question.answered) return false;
+    const correctCount = updatedAllQuestions.filter((question) => {
+      if (!question || !question.answered) return false;
       
       // ✅ Kiểm tra correctOption là chữ cái (A/B/C/D) hay nội dung đầy đủ
       const correctOpt = question.correctOption;
@@ -481,12 +490,12 @@ const ImproveStudy = () => {
         ? question.selectedLetter === correctOpt
         : question.selectedOption === correctOpt;
       
-      console.log("✅ Checking question:", {
-        correctOption: correctOpt,
-        selectedLetter: question.selectedLetter,
-        selectedOption: question.selectedOption,
-        isCorrect: isCorrect
-      });
+      // console.log("✅ Checking question:", {
+      //   correctOption: correctOpt,
+      //   selectedLetter: question.selectedLetter,
+      //   selectedOption: question.selectedOption,
+      //   isCorrect: isCorrect
+      // });
       
       // Trường hợp 1: correctOption là chữ cái "A", "B", "C", "D"
       if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
@@ -497,8 +506,8 @@ const ImproveStudy = () => {
       return question.selectedOption === correctOpt;
     }).length;
 
-    const incorrectCount = updatedQuestions.filter((question) => {
-      if (!question.answered) return false;
+    const incorrectCount = updatedAllQuestions.filter((question) => {
+      if (!question || !question.answered) return false;
       
       const correctOpt = question.correctOption;
       
@@ -521,14 +530,16 @@ const ImproveStudy = () => {
 
   const refreshPage = () => {
     // Đặt lại tất cả câu hỏi về trạng thái ban đầu
-    const resetQuestions = [...questions].map((question) => ({
+    const allQuestions = questions.filter(q => q);
+    const resetAllQuestions = allQuestions.map((question) => ({
       ...question,
       selectedOption: null,
       selectedLetter: null,
       answered: false,
       isGraded: false,
     }));
-    setQuestions(resetQuestions);
+
+    setQuestions(resetAllQuestions);
   };
 
   const getImageUrl = (imageName) => {
@@ -596,7 +607,7 @@ const ImproveStudy = () => {
   };
 
   const clearSelection = (question) => {
-    const updatedQuestions = [...questions].map((q) =>
+    const updatedQuestions = questions.map((q) =>
       q._id === question._id
         ? { ...q, selectedOption: null, answered: false }
         : q
@@ -619,7 +630,7 @@ const ImproveStudy = () => {
     });
 
     // Store the content string for radio display, conversion happens during scoring
-    const updatedQuestions = [...questions].map((q) =>
+    const updatedQuestions = questions.map((q) =>
       q._id === question._id
         ? { ...q, selectedOption: optionToSet, answered: !!optionToSet }
         : q

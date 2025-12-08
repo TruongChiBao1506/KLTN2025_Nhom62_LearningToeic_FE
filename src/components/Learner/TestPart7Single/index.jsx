@@ -36,23 +36,69 @@ const TestPart7Single = ({
 }) => {
   const [showExplanation, setShowExplanation] = useState({});
 
-  // Nhóm các câu hỏi theo groupId
+  // Nhóm các câu hỏi theo groupId nếu chưa grouped
   const groupQuestionsByGroupId = (questions) => {
-    const grouped = {};
-    for (const question of questions) {
-      const groupKey = question.questionGroup.groupId || "default";
-      if (!grouped[groupKey]) {
-        grouped[groupKey] = [];
-      }
-      grouped[groupKey].push(question);
+    // Kiểm tra nếu questions đã grouped (có groupData và questions array)
+    if (questions.length > 0 && questions[0].groupData && Array.isArray(questions[0].questions)) {
+      // Đã grouped, trả về dưới dạng object với key là index
+      const grouped = {};
+      const groupOrder = [];
+      questions.forEach((group, index) => {
+        grouped[index] = {
+          groupData: group.groupData,
+          questions: group.questions
+        };
+        groupOrder.push(index);
+      });
+      // Reverse each group's questions to match desired order
+      const sortedGrouped = {};
+      groupOrder.forEach((key) => {
+        sortedGrouped[key] = {
+          groupData: grouped[key].groupData,
+          questions: grouped[key].questions.reverse(),
+        };
+      });
+      return sortedGrouped;
     }
-    return grouped;
+
+    // Nếu chưa grouped, nhóm theo questionGroup._id
+    const grouped = {};
+    const groupOrder = [];
+    for (const question of questions) {
+      const groupKey = question.questionGroup?._id || "default";
+      if (!grouped[groupKey]) {
+        grouped[groupKey] = {
+          groupData: question.questionGroup || null,
+          questions: []
+        };
+        groupOrder.push(groupKey);
+      }
+      grouped[groupKey].questions.push(question);
+    }
+    // Reverse questions inside each group to match desired order
+    const sortedGrouped = {};
+    groupOrder.forEach((key) => {
+      sortedGrouped[key] = {
+        groupData: grouped[key].groupData,
+        questions: grouped[key].questions.reverse(),
+      };
+    });
+    return sortedGrouped;
   };
 
   const groupedQuestions = useMemo(
     () => groupQuestionsByGroupId(questions),
     [questions]
   );
+
+  // Sort group keys để đảm bảo thứ tự
+  const groupKeys = useMemo(() => Object.keys(groupedQuestions), [groupedQuestions]);
+
+  // Flatten questions for score and grid
+  const allQuestions = useMemo(() => {
+    // Compute flattened list from groupedQuestions to reflect reversed order
+    return Object.entries(groupedQuestions).flatMap(([, groupObj]) => groupObj.questions || []);
+  }, [groupedQuestions]);
 
   const toggleExplanation = async (index) => {
     setShowExplanation({
@@ -62,65 +108,93 @@ const TestPart7Single = ({
 
     // Dịch phần giải thích nếu hiển thị
     if (!showExplanation[index]) {
-      const question = questions[index];
-      const explanation = question.questionExplanation;
-      const targetLanguage = "vi"; // Tiếng Việt
+      // Tìm question theo index tổng
+      let currentIndex = 0;
+      let foundQuestion = null;
+      for (const groupKey of groupKeys) {
+        const groupQuestions = groupedQuestions[groupKey];
+        for (const question of groupQuestions) {
+          if (currentIndex === index) {
+            foundQuestion = question;
+            break;
+          }
+          currentIndex++;
+        }
+        if (foundQuestion) break;
+      }
+      if (foundQuestion) {
+        const explanation = foundQuestion.questionExplanation;
+        const targetLanguage = "vi"; // Tiếng Việt
 
-      try {
-        const translatedExplanation = await translateText(
-          explanation,
-          targetLanguage
-        );
-        question.translatedExplanation = translatedExplanation;
-      } catch (error) {
-        console.error("Lỗi khi dịch:", error);
+        try {
+          const translatedExplanation = await translateText(
+            explanation,
+            targetLanguage
+          );
+          foundQuestion.translatedExplanation = translatedExplanation;
+        } catch (error) {
+          console.error("Lỗi khi dịch:", error);
+        }
       }
     }
   };
 
   // Tính số thứ tự câu hỏi
-  const calculateQuestionNumber = (groupId, questionIndex) => {
-    let questionNumber = questionIndex;
-    for (let i = 0; i < groupId; i++) {
-      if (groupedQuestions[i]) {
-        questionNumber += groupedQuestions[i].length;
-      }
-    }
-    return questionNumber;
+  const questionNumbers = useMemo(() => {
+    const numbers = {};
+    const indices = {};
+    let currentNumber = 0; // zero-based index
+    Object.keys(groupedQuestions).forEach((groupId) => {
+      const group = groupedQuestions[groupId];
+      group.questions.forEach((_, idx) => {
+        indices[`${groupId}-${idx}`] = currentNumber;
+        numbers[`${groupId}-${idx}`] = currentNumber + 1; // display 1-based
+        currentNumber += 1;
+      });
+    });
+    return { numbers, indices };
+  }, [groupedQuestions]);
+
+  const getQuestionNumber = (groupId, questionIndex) => {
+    return questionNumbers.numbers[`${groupId}-${questionIndex}`] || 0;
+  };
+
+  const getQuestionIndex = (groupId, questionIndex) => {
+    return questionNumbers.indices[`${groupId}-${questionIndex}`] ?? 0;
   };
 
   // Kiểm tra xem có nên hiển thị nội dung nhóm không
-  const shouldDisplayGroupContent = (groupQuestions) => {
+  const shouldDisplayGroupContent = (groupObj) => {
     return (
-      groupQuestions[0].questionGroup?.groupImage ||
-      groupQuestions[0].questionGroup?.groupPassage ||
-      groupQuestions[0].questionPassage ||
-      groupQuestions[0].questionImage
+      groupObj.groupData?.groupImage ||
+      groupObj.groupData?.groupPassage ||
+      groupObj.questions[0]?.questionPassage ||
+      groupObj.questions[0]?.questionImage
     );
   };
 
-  // Lấy passage content từ questionGroup hoặc question
-  const getPassageContent = (groupQuestions) => {
+  // Lấy passage content từ groupData hoặc question
+  const getPassageContent = (groupObj) => {
     // Ưu tiên questionPassage từ question individual
-    if (groupQuestions[0].questionPassage) {
-      return groupQuestions[0].questionPassage;
+    if (groupObj.questions[0].questionPassage) {
+      return groupObj.questions[0].questionPassage;
     }
     // Fallback về groupPassage
-    if (groupQuestions[0].questionGroup?.groupPassage) {
-      return groupQuestions[0].questionGroup.groupPassage;
+    if (groupObj.groupData?.groupPassage) {
+      return groupObj.groupData.groupPassage;
     }
     return null;
   };
 
-  // Lấy image từ questionGroup hoặc question
-  const getImageContent = (groupQuestions) => {
+  // Lấy image từ groupData hoặc question
+  const getImageContent = (groupObj) => {
     // Ưu tiên questionImage từ question individual
-    if (groupQuestions[0].questionImage) {
-      return groupQuestions[0].questionImage;
+    if (groupObj.questions[0].questionImage) {
+      return groupObj.questions[0].questionImage;
     }
     // Fallback về groupImage
-    if (groupQuestions[0].questionGroup?.groupImage) {
-      return groupQuestions[0].questionGroup.groupImage;
+    if (groupObj.groupData?.groupImage) {
+      return groupObj.groupData.groupImage;
     }
     return null;
   };
@@ -186,7 +260,7 @@ const TestPart7Single = ({
         >
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
             {Object.entries(groupedQuestions).map(
-              ([groupId, groupQuestions]) => (
+              ([groupId, groupObj]) => (
                 <div key={groupId}>
                   <Row gutter={[24, 24]}>
                     {/* Passage/Image Section */}
@@ -198,12 +272,12 @@ const TestPart7Single = ({
                           borderRadius: "8px",
                         }}
                       >
-                        {shouldDisplayGroupContent(groupQuestions) &&
-                          getImageContent(groupQuestions) && (
+                        {shouldDisplayGroupContent(groupObj) &&
+                          getImageContent(groupObj) && (
                             <div style={{ marginBottom: 16 }}>
                               <img
                                 src={getImageUrl(
-                                  getImageContent(groupQuestions)
+                                  getImageContent(groupObj)
                                 )}
                                 style={{
                                   width: "100%",
@@ -215,11 +289,11 @@ const TestPart7Single = ({
                             </div>
                           )}
 
-                        {shouldDisplayGroupContent(groupQuestions) &&
-                          getPassageContent(groupQuestions) && (
+                        {shouldDisplayGroupContent(groupObj) &&
+                          getPassageContent(groupObj) && (
                             <div style={{ marginTop: 16 }}>
                               {/* Question Text nếu có */}
-                              {groupQuestions[0].questionText && (
+                              {groupObj.questions[0].questionText && (
                                 <div
                                   style={{
                                     marginBottom: 12,
@@ -231,13 +305,13 @@ const TestPart7Single = ({
                                     color: "var(--color-primary)",
                                   }}
                                 >
-                                  {groupQuestions[0].questionText}
+                                  {groupObj.questions[0].questionText}
                                 </div>
                               )}
 
                               <div
                                 dangerouslySetInnerHTML={{
-                                  __html: getPassageContent(groupQuestions),
+                                  __html: getPassageContent(groupObj),
                                 }}
                                 style={{
                                   lineHeight: "1.6",
@@ -264,7 +338,7 @@ const TestPart7Single = ({
                           size="large"
                           style={{ width: "100%" }}
                         >
-                          {groupQuestions.map((question, index) => (
+                          {groupObj.questions.map((question, index) => (
                             <Card
                               key={index}
                               id={`question-${groupId}-${index}`}
@@ -287,12 +361,7 @@ const TestPart7Single = ({
                                   }}
                                 >
                                   <Badge
-                                    count={
-                                      calculateQuestionNumber(
-                                        parseInt(groupId),
-                                        index
-                                      ) + 1
-                                    }
+                                      count={getQuestionNumber(groupId, index)}
                                     style={{
                                       backgroundColor: "var(--color-primary)",
                                       color: "white",
@@ -437,11 +506,11 @@ const TestPart7Single = ({
                                       size="small"
                                       icon={
                                         showExplanation[
-                                          calculateQuestionNumber(
-                                            parseInt(groupId),
-                                            index
-                                          )
-                                        ] ? (
+                                            getQuestionIndex(
+                                              groupId,
+                                              index
+                                            )
+                                          ] ? (
                                           <EyeOff size={14} />
                                         ) : (
                                           <Eye size={14} />
@@ -449,8 +518,8 @@ const TestPart7Single = ({
                                       }
                                       onClick={() =>
                                         toggleExplanation(
-                                          calculateQuestionNumber(
-                                            parseInt(groupId),
+                                          getQuestionIndex(
+                                            groupId,
                                             index
                                           )
                                         )
@@ -458,8 +527,8 @@ const TestPart7Single = ({
                                       style={{ padding: 0, height: "auto" }}
                                     >
                                       {showExplanation[
-                                        calculateQuestionNumber(
-                                          parseInt(groupId),
+                                        getQuestionIndex(
+                                          groupId,
                                           index
                                         )
                                       ]
@@ -468,8 +537,8 @@ const TestPart7Single = ({
                                     </Button>
 
                                     {showExplanation[
-                                      calculateQuestionNumber(
-                                        parseInt(groupId),
+                                      getQuestionIndex(
+                                        groupId,
                                         index
                                       )
                                     ] && (
@@ -559,10 +628,9 @@ const TestPart7Single = ({
                 }}
               >
                 {Object.entries(groupedQuestions).map(
-                  ([groupId, groupQuestions]) =>
-                    groupQuestions.map((question, index) => {
-                      const questionNumber =
-                        calculateQuestionNumber(parseInt(groupId), index) + 1;
+                  ([groupId, groupObj]) =>
+                    groupObj.questions.map((question, index) => {
+                      const questionNumber = getQuestionNumber(groupId, index);
                       let backgroundColor = "#f0f0f0";
                       let color = "var(--color-text-secondary)";
 
@@ -607,7 +675,7 @@ const TestPart7Single = ({
               </div>
 
               {/* Score Display */}
-              {questions.some((q) => q.isGraded) && (
+              {allQuestions.some((q) => q.isGraded) && (
                 <div
                   style={{
                     display: "flex",
@@ -624,14 +692,14 @@ const TestPart7Single = ({
                     <CheckCircle size={16} style={{ color: "var(--color-success)" }} />
                     <Text strong style={{ color: "var(--color-success)" }}>
                       {
-                        questions.filter(
+                        allQuestions.filter(
                           (q) =>
                             q.isGraded &&
                             q.answered &&
                             q.selectedLetter === q.correctOption
                         ).length
                       }
-                      /{questions.length}
+                      /{allQuestions.length}
                     </Text>
                   </div>
                   <div
@@ -640,14 +708,14 @@ const TestPart7Single = ({
                     <XCircle size={16} style={{ color: "var(--color-danger)" }} />
                     <Text strong style={{ color: "var(--color-danger)" }}>
                       {
-                        questions.filter(
+                        allQuestions.filter(
                           (q) =>
                             q.isGraded &&
                             q.answered &&
                             q.selectedLetter !== q.correctOption
                         ).length
                       }
-                      /{questions.length}
+                      /{allQuestions.length}
                     </Text>
                   </div>
                 </div>
@@ -655,15 +723,15 @@ const TestPart7Single = ({
 
               {/* Action Button */}
               <Button
-                type={questions.some((q) => q.isGraded) ? "default" : "primary"}
+                type={allQuestions.some((q) => q.isGraded) ? "default" : "primary"}
                 size="large"
                 icon={
-                  questions.some((q) => q.isGraded) ? (
+                  allQuestions.some((q) => q.isGraded) ? (
                     <RotateCcw size={16} />
                   ) : null
                 }
                 onClick={
-                  questions.some((q) => q.isGraded)
+                  allQuestions.some((q) => q.isGraded)
                     ? refreshPage
                     : submitAnswers
                 }
@@ -675,14 +743,14 @@ const TestPart7Single = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: questions.some((q) => q.isGraded) ? 8 : 0,
+                  gap: allQuestions.some((q) => q.isGraded) ? 8 : 0,
                   borderRadius: "20px",
                   background:  "var(--color-primary)",
                   borderColor:  "var(--color-primary)",
                   color: "#fff",
                 }}
               >
-                {questions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
+                {allQuestions.some((q) => q.isGraded) ? "Làm lại" : "Chấm điểm"}
               </Button>
             </Space>
           </Card>

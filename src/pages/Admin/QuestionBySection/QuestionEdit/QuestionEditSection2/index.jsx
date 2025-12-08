@@ -72,7 +72,7 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
           optionB: data.optionB || "",
           optionC: data.optionC || "",
           correctOption: getCorrectOptionLetter(data),
-          questionType: data.questionType || "",
+          questionType: data.questionSubType || "",
           questionAudio: null,
         });
 
@@ -99,10 +99,8 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
 
   // Xác định đáp án đúng là A/B/C dựa trên giá trị
   function getCorrectOptionLetter(data) {
-    if (data.correctOption === data.optionA) return "A";
-    if (data.correctOption === data.optionB) return "B";
-    if (data.correctOption === data.optionC) return "C";
-    return "";
+    // correctOption trong DB là letter ("A","B","C"), trả về trực tiếp
+    return data.correctOption || "";
   }
 
   // File change handler
@@ -157,7 +155,8 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
       // ✅ Lưu correctOption là chữ cái A/B/C (KHÔNG phải nội dung đầy đủ)
       formData.append("correctOption", values.correctOption);
 
-      formData.append("questionType", values.questionType);
+      formData.append("questionType", "listening"); // ✅ Set questionType là "listening" cho Part 2
+      formData.append("questionSubType", values.questionType); // ✅ Thêm questionSubType từ form
 
       if (selectedAudio) {
         formData.append("questionAudio", selectedAudio, selectedAudio.name);
@@ -326,30 +325,19 @@ const QuestionEditSection2 = ({ sectionId, questionId, retrieveQuestions, onClos
               {/* Question Type */}
               <div className="form-group mb-3">
                 <label htmlFor="questionType" className="form-label">
-                  Type<span className="required-field">*</span>
+                  Loại<span className="required-field">*</span>
                 </label>
-                <select
+                <input
                   name="questionType"
+                  type="text"
                   id="questionType"
-                  className={`form-select border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
+                  className={`form-control border-secondary custom-font ${formik.touched.questionType && formik.errors.questionType ? 'is-invalid' : ''
                     }`}
                   value={formik.values.questionType}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                >
-                  <option value="" disabled>Select an option</option>
-                  <option value="[Part 2] Câu hỏi đuôi">[Part 2] Câu hỏi đuôi</option>
-                  <option value="[Part 2] Câu hỏi HOW">[Part 2] Câu hỏi HOW</option>
-                  <option value="[Part 2] Câu hỏi lựa chọn">[Part 2] Câu hỏi lựa chọn</option>
-                  <option value="[Part 2] Câu hỏi WHAT">[Part 2] Câu hỏi WHAT</option>
-                  <option value="[Part 2] Câu hỏi WHEN">[Part 2] Câu hỏi WHEN</option>
-                  <option value="[Part 2] Câu hỏi WHERE">[Part 2] Câu hỏi WHERE</option>
-                  <option value="[Part 2] Câu hỏi WHO">[Part 2] Câu hỏi WHO</option>
-                  <option value="[Part 2] Câu hỏi WHY">[Part 2] Câu hỏi WHY</option>
-                  <option value="[Part 2] Câu hỏi YES/NO">[Part 2] Câu hỏi YES/NO</option>
-                  <option value="[Part 2] Câu trần thuật">[Part 2] Câu trần thuật</option>
-                  <option value="[Part 2] Câu yêu cầu, đề nghị">[Part 2] Câu yêu cầu, đề nghị</option>
-                </select>
+                  placeholder="Nhập loại câu hỏi"
+                />
                 {formik.touched.questionType && formik.errors.questionType && (
                   <div className="error-feedback">{formik.errors.questionType}</div>
                 )}
