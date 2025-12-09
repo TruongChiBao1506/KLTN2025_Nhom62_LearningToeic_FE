@@ -30,6 +30,7 @@ import {
   Target,
   Trophy,
   UserPlus,
+  Video,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
@@ -44,7 +45,10 @@ import {
   markAllAsRead,
 } from "../store/notificationSlice.js";
 import socketService from "../services/socketService";
-import { getNotificationsByRole, getRoleSpecificCounts } from '../utils/notificationRoleFilter';
+import {
+  getNotificationsByRole,
+  getRoleSpecificCounts,
+} from "../utils/notificationRoleFilter";
 
 import "./LearnerLayout.css";
 
@@ -75,71 +79,71 @@ const LearnerLayout = () => {
   const [openKeys, setOpenKeys] = useState([]);
   const { info } = useAuthStore();
   const dispatch = useDispatch();
-  
+
   // Helper function to check if user is a teacher (memoized)
   const isTeacher = useCallback(() => {
     console.log("🔍 isTeacher check - info:", info);
-    
+
     if (!info) {
       console.log("❌ No info");
       return false;
     }
-    
+
     // ✅ FIX: Check if roles array contains role object with name 'ROLE_TEACHER'
     if (Array.isArray(info.roles)) {
       console.log("📋 info.roles:", info.roles);
-      
+
       // Check if any role object has name 'ROLE_TEACHER'
-      const hasTeacherRole = info.roles.some(role => {
+      const hasTeacherRole = info.roles.some((role) => {
         // Handle both string and object formats
-        if (typeof role === 'string') {
-          return role === 'ROLE_TEACHER';
+        if (typeof role === "string") {
+          return role === "ROLE_TEACHER";
         }
         // Handle object format: {_id: '...', name: 'ROLE_TEACHER'}
-        return role.name === 'ROLE_TEACHER';
+        return role.name === "ROLE_TEACHER";
       });
-      
+
       console.log("✅ hasTeacherRole:", hasTeacherRole);
       return hasTeacherRole;
     }
-    
+
     // Check if role string is 'ROLE_TEACHER' (legacy format)
-    if (typeof info.role === 'string') {
+    if (typeof info.role === "string") {
       console.log("📝 info.role (string):", info.role);
-      return info.role === 'ROLE_TEACHER';
+      return info.role === "ROLE_TEACHER";
     }
-    
+
     // Fallback to isTeacher boolean field
     const fallbackCheck = info.isTeacher === true;
     console.log("⚠️ Fallback isTeacher:", fallbackCheck);
     return fallbackCheck;
   }, [info]);
-  
+
   // Get hook and create stable reference
   const notificationHook = useNotifications();
   const handleNotificationRef = useRef(notificationHook.handleNotification);
-  
+
   // Update ref when hook changes (won't trigger re-render)
   useEffect(() => {
     handleNotificationRef.current = notificationHook.handleNotification;
   }, [notificationHook.handleNotification]);
-  
+
   const allNotifications = useSelector(
     (state) => state.notifications.notifications
   );
   const allCounts = useSelector((state) => state.notifications.counts);
-  
+
   // Filter notifications for learner role
-  const notifications = React.useMemo(() => 
-    getNotificationsByRole(allNotifications, 'learner'), 
+  const notifications = React.useMemo(
+    () => getNotificationsByRole(allNotifications, "learner"),
     [allNotifications]
   );
-  
-  const roleCounts = React.useMemo(() => 
-    getRoleSpecificCounts(allCounts, 'learner'),
+
+  const roleCounts = React.useMemo(
+    () => getRoleSpecificCounts(allCounts, "learner"),
     [allCounts]
   );
-  
+
   const unreadCount = roleCounts.total || 0;
 
   // Kết nối socket và setup listener khi LearnerLayout mount
@@ -155,17 +159,17 @@ const LearnerLayout = () => {
 
   useEffect(() => {
     if (!info?.id) {
-      console.log('⚠️ No user info, skipping socket connection');
+      console.log("⚠️ No user info, skipping socket connection");
       return;
     }
 
     console.log("🔌 Setting up socket connection for user:", info.id);
-    
+
     // Connect socket
     socketService.connect(info.id);
 
     // Register listener ONCE
-    console.log('📝 Registering notification listener...');
+    console.log("📝 Registering notification listener...");
     socketService.on("notification", handleNewNotification);
 
     // Fetch initial notifications
@@ -173,15 +177,15 @@ const LearnerLayout = () => {
 
     // Log listener count for debugging
     const counts = socketService.getListenerCounts();
-    console.log('📊 Listener counts after registration:', counts);
+    console.log("📊 Listener counts after registration:", counts);
 
     // 🔧 CRITICAL: Cleanup function to remove listener on unmount
     return () => {
       console.log("🧹 Cleaning up notification listener in LearnerLayout");
       socketService.off("notification", handleNewNotification);
-      
+
       const countsAfter = socketService.getListenerCounts();
-      console.log('📊 Listener counts after cleanup:', countsAfter);
+      console.log("📊 Listener counts after cleanup:", countsAfter);
     };
   }, [info?.id, dispatch, handleNewNotification]); // handleNewNotification is now STABLE
 
@@ -401,7 +405,11 @@ const LearnerLayout = () => {
       menuItems.unshift({
         key: "loading",
         icon: <FileText size={16} />,
-        label: <span style={{ color: "var(--color-text-disabled)" }}>Đang tải...</span>,
+        label: (
+          <span style={{ color: "var(--color-text-disabled)" }}>
+            Đang tải...
+          </span>
+        ),
         disabled: true,
       });
       return menuItems;
@@ -491,6 +499,11 @@ const LearnerLayout = () => {
           key: "/learner/full-test",
           icon: <GraduationCap size={16} />,
           label: <Link to="/learner/full-test">Full Test</Link>,
+        },
+        {
+          key: "/learner/ai-speaking",
+          icon: <Video size={16} />,
+          label: <Link to="/learner/ai-speaking">Luyện Nói AI</Link>,
         },
       ],
     },
@@ -653,48 +666,59 @@ const LearnerLayout = () => {
       ),
     },
     // Teacher Content Management - Only show if user has ROLE_TEACHER
-    ...(isTeacher() ? [{
-      key: "teacher-content",
-      label: (
-        <Link
-          to="/teacher/"
-          className="dropdown-menu-item"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "12px 16px",
-            borderRadius: "8px",
-            margin: "2px 8px",
-            textDecoration: "none",
-            color: "#1f2937",
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            position: "relative",
-            overflow: "hidden",
-            background: "var(--color-bg-primary)",
-            border: "1px solid rgba(16, 185, 129, 0.15)",
-          }}
-        >
-          <div
-            style={{
-              background: "#27AE60",
-              borderRadius: "8px",
-              padding: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <BookOpen size={16} style={{ color: "var(--color-bg-primary)" }} />
-          </div>
-          <span
-            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
-          >
-            Quản lý nội dung
-          </span>
-        </Link>
-      ),
-    }] : []),
+    ...(isTeacher()
+      ? [
+          {
+            key: "teacher-content",
+            label: (
+              <Link
+                to="/teacher/"
+                className="dropdown-menu-item"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  margin: "2px 8px",
+                  textDecoration: "none",
+                  color: "#1f2937",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  position: "relative",
+                  overflow: "hidden",
+                  background: "var(--color-bg-primary)",
+                  border: "1px solid rgba(16, 185, 129, 0.15)",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#27AE60",
+                    borderRadius: "8px",
+                    padding: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <BookOpen
+                    size={16}
+                    style={{ color: "var(--color-bg-primary)" }}
+                  />
+                </div>
+                <span
+                  style={{
+                    fontWeight: "600",
+                    fontSize: "12px",
+                    color: "#1f2937",
+                  }}
+                >
+                  Quản lý nội dung
+                </span>
+              </Link>
+            ),
+          },
+        ]
+      : []),
     {
       key: "/learner/progress",
       label: (
@@ -727,7 +751,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <TrendingUp size={16} style={{ color: "var(--color-bg-primary)" }} />
+            <TrendingUp
+              size={16}
+              style={{ color: "var(--color-bg-primary)" }}
+            />
           </div>
           <span
             style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
@@ -769,7 +796,10 @@ const LearnerLayout = () => {
               justifyContent: "center",
             }}
           >
-            <StickyNote size={16} style={{ color: "var(--color-bg-primary)" }} />
+            <StickyNote
+              size={16}
+              style={{ color: "var(--color-bg-primary)" }}
+            />
           </div>
           <span
             style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
@@ -1072,9 +1102,7 @@ const LearnerLayout = () => {
               >
                 <div
                   style={{
-                    background: !notification.isRead
-                      ? "#2C5F8D"
-                      : "#ECF0F1",
+                    background: !notification.isRead ? "#2C5F8D" : "#ECF0F1",
                     borderRadius: "8px",
                     padding: "6px",
                     display: "flex",
@@ -1088,7 +1116,9 @@ const LearnerLayout = () => {
                   <Bell
                     size={14}
                     style={{
-                      color: !notification.isRead ? "var(--color-bg-primary)" : "#64748b",
+                      color: !notification.isRead
+                        ? "var(--color-bg-primary)"
+                        : "#64748b",
                     }}
                   />
                 </div>
@@ -1249,16 +1279,16 @@ const LearnerLayout = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   width: "40px",
-                  height: "40px"
+                  height: "40px",
                 }}
               >
-                <img 
-                  src={toeicLogo} 
-                  alt="TOEIC Logo" 
+                <img
+                  src={toeicLogo}
+                  alt="TOEIC Logo"
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain"
+                    objectFit: "contain",
                   }}
                 />
               </div>
@@ -1272,7 +1302,7 @@ const LearnerLayout = () => {
                   borderRadius: "10px",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px"
+                  gap: "6px",
                 }}
               >
                 📚 Học viên
@@ -1340,16 +1370,16 @@ const LearnerLayout = () => {
                 flexShrink: 0,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 border: "2px solid rgba(255,255,255,0.3)",
-                padding: "4px"
+                padding: "4px",
               }}
             >
-              <img 
-                src={toeicLogo} 
-                alt="TOEIC Logo" 
+              <img
+                src={toeicLogo}
+                alt="TOEIC Logo"
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "contain"
+                  objectFit: "contain",
                 }}
               />
             </div>
@@ -1366,7 +1396,7 @@ const LearnerLayout = () => {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   }}
                 >
                   <span>📚</span>
@@ -1621,7 +1651,10 @@ const LearnerLayout = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Flame size={14} style={{ color: "var(--color-bg-primary)" }} />
+                    <Flame
+                      size={14}
+                      style={{ color: "var(--color-bg-primary)" }}
+                    />
                   </div>
                   <div style={{ color: "var(--color-bg-primary)" }}>
                     <div
@@ -1669,7 +1702,10 @@ const LearnerLayout = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Clock size={14} style={{ color: "var(--color-bg-primary)" }} />
+                    <Clock
+                      size={14}
+                      style={{ color: "var(--color-bg-primary)" }}
+                    />
                   </div>
                   <div style={{ color: "var(--color-bg-primary)" }}>
                     <div
@@ -1722,7 +1758,10 @@ const LearnerLayout = () => {
                       unreadCount > 0
                         ? "linear-gradient(135deg, #a8edea, #fed6e3)"
                         : "rgba(255,255,255,0.15)",
-                    color: unreadCount > 0 ? "var(--color-chart-4)" : "var(--color-bg-primary)",
+                    color:
+                      unreadCount > 0
+                        ? "var(--color-chart-4)"
+                        : "var(--color-bg-primary)",
                     border: "none",
                     borderRadius: "8px",
                     width: "36px",
@@ -1886,7 +1925,10 @@ const LearnerLayout = () => {
                       marginBottom: "8px",
                     }}
                   >
-                    <GraduationCap size={20} style={{ color: "var(--color-bg-primary)" }} />
+                    <GraduationCap
+                      size={20}
+                      style={{ color: "var(--color-bg-primary)" }}
+                    />
                   </div>
                   <Text
                     type="secondary"
@@ -1924,7 +1966,9 @@ const LearnerLayout = () => {
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = "var(--color-brand-purple)")
+                    }
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Trợ giúp
@@ -1938,7 +1982,9 @@ const LearnerLayout = () => {
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = "var(--color-brand-purple)")
+                    }
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Chính sách bảo mật
@@ -1952,7 +1998,9 @@ const LearnerLayout = () => {
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = "var(--color-brand-purple)")
+                    }
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Điều khoản sử dụng
@@ -1966,7 +2014,9 @@ const LearnerLayout = () => {
                       fontWeight: "500",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.color = "var(--color-brand-purple)")}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = "var(--color-brand-purple)")
+                    }
                     onMouseLeave={(e) => (e.target.style.color = "#8c8c8c")}
                   >
                     Liên hệ
@@ -2200,7 +2250,7 @@ const LearnerLayout = () => {
         }
 
         ::-webkit-scrollbar-thumb {
-          background: #2C5F8D;
+          background: #2c5f8d;
           border-radius: 3px;
         }
 
