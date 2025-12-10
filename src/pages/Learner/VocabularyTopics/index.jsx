@@ -13,8 +13,6 @@ import {
   Progress,
   Space,
   Badge,
-  Avatar,
-  Divider,
   message,
 } from "antd";
 import {
@@ -24,8 +22,6 @@ import {
   Target,
   Mic,
   MicOff,
-  Volume2,
-  FileText,
   Trophy,
   Zap,
   ChevronRight,
@@ -33,14 +29,14 @@ import {
 } from "lucide-react";
 import topicService from "../../../services/topicService";
 import vocabularyService from "../../../services/vocabularyService";
-import sectionService from "../../../services/sectionsService";
+// sectionService removed; not required for this page (sidebar removed)
 
 const { Title, Text } = Typography;
 
 const VocabularyTopics = () => {
   // States
   const [topics, setTopics] = useState([]);
-  const [sections, setSections] = useState([]);
+  // sections removed — sidebar has been removed
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [topicStats, setTopicStats] = useState({});
@@ -89,11 +85,7 @@ const VocabularyTopics = () => {
           await loadTopicStats(topicsResponse);
         }
 
-        // Load sections for sidebar
-        const sectionsResponse = await sectionService.getAllEnabled();
-        if (sectionsResponse && Array.isArray(sectionsResponse)) {
-          setSections(sectionsResponse);
-        }
+        // Sidebar removed — no sections load required
       } catch (error) {
         console.error("Error loading data:", error);
         message.error("Không thể tải dữ liệu. Vui lòng thử lại sau.");
@@ -186,10 +178,7 @@ const VocabularyTopics = () => {
   // Filter to show only enabled topics
   const enabledTopics = filteredTopics.filter(topic => topic.topicStatus === 1);
 
-  // Filtered sections for reading and listening
-  const docngheSections = sections.filter(
-    (section) => section.type === 1 || section.type === 2
-  );
+  // NOTE: Sidebar 'Listening/Reading' sections removed — docngheSections not used anymore
 
   if (loading) {
     return (
@@ -262,7 +251,7 @@ const VocabularyTopics = () => {
 
         <Row gutter={[20, 20]}>
           {/* Main Content */}
-          <Col xs={24} lg={18} xl={19}>
+          <Col xs={24} lg={24} xl={24}>
             {/* Search Section - Compact */}
             <Card
               style={{
@@ -732,176 +721,7 @@ const VocabularyTopics = () => {
             </Card>
           </Col>
 
-          {/* Sidebar - Compact */}
-          <Col xs={24} lg={6} xl={5}>
-            <Card
-              style={{
-                borderRadius: "12px",
-                background: "white",
-                border: "1px solid rgba(0, 0, 0, 0.06)",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-                position: "sticky",
-                top: "20px",
-              }}
-              bodyStyle={{ padding: "20px" }}
-            >
-              <div style={{ marginBottom: "16px" }}>
-                <Title
-                  level={5}
-                  style={{
-                    color: "var(--color-chart-6)",
-                    marginBottom: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    fontSize: "12px",
-                  }}
-                >
-                  <Zap style={{ width: "16px", height: "16px" }} />
-                  Luyện tập khác
-                </Title>
-                <Text type="secondary" style={{ fontSize: "12px" }}>
-                  Các phần thi TOEIC L&R
-                </Text>
-              </div>
-
-              <Divider style={{ margin: "12px 0" }} />
-
-              <div>
-                {loading ? (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: "20px 10px",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    <Spin size="small" />
-                    <Text type="secondary" style={{ fontSize: "11px" }}>
-                      Đang tải...
-                    </Text>
-                  </div>
-                ) : docngheSections.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "16px" }}>
-                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                      Chưa có phần luyện tập
-                    </Text>
-                  </div>
-                ) : (
-                  <Space
-                    direction="vertical"
-                    size="small"
-                    style={{ width: "100%" }}
-                  >
-                    {docngheSections.map((section) => {
-                      // Generate route path matching LearnerLayout logic
-                      let routePath = '';
-                      if (section.name.includes('Part 1')) routePath = '/learner/part-1';
-                      else if (section.name.includes('Part 2')) routePath = '/learner/part-2';
-                      else if (section.name.includes('Part 3')) routePath = '/learner/part-3';
-                      else if (section.name.includes('Part 4')) routePath = '/learner/part-4';
-                      else if (section.name.includes('Part 5')) routePath = '/learner/part-5';
-                      else if (section.name.includes('Part 6')) routePath = '/learner/part-6';
-                      else if (section.name.includes('Part 7')) routePath = '/learner/part-7';
-                      else routePath = `/learner/section/${section._id}`;
-
-                      return (
-                        <Card
-                          key={section._id}
-                          size="small"
-                          hoverable
-                          style={{
-                            borderRadius: "8px",
-                            border: "1px solid #f0f0f0",
-                            transition: "all 0.3s ease",
-                            background: "white",
-                          }}
-                          bodyStyle={{ padding: "12px" }}
-                        >
-                          <Link
-                            to={routePath}
-                            style={{ textDecoration: "none", color: "inherit" }}
-                          >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <Avatar
-                                size="small"
-                                style={{
-                                  background:
-                                    section.type === 1
-                                      ? "linear-gradient(135deg, var(--color-primary), var(--color-info))"
-                                      : "linear-gradient(135deg, var(--color-success), #73d13d)",
-                                  border: "none",
-                                }}
-                                icon={
-                                  section.type === 1 ? (
-                                    <Volume2
-                                      style={{ width: "12px", height: "12px" }}
-                                    />
-                                  ) : (
-                                    <FileText
-                                      style={{ width: "12px", height: "12px" }}
-                                    />
-                                  )
-                                }
-                              />
-                              <div>
-                                <Title
-                                  level={5}
-                                  style={{
-                                    fontSize: "12px",
-                                    margin: 0,
-                                    marginBottom: "2px",
-                                    color: "var(--color-primary)",
-                                  }}
-                                >
-                                  {section.name}
-                                </Title>
-                                <Tag
-                                  color={section.type === 1 ? "blue" : "green"}
-                                  style={{
-                                    fontSize: "10px",
-                                    margin: 0,
-                                    borderRadius: "3px",
-                                    padding: "1px 6px",
-                                  }}
-                                >
-                                  {section.type === 1 ? "Listening" : "Reading"}
-                                </Tag>
-                              </div>
-                            </div>
-                            <ChevronRight
-                              style={{
-                                width: "12px",
-                                height: "12px",
-                                color: "var(--color-text-disabled)",
-                              }}
-                            />
-                          </div>
-                        </Link>
-                      </Card>
-                      );
-                    })}
-                  </Space>
-                )}
-              </div>
-            </Card>
-          </Col>
+          {/* Sidebar - removed */}
         </Row>
       </div>
     </div>

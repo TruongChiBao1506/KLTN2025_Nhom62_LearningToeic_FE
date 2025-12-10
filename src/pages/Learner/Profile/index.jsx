@@ -393,22 +393,26 @@ const Profile = () => {
     }
   };
 
-  const validatePassword = () => {
+  // Validate password inputs. If `values` is provided (from onFinish), validate those instead of state
+  const validatePassword = (values = null) => {
     const newErrors = {};
+    const currentPassword = values?.currentPassword || passwordData.currentPassword;
+    const newPassword = values?.newPassword || passwordData.newPassword;
+    const confirmPassword = values?.confirmPassword || passwordData.confirmPassword;
 
-    if (!passwordData.currentPassword) {
+    if (!currentPassword) {
       newErrors.currentPassword = "Vui lòng nhập mật khẩu hiện tại";
     }
 
-    if (!passwordData.newPassword) {
+    if (!newPassword) {
       newErrors.newPassword = "Vui lòng nhập mật khẩu mới";
-    } else if (passwordData.newPassword.length < 6) {
+    } else if (newPassword.length < 6) {
       newErrors.newPassword = "Mật khẩu mới phải có ít nhất 6 ký tự";
     }
 
-    if (!passwordData.confirmPassword) {
+    if (!confirmPassword) {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu mới";
-    } else if (passwordData.newPassword !== passwordData.confirmPassword) {
+    } else if (newPassword !== confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
     }
 
@@ -416,10 +420,19 @@ const Profile = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validatePassword()) {
+  // AntD Form onFinish handler receives form values, not an event
+  const handlePasswordSubmit = async (values) => {
+    // If form returns values, prefer them; otherwise fall back to local controlled state
+    const current = values?.currentPassword || passwordData.currentPassword;
+    const newPass = values?.newPassword || passwordData.newPassword;
+    const confirm = values?.confirmPassword || passwordData.confirmPassword;
+
+    // Update local state from values if provided
+    if (values && Object.keys(values).length) {
+      setPasswordData((prev) => ({ ...prev, ...values }));
+    }
+
+    if (!validatePassword({ currentPassword: current, newPassword: newPass, confirmPassword: confirm })) {
       return;
     }
 
@@ -427,10 +440,7 @@ const Profile = () => {
       setLoading(true);
       setErrors({});
 
-      await authService.changePassword(
-        passwordData.currentPassword,
-        passwordData.newPassword
-      );
+      await authService.changePassword(current, newPass);
 
       setChangePasswordMode(false);
       setPasswordData({
@@ -894,7 +904,7 @@ const Profile = () => {
                 {changePasswordMode && (
                   <div>
                     <Form layout="vertical" onFinish={handlePasswordSubmit}>
-                      <Form.Item label="Mật khẩu hiện tại">
+                      <Form.Item label="Mật khẩu hiện tại" name="currentPassword">
                         <Input.Password
                           value={passwordData.currentPassword}
                           onChange={(e) => setPasswordData(prev => ({
@@ -905,7 +915,7 @@ const Profile = () => {
                         />
                       </Form.Item>
 
-                      <Form.Item label="Mật khẩu mới">
+                      <Form.Item label="Mật khẩu mới" name="newPassword">
                         <Input.Password
                           value={passwordData.newPassword}
                           onChange={(e) => setPasswordData(prev => ({
@@ -916,7 +926,7 @@ const Profile = () => {
                         />
                       </Form.Item>
 
-                      <Form.Item label="Xác nhận mật khẩu mới">
+                      <Form.Item label="Xác nhận mật khẩu mới" name="confirmPassword">
                         <Input.Password
                           value={passwordData.confirmPassword}
                           onChange={(e) => setPasswordData(prev => ({

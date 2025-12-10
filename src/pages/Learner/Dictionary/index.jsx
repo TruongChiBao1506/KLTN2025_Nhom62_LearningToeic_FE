@@ -680,7 +680,7 @@ const Dictionary = () => {
                 <span style={{ fontWeight: "600", color: "var(--color-primary)" }}>Văn bản gốc</span>
               </Space>
             }
-            style={{ 
+            style={{
               borderRadius: "16px",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
               border: "1px solid #f0f0f0"
@@ -805,7 +805,7 @@ const Dictionary = () => {
                 {translating && <Spin size="small" />}
               </Space>
             }
-            style={{ 
+            style={{
               borderRadius: "16px",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
               border: "1px solid #f0f0f0"
@@ -859,15 +859,15 @@ const Dictionary = () => {
                 }}
               >
                 <Spin size="small" style={{ color: "var(--color-primary)" }} />
-                <div style={{ 
-                  marginTop: "8px", 
+                <div style={{
+                  marginTop: "8px",
                   fontSize: "12px",
                   fontWeight: "500",
                   color: "var(--color-primary)"
                 }}>
                   Đang dịch văn bản...
                 </div>
-                <div style={{ 
+                <div style={{
                   fontSize: "12px",
                   color: "#8c8c8c",
                   marginTop: "4px"
@@ -921,11 +921,11 @@ const Dictionary = () => {
               icon={<Search size={18} />}
               onClick={() => searchWord()}
               loading={searching}
-              style={{ 
+              style={{
                 borderRadius: "12px",
-                height: "48px",
-                boxShadow: "0 4px 12px rgba(24, 144, 255, 0.3)",
-                transition: "all 0.3s ease"
+                background: "var(--color-primary)",
+                borderColor: "var(--color-primary)",
+                color: "#fff"
               }}
               title="Tìm kiếm từ trong từ điển"
             >
@@ -1049,7 +1049,7 @@ const Dictionary = () => {
                     <History size={18} />
                   </Badge>
                 }
-                style={{ 
+                style={{
                   borderRadius: "12px",
                   transition: "all 0.3s ease",
                   boxShadow: showHistory ? "0 4px 12px rgba(24, 144, 255, 0.3)" : "none"
@@ -1174,7 +1174,7 @@ const Dictionary = () => {
                     <Heart size={18} />
                   </Badge>
                 }
-                style={{ 
+                style={{
                   borderRadius: "12px",
                   transition: "all 0.3s ease",
                   boxShadow: showBookmarks ? "0 4px 12px rgba(250, 173, 20, 0.3)" : "none"
@@ -1190,7 +1190,7 @@ const Dictionary = () => {
               size="large"
               icon={<RotateCcw size={18} />}
               onClick={clearDictionary}
-              style={{ 
+              style={{
                 borderRadius: "12px",
                 transition: "all 0.3s ease"
               }}
@@ -1199,13 +1199,13 @@ const Dictionary = () => {
               Xóa
             </Button>
           </Col>
-          <Col>
+          {/* <Col>
             <Button
               size="large"
               type="dashed"
               onClick={addSampleData}
-              style={{ 
-                borderRadius: "12px", 
+              style={{
+                borderRadius: "12px",
                 color: "var(--color-chart-4)",
                 borderColor: "var(--color-chart-4)",
                 transition: "all 0.3s ease"
@@ -1214,7 +1214,7 @@ const Dictionary = () => {
             >
               Test Data
             </Button>
-          </Col>
+          </Col> */}
         </Row>
       </Card>
 
@@ -1232,8 +1232,8 @@ const Dictionary = () => {
           {searching ? (
             <div style={{ textAlign: "center", padding: "60px 40px" }}>
               <Spin size="large" style={{ color: "var(--color-primary)" }} />
-              <div style={{ 
-                marginTop: "20px", 
+              <div style={{
+                marginTop: "20px",
                 color: "var(--color-primary)",
                 fontSize: "16px",
                 fontWeight: "500"
@@ -1296,7 +1296,7 @@ const Dictionary = () => {
                               phonetic
                             )
                           }
-                          style={{ 
+                          style={{
                             borderRadius: "12px",
                             transition: "all 0.3s ease",
                             boxShadow: isBookmarked ? "0 4px 12px rgba(255, 77, 79, 0.3)" : "none"
@@ -1311,7 +1311,7 @@ const Dictionary = () => {
                           ghost
                           icon={<Volume2 size={18} />}
                           onClick={playSound}
-                          style={{ 
+                          style={{
                             borderRadius: "12px",
                             transition: "all 0.3s ease"
                           }}
@@ -1446,10 +1446,10 @@ const Dictionary = () => {
                 {(phonetic || partOfSpeech) && (
                   <div style={{ marginTop: "16px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
                     {phonetic && (
-                      <Tag 
-                        color="green" 
-                        style={{ 
-                          marginRight: "0", 
+                      <Tag
+                        color="green"
+                        style={{
+                          marginRight: "0",
                           padding: "6px 12px",
                           borderRadius: "8px",
                           fontSize: "12px",
@@ -1462,9 +1462,9 @@ const Dictionary = () => {
                       </Tag>
                     )}
                     {partOfSpeech && (
-                      <Tag 
-                        color="blue" 
-                        style={{ 
+                      <Tag
+                        color="blue"
+                        style={{
                           padding: "6px 12px",
                           borderRadius: "8px",
                           fontSize: "12px",
@@ -1483,9 +1483,9 @@ const Dictionary = () => {
               {/* Definitions */}
               {Array.isArray(definition) && definition.length > 0 && (
                 <div style={{ marginBottom: "24px" }}>
-                  <Title 
-                    level={4} 
-                    style={{ 
+                  <Title
+                    level={4}
+                    style={{
                       color: "#262626",
                       marginBottom: "16px",
                       fontWeight: "600"
@@ -1983,7 +1983,7 @@ const Dictionary = () => {
               backgroundImage: "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%)",
               animation: "float 6s ease-in-out infinite"
             }}></div>
-            
+
             <Title
               level={2}
               style={{
@@ -2002,8 +2002,8 @@ const Dictionary = () => {
               />
               Công cụ Dịch thuật & Từ điển
             </Title>
-            <Text style={{ 
-              fontSize: "18px", 
+            <Text style={{
+              fontSize: "18px",
               color: "rgba(255,255,255,0.9)",
               fontWeight: "400",
               position: "relative",
@@ -2012,7 +2012,7 @@ const Dictionary = () => {
             }}>
               Dịch văn bản và tra cứu từ điển tiếng Anh một cách dễ dàng
             </Text>
-            
+
             {/* Floating Elements */}
             <div style={{
               position: "absolute",

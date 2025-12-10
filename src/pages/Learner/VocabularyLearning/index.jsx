@@ -474,8 +474,14 @@ const VocabularyLearning = () => {
         setVocabularies(updatedVocabularies);
       } else {
         console.log("Adding to favorites...");
-        await userVocabularyService.addToFavorites(vocabulary._id);
+        const addResponse = await userVocabularyService.addToFavorites(vocabulary._id);
         message.success("Đã thêm vào danh sách yêu thích");
+        // If achievement/result returned, show reward or notification
+        const achievementResult = addResponse?.achievement;
+        if (achievementResult?.unlockedAchievements?.length > 0) {
+          const unlocked = achievementResult.unlockedAchievements.map(a => a.name || a.title || a).join(', ');
+          message.success(`Chúc mừng! Bạn đã nhận được thành tích: ${unlocked}`);
+        }
         
         // Update state immediately after successful addition
         const updatedVocabularies = [...vocabularies];

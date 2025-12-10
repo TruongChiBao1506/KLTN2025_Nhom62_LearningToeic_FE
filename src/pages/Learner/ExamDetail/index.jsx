@@ -183,6 +183,13 @@ const ExamDetail = () => {
   const [isSidebarFixed, setIsSidebarFixed] = useState(false);
   const { recordCompleteTest } = useAchievementNotifications();
 
+  // Helper: normalize audio URL (S3 path or full URL)
+  function getAudioUrl(audioNameOrUrl) {
+    if (!audioNameOrUrl) return "";
+    if (/^https?:\/\//i.test(audioNameOrUrl)) return audioNameOrUrl;
+    return `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${audioNameOrUrl}`;
+  }
+
   const fetchExam = useCallback(async () => {
     try {
       setLoading(true);
@@ -1386,13 +1393,13 @@ const ExamDetail = () => {
         <Card
           style={{
             textAlign: "center",
-            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            background: "var(--color-primary)",
             border: "none",
           }}
         >
           <Space direction="vertical" size="large">
             <Space size="large" wrap>
-              <Button
+              {/* <Button
                 type="primary"
                 size="large"
                 icon={<FileText size={16} />}
@@ -1400,7 +1407,7 @@ const ExamDetail = () => {
                 style={{ background: "var(--color-primary)", borderColor: "var(--color-primary)" }}
               >
                 Thêm bài thi luyện tập
-              </Button>
+              </Button> */}
               <Button
                 type="default"
                 size="large"
@@ -1735,12 +1742,7 @@ const ExamDetail = () => {
   // Main exam taking view
   const currentQuestion = exam.questions[currentQuestionIndex];
 
-  // Helper: normalize audio URL (S3 path or full URL)
-  const getAudioUrl = (audioNameOrUrl) => {
-    if (!audioNameOrUrl) return "";
-    if (/^https?:\/\//i.test(audioNameOrUrl)) return audioNameOrUrl;
-    return `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${audioNameOrUrl}`;
-  };
+  // Note: function declared above to avoid 'cannot access before initialization' errors
 
   // Compute TOEIC parts & ranges so we can render by part in multiple places
   const toeicRanges =

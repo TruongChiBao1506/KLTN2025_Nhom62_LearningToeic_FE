@@ -557,6 +557,7 @@ const Grammar = () => {
                                 size={40}
                                 style={{
                                   backgroundColor: "var(--color-brand-purple)",
+                                  color: "var(--color-primary)",
                                   boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)",
                                 }}
                                 icon={<FileText style={{ width: "18px", height: "18px" }} />}

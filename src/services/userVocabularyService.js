@@ -1,5 +1,6 @@
 import axiosClient from "./axiosClient";
 import { jwtDecode } from "jwt-decode";
+import achievementService from "./achievementService";
 
 // Hàm helper để lấy userId từ token
 const getUserIdFromToken = () => {
@@ -150,7 +151,32 @@ const userVocabularyService = {
       
       const response = await axiosClient.post("/user-vocabularies", requestData);
       console.log("🟢 [addToFavorites] Success response:", response);
-      return response;
+
+      try {
+        // After successfully adding, fetch stats to compute count (preferred) or fallback to retrieving list
+        let count = 0;
+        try {
+          const stats = await userVocabularyService.getUserVocabularyStats();
+          // stats may be { totalSaved: x } or similar depending on backend
+          count = stats?.data?.totalSaved || stats?.totalSaved || stats?.savedCount || 0;
+        } catch (statsError) {
+          console.warn("⚠️ [addToFavorites] Failed to get stats, falling back to full list:", statsError);
+          const userVocabs = await userVocabularyService.getUserVocabularies();
+          const userVocabsList = Array.isArray(userVocabs)
+            ? userVocabs
+            : userVocabs?.data || [];
+          count = (userVocabsList && userVocabsList.length) || 0;
+        }
+        // Record the save vocab activity and request notifications (unlocked achievements)
+        const recordResponse = await achievementService.recordSaveVocabWithNotification(userId, count, vocabularyId);
+        console.log("🟢 [addToFavorites] recordSaveVocab response:", recordResponse);
+        // If the backend returned unlocked achievements or notifications the UI can consume them
+        return { ...response, achievement: recordResponse };
+      } catch (achError) {
+        console.error("⚠️ [addToFavorites] recordSaveVocab error:", achError);
+        // Do not prevent the addToFavorites success; just return the original response
+        return response;
+      }
     } catch (error) {
       console.error("🔴 [addToFavorites] Error:", error);
       console.error("🔴 [addToFavorites] Error response:", error.response);

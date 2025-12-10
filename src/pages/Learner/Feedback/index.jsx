@@ -39,7 +39,7 @@ const Feedback = () => {
         type: "success",
         content: (
           <span>
-            <CheckCircleTwoTone twoToneColor="var(--color-success)" style={{ fontSize: 20, marginRight: 8 }} />
+            {/* <CheckCircleTwoTone twoToneColor="var(--color-success)" style={{ fontSize: 20, marginRight: 8 }} /> */}
             Cảm ơn bạn đã gửi phản hồi! Chúng tôi rất trân trọng ý kiến của bạn.
           </span>
         ),
@@ -74,7 +74,18 @@ const Feedback = () => {
             <Rate allowClear />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block style={{ borderRadius: 8, height: 48, fontWeight: 600 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              style={{
+                borderRadius: "8px",
+                background: "var(--color-primary)",
+                borderColor: "var(--color-primary)",
+                color: "#fff"
+              }}
+            >
               Gửi phản hồi
             </Button>
           </Form.Item>

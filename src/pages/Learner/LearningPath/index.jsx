@@ -145,10 +145,10 @@ const LearningPathPage = () => {
         currentPathProgress
     } = useAILearningPath(userId);
 
-        const [activeTab, setActiveTab] = useState('dashboard');
-        const [showCreateModal, setShowCreateModal] = useState(false);
-        const [createForm] = Form.useForm();
-        const [startDate, setStartDate] = useState(null);
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [createForm] = Form.useForm();
+    const [startDate, setStartDate] = useState(null);
 
     useEffect(() => {
         if (learningPaths && learningPaths.length > 0) {
@@ -397,6 +397,12 @@ const LearningPathPage = () => {
                         onClick={handleQuickPathCreate}
                         loading={loading}
                         size="large"
+                        style={{
+                            borderRadius: "8px",
+                            background: "var(--color-primary)",
+                            borderColor: "var(--color-primary)",
+                            color: "#fff"
+                        }}
                     >
                         Tạo lộ trình nhanh 4 tuần
                     </Button>,
@@ -1121,7 +1127,7 @@ const LearningPathPage = () => {
     }
 
     return (
-        <div className="ai-learning-path-container" style={{padding: '24px'}}>
+        <div className="ai-learning-path-container" style={{ padding: '24px' }}>
             <div className="ai-learning-path-header">
                 <Title level={2}>
                     <BulbOutlined className="header-icon" />
@@ -1366,6 +1372,12 @@ const LearningPathPage = () => {
                                 htmlType="submit"
                                 loading={loading}
                                 icon={<BulbOutlined />}
+                                style={{
+                                    borderRadius: "8px",
+                                    background: "var(--color-primary)",
+                                    borderColor: "var(--color-primary)",
+                                    color: "#fff"
+                                }}
                             >
                                 Tạo lộ trình học
                             </Button>

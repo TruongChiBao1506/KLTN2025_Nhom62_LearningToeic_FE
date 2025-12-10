@@ -729,51 +729,51 @@ const LearnerLayout = () => {
           },
         ]
       : []),
-    {
-      key: "/learner/progress",
-      label: (
-        <Link
-          to="/learner/progress"
-          className="dropdown-menu-item"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "12px 16px",
-            borderRadius: "8px",
-            margin: "2px 8px",
-            textDecoration: "none",
-            color: "#1f2937",
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            position: "relative",
-            overflow: "hidden",
-            background: "var(--color-bg-primary)",
-            border: "1px solid rgba(16, 185, 129, 0.15)",
-          }}
-        >
-          <div
-            style={{
-              background: "#27AE60",
-              borderRadius: "8px",
-              padding: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TrendingUp
-              size={16}
-              style={{ color: "var(--color-bg-primary)" }}
-            />
-          </div>
-          <span
-            style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
-          >
-            Tiến độ học tập
-          </span>
-        </Link>
-      ),
-    },
+    // {
+    //   key: "/learner/progress",
+    //   label: (
+    //     <Link
+    //       to="/learner/progress"
+    //       className="dropdown-menu-item"
+    //       style={{
+    //         display: "flex",
+    //         alignItems: "center",
+    //         gap: "12px",
+    //         padding: "12px 16px",
+    //         borderRadius: "8px",
+    //         margin: "2px 8px",
+    //         textDecoration: "none",
+    //         color: "#1f2937",
+    //         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    //         position: "relative",
+    //         overflow: "hidden",
+    //         background: "var(--color-bg-primary)",
+    //         border: "1px solid rgba(16, 185, 129, 0.15)",
+    //       }}
+    //     >
+    //       <div
+    //         style={{
+    //           background: "#27AE60",
+    //           borderRadius: "8px",
+    //           padding: "8px",
+    //           display: "flex",
+    //           alignItems: "center",
+    //           justifyContent: "center",
+    //         }}
+    //       >
+    //         <TrendingUp
+    //           size={16}
+    //           style={{ color: "var(--color-bg-primary)" }}
+    //         />
+    //       </div>
+    //       <span
+    //         style={{ fontWeight: "600", fontSize: "12px", color: "#1f2937" }}
+    //       >
+    //         Tiến độ học tập
+    //       </span>
+    //     </Link>
+    //   ),
+    // },
     {
       key: "/learner/notes",
       label: (

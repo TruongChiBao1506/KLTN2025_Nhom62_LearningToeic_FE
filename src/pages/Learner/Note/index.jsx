@@ -98,7 +98,7 @@ const Note = () => {
     // Get user ID from token
     const getUserId = () => {
       try {
-        const learnerToken = localStorage.getItem("learnerToken");
+        const learnerToken = sessionStorage.getItem("learnerToken");
         if (learnerToken) {
           const decoded = jwtDecode(learnerToken);
           setUserId(decoded.id);
@@ -341,6 +341,11 @@ const Note = () => {
             <button
               className="add-note-btn"
               onClick={() => setShowNewNoteForm(!showNewNoteForm)}
+              style={{
+                background: "var(--color-primary)",
+                borderColor: "var(--color-primary)",
+                color: "#fff"
+              }}
             >
               <FontAwesomeIcon icon={faPlus} className="me-2" />
               Tạo ghi chú mới
@@ -415,6 +420,11 @@ const Note = () => {
                               type="submit"
                               className="btn-primary-custom"
                               disabled={isSubmitting}
+                              style={{
+                                background: "var(--color-primary)",
+                                borderColor: "var(--color-primary)",
+                                color: "#fff"
+                              }}
                             >
                               <FontAwesomeIcon icon={faSave} className="me-2" />
                               {isSubmitting ? "Đang lưu..." : "Lưu ghi chú"}

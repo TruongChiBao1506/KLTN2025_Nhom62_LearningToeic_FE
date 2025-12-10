@@ -187,6 +187,16 @@ const TopicDetail = () => {
           console.log("🔵 Attempting to add vocabulary to favorites:", vocabularyId);
           const response = await userVocabularyService.addToFavorites(vocabularyId);
           console.log("🟢 Add to favorites successful:", response);
+          // If achievement or notifications were returned, display them
+          const achievementResult = response?.achievement;
+          if (achievementResult?.unlockedAchievements?.length > 0) {
+            const unlocked = achievementResult.unlockedAchievements.map(a => a.name || a.title || a).join(', ');
+            message.success(`Chúc mừng! Bạn đã nhận được thành tích: ${unlocked}`);
+          }
+          if (achievementResult?.notifications?.length > 0) {
+            // Optionally show first notification
+            message.info(achievementResult.notifications[0]?.message || 'Bạn có thông báo mới');
+          }
           
           // Thành công - cập nhật state frontend
           if (!favoriteVocabs.includes(vocabularyId)) {
