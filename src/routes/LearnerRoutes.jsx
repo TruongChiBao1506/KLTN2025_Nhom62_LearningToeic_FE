@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import LearnerLayout from "../layouts/LearnerLayout";
 import LearnerDashboard from "../pages/Learner/LearnerDashboard";
-import LearningPath from '../pages/Learner/LearningPath';
+import LearningPath from "../pages/Learner/LearningPath";
 import ExamList from "../pages/Learner/ExamList";
 import ExamDetail from "../pages/Learner/ExamDetail";
 import ExamFullTest from "../pages/Learner/ExamFullTest";
@@ -58,14 +58,14 @@ import Part7 from "../pages/Learner/Part7";
 import SpeakingWritingPage from "../pages/Learner/SpeakingWritingPage";
 import BecomeTeacher from "../pages/Learner/BecomeTeacher";
 import MyTeacherRequest from "../pages/Learner/MyTeacherRequest";
-
+import AISpeakingPractice from "../pages/Learner/AISpeakingPractice";
 
 const LearnerRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<LearnerLayout />}>
-        <Route 
-          index 
+        <Route
+          index
           element={
             <ProtectedRoute>
               <LearnerDashboard />
@@ -401,6 +401,14 @@ const LearnerRoutes = () => {
             <ProtectedRoute>
               {/* <AITutor /> */}
               <AITutor />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ai-speaking"
+          element={
+            <ProtectedRoute>
+              <AISpeakingPractice />
             </ProtectedRoute>
           }
         />

@@ -2,12 +2,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCirclePlus,
-    faEdit,
     faTrash,
     faSearch,
     faFileDownload,
-    faVolumeUp,
-    faImage
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
@@ -26,7 +23,7 @@ const ExamQuestionList = ({
     pagination
 }) => {
     // Ensure examQuestions is always an array
-    const normalizedExamQuestions = Array.isArray(examQuestions) ? examQuestions : [];
+    const normalizedExamQuestions = useMemo(() => (Array.isArray(examQuestions) ? examQuestions : []), [examQuestions]);
 
     // States
     const [searchText, setSearchText] = useState('');
@@ -37,7 +34,6 @@ const ExamQuestionList = ({
     const [showAddModal, setShowAddModal] = useState(false);
 
     // Constants
-    const ITEMS_PER_PAGE_OPTIONS = [25, 50, 75, 100];
 
     const itemsPerPageOptions = [25, 50, 75, 100].map((option) => ({
         value: option,
@@ -104,11 +100,6 @@ const ExamQuestionList = ({
     };
 
     // Helper function to get status
-    const getItemStatus = (item) => {
-        return item.questionStatus !== undefined ? item.questionStatus :
-            (item.examQuestionStatus !== undefined ? item.examQuestionStatus :
-                (item.status !== undefined ? item.status : 1));
-    };
 
     // Truncate text for display
     const truncateText = (text, maxLength) => {
@@ -118,29 +109,8 @@ const ExamQuestionList = ({
     };
 
     // Strip HTML tags from content for preview
-    const stripHtml = (html) => {
-        if (!html) return '';
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
-    };
 
     // Format date
-    const formatDate = (dateTimeString) => {
-        if (!dateTimeString) return 'N/A';
-
-        const options = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        };
-
-        const date = new Date(dateTimeString);
-        return date.toLocaleDateString('en-GB', options);
-    };
 
     // Media URL helpers (matching Vue version)
     const getImageUrl = (imageName) => {
@@ -210,24 +180,6 @@ const ExamQuestionList = ({
     };
 
     // Toggle status
-    const toggleStatus = async (examQuestionId, newStatus) => {
-        try {
-            console.log('Exam Question ID:', examQuestionId);
-            console.log('New Status:', newStatus);
-
-            await ExamQuestionService.updateStatus(examQuestionId, newStatus);
-            retrieveExamQuestions();
-
-            toast.success(`${newStatus === 1 ? 'Kích hoạt' : 'Vô hiệu hóa'} exam question thành công`, {
-                autoClose: 1000,
-            });
-        } catch (error) {
-            console.error(error);
-            toast.error('Lỗi khi cập nhật trạng thái', {
-                autoClose: 2000,
-            });
-        }
-    };
 
     // Delete all questions
     const deleteAllQuestions = async () => {
