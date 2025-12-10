@@ -1,18 +1,18 @@
 ﻿import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  Card, 
-  Row, 
-  Col, 
-  Button, 
-  Spin, 
-  Typography, 
-  Tag, 
+import {
+  Card,
+  Row,
+  Col,
+  Button,
+  Spin,
+  Typography,
+  Tag,
   Tabs,
   Empty
 } from "antd";
-import { 
-  PlayCircleOutlined, 
+import {
+  PlayCircleOutlined,
   FileTextOutlined,
   UserOutlined,
   BookOutlined,
@@ -30,23 +30,23 @@ const { TabPane } = Tabs;
 const PartPractice = ({ sectionId: propSectionId }) => {
   const { sectionId: paramSectionId } = useParams();
   const navigate = useNavigate();
-  
+
   // Use prop sectionId if provided, otherwise use param
   const sectionId = propSectionId || paramSectionId;
-  
+
   // Use section access hook for checking section status
-  const { 
-    section, 
-    loading: sectionLoading, 
-    error: sectionError, 
-    isAccessible 
+  const {
+    section,
+    loading: sectionLoading,
+    error: sectionError,
+    isAccessible
   } = useSectionAccess(sectionId, {
     redirectTo: '/learner/dashboard',
     redirectDelay: 3000,
     showToast: true,
     pollInterval: 30000, // Check every 30 seconds
   });
-  
+
   // States
   const [tests, setTests] = useState([]);
   const [lessons, setLessons] = useState([]);
@@ -61,30 +61,30 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       if (!isAccessible || sectionLoading || !section) {
         return;
       }
-      
+
       try {
         setLoading(true);
-        
+
         // Lấy lessons theo section
         const lessonsResponse = await lessonService.getEnableLessonsBySection(sectionId);
         const lessonsData = lessonsResponse.data || lessonsResponse;
-        
+
         if (Array.isArray(lessonsData)) {
           setLessons(lessonsData);
         } else {
           setLessons(lessonsData?.lessons || lessonsData?.data || []);
         }
-        
+
         // Lấy tests theo section
         const testsResponse = await testService.getEnableTestsBySection(sectionId);
         const testsData = testsResponse.data || testsResponse;
-        
+
         if (Array.isArray(testsData)) {
           setTests(testsData);
         } else {
           setTests(testsData?.tests || testsData?.data || []);
         }
-        
+
       } catch (error) {
         console.error("Error fetching practice data:", error);
         setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
@@ -103,18 +103,18 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       console.error("Lesson ID is undefined!");
       return;
     }
-    
+
     // Ghi nhận bắt đầu học bài học cho streak với notification
     try {
       const learnerToken = localStorage.getItem("learnerToken");
       if (learnerToken) {
         const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
         const userId = decoded.id;
-        
+
         // Ghi nhận bắt đầu học (có thể tính là một dạng hoạt động học tập)
-        recordActivity(userId, 'start_lesson', { 
-          lessonId, 
-          sectionId 
+        recordActivity(userId, 'start_lesson', {
+          lessonId,
+          sectionId
         }).catch(streakError => {
           console.warn("⚠️ Không thể ghi nhận streak bắt đầu bài học:", streakError);
         });
@@ -122,7 +122,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
     } catch (error) {
       console.warn("⚠️ Lỗi khi ghi nhận bắt đầu bài học:", error);
     }
-    
+
     navigate(`/learner/section/${sectionId}/lesson/${lessonId}`);
   };
 
@@ -133,11 +133,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       if (learnerToken) {
         const decoded = JSON.parse(atob(learnerToken.split('.')[1]));
         const userId = decoded.id;
-        
+
         // Ghi nhận bắt đầu làm bài test
-        recordActivity(userId, 'start_test', { 
-          testId, 
-          sectionId 
+        recordActivity(userId, 'start_test', {
+          testId,
+          sectionId
         }).catch(streakError => {
           console.warn("⚠️ Không thể ghi nhận streak bắt đầu bài test:", streakError);
         });
@@ -145,7 +145,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
     } catch (error) {
       console.warn("⚠️ Lỗi khi ghi nhận bắt đầu bài test:", error);
     }
-    
+
     navigate(`/learner/section/${sectionId}/study/${testId}`);
   };
 
@@ -168,8 +168,8 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           e.currentTarget.style.transform = "translateY(0)";
           e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.06)";
         }}
-        bodyStyle={{ 
-          padding: "20px", 
+        bodyStyle={{
+          padding: "20px",
           height: "100%",
           display: "flex",
           flexDirection: "column"
@@ -186,21 +186,21 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <ReadOutlined style={{ color: "var(--color-bg-primary)", fontSize: "18px" }} />
+            <ReadOutlined style={{ color: "var(--color-primary)", fontSize: "18px" }} />
           </div>
           <Tag color="blue" style={{ borderRadius: "8px", fontSize: "12px" }}>
             Bài học
           </Tag>
         </div>
-        
+
         {/* Content */}
         <Title level={5} style={{ margin: "0 0 8px 0", fontSize: "16px", lineHeight: "1.4" }}>
           {lesson.lessonName || lesson.name}
         </Title>
-        
-        <Paragraph style={{ 
-          margin: "0 0 16px 0", 
-          color: "#64748b", 
+
+        <Paragraph style={{
+          margin: "0 0 16px 0",
+          color: "#64748b",
           fontSize: "12px",
           lineHeight: "1.5",
           flex: 1,
@@ -211,11 +211,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         }}>
           {lesson.description || "Bài học giúp bạn nắm vững kiến thức cơ bản"}
         </Paragraph>
-        
+
         {/* Footer */}
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
           paddingTop: "16px",
           borderTop: "1px solid #f1f5f9"
@@ -224,12 +224,17 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             <BookOutlined style={{ marginRight: "4px" }} />
             {lesson.duration || "30"} phút
           </span>
-          
+
           <Button
             type="primary"
             size="small"
             onClick={() => handleStartLesson(lesson.lessonId || lesson._id)}
-            style={{ borderRadius: "8px" }}
+            style={{
+              borderRadius: "8px",
+              background: "var(--color-primary)",
+              borderColor: "var(--color-primary)",
+              color: "#fff"
+            }}
           >
             Học ngay
           </Button>
@@ -246,7 +251,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           borderRadius: "16px",
           border: "1px solid #e2e8f0",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-          height: "280px",
+          height: "320px",
           transition: "all 0.3s ease"
         }}
         onMouseEnter={(e) => {
@@ -257,8 +262,8 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           e.currentTarget.style.transform = "translateY(0)";
           e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.06)";
         }}
-        bodyStyle={{ 
-          padding: "20px", 
+        bodyStyle={{
+          padding: "20px",
           height: "100%",
           display: "flex",
           flexDirection: "column"
@@ -281,15 +286,15 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             Bài kiểm tra
           </Tag>
         </div>
-        
+
         {/* Content */}
         <Title level={5} style={{ margin: "0 0 8px 0", fontSize: "16px", lineHeight: "1.4" }}>
           {test.testName || test.name}
         </Title>
-        
-        <Paragraph style={{ 
-          margin: "0 0 16px 0", 
-          color: "#64748b", 
+
+        <Paragraph style={{
+          margin: "0 0 16px 0",
+          color: "#64748b",
           fontSize: "12px",
           lineHeight: "1.5",
           flex: 1,
@@ -300,11 +305,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
         }}>
           {test.description || "Kiểm tra kiến thức và kỹ năng của bạn"}
         </Paragraph>
-        
+
         {/* Stats */}
-        <div style={{ 
-          display: "flex", 
-          gap: "12px", 
+        <div style={{
+          display: "flex",
+          gap: "12px",
           marginBottom: "16px",
           padding: "8px 12px",
           background: "#f0fdf4",
@@ -320,7 +325,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             {test.testParticipants || 0} lượt
           </span>
         </div>
-        
+
         {/* Footer */}
         <Button
           type="primary"
@@ -336,7 +341,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
 
   if (loading) {
     return (
-      <div style={{ 
+      <div style={{
         minHeight: "100vh",
         background: "#f8fafc",
         display: "flex",
@@ -354,7 +359,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           minWidth: "320px"
         }}>
           <Spin size="large" />
-          <div style={{ 
+          <div style={{
             marginTop: "24px",
             fontSize: "18px",
             fontWeight: "600",
@@ -369,7 +374,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
 
   if (error) {
     return (
-      <div style={{ 
+      <div style={{
         minHeight: "100vh",
         background: "#f8fafc",
         display: "flex",
@@ -405,7 +410,7 @@ const PartPractice = ({ sectionId: propSectionId }) => {
       error={sectionError}
       isAccessible={isAccessible}
     >
-      <div style={{ 
+      <div style={{
         minHeight: "100vh",
         background: "#f8fafc",
         padding: "24px"
@@ -421,16 +426,16 @@ const PartPractice = ({ sectionId: propSectionId }) => {
             border: "1px solid #e2e8f0",
             textAlign: "center"
           }}>
-            <Title level={1} style={{ 
+            <Title level={1} style={{
               margin: "0 0 8px 0",
               color: "var(--color-brand-purple)",
               fontSize: "32px"
             }}>
               {section?.name || "Luyện tập TOEIC"}
             </Title>
-            <Paragraph style={{ 
-              fontSize: "16px", 
-              color: "#64748b", 
+            <Paragraph style={{
+              fontSize: "16px",
+              color: "#64748b",
               margin: 0,
               maxWidth: "600px",
               marginLeft: "auto",
@@ -441,11 +446,11 @@ const PartPractice = ({ sectionId: propSectionId }) => {
           </div>
 
           {/* Content */}
-          <Tabs 
-            activeKey={activeTab} 
+          <Tabs
+            activeKey={activeTab}
             onChange={setActiveTab}
             size="large"
-            style={{ 
+            style={{
               background: "var(--color-bg-primary)",
               borderRadius: "16px",
               padding: "24px",
@@ -453,13 +458,13 @@ const PartPractice = ({ sectionId: propSectionId }) => {
               border: "1px solid #e2e8f0"
             }}
           >
-            <TabPane 
+            <TabPane
               tab={
                 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <PlayCircleOutlined />
                   Bài kiểm tra ({tests.length})
                 </span>
-              } 
+              }
               key="tests"
             >
               {tests.length > 0 ? (
@@ -474,13 +479,13 @@ const PartPractice = ({ sectionId: propSectionId }) => {
                 />
               )}
             </TabPane>
-            <TabPane 
+            <TabPane
               tab={
                 <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <ReadOutlined />
                   Bài học ({lessons.length})
                 </span>
-              } 
+              }
               key="lessons"
             >
               {lessons.length > 0 ? (

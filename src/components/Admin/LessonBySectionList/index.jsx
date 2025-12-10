@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
+import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -202,30 +203,31 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
 
             // Step 2: Show confirmation with statistics
             const summary = validationData.summary || {};
-            const result = await Swal.fire({
-                title: '📤 Submit Lesson để Admin duyệt?',
-                html: `
-                    <div style="text-align: left;">
-                        <p><strong>Lesson:</strong> ${lessonName}</p>
-                        <hr>
-                        <p><strong>📊 Thống kê:</strong></p>
-                        <ul style="list-style: none; padding-left: 0;">
-                            <li>📝 Lesson Content: <strong>${summary.contentCount || 0}</strong></li>
-                            <li>📄 File PDF: <strong>${summary.hasFile ? 'Có' : 'Không'}</strong></li>
-                        </ul>
-                        <hr>
-                        <p style="color: #666; font-size: 12px;">
-                            ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
-                        </p>
-                    </div>
-                `,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: 'var(--color-approved)',
-                cancelButtonColor: 'var(--color-draft)',
-                confirmButtonText: '✅ Submit',
-                cancelButtonText: '❌ Hủy',
-                width: 600,
+            const result = await new Promise((resolve) => {
+                Modal.confirm({
+                    title: 'Xác nhận gửi duyệt Lesson',
+                    content: (
+                        <div>
+                            <p><strong>Lesson:</strong> {lessonName}</p>
+                            <hr style={{ margin: '10px 0' }} />
+                            <p><strong>📊 Thống kê:</strong></p>
+                            <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                                <li>📝 Lesson Content: <strong>{summary.contentCount || 0}</strong></li>
+                                <li>📄 File PDF: <strong>{summary.hasFile ? 'Có' : 'Không'}</strong></li>
+                            </ul>
+                            <hr style={{ margin: '10px 0' }} />
+                            <p style={{ color: '#666', fontSize: '12px' }}>
+                                ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
+                            </p>
+                        </div>
+                    ),
+                    icon: <i className="fas fa-paper-plane" style={{ color: '#1890ff' }} />,
+                    okText: 'Gửi duyệt',
+                    cancelText: 'Hủy',
+                    okButtonProps: { style: { backgroundColor: '#52c41a', borderColor: '#52c41a' } },
+                    onOk: () => resolve({ isConfirmed: true }),
+                    onCancel: () => resolve({ isConfirmed: false }),
+                });
             });
 
             if (!result.isConfirmed) return;
@@ -234,20 +236,7 @@ const LessonBySectionList = ({ lessons = [], sectionId, retrieveLessons }) => {
             await lessonSubmissionService.submitLesson(lessonId);
 
             // Step 4: Show success message
-            await Swal.fire({
-                title: '✅ Submit thành công!',
-                html: `
-                    <div style="text-align: center;">
-                        <p>Lesson <strong>"${lessonName}"</strong> đã được gửi đến Admin để phê duyệt.</p>
-                        <p style="color: #666; margin-top: 10px;">
-                            Bạn sẽ nhận được thông báo khi Admin xem xét.
-                        </p>
-                    </div>
-                `,
-                icon: 'success',
-                confirmButtonColor: 'var(--color-approved)',
-                timer: 3000,
-            });
+            message.success(`Lesson "${lessonName}" đã được gửi đến Admin để phê duyệt.`);
 
             // Refresh list
             retrieveLessons();

@@ -688,15 +688,15 @@ hr {
 .question-nav-list {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  padding: 15px;
+  gap: 4px;
+  padding: 8px;
   overflow-y: auto;
   flex: 1;
 }
 
 .question-nav-item {
-  width: 35px;
-  height: 35px;
+  width: 28px;
+  height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -704,6 +704,7 @@ hr {
   border: 1px solid var(--color-border);
   background-color: var(--color-bg-primary);
   font-weight: 600;
+  font-size: 12px;
   cursor: pointer;
   position: relative;
 }
@@ -1437,6 +1438,19 @@ hr {
   padding-left: 12px;
   padding-right: 12px;
   padding-bottom: 8px;
+}
+
+/* Highlight animation for focused question card */
+.exam-question-focused {
+  animation: focused-pulse 1.2s ease-in-out;
+  box-shadow: 0 4px 18px rgba(59,130,246,0.15) !important;
+  border-color: #60a5fa !important;
+}
+
+@keyframes focused-pulse {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-6px) scale(1.01); }
+  100% { transform: translateY(0) scale(1); }
 }
 
 .question-content-area {

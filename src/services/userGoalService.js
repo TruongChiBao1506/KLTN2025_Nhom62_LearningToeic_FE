@@ -4,7 +4,7 @@ const userGoalService = {
   // Tạo một mục tiêu mới cho người dùng
   createUserGoal: async (goalData) => {
     try {
-      const response = await axiosClient.post("/user-goal", goalData);
+      const response = await axiosClient.post("/user-goals", goalData);
       return response;
     } catch (error) {
       console.error("Lỗi khi tạo mục tiêu người dùng:", error);
@@ -15,7 +15,7 @@ const userGoalService = {
   // Lấy mục tiêu của người dùng theo ID
   getUserGoalByUserId: async (userId) => {
     try {
-      const response = await axiosClient.get(`/user-goal/by-user/${userId}`);
+      const response = await axiosClient.get(`/user-goals/by-user/${userId}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy mục tiêu của người dùng ${userId}:`, error);
@@ -42,7 +42,7 @@ const userGoalService = {
   // Cập nhật mục tiêu của người dùng
   updateUserGoalByUserId: async (userId, goalData) => {
     try {
-      const response = await axiosClient.put(`/user-goal/${userId}`, goalData);
+      const response = await axiosClient.put(`/user-goals/${userId}`, goalData);
       return response;
     } catch (error) {
       console.error(`Lỗi khi cập nhật mục tiêu người dùng ${userId}:`, error);
@@ -53,7 +53,7 @@ const userGoalService = {
   // Xóa mục tiêu người dùng
   deleteUserGoalByUserId: async (userId) => {
     try {
-      const response = await axiosClient.delete(`/user-goal/${userId}`);
+      const response = await axiosClient.delete(`/user-goals/${userId}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi xóa mục tiêu người dùng ${userId}:`, error);
@@ -64,7 +64,7 @@ const userGoalService = {
   // Lấy thống kê tiến độ mục tiêu
   getUserGoalProgress: async (userId) => {
     try {
-      const response = await axiosClient.get(`/user-goal/progress/${userId}`);
+      const response = await axiosClient.get(`/user-goals/progress/${userId}`);
       return response;
     } catch (error) {
       console.error(

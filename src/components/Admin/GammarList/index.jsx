@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
+import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -206,30 +207,32 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
 
             // Step 2: Show confirmation with statistics
             const { summary } = validationResult.data;
-            const result = await Swal.fire({
-                icon: 'question',
-                title: 'Xác nhận gửi duyệt',
-                html: `
-                    <div class="text-start">
-                        <p class="mb-3">Bạn có chắc muốn gửi <strong>${grammarName}</strong> để Admin duyệt?</p>
-                        <div class="alert alert-info">
-                            <strong>📊 Thống kê nội dung:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li><strong>Nội dung:</strong> ${summary.contentCount} phần</li>
-                                <li><strong>Câu hỏi:</strong> ${summary.questionCount} câu</li>
-                            </ul>
+            const result = await new Promise((resolve) => {
+                Modal.confirm({
+                    title: 'Xác nhận gửi duyệt Grammar',
+                    content: (
+                        <div>
+                            <p>Bạn có chắc muốn gửi <strong>{grammarName}</strong> để Admin duyệt?</p>
+                            <div style={{ background: '#e6f7ff', padding: '10px', borderRadius: '4px', margin: '10px 0' }}>
+                                <strong>📊 Thống kê nội dung:</strong>
+                                <ul style={{ margin: '5px 0 0 20px', padding: 0 }}>
+                                    <li><strong>Nội dung:</strong> {summary.contentCount} phần</li>
+                                    <li><strong>Câu hỏi:</strong> {summary.questionCount} câu</li>
+                                </ul>
+                            </div>
+                            <p style={{ color: '#666', fontSize: '12px' }}>
+                                <i className="fas fa-info-circle"></i> 
+                                Sau khi gửi, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
+                            </p>
                         </div>
-                        <p class="text-muted small mt-3">
-                            <i class="fas fa-info-circle"></i> 
-                            Sau khi gửi, bạn không thể chỉnh sửa cho đến khi Admin phê duyệt hoặc từ chối.
-                        </p>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-paper-plane"></i> Gửi duyệt',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: 'var(--color-approved)',
-                cancelButtonColor: 'var(--color-draft)',
+                    ),
+                    icon: <i className="fas fa-paper-plane" style={{ color: '#1890ff' }} />,
+                    okText: 'Gửi duyệt',
+                    cancelText: 'Hủy',
+                    okButtonProps: { style: { backgroundColor: '#52c41a', borderColor: '#52c41a' } },
+                    onOk: () => resolve({ isConfirmed: true }),
+                    onCancel: () => resolve({ isConfirmed: false }),
+                });
             });
 
             if (!result.isConfirmed) return;
@@ -238,19 +241,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
             await grammarSubmissionService.submitGrammar(grammarId);
 
             // Step 4: Success message
-            await Swal.fire({
-                icon: 'success',
-                title: 'Gửi duyệt thành công! 🎉',
-                html: `
-                    <p><strong>${grammarName}</strong> đã được gửi đến Admin để duyệt.</p>
-                    <p class="text-muted small">
-                        <i class="fas fa-bell"></i> 
-                        Bạn sẽ nhận được thông báo khi Admin xét duyệt.
-                    </p>
-                `,
-                timer: 3000,
-                showConfirmButton: false,
-            });
+            message.success(`Grammar "${grammarName}" đã được gửi đến Admin để duyệt.`);
 
             // Refresh list
             retrieveGrammars();

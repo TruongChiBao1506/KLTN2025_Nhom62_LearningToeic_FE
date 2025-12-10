@@ -5,8 +5,7 @@ import { ReloadOutlined, ArrowLeftOutlined, ExclamationCircleOutlined } from "@a
 import Swal from "sweetalert2";
 import TestService from "../../../services/testService";
 import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
-
-// Những component TestPart sẽ được tạo sau
+import sectionsService from "../../../services/sectionsService";
 import TestPart1 from "../../../components/Learner/TestPart1";
 import TestPart2 from "../../../components/Learner/TestPart2";
 import TestPart3 from "../../../components/Learner/TestPart3";
@@ -16,7 +15,6 @@ import TestPart6 from "../../../components/Learner/TestPart6";
 import TestPart7Single from "../../../components/Learner/TestPart7Single";
 import TestPart7Double from "../../../components/Learner/TestPart7Double";
 import TestPart7Triple from "../../../components/Learner/TestPart7Triple";
-
 import "./style.css";
 
 const Study = () => {
@@ -27,7 +25,25 @@ const Study = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noQuestions, setNoQuestions] = useState(false);
+  const [section, setSection] = useState(null);
+  const [sectionLoading, setSectionLoading] = useState(true);
   const { recordCompleteQuestion } = useAchievementNotifications();
+  // Lấy thông tin section từ API
+  useEffect(() => {
+    const fetchSection = async () => {
+      if (!sectionId) return;
+      setSectionLoading(true);
+      try {
+        const res = await sectionsService.get(sectionId);
+        setSection(res);
+      } catch (err) {
+        setSection(null);
+      } finally {
+        setSectionLoading(false);
+      }
+    };
+    fetchSection();
+  }, [sectionId]);
 
   // Lấy danh sách câu hỏi từ bài kiểm tra
   const retrieveQuestions = useCallback(async () => {
@@ -38,6 +54,8 @@ const Study = () => {
       
       const response = await TestService.getQuestionsByTestId(testId);
       
+      console.log("Câu hỏi đã lấy:", response);
+
       if (response && response.length > 0) {
         setQuestions(response);
       } else {
@@ -103,27 +121,62 @@ const Study = () => {
   };
 
   // Xử lý việc tiếp tục nộp bài và tính điểm
-  const continueSubmit = () => {
+  const continueSubmit = async () => {
     const updatedQuestions = questions.map((question) => {
       if (question.selectedOption) {
-        question.answered = true;
+        // Chuyển đổi selectedOption thành chữ cái để so sánh
+        let selectedLetter = null;
+        if (question.selectedOption === question.optionA) {
+          selectedLetter = "A";
+        } else if (question.selectedOption === question.optionB) {
+          selectedLetter = "B";
+        } else if (question.selectedOption === question.optionC) {
+          selectedLetter = "C";
+        } else if (question.selectedOption === question.optionD) {
+          selectedLetter = "D";
+        }
+
+        return {
+          ...question,
+          answered: true,
+          isGraded: true,
+          selectedLetter: selectedLetter, // Lưu cả chữ cái để so sánh
+        };
       }
-      question.isGraded = true;
-      return question;
+      return { ...question, isGraded: true };
     });
 
     setQuestions(updatedQuestions);
     setIsSubmited(true);
 
-    // Tính điểm
-    const correctCount = updatedQuestions.filter(
-      (question) =>
-        question.answered && question.selectedOption === question.correctOption
-    ).length;
-    const incorrectCount = updatedQuestions.filter(
-      (question) =>
-        question.answered && question.selectedOption !== question.correctOption
-    ).length;
+    // Tính điểm - hỗ trợ cả correctOption là chữ cái hoặc nội dung đầy đủ
+    const correctCount = updatedQuestions.filter((question) => {
+      if (!question.answered) return false;
+      
+      const correctOpt = question.correctOption;
+      
+      // Trường hợp 1: correctOption là chữ cái "A", "B", "C", "D"
+      if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+        return question.selectedLetter === correctOpt;
+      }
+      
+      // Trường hợp 2: correctOption là nội dung đầy đủ (database cũ)
+      return question.selectedOption === correctOpt;
+    }).length;
+
+    const incorrectCount = updatedQuestions.filter((question) => {
+      if (!question.answered) return false;
+      
+      const correctOpt = question.correctOption;
+      
+      // Trường hợp 1: correctOption là chữ cái
+      if (correctOpt === "A" || correctOpt === "B" || correctOpt === "C" || correctOpt === "D") {
+        return question.selectedLetter !== correctOpt;
+      }
+      
+      // Trường hợp 2: correctOption là nội dung đầy đủ
+      return question.selectedOption !== correctOpt;
+    }).length;
 
     // Ghi nhận hoàn thành câu hỏi cho streak với notification
     try {
@@ -152,6 +205,14 @@ const Study = () => {
       title: "Kết quả",
       html: `Số câu đúng: <strong>${correctCount}</strong><br>Số câu sai: <strong>${incorrectCount}</strong>`,
     });
+
+    // Cập nhật số lượng người tham gia bài test mỗi lần nộp bài
+    try {
+      await TestService.incrementParticipants(testId);
+      console.log("✅ Đã cập nhật số lượng người tham gia bài test");
+    } catch (participantError) {
+      console.warn("⚠️ Không thể cập nhật số lượng người tham gia:", participantError);
+    }
   };
 
   // Làm lại bài kiểm tra
@@ -168,25 +229,30 @@ const Study = () => {
     setIsSubmited(false);
   };
 
-  // Lấy đường dẫn hình ảnh
+  // Lấy đường dẫn hình ảnh (S3 hoặc fallback)
   const getImageUrl = (imageName) => {
-    if (imageName) {
-      return `http://localhost:5000/images/${imageName}`;
+    if (!imageName) return "/images/fallback-image.png"; // fallback local image
+    // Nếu là URL S3 hoặc HTTP/HTTPS thì trả về trực tiếp
+    if (imageName.startsWith("http://") || imageName.startsWith("https://")) {
+      return imageName;
     }
-    return "";
+    // Nếu là tên file, trả về fallback
+    return "/images/fallback-image.png";
   };
 
-  // Lấy đường dẫn âm thanh
+  // Lấy đường dẫn âm thanh (S3 hoặc fallback)
   const getAudioUrl = (audioName) => {
-    if (audioName) {
-      return `http://localhost:5000/audios/${audioName}`;
+    if (!audioName) return "/audios/fallback-audio.mp3"; // fallback local audio
+    if (audioName.startsWith("http://") || audioName.startsWith("https://")) {
+      return audioName;
     }
-    return "";
+    return "/audios/fallback-audio.mp3";
   };
 
   // Lấy các tùy chọn câu trả lời
   const getOptions = (question) => {
-    if (sectionId === "2") {
+    // Chỉ Part 2 (Listening) có 3 options (A, B, C)
+    if (section && section.type === 1 && /Part\s*2/i.test(section.name)) {
       return [question.optionA, question.optionB, question.optionC];
     } else {
       return [
@@ -219,19 +285,16 @@ const Study = () => {
     setQuestions(updatedQuestions);
   };
 
-  // Kiểm tra câu trả lời
-  const checkAnswer = (question) => {
-    const updatedQuestions = questions.map((q) => {
-      if (q.questionId === question.questionId && q.selectedOption) {
-        return {
-          ...q,
-          answered: true,
-        };
-      }
-      return q;
-    });
-    setQuestions(updatedQuestions);
-  };
+  // Kiểm tra và chọn đáp án
+  const checkAnswer = (question, selectedOption = null) => {
+  const optionToSet = selectedOption || question.selectedOption;
+  const updatedQuestions = questions.map((q) =>
+    q._id === question._id
+      ? { ...q, selectedOption: optionToSet, answered: !!optionToSet }
+      : q
+  );
+  setQuestions(updatedQuestions);
+};
 
   // Dịch văn bản
   const translateText = async (text, targetLanguage) => {
@@ -262,44 +325,43 @@ const Study = () => {
     retrieveQuestions();
   }, [testId, retrieveQuestions]);
 
-  // Render component tương ứng dựa vào sectionId
+  // Mapping section -> component (dựa vào type/name)
   const renderTestComponent = () => {
     const commonProps = {
       questions,
       submitAnswers,
       refreshPage,
-      isSubmited,
-      getImageUrl,
-      getAudioUrl,
+      // isSubmited,
       translateText,
       getOptions,
       getOptionClass,
       clearSelection,
       checkAnswer,
+      getImageUrl,
+      getAudioUrl,
     };
 
-    switch (sectionId) {
-      case "1":
-        return <TestPart1 {...commonProps} />;
-      case "2":
-        return <TestPart2 {...commonProps} />;
-      case "3":
-        return <TestPart3 {...commonProps} />;
-      case "4":
-        return <TestPart4 {...commonProps} />;
-      case "5":
-        return <TestPart5 {...commonProps} />;
-      case "6":
-        return <TestPart6 {...commonProps} />;
-      case "7":
-        return <TestPart7Single {...commonProps} />;
-      case "12":
-        return <TestPart7Double {...commonProps} />;
-      case "13":
-        return <TestPart7Triple {...commonProps} />;
-      default:
-        return <div>Không tìm thấy dạng bài phù hợp</div>;
+    if (!section) return <div>Không tìm thấy thông tin section</div>;
+
+    // L&R TOEIC mapping
+    if (section.type === 1) { // Listening
+      if (/Part\s*1/i.test(section.name)) return <TestPart1 {...commonProps} />;
+      if (/Part\s*2/i.test(section.name)) return <TestPart2 {...commonProps} />;
+      if (/Part\s*3/i.test(section.name)) return <TestPart3 {...commonProps} />;
+      if (/Part\s*4/i.test(section.name)) return <TestPart4 {...commonProps} />;
     }
+    if (section.type === 2) { // Reading
+      if (/Part\s*5/i.test(section.name)) return <TestPart5 {...commonProps} />;
+      if (/Part\s*6/i.test(section.name)) return <TestPart6 {...commonProps} />;
+      if (/Part\s*7/i.test(section.name)) {
+        // Có thể phân biệt single/double/triple qua section.name nếu cần
+        if (/double/i.test(section.name)) return <TestPart7Double {...commonProps} />;
+        if (/triple/i.test(section.name)) return <TestPart7Triple {...commonProps} />;
+        return <TestPart7Single {...commonProps} />;
+      }
+    }
+    // Nếu cần mapping cho các loại section khác, bổ sung tại đây
+    return <div>Không tìm thấy dạng bài phù hợp</div>;
   };
 
   const handleGoBack = () => {
@@ -386,7 +448,12 @@ const Study = () => {
               />
             </div>
           ) : (
-            renderTestComponent()
+            sectionLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                <Spin size="large" />
+                <p style={{ marginTop: 16, color: 'var(--color-text-secondary)' }}>Đang tải thông tin section...</p>
+              </div>
+            ) : renderTestComponent()
           )}
         </div>
       </div>

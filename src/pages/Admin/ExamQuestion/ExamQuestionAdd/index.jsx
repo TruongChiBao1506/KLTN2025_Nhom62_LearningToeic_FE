@@ -144,9 +144,9 @@ const ExamQuestionAdd = ({ examId, retrieveExamQuestions, onClose }) => {
             }
 
             // Thân thiện hơn với một số lỗi thường gặp khi import Excel
-            if (/questionScript.*required/i.test(errorMessage)) {
-                errorMessage = 'File Excel thiếu cột bắt buộc "questionScript" hoặc có dòng trống. Vui lòng dùng đúng Template và đảm bảo cột này có dữ liệu cho mỗi câu hỏi.';
-            }
+            // if (/questionScript.*required/i.test(errorMessage)) {
+            //     errorMessage = 'File Excel thiếu cột bắt buộc "questionScript" hoặc có dòng trống. Vui lòng dùng đúng Template và đảm bảo cột này có dữ liệu cho mỗi câu hỏi.';
+            // }
             if (error.code === 'ERR_UPLOAD_FILE_CHANGED' || /ERR_UPLOAD_FILE_CHANGED|Network Error/i.test(error.message)) {
                 errorMessage = 'Không thể upload Excel do tệp bị thay đổi hoặc bị khóa bởi ứng dụng khác (ERR_UPLOAD_FILE_CHANGED). Hãy đóng file Excel nếu đang mở, chọn lại tệp và thử import lại.';
             }

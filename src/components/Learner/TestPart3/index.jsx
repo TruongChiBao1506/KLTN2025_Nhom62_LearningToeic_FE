@@ -21,7 +21,6 @@ import {
   EyeOff,
   Languages,
   Volume2,
-  Play,
 } from "lucide-react";
 import "./style.css";
 
@@ -249,7 +248,7 @@ const TestPart3 = ({
                 {groupQuestions[0].questionGroup?.groupImage ? (
                   <Row gutter={24}>
                     {/* Image Column */}
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={16} lg={14}>
                       <div
                         style={{
                           background: "var(--color-bg-secondary)",
@@ -263,8 +262,11 @@ const TestPart3 = ({
                             groupQuestions[0].questionGroup.groupImage
                           )}
                           alt="TOEIC Listening"
-                          style={{
-                            maxWidth: "100%",
+                            style={{
+                            width: "100%",
+                            height: "auto",
+                            maxHeight: 1000,
+                            objectFit: "contain",
                             borderRadius: "8px",
                           }}
                           preview={{
@@ -275,7 +277,7 @@ const TestPart3 = ({
                     </Col>
 
                     {/* Questions Column */}
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={8} lg={10}>
                       <Space
                         direction="vertical"
                         size="medium"

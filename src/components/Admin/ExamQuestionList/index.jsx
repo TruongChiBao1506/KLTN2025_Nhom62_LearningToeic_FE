@@ -145,14 +145,14 @@ const ExamQuestionList = ({
     // Media URL helpers (matching Vue version)
     const getImageUrl = (imageName) => {
         if (imageName) {
-            return `http://localhost:5000/images/${imageName}`;
+            return `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/images/${imageName}`;
         }
         return "";
     };
 
     const getAudioUrl = (audioName) => {
         if (audioName) {
-            return `http://localhost:5000/audios/${audioName}`;
+            return `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${audioName}`;
         }
         return "";
     };

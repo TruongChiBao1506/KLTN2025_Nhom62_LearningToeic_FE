@@ -764,7 +764,7 @@ const ImproveStudy = () => {
               {/* Selection Form */}
               <Row gutter={[16, 16]}>
                 {/* Debug info */}
-                {process.env.NODE_ENV === "development" && (
+                {/* {process.env.NODE_ENV === "development" && (
                   <Col xs={24}>
                     <Alert
                       message={`Debug: Sections loaded: ${sections.length}, Enabled: ${enabledSections.length}`}
@@ -772,7 +772,7 @@ const ImproveStudy = () => {
                       style={{ marginBottom: "16px" }}
                     />
                   </Col>
-                )}
+                )} */}
 
                 <Col xs={24} md={12}>
                   <Card

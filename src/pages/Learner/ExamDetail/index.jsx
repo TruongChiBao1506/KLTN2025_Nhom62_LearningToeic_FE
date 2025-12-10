@@ -33,7 +33,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Flag,
-  Save,
+  
   Volume2,
   PlayCircle,
   Trophy,
@@ -48,12 +48,12 @@ import {
   PenTool,
   PanelLeftClose,
   PanelRightClose,
+  Eye,
 } from "lucide-react";
 import learnerExamService from "../../../services/learnerExamService";
 import useAchievementNotifications from "../../../hooks/useAchievementNotifications";
-import AudioPlayer from "../../../components/AudioPlayer";
+// AudioPlayer intentionally not imported here to use plain <audio> elements for CORS-free playback in this page
 import audioRegistry from "../../../utils/AudioRegistry";
-import TextHighlighter from "../../../components/TextHighlighter/TextHighlighter";
 
 // === COMPREHENSIVE RESIZEOBSERVER ERROR SUPPRESSION ===
 const suppressResizeObserverErrors = () => {
@@ -83,10 +83,7 @@ const suppressResizeObserverErrors = () => {
     // Override console.warn as well
     console.warn = (...args) => {
       const message = args.join(" ").toLowerCase();
-      if (
-        message.includes("resizeobserver") ||
-        message.includes("script error")
-      ) {
+      if (message.includes("resizeobserver") || message.includes("script error")) {
         return; // Suppress these warnings
       }
       window._originalConsoleWarn.apply(console, args);
@@ -95,13 +92,10 @@ const suppressResizeObserverErrors = () => {
     // Comprehensive global error handler
     const globalErrorHandler = (e) => {
       const message = (e.message || e.error?.message || "").toLowerCase();
-      if (
-        message.includes("resizeobserver") ||
-        message.includes("script error")
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+      if (message.includes("resizeobserver") || message.includes("script error")) {
+        e.preventDefault?.();
+        e.stopPropagation?.();
+        e.stopImmediatePropagation?.();
         return false;
       }
     };
@@ -118,11 +112,8 @@ const suppressResizeObserverErrors = () => {
         const message = (e.reason?.message || e.reason || "")
           .toString()
           .toLowerCase();
-        if (
-          message.includes("resizeobserver") ||
-          message.includes("script error")
-        ) {
-          e.preventDefault();
+        if (message.includes("resizeobserver") || message.includes("script error")) {
+          e.preventDefault?.();
           return false;
         }
       },
@@ -138,7 +129,6 @@ const suppressResizeObserverErrors = () => {
             try {
               callback(entries, observer);
             } catch (err) {
-              // Silently ignore ResizeObserver callback errors
               if (!err.message?.toLowerCase().includes("resizeobserver")) {
                 throw err;
               }
@@ -172,17 +162,25 @@ const ExamDetail = () => {
   const [error, setError] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
+  // Keep a ref of user answers to avoid stale closure issues during auto-submit
+  const userAnswersRef = useRef(userAnswers);
   const [flaggedQuestions, setFlaggedQuestions] = useState([]);
   const [remainingTime, setRemainingTime] = useState(null);
   const [examStarted, setExamStarted] = useState(false);
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [examResult, setExamResult] = useState(null);
+  // used to filter questions in the results tab: all, correct, incorrect, unanswered
+  const [resultFilter, setResultFilter] = useState("all");
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const timerRef = useRef(null);
   const eventHandlersRef = useRef({ beforeUnload: null, popState: null });
+  const questionRefs = useRef({});
+  const sidebarRef = useRef(null);
+  const [sidebarRect, setSidebarRect] = useState({ left: 0, width: 0 });
+  const [isSidebarFixed, setIsSidebarFixed] = useState(false);
   const { recordCompleteTest } = useAchievementNotifications();
 
   const fetchExam = useCallback(async () => {
@@ -226,15 +224,15 @@ const ExamDetail = () => {
             q._originalData?.explanation,
           questionType: q.questionType,
           image: q.questionImage
-            ? `http://localhost:5000/images/${q.questionImage}`
+            ? `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/images/${q.questionImage}`
             : q.imageUrl ||
               q.image ||
-              (q.imagePath ? `http://localhost:5000/${q.imagePath}` : null),
+              (q.imagePath ? `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/images/${q.imagePath}` : null),
           audio: q.questionAudio
-            ? `http://localhost:5000/audios/${q.questionAudio}`
+            ? `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${q.questionAudio}`
             : q.audioUrl ||
               q.audio ||
-              (q.audioPath ? `http://localhost:5000/${q.audioPath}` : null),
+              (q.audioPath ? `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${q.audioPath}` : null),
           _originalData: q,
         })),
         status: "not-started", // Default status
@@ -258,6 +256,7 @@ const ExamDetail = () => {
 
       // For now, set default time since we don't have progress tracking yet
       setRemainingTime(examData.duration * 60); // Convert minutes to seconds
+      // setRemainingTime(0.1 * 60);
 
       setLoading(false);
     } catch (error) {
@@ -278,6 +277,34 @@ const ExamDetail = () => {
       audioRegistry.stopAll();
     };
   }, [fetchExam]);
+
+  // Update sidebar rect (left/width) and fixed state on resize/collapse
+  useEffect(() => {
+    const updateSidebarRect = () => {
+      try {
+        if (!sidebarRef.current) return;
+        const rect = sidebarRef.current.getBoundingClientRect();
+        // compute threshold: top offset of the sidebar relative to the document
+        const docTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        const absoluteTop = rect.top + docTop; // document top of the sidebar column
+        const headerOffset = 92; // keep the same top offset used for the content
+        const shouldFix = window.innerWidth >= 992 && !sidebarCollapsed && (docTop >= absoluteTop - headerOffset);
+        setSidebarRect({ left: rect.left, width: rect.width });
+        setIsSidebarFixed(shouldFix);
+      } catch (err) {
+        console.warn("Failed to update sidebar rect", err);
+      }
+    };
+
+    updateSidebarRect();
+    window.addEventListener("resize", updateSidebarRect);
+    window.addEventListener("scroll", updateSidebarRect);
+
+    return () => {
+      window.removeEventListener("resize", updateSidebarRect);
+      window.removeEventListener("scroll", updateSidebarRect);
+    };
+  }, [sidebarCollapsed]);
 
   // Warn user before leaving page during exam
   useEffect(() => {
@@ -369,6 +396,20 @@ const ExamDetail = () => {
       if (window.stopAllAudio) {
         window.stopAllAudio();
       }
+      // Also pause all plain <audio> elements not controlled by audioRegistry
+      try {
+        const audios = document.querySelectorAll("audio");
+        audios.forEach((a) => {
+          try {
+            a.pause();
+            a.currentTime = 0;
+          } catch (e) {
+            // ignore
+          }
+        });
+      } catch (e) {
+        // ignore
+      }
     } catch (e) {
       console.error("Error stopping audio:", e);
     }
@@ -434,11 +475,18 @@ const ExamDetail = () => {
     return cleanedText || text; // Return original if cleaning results in empty string
   };
 
+  // Keep the ref in sync to ensure timer/auto-submit reads the latest answers
+  useEffect(() => {
+    userAnswersRef.current = userAnswers;
+  }, [userAnswers]);
+
   const handleAnswerSelect = (questionId, answer) => {
-    setUserAnswers((prev) => ({
-      ...prev,
-      [questionId]: answer,
-    }));
+    setUserAnswers((prev) => {
+      const next = { ...prev, [questionId]: answer };
+      // Update the ref immediately to avoid stale values when auto-submitting
+      userAnswersRef.current = next;
+      return next;
+    });
   };
 
   const toggleFlagQuestion = (questionId) => {
@@ -507,8 +555,31 @@ const ExamDetail = () => {
         console.error("Error stopping audio:", e);
       }
       setCurrentQuestionIndex(index);
+      // Don't scroll here immediately; scroll will be handled by a useEffect when currentQuestionIndex changes
     }
   };
+
+  // When currentQuestionIndex changes, make sure the question in view is scrolled into view (for part-view cards)
+  useEffect(() => {
+    try {
+      const el = questionRefs.current[currentQuestionIndex];
+      if (el && typeof el.scrollIntoView === "function") {
+        el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        // add a temporary highlight class to emphasize the focused question
+        try {
+          el.classList.add("exam-question-focused");
+          setTimeout(() => {
+            el.classList.remove("exam-question-focused");
+          }, 1200);
+        } catch (err) {
+          // ignore if class toggling not possible
+        }
+      }
+    } catch (err) {
+      // Ignore if scroll can't be done
+      console.warn("Unable to scroll to question element", err);
+    }
+  }, [currentQuestionIndex]);
 
   const submitExam = async () => {
     // Dừng bộ đếm thời gian
@@ -518,9 +589,11 @@ const ExamDetail = () => {
 
     try {
       setLoading(true);
+      setError(null);
 
-      // Convert userAnswers object to array format expected by backend
-      const answersArray = Object.entries(userAnswers).map(
+      // Use the answers ref to avoid stale closure issues (timer auto-submit)
+      const answersObj = userAnswersRef.current || {};
+      const answersArray = Object.entries(answersObj).map(
         ([questionId, selectedOption]) => ({
           questionId,
           selectedOption,
@@ -528,16 +601,36 @@ const ExamDetail = () => {
         })
       );
 
+      console.log("🔁 submitExam - answersArray:", answersArray);
+
+      // Validate answers array to avoid backend "At least one answer is required" error
+      if (!answersArray || answersArray.length === 0) {
+        console.warn("Attempted to auto-submit with no answers.");
+        setError("Bạn chưa trả lời câu nào. Vui lòng chọn ít nhất 1 câu trước khi nộp.");
+        setLoading(false);
+        return;
+      }
+
       console.log("Sending answers array:", answersArray);
 
       const response = await learnerExamService.submitExam(id, answersArray);
-      console.log("✅ Submit response:", response);
+      console.log("✅ Submit response (raw):", response);
+      const data = response?.data || response;
+
+      // If backend returns a failure response (success flag or error), show message
+      if (data && (data.success === false || data.error)) {
+        const message = data.message || data.error || "Không thể nộp bài thi. Vui lòng thử lại.";
+        console.warn("Backend reported submission failure:", message);
+        setError(message);
+        setLoading(false);
+        return;
+      }
 
       setExamSubmitted(true);
       // Map backend response to frontend expected format
       // API trả về: numCorrectAnswers, numWrongAnswers, numSkippedQuestions, 
       // numListeningCorrectAnswers, numReadingCorrectAnswers
-      const totalQuestionsCount = response.details?.totalQuestions || exam.questions.length;
+      const totalQuestionsCount = data.details?.totalQuestions || exam.questions.length;
       
       const resultData = {
         scores: response.scores || {
@@ -546,29 +639,29 @@ const ExamDetail = () => {
           total: 0,
         },
         details: {
-          correct: response.details?.numCorrectAnswers || 0,
-          wrong: response.details?.numWrongAnswers || 0,
-          skipped: response.details?.numSkippedQuestions || 0,
-          listeningCorrect: response.details?.numListeningCorrectAnswers || 0,
-          readingCorrect: response.details?.numReadingCorrectAnswers || 0,
+          correct: data.details?.numCorrectAnswers || 0,
+          wrong: data.details?.numWrongAnswers || 0,
+          skipped: data.details?.numSkippedQuestions || 0,
+          listeningCorrect: data.details?.numListeningCorrectAnswers || 0,
+          readingCorrect: data.details?.numReadingCorrectAnswers || 0,
           totalQuestions: totalQuestionsCount,
         },
-        userExamId: response.userExamId,
-        message: response.message,
-        completedAt: response.completedAt,
+        userExamId: data.userExamId,
+        message: data.message,
+        completedAt: data.completedAt,
         // Calculate additional metrics for UI
         totalQuestions: totalQuestionsCount,
         percentage: Math.round(
-          ((response.details?.numCorrectAnswers || 0) * 100) / totalQuestionsCount
+          ((data.details?.numCorrectAnswers || 0) * 100) / totalQuestionsCount
         ),
-        correctCount: response.details?.numCorrectAnswers || 0,
-        incorrectCount: response.details?.numWrongAnswers || 0,
-        unansweredCount: response.details?.numSkippedQuestions || 0,
-        listeningScore: response.scores?.listening || 0,
-        readingScore: response.scores?.reading || 0,
-        totalScore: response.scores?.total || 0,
-        listeningCorrect: response.details?.numListeningCorrectAnswers || 0,
-        readingCorrect: response.details?.numReadingCorrectAnswers || 0,
+        correctCount: data.details?.numCorrectAnswers || 0,
+        incorrectCount: data.details?.numWrongAnswers || 0,
+        unansweredCount: data.details?.numSkippedQuestions || 0,
+        listeningScore: data.scores?.listening || 0,
+        readingScore: data.scores?.reading || 0,
+        totalScore: data.scores?.total || 0,
+        listeningCorrect: data.details?.numListeningCorrectAnswers || 0,
+        readingCorrect: data.details?.numReadingCorrectAnswers || 0,
         timeSpent: exam.duration * 60 - remainingTime, // Calculate actual time spent
       };
 
@@ -766,9 +859,9 @@ const ExamDetail = () => {
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to="/learner/exams">
+            <Link to="/learner/full-test">
               <FileText size={16} style={{ marginRight: "4px" }} />
-              Bài thi thực hành
+              Bài thi full test
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{exam.name} - Kết quả</Breadcrumb.Item>
@@ -1007,7 +1100,8 @@ const ExamDetail = () => {
           </Text>
 
           <Tabs
-            defaultActiveKey="all"
+            activeKey={resultFilter}
+            onChange={(key) => setResultFilter(key)}
             centered
             style={{ marginBottom: "24px" }}
             items={[
@@ -1043,221 +1137,249 @@ const ExamDetail = () => {
           />
 
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
-            {exam.questions.map((question, index) => {
-              const isCorrect =
-                userAnswers[question.id] === question.correctAnswer;
-              const isAnswered = userAnswers[question.id] !== undefined;
-              const userAnswer = userAnswers[question.id];
+            {/**
+             * Filter questions according to selected resultFilter
+             * - all: show all
+             * - correct: only answered correctly
+             * - incorrect: answered and wrong
+             * - unanswered: not answered
+             */}
+            {(() => {
+              const filteredQuestions = (exam.questions || []).filter((question) => {
+                const isAnswered = userAnswers[question.id] !== undefined;
+                const isCorrect = userAnswers[question.id] === question.correctAnswer;
+                switch (resultFilter) {
+                  case "correct":
+                    return isAnswered && isCorrect;
+                  case "incorrect":
+                    return isAnswered && !isCorrect;
+                  case "unanswered":
+                    return !isAnswered;
+                  default:
+                    return true;
+                }
+              });
 
-              return (
-                <Card
-                  key={question.id}
-                  size="small"
-                  style={{
-                    border: `2px solid ${
-                      !isAnswered
-                        ? "var(--color-warning)"
+              if (!filteredQuestions || filteredQuestions.length === 0) {
+                return (
+                  <Card key="no-results" size="small">
+                    <Text type="secondary">Không có câu hỏi phù hợp với bộ lọc hiện tại.</Text>
+                  </Card>
+                );
+              }
+
+              return filteredQuestions.map((question, index) => {
+                const globalIndex = exam.questions.findIndex((q) => q.id === question.id);
+                const isCorrect = userAnswers[question.id] === question.correctAnswer;
+                const isAnswered = userAnswers[question.id] !== undefined;
+                const userAnswer = userAnswers[question.id];
+
+                return (
+                  <Card
+                    key={question.id}
+                    size="small"
+                    style={{
+                      border: `2px solid ${
+                        !isAnswered
+                          ? "var(--color-warning)"
+                          : isCorrect
+                          ? "var(--color-success)"
+                          : "var(--color-danger)"
+                      }`,
+                      background: !isAnswered
+                        ? "#fffbf0"
                         : isCorrect
-                        ? "var(--color-success)"
-                        : "var(--color-danger)"
-                    }`,
-                    background: !isAnswered
-                      ? "#fffbf0"
-                      : isCorrect
-                      ? "var(--color-success-bg)"
-                      : "var(--color-danger-bg)",
-                  }}
-                >
-                  <Row gutter={[16, 16]}>
-                    <Col span={2}>
-                      <div style={{ textAlign: "center" }}>
-                        <Badge
-                          count={index + 1}
-                          style={{
-                            backgroundColor: !isAnswered
-                              ? "var(--color-warning)"
-                              : isCorrect
-                              ? "var(--color-success)"
-                              : "var(--color-danger)",
-                            fontSize: "12px",
-                          }}
-                        />
-                        <div style={{ marginTop: "8px" }}>
-                          {!isAnswered ? (
-                            <HelpCircle
-                              size={20}
-                              style={{ color: "var(--color-warning)" }}
-                            />
-                          ) : isCorrect ? (
-                            <CheckCircle
-                              size={20}
-                              style={{ color: "var(--color-success)" }}
-                            />
-                          ) : (
-                            <XCircle size={20} style={{ color: "var(--color-danger)" }} />
-                          )}
-                        </div>
-                      </div>
-                    </Col>
-                    <Col span={22}>
-                      <Space
-                        direction="vertical"
-                        size="middle"
-                        style={{ width: "100%" }}
-                      >
-                        <div>
-                          <Tag
-                            color={
-                              !isAnswered
-                                ? "orange"
+                        ? "var(--color-success-bg)"
+                        : "var(--color-danger-bg)",
+                    }}
+                  >
+                    <Row gutter={[16, 16]}>
+                      <Col span={2}>
+                        <div style={{ textAlign: "center" }}>
+                            <Badge
+                            count={globalIndex + 1}
+                            style={{
+                              backgroundColor: !isAnswered
+                                ? "var(--color-warning)"
                                 : isCorrect
-                                ? "green"
-                                : "red"
-                            }
-                          >
-                            {!isAnswered
-                              ? "Chưa trả lời"
-                              : isCorrect
-                              ? "Đúng"
-                              : "Sai"}
-                          </Tag>
-                        </div>
-
-                        {/* Question Content */}
-                        <div>
-                          <Title level={5} style={{ marginBottom: "16px" }}>
-                            {cleanQuestionText(question.text)}
-                          </Title>
-
-                          {/* Display image if exists */}
-                          {question.image && (
-                            <div style={{ marginBottom: "16px" }}>
-                              <Image
-                                src={question.image}
-                                alt="Question image"
-                                style={{
-                                  maxWidth: "300px",
-                                  borderRadius: "8px",
-                                }}
-                                placeholder={
-                                  <div
-                                    style={{
-                                      padding: "20px",
-                                      textAlign: "center",
-                                      background: "var(--color-bg-secondary)",
-                                    }}
-                                  >
-                                    Loading image...
-                                  </div>
-                                }
+                                ? "var(--color-success)"
+                                : "var(--color-danger)",
+                              fontSize: "12px",
+                            }}
+                          />
+                          <div style={{ marginTop: "8px" }}>
+                            {!isAnswered ? (
+                              <HelpCircle
+                                size={20}
+                                style={{ color: "var(--color-warning)" }}
                               />
-                            </div>
-                          )}
-
-                          {/* Display audio if exists */}
-                          {question.audio && (
-                            <div style={{ marginBottom: "16px" }}>
-                              <AudioPlayer
-                                src={question.audio}
-                                questionId={question.id}
-                                style={{ maxWidth: "300px" }}
-                                key={`audio-${question.id}-${question.audio}`}
+                            ) : isCorrect ? (
+                              <CheckCircle
+                                size={20}
+                                style={{ color: "var(--color-success)" }}
                               />
-                            </div>
-                          )}
+                            ) : (
+                              <XCircle size={20} style={{ color: "var(--color-danger)" }} />
+                            )}
+                          </div>
                         </div>
+                      </Col>
+                      <Col span={22}>
+                        <Space
+                          direction="vertical"
+                          size="middle"
+                          style={{ width: "100%" }}
+                        >
+                          <div>
+                            <Tag
+                              color={
+                                !isAnswered
+                                  ? "orange"
+                                  : isCorrect
+                                  ? "green"
+                                  : "red"
+                              }
+                            >
+                              {!isAnswered
+                                ? "Chưa trả lời"
+                                : isCorrect
+                                ? "Đúng"
+                                : "Sai"}
+                            </Tag>
+                          </div>
 
-                        {/* Options Review */}
-                        <div>
-                          <Space
-                            direction="vertical"
-                            size="small"
-                            style={{ width: "100%" }}
-                          >
-                            {question.options.map((option, optionIndex) => {
-                              const optionLetter = String.fromCharCode(
-                                65 + optionIndex
-                              );
-                              const isUserSelected = userAnswer === option.id;
-                              const isCorrectAnswer =
-                                question.correctAnswer === option.id;
+                          {/* Question Content */}
+                          <div>
+                            <Title level={5} style={{ marginBottom: "16px" }}>
+                              {cleanQuestionText(question.text)}
+                            </Title>
 
-                              return (
-                                <div
-                                  key={option.id}
+                            {/* Display image if exists */}
+                            {question.image && (
+                              <div style={{ marginBottom: "16px" }}>
+                                <Image
+                                  src={question.image}
+                                  alt="Question image"
                                   style={{
-                                    padding: "8px 12px",
-                                    borderRadius: "6px",
-                                    border: "1px solid",
-                                    borderColor: isUserSelected
-                                      ? isCorrectAnswer
-                                        ? "var(--color-success)"
-                                        : "var(--color-danger)"
-                                      : isCorrectAnswer
-                                      ? "var(--color-success)"
-                                      : "var(--color-border)",
-                                    background: isUserSelected
-                                      ? isCorrectAnswer
-                                        ? "var(--color-success-bg)"
-                                        : "var(--color-danger-bg)"
-                                      : isCorrectAnswer
-                                      ? "var(--color-success-bg)"
-                                      : "var(--color-bg-hover)",
+                                    maxWidth: "300px",
+                                    borderRadius: "8px",
+                                  }}
+                                  placeholder={
+                                    <div
+                                      style={{
+                                        padding: "20px",
+                                        textAlign: "center",
+                                        background: "var(--color-bg-secondary)",
+                                      }}
+                                    >
+                                      Loading image...
+                                    </div>
+                                  }
+                                />
+                              </div>
+                            )}
+
+                            {/* Display audio if exists */}
+                            {question.audio && (
+                              <div style={{ marginBottom: "16px" }}>
+                                <audio
+                                  controls
+                                  preload="metadata"
+                                  title={`Audio: ${getAudioUrl(question.audio)}`}
+                                  src={getAudioUrl(question.audio)}
+                                  style={{ width: "100%", maxWidth: "300px" }}
+                                  onError={(e) => {
+                                    console.error("❌ Audio load error (ExamDetail review):", e);
+                                    console.error("❌ Audio src:", getAudioUrl(question.audio));
+                                  }}
+                                  onLoadStart={() => {
+                                    console.log("🔄 Audio loading started (ExamDetail review):", getAudioUrl(question.audio));
+                                  }}
+                                  onCanPlay={() => {
+                                    console.log("✅ Audio can play (ExamDetail review):", getAudioUrl(question.audio));
                                   }}
                                 >
-                                  <Space>
-                                    <Tag color="blue">{optionLetter}</Tag>
-                                    <Text>{option.text}</Text>
-                                    {isUserSelected &&
-                                      (isCorrectAnswer ? (
+                                  <source src={getAudioUrl(question.audio)} type="audio/mpeg" />
+                                  <source src={getAudioUrl(question.audio)} type="audio/mp3" />
+                                  <source src={getAudioUrl(question.audio)} type="audio/wav" />
+                                  Trình duyệt không hỗ trợ audio.
+                                </audio>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Options Review */}
+                          <div>
+                            <Space
+                              direction="vertical"
+                              size="small"
+                              style={{ width: "100%" }}
+                            >
+                              {question.options.map((option, optionIndex) => {
+                                const optionLetter = String.fromCharCode(
+                                  65 + optionIndex
+                                );
+                                const isUserSelected = userAnswer === option.id;
+                                const isCorrectAnswer =
+                                  question.correctAnswer === option.id;
+
+                                return (
+                                  <div
+                                    key={option.id}
+                                    style={{
+                                      padding: "8px 12px",
+                                      borderRadius: "6px",
+                                      border: "1px solid",
+                                      borderColor: isUserSelected
+                                        ? isCorrectAnswer
+                                          ? "var(--color-success)"
+                                          : "var(--color-danger)"
+                                        : isCorrectAnswer
+                                        ? "var(--color-success)"
+                                        : "var(--color-border)",
+                                      background: isUserSelected
+                                        ? isCorrectAnswer
+                                          ? "var(--color-success-bg)"
+                                          : "var(--color-danger-bg)"
+                                        : isCorrectAnswer
+                                        ? "var(--color-success-bg)"
+                                        : "var(--color-bg-hover)",
+                                    }}
+                                  >
+                                    <Space>
+                                      <Tag color="blue">{optionLetter}</Tag>
+                                      <Text>{option.text}</Text>
+                                      {isUserSelected &&
+                                        (isCorrectAnswer ? (
+                                          <CheckCircle
+                                            size={16}
+                                            style={{ color: "var(--color-success)" }}
+                                          />
+                                        ) : (
+                                          <XCircle
+                                            size={16}
+                                            style={{ color: "var(--color-danger)" }}
+                                          />
+                                        ))}
+                                      {!isUserSelected && isCorrectAnswer && (
                                         <CheckCircle
                                           size={16}
                                           style={{ color: "var(--color-success)" }}
                                         />
-                                      ) : (
-                                        <XCircle
-                                          size={16}
-                                          style={{ color: "var(--color-danger)" }}
-                                        />
-                                      ))}
-                                    {!isUserSelected && isCorrectAnswer && (
-                                      <CheckCircle
-                                        size={16}
-                                        style={{ color: "var(--color-success)" }}
-                                      />
-                                    )}
-                                  </Space>
-                                </div>
-                              );
-                            })}
-                          </Space>
-                        </div>
-
-                        {/* Explanation */}
-                        {question.explanation && (
-                          <Alert
-                            message="Giải thích"
-                            description={
-                              <div id={`explanation-${question.id}`}>
-                                {/* <TextHighlighter
-                                  containerId={`explanation-${question.id}`}
-                                > */}
-                                {question.explanation}
-                                {/* </TextHighlighter> */}
-                              </div>
-                            }
-                            type="info"
-                            showIcon
-                            icon={<HelpCircle size={16} />}
-                            style={{ marginTop: "16px" }}
-                          />
-                        )}
-                      </Space>
-                    </Col>
-                  </Row>
-                </Card>
-              );
-            })}
+                                      )}
+                                    </Space>
+                                  </div>
+                                );
+                              })}
+                            </Space>
+                          </div>
+                        </Space>
+                      </Col>
+                    </Row>
+                  </Card>
+                );
+              });
+            })()}
           </Space>
         </Card>
         {/* Result Actions */}
@@ -1344,9 +1466,9 @@ const ExamDetail = () => {
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to="/learner/exams">
+            <Link to="/learner/full-test">
               <FileText size={16} style={{ marginRight: "4px" }} />
-              Bài thi thực hành
+              Bài thi Full Test
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{exam.name}</Breadcrumb.Item>
@@ -1501,22 +1623,21 @@ const ExamDetail = () => {
                     Bắt đầu bài thi
                   </Button>
 
-                  <Link to="/learner/exams">
-                    <Button
-                      size="middle"
-                      icon={<ArrowLeft size={14} />}
-                      style={{
-                        background: "var(--color-bg-primary)",
-                        border: "2px solid rgba(255,255,255,0.8)",
-                        color: "var(--color-brand-purple)",
-                        borderRadius: "20px",
-                        fontWeight: "500",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                      }}
-                    >
-                      Quay lại
-                    </Button>
-                  </Link>
+                  <Button
+                    size="middle"
+                    icon={<ArrowLeft size={14} />}
+                    onClick={() => navigate(-1)}
+                    style={{
+                      background: "var(--color-bg-primary)",
+                      border: "2px solid rgba(255,255,255,0.8)",
+                      color: "var(--color-primary)",
+                      borderRadius: "20px",
+                      fontWeight: "500",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    }}
+                  >
+                    Quay lại
+                  </Button>
                 </Space>
               </Col>
             </Row>
@@ -1613,6 +1734,116 @@ const ExamDetail = () => {
 
   // Main exam taking view
   const currentQuestion = exam.questions[currentQuestionIndex];
+
+  // Helper: normalize audio URL (S3 path or full URL)
+  const getAudioUrl = (audioNameOrUrl) => {
+    if (!audioNameOrUrl) return "";
+    if (/^https?:\/\//i.test(audioNameOrUrl)) return audioNameOrUrl;
+    return `https://dynamodb-s3-lab6.s3.amazonaws.com/uploads/audios/${audioNameOrUrl}`;
+  };
+
+  // Compute TOEIC parts & ranges so we can render by part in multiple places
+  const toeicRanges =
+    exam.type === "full-test"
+      ? [
+          { id: 1, name: "Photographs", range: "1-6", description: "Mô tả hình ảnh", start: 0, end: 6 },
+          { id: 2, name: "Question-Response", range: "7-31", description: "Hỏi đáp", start: 6, end: 31 },
+          { id: 3, name: "Conversations", range: "32-70", description: "Đối thoại", start: 31, end: 70 },
+          { id: 4, name: "Talks", range: "71-100", description: "Bài nói", start: 70, end: 100 },
+          { id: 5, name: "Incomplete Sentences", range: "101-130", description: "Hoàn thành câu", start: 100, end: 130 },
+          { id: 6, name: "Text Completion", range: "131-146", description: "Hoàn thành đoạn văn", start: 130, end: 146 },
+          { id: 7, name: "Reading Comprehension", range: "147-200", description: "Đọc hiểu", start: 146, end: 200 },
+        ]
+      : [
+          { id: 1, name: "Photographs", range: "1-3", description: "Mô tả tranh", start: 0, end: 3 },
+          { id: 2, name: "Question-Response", range: "4-15", description: "Hỏi đáp", start: 3, end: 15 },
+          { id: 3, name: "Conversations", range: "16-32", description: "Hội thoại", start: 15, end: 32 },
+          { id: 4, name: "Talks", range: "33-50", description: "Bài nói", start: 32, end: 50 },
+          { id: 5, name: "Incomplete Sentences", range: "51-65", description: "Hoàn thành câu", start: 50, end: 65 },
+          { id: 6, name: "Text Completion", range: "66-73", description: "Hoàn thành đoạn", start: 65, end: 73 },
+          { id: 7, name: "Reading Comprehension", range: "74-100", description: "Đọc hiểu", start: 73, end: 100 },
+        ];
+
+  const totalQuestions = exam.questions?.length || 0;
+  const parts = toeicRanges
+    .map((range) => {
+      const adjustedEnd = Math.min(range.end, totalQuestions);
+      const partQuestions = exam.questions?.slice(range.start, adjustedEnd) || [];
+
+      if (partQuestions.length > 0) {
+        const answeredInPart = partQuestions.filter((q) => userAnswers[q.id] !== undefined).length;
+        const flaggedInPart = partQuestions.filter((q) => flaggedQuestions.includes(q.id)).length;
+        const isCurrentPart = currentQuestionIndex >= range.start && currentQuestionIndex < adjustedEnd;
+        const uniqueAudios = [...new Set(partQuestions.map((q) => q.audio).filter(Boolean))];
+        const uniqueImages = [...new Set(partQuestions.map((q) => q.image).filter(Boolean))];
+
+        // Group questions by shared audio or passage (which defines a 'group')
+        const groupsMap = new Map();
+        partQuestions.forEach((q, idx) => {
+          // Determine a grouping key: prefer audio, then passage id/content;
+          // fallback to single-question group
+          let groupKey = null;
+          const audioKey = q.audio || q.audioUrl || q._originalData?.questionAudio || q._originalData?.audioUrl;
+          // Prefer a stable passageId for grouping (if present) to avoid creating multiple groups for the same passage
+          const passageIdKey = q.passageId || q._originalData?.passageId || q._originalData?.passageId;
+          const passageTextKey = q.passage || q.questionPassage || q._originalData?.passage || q._originalData?.questionPassage;
+          let passageKey = null;
+          if (passageIdKey) passageKey = `id:${passageIdKey}`;
+          else if (passageTextKey) passageKey = `text:${passageTextKey}`;
+
+          if (audioKey) groupKey = `audio:${audioKey}`;
+          else if (passageKey) groupKey = `passage:${passageKey}`;
+          else groupKey = `single:${q.id}`;
+
+          if (!groupsMap.has(groupKey)) {
+            // Use passage text as the title if available; otherwise fall back to passage id or a generic group title
+            const title = passageTextKey ? passageTextKey : (passageIdKey ? `Passage ${passageIdKey}` : `Group ${groupsMap.size + 1}`);
+            groupsMap.set(groupKey, { id: groupKey, title, questions: [], startIndex: range.start + idx });
+          }
+          const group = groupsMap.get(groupKey);
+          group.questions.push({ ...q, globalIndex: range.start + idx });
+        });
+
+        const groups = Array.from(groupsMap.values()).map((grp) => {
+          const gUniqueAudios = [...new Set(grp.questions.map((q) => q.audio).filter(Boolean))];
+          const gUniqueImages = [...new Set(grp.questions.map((q) => q.image).filter(Boolean))];
+          return {
+            ...grp,
+            uniqueAudios: gUniqueAudios,
+            uniqueImages: gUniqueImages,
+            // Only consider audio/image shared across the group when the group contains more than 1 question
+            hasSharedAudio: grp.questions.length > 1 && gUniqueAudios.length === 1,
+            hasSharedImage: grp.questions.length > 1 && gUniqueImages.length === 1,
+            answeredCount: grp.questions.filter((q) => userAnswers[q.id] !== undefined).length,
+            flaggedCount: grp.questions.filter((q) => flaggedQuestions.includes(q.id)).length,
+          };
+        });
+
+          return {
+          id: range.id,
+          name: `Part ${range.id}`,
+          description: range.name,
+          range: range.range,
+          questions: partQuestions,
+            groups,
+          startIndex: range.start,
+          endIndex: adjustedEnd,
+          answeredCount: answeredInPart,
+          flaggedCount: flaggedInPart,
+          isCurrentPart,
+          progress: partQuestions.length > 0 ? (answeredInPart / partQuestions.length) * 100 : 0,
+            uniqueAudios,
+            uniqueImages,
+            hasSharedAudio: uniqueAudios.length === 1,
+            hasSharedImage: uniqueImages.length === 1,
+        };
+      }
+
+      return null;
+    })
+    .filter((p) => p !== null);
+
+  const currentPart = parts.find((p) => p.isCurrentPart) || null;
 
   // If no questions available, show error
   if (!exam.questions || exam.questions.length === 0) {
@@ -1820,6 +2051,7 @@ const ExamDetail = () => {
             xs={24}
             lg={sidebarCollapsed ? 1 : 6}
             xl={sidebarCollapsed ? 1 : 5}
+            ref={sidebarRef}
           >
             <Card
               title={
@@ -1856,17 +2088,22 @@ const ExamDetail = () => {
                 </Space>
               }
               style={{
-                height: "calc(100vh - 112px)",
-                display:
-                  window.innerWidth < 992 || sidebarCollapsed
-                    ? "none"
-                    : "block",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                borderRadius: "12px",
-                border: "1px solid #e8f4fd",
-                position: "sticky",
-                top: "92px",
-              }}
+                  height: "calc(100vh - 112px)",
+                  display:
+                    window.innerWidth < 992 || sidebarCollapsed
+                      ? "none"
+                      : "block",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                  borderRadius: "12px",
+                  border: "1px solid #e8f4fd",
+                  // switch to fixed when needed so the sidebar stays visible while scrolling
+                  position: "fixed",
+                  top: "92px",
+                  left: isSidebarFixed ? `${sidebarRect.left}px` : undefined,
+                  width: "240px",
+                  zIndex: 999,
+                  
+                }}
               headStyle={{
                 background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
                 borderRadius: "12px 12px 0 0",
@@ -2154,169 +2391,7 @@ const ExamDetail = () => {
                   </div>
 
                   {/* Question Groups by Part */}
-                  {(() => {
-                    // Ranges cho TOEIC dựa trên loại bài thi
-                    const toeicRanges =
-                      exam.type === "full-test"
-                        ? [
-                            {
-                              id: 1,
-                              name: "Photographs",
-                              range: "1-6",
-                              description: "Mô tả hình ảnh",
-                              start: 0,
-                              end: 6,
-                            },
-                            {
-                              id: 2,
-                              name: "Question-Response",
-                              range: "7-31",
-                              description: "Hỏi đáp",
-                              start: 6,
-                              end: 31,
-                            },
-                            {
-                              id: 3,
-                              name: "Conversations",
-                              range: "32-70",
-                              description: "Đối thoại",
-                              start: 31,
-                              end: 70,
-                            },
-                            {
-                              id: 4,
-                              name: "Talks",
-                              range: "71-100",
-                              description: "Bài nói",
-                              start: 70,
-                              end: 100,
-                            },
-                            {
-                              id: 5,
-                              name: "Incomplete Sentences",
-                              range: "101-130",
-                              description: "Hoàn thành câu",
-                              start: 100,
-                              end: 130,
-                            },
-                            {
-                              id: 6,
-                              name: "Text Completion",
-                              range: "131-146",
-                              description: "Hoàn thành đoạn văn",
-                              start: 130,
-                              end: 146,
-                            },
-                            {
-                              id: 7,
-                              name: "Reading Comprehension",
-                              range: "147-200",
-                              description: "Đọc hiểu",
-                              start: 146,
-                              end: 200,
-                            },
-                          ]
-                        : [
-                            // Mini test: 100 câu (50 Listening + 50 Reading)
-                            {
-                              id: 1,
-                              name: "Photographs",
-                              range: "1-13",
-                              description: "Mô tả hình ảnh",
-                              start: 0,
-                              end: 13,
-                            },
-                            {
-                              id: 2,
-                              name: "Question-Response",
-                              range: "14-25",
-                              description: "Hỏi đáp",
-                              start: 13,
-                              end: 25,
-                            },
-                            {
-                              id: 3,
-                              name: "Conversations",
-                              range: "26-37",
-                              description: "Đối thoại",
-                              start: 25,
-                              end: 37,
-                            },
-                            {
-                              id: 4,
-                              name: "Talks",
-                              range: "38-50",
-                              description: "Bài nói",
-                              start: 37,
-                              end: 50,
-                            },
-                            {
-                              id: 5,
-                              name: "Incomplete Sentences",
-                              range: "51-62",
-                              description: "Hoàn thành câu",
-                              start: 50,
-                              end: 62,
-                            },
-                            {
-                              id: 6,
-                              name: "Text Completion",
-                              range: "63-75",
-                              description: "Hoàn thành đoạn văn",
-                              start: 62,
-                              end: 75,
-                            },
-                            {
-                              id: 7,
-                              name: "Reading Comprehension",
-                              range: "76-100",
-                              description: "Đọc hiểu",
-                              start: 75,
-                              end: 100,
-                            },
-                          ];
-
-                    const totalQuestions = exam.questions?.length || 0;
-                    const parts = toeicRanges
-                      .map((range) => {
-                        // Điều chỉnh end nếu tổng câu ít hơn (cho bài thi mini)
-                        const adjustedEnd = Math.min(range.end, totalQuestions);
-                        const partQuestions =
-                          exam.questions?.slice(range.start, adjustedEnd) || [];
-
-                        if (partQuestions.length > 0) {
-                          const answeredInPart = partQuestions.filter(
-                            (q) => userAnswers[q.id] !== undefined
-                          ).length;
-                          const flaggedInPart = partQuestions.filter((q) =>
-                            flaggedQuestions.includes(q.id)
-                          ).length;
-                          const isCurrentPart =
-                            currentQuestionIndex >= range.start &&
-                            currentQuestionIndex < adjustedEnd;
-
-                          return {
-                            id: range.id,
-                            name: `Part ${range.id}`,
-                            description: range.name,
-                            range: range.range,
-                            questions: partQuestions,
-                            startIndex: range.start,
-                            endIndex: adjustedEnd,
-                            answeredCount: answeredInPart,
-                            flaggedCount: flaggedInPart,
-                            isCurrentPart,
-                            progress:
-                              partQuestions.length > 0
-                                ? (answeredInPart / partQuestions.length) * 100
-                                : 0,
-                          };
-                        }
-                        return null;
-                      })
-                      .filter((part) => part !== null); // Chỉ hiển thị part có câu
-
-                    return parts.map((part) => (
+                  {parts.map((part) => (
                       <div
                         key={part.id}
                         style={{
@@ -2488,16 +2563,16 @@ const ExamDetail = () => {
                                       border: `2px solid ${
                                         isFlagged
                                           ? "var(--color-warning)"
-                                          : isActive
-                                          ? "var(--color-primary)"
                                           : isAnswered
                                           ? "var(--color-success)"
+                                          : isActive
+                                          ? "var(--color-primary)"
                                           : "#d1d5db"
                                       }`,
-                                      background: isActive
-                                        ? "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)"
-                                        : isAnswered
+                                      background: isAnswered
                                         ? "linear-gradient(135deg, #52c41a 0%, #389e0d 100%)"
+                                        : isActive
+                                        ? "linear-gradient(135deg, #1890ff 0%, #096dd9 100%)"
                                         : "var(--color-bg-primary)",
                                       color:
                                         isActive || isAnswered
@@ -2581,8 +2656,7 @@ const ExamDetail = () => {
                           </div>
                         </div>
                       </div>
-                    ));
-                  })()}
+                    ))}
                 </div>
               </div>
             </Card>
@@ -2634,8 +2708,15 @@ const ExamDetail = () => {
                           fontWeight: "600",
                         }}
                       >
-                        Câu {currentQuestionIndex + 1} /{" "}
-                        {exam.questions ? exam.questions.length : 0}
+                        {currentPart && currentPart.questions.length > 1 ? (
+                          <>
+                            {currentPart.name}: {currentPart.description} • {currentPart.questions.length} câu
+                          </>
+                        ) : (
+                          <>
+                            Câu {currentQuestionIndex + 1} / {exam.questions ? exam.questions.length : 0}
+                          </>
+                        )}
                       </Title>
                       <Text style={{ color: "#64748b", fontSize: "12px" }}>
                         {exam.type === "full-test"
@@ -2710,122 +2791,231 @@ const ExamDetail = () => {
                 }}
               >
                 {/* Enhanced Question Media */}
-                <Space
-                  direction="vertical"
-                  size="large"
-                  style={{ width: "100%", marginBottom: "24px" }}
-                >
-                  {currentQuestion.image && (
-                    <div
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        width: "100%",
-                      }}
-                    >
-                      <Card
-                        size="small"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "12px",
-                          overflow: "hidden",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                        }}
-                        bodyStyle={{ padding: "16px", textAlign: "center" }}
-                      >
-                        <Image
-                          src={currentQuestion.image}
-                          alt="Hình ảnh câu hỏi"
-                          style={{
-                            maxWidth: "100%",
-                            borderRadius: "8px",
-                            maxHeight: "400px",
-                            objectFit: "contain",
-                            pointerEvents: "none", // Ngăn tương tác
-                          }}
-                          onContextMenu={(e) => e.preventDefault()} // Chặn right-click
-                          onDragStart={(e) => e.preventDefault()} // Chặn kéo
-                          placeholder={
-                            <div
-                              style={{
-                                padding: "40px",
-                                textAlign: "center",
-                                background: "#f8fafc",
-                                borderRadius: "8px",
-                                color: "#64748b",
-                              }}
-                            >
-                              <Spin size="large" />
-                              <div style={{ marginTop: "16px" }}>
-                                Đang tải hình ảnh...
-                              </div>
+                <Space direction="vertical" size="large" style={{ width: "100%", marginBottom: "24px" }}>
+                  {currentPart && currentPart.groups && currentPart.groups.length > 0 && (() => {
+                    // When the current part has groups, display a larger shared image for the active group
+                    const activeGroup = currentPart.groups.find((g) => g.questions.some((qq) => qq.globalIndex === currentQuestionIndex));
+                    if (!activeGroup) return null;
+                    if (!activeGroup.hasSharedImage || !activeGroup.uniqueImages?.[0]) return null;
+                    const activeImage = activeGroup.uniqueImages[0];
+                    return (
+                      <div>
+                        <Card size="small" style={{ background: "linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%)", border: "1px solid #e8f0f6", borderRadius: 12 }} bodyStyle={{ padding: 12 }}>
+                          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                            <div style={{ flex: 1 }}>
+                              <Image
+                                src={activeImage}
+                                alt={`Hình nhóm lớn - ${activeGroup.id}`}
+                                style={{ width: '100%', height: 'auto', maxHeight: 1200, objectFit: 'contain', borderRadius: 8 }}
+                                preview={{ mask: <Eye size={20} /> }}
+                              />
                             </div>
-                          }
-                        />
-                      </Card>
-                    </div>
-                  )}
+                          </div>
+                        </Card>
+                      </div>
+                    );
+                  })()}
+                  {(!currentPart || !currentPart.groups || currentPart.groups.length === 0) && (
+                    // single question media (fallback)
+                    <>
+                      {currentQuestion.image && (
+                        <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                          <Card size="small" style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)", border: "1px solid #e2e8f0", borderRadius: "12px", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }} bodyStyle={{ padding: "16px", textAlign: "center" }}>
+                            <Image src={currentQuestion.image} alt="Hình ảnh câu hỏi" style={{ width: "100%", height: "auto", borderRadius: "8px", maxHeight: "800px", objectFit: "contain", pointerEvents: "none" }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} placeholder={<div style={{ padding: "40px", textAlign: "center", background: "#f8fafc", borderRadius: "8px", color: "#64748b" }}><Spin size="large" /><div style={{ marginTop: "16px" }}>Đang tải hình ảnh...</div></div>} />
+                          </Card>
+                        </div>
+                      )}
 
-                  {currentQuestion.audio && (
-                    <Card
-                      size="small"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
-                        border: "1px solid #bae6fd",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(59, 130, 246, 0.1)",
-                      }}
-                      bodyStyle={{ padding: "16px" }}
-                    >
-                      <Space
-                        direction="vertical"
-                        size="small"
-                        style={{ width: "100%" }}
-                      >
-                        <AudioPlayer
-                          src={currentQuestion.audio}
-                          questionId={currentQuestion.id}
-                          key={`audio-${currentQuestion.id}-${currentQuestion.audio}`}
-                        />
-                      </Space>
-                    </Card>
+                      {currentQuestion.audio && (
+                        <Card size="small" style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)", border: "1px solid #bae6fd", borderRadius: "12px", boxShadow: "0 2px 8px rgba(59, 130, 246, 0.1)" }} bodyStyle={{ padding: "16px" }}>
+                          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                              <Volume2 size={20} style={{ color: "var(--color-primary)" }} />
+                              <audio
+                                controls
+                                preload="metadata"
+                                title={`Audio: ${getAudioUrl(currentQuestion.audio)}`}
+                                src={getAudioUrl(currentQuestion.audio)}
+                                style={{ width: "100%", maxWidth: 400, height: 40 }}
+                                onError={(e) => {
+                                  console.error("❌ Audio load error (ExamDetail current):", e);
+                                  console.error("❌ Audio src:", getAudioUrl(currentQuestion.audio));
+                                }}
+                                onLoadStart={() => {
+                                  console.log("🔄 Audio loading started (ExamDetail current):", getAudioUrl(currentQuestion.audio));
+                                }}
+                                onCanPlay={() => {
+                                  console.log("✅ Audio can play (ExamDetail current):", getAudioUrl(currentQuestion.audio));
+                                }}
+                              >
+                                <source src={getAudioUrl(currentQuestion.audio)} type="audio/mpeg" />
+                                <source src={getAudioUrl(currentQuestion.audio)} type="audio/mp3" />
+                                <source src={getAudioUrl(currentQuestion.audio)} type="audio/wav" />
+                                Trình duyệt không hỗ trợ audio.
+                              </audio>
+                            </div>
+                          </Space>
+                        </Card>
+                      )}
+                    </>
                   )}
                 </Space>
 
                 {/* Enhanced Question Text */}
                 <div style={{ marginBottom: "28px" }}>
-                  <Card
-                    size="small"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                      border: "2px solid #e2e8f0",
-                      borderRadius: "12px",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                    }}
-                    bodyStyle={{ padding: "20px" }}
-                  >
-                    <Title
-                      level={4}
-                      style={{
-                        marginBottom: "0",
-                        color: "#1e293b",
-                        lineHeight: "1.6",
-                        fontSize: "16px",
-                      }}
-                      id="question-text"
-                    >
-                      {/* <TextHighlighter containerId="question-text"> */}
-                      {cleanQuestionText(currentQuestion.text)}
-                      {/* </TextHighlighter> */}
-                    </Title>
-                  </Card>
+                  {/* If the current part has multiple questions, render all of them. Otherwise, show a single currentQuestion */}
+                  {currentPart && currentPart.groups && currentPart.groups.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {currentPart.groups.map((group) => {
+                        const isGroupActive = group.questions.some((qq) => qq.globalIndex === currentQuestionIndex);
+                        return (
+                          <div key={group.id} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            <Card size="small" style={{ padding: "12px", background: "linear-gradient(90deg,#f8fafc 0,#f1f5f9 100%)", border: isGroupActive ? "2px solid #60a5fa" : "1px solid #e2e8f0" }}>
+                              <Row justify="space-between" align="middle">
+                                <Col>
+                                  <Space direction="vertical" size={0}>
+                                    {/* Show a concise header title (short) and render the full passage below */}
+                                    <Text strong>{typeof group.title === 'string' && group.title.length > 80 ? group.title.slice(0, 80) + '...' : group.title}</Text>
+                                    <Text type="secondary">• {group.questions.length} câu</Text>
+                                  </Space>
+                                  {/* Show full passage text below header if it's not a fallback group title */}
+                                  {typeof group.title === 'string' && !group.title.startsWith('Group ') && (
+                                    <div style={{ marginTop: 8, whiteSpace: 'pre-wrap', fontSize: 12, color: '#475569' }}>{group.title}</div>
+                                  )}
+                                </Col>
+                                <Col>
+                                  <Space>
+                                    {group.hasSharedImage && (
+                                      <Image
+                                        src={group.uniqueImages[0]}
+                                        alt={`Hình nhóm ${group.id}`}
+                                        style={{ width: 480, height: 320, objectFit: "contain", borderRadius: 8 }}
+                                        preview={{ mask: <Eye size={20} /> }}
+                                      />
+                                    )}
+                                    {/* Small badge to indicate shared audio is available; actual audio renders in group-level media area */}
+                                    {group.hasSharedAudio && (() => {
+                                      const audioSrc = getAudioUrl(group.uniqueAudios[0]);
+                                      return (
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                          <audio
+                                            controls
+                                            preload="metadata"
+                                            src={audioSrc}
+                                            title={`Group audio: ${audioSrc}`}
+                                            style={{ width: 200, height: 36 }}
+                                            onError={(e) => {
+                                              console.error("❌ Audio load error (ExamDetail group):", e, "GroupId:", group.id);
+                                              console.error("❌ Audio src:", audioSrc);
+                                            }}
+                                            onLoadStart={() => console.log("🔄 Audio loading started (ExamDetail group):", audioSrc, "GroupId:", group.id)}
+                                            onCanPlay={() => console.log("✅ Audio can play (ExamDetail group):", audioSrc, "GroupId:", group.id)}
+                                          >
+                                            <source src={audioSrc} type="audio/mpeg" />
+                                            <source src={audioSrc} type="audio/mp3" />
+                                            <source src={audioSrc} type="audio/wav" />
+                                          </audio>
+                                        </div>
+                                      );
+                                    })()}
+                                  </Space>
+                                </Col>
+                              </Row>
+                            </Card>
+
+                            {group.questions.map((q) => {
+                              const globalIndex = q.globalIndex;
+                              const isActive = globalIndex === currentQuestionIndex;
+                              // Avoid rendering the full passage again if q.text contains the group's passage
+                              const cleanedGroupTitle = cleanQuestionText(group.title || "");
+                              const cleanedQText = cleanQuestionText(q.text || "");
+                              let displayText = cleanedQText;
+                              if (
+                                cleanedGroupTitle &&
+                                cleanedQText &&
+                                cleanedQText.includes(cleanedGroupTitle)
+                              ) {
+                                displayText = cleanedQText.replace(cleanedGroupTitle, "").trim();
+                              }
+                              return (
+                                <Card key={q.id} size="small" ref={(el) => (questionRefs.current[globalIndex] = el)} style={{ background: isActive ? "linear-gradient(135deg, #f1f5f9 0%, #e6f6ff 100%)" : "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)", border: isActive ? "2px solid #60a5fa" : "1px solid #e2e8f0", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }} bodyStyle={{ padding: "16px" }}>
+                                  <Row justify="space-between" align="middle">
+                                    <Col>
+                                      <Text strong>Câu {globalIndex + 1}</Text>
+                                    </Col>
+                                    <Col>
+                                      <Space>
+                                        <Button size="small" onClick={() => goToQuestion(globalIndex)}>Mở</Button>
+                                        <Button size="small" type={flaggedQuestions.includes(q.id) ? "primary" : "default"} icon={<Flag size={12} />} onClick={() => toggleFlagQuestion(q.id)}>{flaggedQuestions.includes(q.id) ? 'Bỏ' : 'Đánh dấu'}</Button>
+                                      </Space>
+                                    </Col>
+                                  </Row>
+                                  <div style={{ marginTop: 8 }}>
+                                    {displayText ? (
+                                      <Title level={5} style={{ marginBottom: 8, fontSize: 15 }}>{displayText}</Title>
+                                    ) : null}
+                                    {q.image && (!group?.hasSharedImage || (group?.uniqueImages && group.uniqueImages[0] !== q.image)) && (
+                                      <Image src={q.image} alt={`Hình ảnh câu ${globalIndex + 1}`} style={{ maxWidth: 260, borderRadius: 8 }} />
+                                    )}
+                                    {!group?.hasSharedAudio && q.audio && (
+                                      <div style={{ marginTop: 8, marginBottom: 8 }}>
+                                        <audio
+                                          controls
+                                          preload="metadata"
+                                          src={getAudioUrl(q.audio)}
+                                          title={`Audio: ${getAudioUrl(q.audio)}`}
+                                          style={{ width: "100%", maxWidth: 300 }}
+                                          onError={(e) => {
+                                            console.error("❌ Audio load error (ExamDetail q.audio):", e, "QuestionId:", q.id);
+                                            console.error("❌ Audio src:", getAudioUrl(q.audio));
+                                          }}
+                                          onLoadStart={() => console.log("🔄 Audio loading started (ExamDetail q.audio):", getAudioUrl(q.audio), "QuestionId:", q.id)}
+                                          onCanPlay={() => console.log("✅ Audio can play (ExamDetail q.audio):", getAudioUrl(q.audio), "QuestionId:", q.id)}
+                                        >
+                                          <source src={getAudioUrl(q.audio)} type="audio/mpeg" />
+                                          <source src={getAudioUrl(q.audio)} type="audio/mp3" />
+                                          <source src={getAudioUrl(q.audio)} type="audio/wav" />
+                                        </audio>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div style={{ marginTop: 12 }}>
+                                    <Radio.Group value={userAnswers[q.id]} onChange={(e) => handleAnswerSelect(q.id, e.target.value)} style={{ width: "100%" }}>
+                                      <Row gutter={[8, 8]}>
+                                        {q.options && q.options.map((option, optionIndex) => {
+                                          const optionLetter = String.fromCharCode(65 + optionIndex);
+                                          const isSelected = userAnswers[q.id] === option.id;
+                                          return (
+                                            <Col xs={24} sm={12} key={option.id}>
+                                              <Radio value={option.id} style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid", borderColor: isSelected ? "#3b82f6" : "#d1d5db", background: isSelected ? "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)" : "var(--color-bg-primary)", transition: "all 0.2s ease", boxShadow: isSelected ? "0 2px 8px rgba(59, 130, 246, 0.15)" : "0 1px 2px rgba(0,0,0,0.05)", margin: 0 }}>
+                                                <Space align="start" style={{ width: "100%" }}>
+                                                  <div style={{ width: 24, height: 24, borderRadius: 6, background: isSelected ? "#3b82f6" : "#f1f5f9", color: isSelected ? "var(--color-bg-primary)" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: 12, flexShrink: 0 }}>{optionLetter}</div>
+                                                  <Text style={{ fontSize: 12, color: isSelected ? "#1e40af" : "#374151", fontWeight: isSelected ? 500 : 400, lineHeight: 1.4, margin: 0 }}>{option.text}</Text>
+                                                </Space>
+                                              </Radio>
+                                            </Col>
+                                          );
+                                        })}
+                                      </Row>
+                                    </Radio.Group>
+                                  </div>
+                                </Card>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {(!currentPart || !currentPart.groups || currentPart.groups.length === 0) && (
+                    <Card ref={(el) => (questionRefs.current[currentQuestionIndex] = el)} size="small" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)", border: "2px solid #e2e8f0", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }} bodyStyle={{ padding: "20px" }}>
+                      <Title level={4} style={{ marginBottom: "0", color: "#1e293b", lineHeight: "1.6", fontSize: "16px" }} id="question-text">{cleanQuestionText(currentQuestion.text)}</Title>
+                    </Card>
+                  )}
                 </div>
 
-                {/* Compact Answer Options */}
+                {/* Compact Answer Options (single-question mode only) */}
+                {(!currentPart || currentPart.questions.length === 1) && (
                 <div
                   style={{
                     background:
@@ -2927,6 +3117,7 @@ const ExamDetail = () => {
                     </Row>
                   </Radio.Group>
                 </div>
+                )}
               </div>
 
               {/* Enhanced Navigation Buttons */}

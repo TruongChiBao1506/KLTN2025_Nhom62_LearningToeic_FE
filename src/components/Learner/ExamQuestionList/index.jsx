@@ -17,7 +17,7 @@ const ExamQuestionList = ({
   markQuestionAsViewed,
   darkMode = false,
 }) => {
-  const [selectedPart, setSelectedPart] = useState(parts[0] || "PART1");
+  const [selectedPart, setSelectedPart] = useState(parts[0] || 1);
   const [flaggedQuestions, setFlaggedQuestions] = useState([]);
   const [showExplanation, setShowExplanation] = useState({});
   const [showGroupScript, setShowGroupScript] = useState({});
@@ -352,30 +352,30 @@ const ExamQuestionList = ({
 
     let instructionText = "";
     switch (modal.part) {
-      case "PART1":
+      case 1:
         instructionText =
           "Nhìn hình ảnh và nghe câu. Chọn câu mô tả chính xác nhất hình ảnh.";
         break;
-      case "PART2":
+      case 2:
         instructionText =
           "Nghe câu hỏi và ba câu trả lời. Chọn câu trả lời phù hợp nhất với câu hỏi.";
         break;
-      case "PART3":
+      case 3:
         instructionText =
           "Nghe đoạn hội thoại. Sau đó đọc từng câu hỏi và chọn câu trả lời tốt nhất.";
         break;
-      case "PART4":
+      case 4:
         instructionText =
           "Nghe đoạn nói chuyện. Sau đó đọc từng câu hỏi và chọn câu trả lời tốt nhất.";
         break;
-      case "PART5":
+      case 5:
         instructionText = "Chọn từ hoàn thành câu một cách tốt nhất.";
         break;
-      case "PART6":
+      case 6:
         instructionText =
           "Chọn từ hoặc cụm từ hoàn thành chỗ trống một cách tốt nhất.\nChủ đề: Thông báo, thư, email, quảng cáo.";
         break;
-      case "PART7":
+      case 7:
         instructionText = "Đọc đoạn văn và chọn câu trả lời đúng.";
         break;
       default:
@@ -388,7 +388,7 @@ const ExamQuestionList = ({
           <div className="modal-header-custom">
             <h5 className="modal-title">
               <i className="fa-regular fa-lightbulb me-2"></i>
-              Hướng dẫn làm Phần {modal.part.replace("PART", "")}
+              Hướng dẫn làm Phần {modal.part}
             </h5>
             <button
               type="button"
@@ -423,7 +423,7 @@ const ExamQuestionList = ({
                   }`}
                   onClick={() => handleSelectPart(part)}
                 >
-                  Phần {part.replace("PART", "")}
+                  Phần {part}
                 </button>
               ))}
             </div>
@@ -781,7 +781,7 @@ const ExamQuestionList = ({
                     {selectedPart === part && (
                       <i className="fa-solid fa-chevron-right me-2"></i>
                     )}
-                    Phần {part.replace("PART", "")}
+                    Phần {part}
                   </h6>
 
                   <div

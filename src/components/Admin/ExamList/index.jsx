@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
+import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -190,8 +191,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
         try {
             // Step 1: Validate exam before submission
             const validationResult = await examSubmissionService.validateExam(examId);
-            
-            if (!validationResult.isValid) {
+            if (!validationResult.data.isValid) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Cannot Submit Exam',
@@ -199,7 +199,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
                         <div style="text-align: left;">
                             <p><strong>Exam:</strong> ${examName}</p>
                             <p>${validationResult.message}</p>
-                            ${validationResult.issues ? `
+                            ${validationResult.data.issues ? `
                                 <ul>
                                     ${validationResult.issues.map(issue => `<li>${issue}</li>`).join('')}
                                 </ul>
@@ -213,60 +213,54 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
             }
 
             // Step 2: Show submission confirmation with statistics
-            const stats = validationResult.statistics || {};
-            const result = await Swal.fire({
-                title: 'Submit Exam for Approval?',
-                html: `
-                    <div style="text-align: left;">
-                        <p><strong>Exam:</strong> ${examName}</p>
-                        <p style="margin-top: 15px;"><strong>Statistics:</strong></p>
-                        <ul style="margin-top: 10px;">
-                            <li>Questions: <strong>${stats.questionCount || 0}</strong></li>
-                            <li>Type: <strong>${showFullTest ? 'Full Test' : 'Mini Test'}</strong></li>
-                        </ul>
-                        <p style="margin-top: 15px; color: #666;">
-                            After submission, admin will review your exam. You will be notified once it's approved or if changes are needed.
-                        </p>
-                    </div>
-                `,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Submit',
-                cancelButtonText: 'Cancel'
+            const stats = validationResult.data || {};
+            console.log('Exam statistics:', stats);
+            const result = await new Promise((resolve) => {
+                Modal.confirm({
+                    title: 'Xác nhận gửi duyệt Exam',
+                    content: (
+                        <div>
+                            <p><strong>Exam:</strong> {examName}</p>
+                            <p style={{ marginTop: '15px' }}><strong>Thống kê:</strong></p>
+                            <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
+                                <li>Câu hỏi: <strong>{stats.summary?.questionCount || 0}</strong></li>
+                                <li>Loại: <strong>{showFullTest ? 'Full Test' : 'Mini Test'}</strong></li>
+                            </ul>
+                            <p style={{ marginTop: '15px', color: '#666' }}>
+                                Sau khi gửi, admin sẽ xem xét exam. Bạn sẽ được thông báo khi được phê duyệt hoặc cần thay đổi.
+                            </p>
+                        </div>
+                    ),
+                    icon: <i className="fas fa-paper-plane" style={{ color: '#1890ff' }} />,
+                    okText: 'Gửi duyệt',
+                    cancelText: 'Hủy',
+                    okButtonProps: { style: { backgroundColor: '#52c41a', borderColor: '#52c41a' } },
+                    onOk: () => resolve({ isConfirmed: true }),
+                    onCancel: () => resolve({ isConfirmed: false }),
+                });
             });
 
             if (!result.isConfirmed) return;
 
             // Step 3: Submit exam
-            await examSubmissionService.submitExam(examId);
-            
+            console.log('Submitting exam with ID:', examId);
+            const submitResponse = await examSubmissionService.submitExam(examId);
+            console.log('Submit response:', submitResponse);
+           
             // Step 4: Show success message
-            Swal.fire({
-                icon: 'success',
-                title: 'Exam Submitted!',
-                html: `
-                    <div style="text-align: left;">
-                        <p><strong>Exam:</strong> ${examName}</p>
-                        <p style="margin-top: 10px;">Your exam has been submitted for admin review.</p>
-                        <p style="margin-top: 10px; color: #666;">
-                            You will receive a notification when the admin reviews your exam.
-                        </p>
-                    </div>
-                `,
-                confirmButtonText: 'Great!',
-                confirmButtonColor: 'var(--color-approved)'
-            });
+            message.success(`Exam "${examName}" đã được gửi đến admin để xem xét.`);
 
             // Step 5: Refresh exam list
             retrieveExams();
         } catch (error) {
             console.error('Error submitting exam:', error);
+            console.error('Error message:', error.message);
+            console.error('Error response:', error.response);
+            console.error('Error response data:', error.response?.data);
             Swal.fire({
                 icon: 'error',
                 title: 'Submission Failed',
-                text: error.response?.data?.message || 'Failed to submit exam. Please try again.',
+                text: error.response?.data?.message || error.message || 'Failed to submit exam. Please try again.',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#d33'
             });

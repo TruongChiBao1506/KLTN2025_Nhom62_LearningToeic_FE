@@ -75,20 +75,20 @@ const LearnerLayout = () => {
   const [openKeys, setOpenKeys] = useState([]);
   const { info } = useAuthStore();
   const dispatch = useDispatch();
-  
+
   // Helper function to check if user is a teacher (memoized)
   const isTeacher = useCallback(() => {
     console.log("🔍 isTeacher check - info:", info);
-    
+
     if (!info) {
       console.log("❌ No info");
       return false;
     }
-    
+
     // ✅ FIX: Check if roles array contains role object with name 'ROLE_TEACHER'
     if (Array.isArray(info.roles)) {
       console.log("📋 info.roles:", info.roles);
-      
+
       // Check if any role object has name 'ROLE_TEACHER'
       const hasTeacherRole = info.roles.some(role => {
         // Handle both string and object formats
@@ -98,48 +98,48 @@ const LearnerLayout = () => {
         // Handle object format: {_id: '...', name: 'ROLE_TEACHER'}
         return role.name === 'ROLE_TEACHER';
       });
-      
+
       console.log("✅ hasTeacherRole:", hasTeacherRole);
       return hasTeacherRole;
     }
-    
+
     // Check if role string is 'ROLE_TEACHER' (legacy format)
     if (typeof info.role === 'string') {
       console.log("📝 info.role (string):", info.role);
       return info.role === 'ROLE_TEACHER';
     }
-    
+
     // Fallback to isTeacher boolean field
     const fallbackCheck = info.isTeacher === true;
     console.log("⚠️ Fallback isTeacher:", fallbackCheck);
     return fallbackCheck;
   }, [info]);
-  
+
   // Get hook and create stable reference
   const notificationHook = useNotifications();
   const handleNotificationRef = useRef(notificationHook.handleNotification);
-  
+
   // Update ref when hook changes (won't trigger re-render)
   useEffect(() => {
     handleNotificationRef.current = notificationHook.handleNotification;
   }, [notificationHook.handleNotification]);
-  
+
   const allNotifications = useSelector(
     (state) => state.notifications.notifications
   );
   const allCounts = useSelector((state) => state.notifications.counts);
-  
+
   // Filter notifications for learner role
-  const notifications = React.useMemo(() => 
-    getNotificationsByRole(allNotifications, 'learner'), 
+  const notifications = React.useMemo(() =>
+    getNotificationsByRole(allNotifications, 'learner'),
     [allNotifications]
   );
-  
-  const roleCounts = React.useMemo(() => 
+
+  const roleCounts = React.useMemo(() =>
     getRoleSpecificCounts(allCounts, 'learner'),
     [allCounts]
   );
-  
+
   const unreadCount = roleCounts.total || 0;
 
   // Kết nối socket và setup listener khi LearnerLayout mount
@@ -160,7 +160,7 @@ const LearnerLayout = () => {
     }
 
     console.log("🔌 Setting up socket connection for user:", info.id);
-    
+
     // Connect socket
     socketService.connect(info.id);
 
@@ -179,7 +179,7 @@ const LearnerLayout = () => {
     return () => {
       console.log("🧹 Cleaning up notification listener in LearnerLayout");
       socketService.off("notification", handleNewNotification);
-      
+
       const countsAfter = socketService.getListenerCounts();
       console.log('📊 Listener counts after cleanup:', countsAfter);
     };
@@ -410,16 +410,21 @@ const LearnerLayout = () => {
     // Map sections to menu items and add them before "Luyện theo chuyên đề"
     const sectionMenuItems = sortedSections.map((section) => {
       // Generate route based on section name for backward compatibility
-      let routePath = "";
-      if (section.name.includes("Part 1")) routePath = "/learner/part-1";
-      else if (section.name.includes("Part 2")) routePath = "/learner/part-2";
-      else if (section.name.includes("Part 3")) routePath = "/learner/part-3";
-      else if (section.name.includes("Part 4")) routePath = "/learner/part-4";
-      else if (section.name.includes("Part 5")) routePath = "/learner/part-5";
-      else if (section.name.includes("Part 6")) routePath = "/learner/part-6";
-      else if (section.name.includes("Part 7")) routePath = "/learner/part-7";
-      else routePath = `/learner/section/${section._id}`;
-
+      // let routePath = "";
+      // if (section.name.includes("Part 1")) routePath = "/learner/part-1";
+      // else if (section.name.includes("Part 2")) routePath = "/learner/part-2";
+      // else if (section.name.includes("Part 3")) routePath = "/learner/part-3";
+      // else if (section.name.includes("Part 4")) routePath = "/learner/part-4";
+      // else if (section.name.includes("Part 5")) routePath = "/learner/part-5";
+      // else if (section.name.includes("Part 6")) routePath = "/learner/part-6";
+      // else if (section.name.includes("Part 7")) routePath = "/learner/part-7";
+      // else routePath = `/learner/section/${section._id}`;
+      // Extract part number from section name
+      const partMatch = section.name.match(/Part\s*(\d+)/i);
+      const partNumber = partMatch ? partMatch[1] : null;
+      let routePath = partNumber
+        ? `/learner/part-${partNumber}/${section._id}`
+        : `/learner/section/${section._id}`;
       return {
         key: routePath,
         icon: <FileText size={16} />,
@@ -472,10 +477,17 @@ const LearnerLayout = () => {
       icon: <PenTool size={18} />,
       label: <Link to="/learner/speaking-writing">Luyện S&W</Link>,
     },
+
+    // {
+    //   key: "/learner/improve",
+    //   icon: <Headphones size={18} />,
+    //   label: <Link to="/learner/improve">Cải thiện kỹ năng</Link>,
+    // },
     {
-      key: "/learner/improve",
+      key: "/learner/listening-reading",
       icon: <Headphones size={18} />,
-      label: <Link to="/learner/improve">Cải thiện kỹ năng</Link>,
+      label: "Luyện L&R",
+      children: generateListeningReadingMenuItems(),
     },
     {
       key: "practice-tests",
@@ -1031,161 +1043,161 @@ const LearnerLayout = () => {
     },
     ...(notifications.length > 0
       ? notifications.map((notification, index) => ({
-          key: notification.id,
-          label: (
+        key: notification.id,
+        label: (
+          <div
+            className="notification-dropdown-item"
+            style={{
+              padding: "14px 16px",
+              borderRadius: "8px",
+              margin: "4px 8px",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              cursor: "pointer",
+              border: "1px solid transparent",
+              background: !notification.isRead
+                ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
+                : "transparent",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {!notification.isRead && (
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: "3px",
+                  background: "#2C5F8D",
+                  borderRadius: "0 2px 2px 0",
+                }}
+              />
+            )}
             <div
-              className="notification-dropdown-item"
               style={{
-                padding: "14px 16px",
-                borderRadius: "8px",
-                margin: "4px 8px",
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                cursor: "pointer",
-                border: "1px solid transparent",
-                background: !notification.isRead
-                  ? "linear-gradient(135deg, rgba(103, 126, 234, 0.05) 0%, rgba(79, 172, 254, 0.05) 100%)"
-                  : "transparent",
-                position: "relative",
-                overflow: "hidden",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+                paddingLeft: !notification.isRead ? "8px" : "0",
               }}
             >
-              {!notification.isRead && (
-                <div
+              <div
+                style={{
+                  background: !notification.isRead
+                    ? "#2C5F8D"
+                    : "#ECF0F1",
+                  borderRadius: "8px",
+                  padding: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "32px",
+                  height: "32px",
+                  marginTop: "2px",
+                }}
+              >
+                <Bell
+                  size={14}
                   style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: "3px",
-                    background: "#2C5F8D",
-                    borderRadius: "0 2px 2px 0",
+                    color: !notification.isRead ? "var(--color-bg-primary)" : "#64748b",
                   }}
                 />
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "12px",
-                  paddingLeft: !notification.isRead ? "8px" : "0",
-                }}
-              >
-                <div
-                  style={{
-                    background: !notification.isRead
-                      ? "#2C5F8D"
-                      : "#ECF0F1",
-                    borderRadius: "8px",
-                    padding: "6px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "32px",
-                    height: "32px",
-                    marginTop: "2px",
-                  }}
-                >
-                  <Bell
-                    size={14}
-                    style={{
-                      color: !notification.isRead ? "var(--color-bg-primary)" : "#64748b",
-                    }}
-                  />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontWeight: !notification.isRead ? "600" : "500",
-                      fontSize: "12px",
-                      color: !notification.isRead ? "#1a202c" : "#4a5568",
-                      marginBottom: "4px",
-                      lineHeight: "1.4",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {notification.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#64748b",
-                      marginBottom: "6px",
-                      lineHeight: "1.4",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {notification.message}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#94a3b8",
-                      fontWeight: "500",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
-                    <Clock size={10} />
-                    {notification.timestamp
-                      ? new Date(notification.timestamp).toLocaleString("vi-VN")
-                      : notification.createdAt
-                      ? new Date(notification.createdAt).toLocaleString("vi-VN")
-                      : "Vừa xong"}
-                  </div>
-                </div>
               </div>
-            </div>
-          ),
-        }))
-      : [
-          {
-            key: "empty",
-            label: (
-              <div
-                style={{
-                  padding: "32px 20px",
-                  textAlign: "center",
-                  color: "#94a3b8",
-                }}
-              >
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    background: "#ECF0F1",
-                    borderRadius: "50%",
-                    width: "48px",
-                    height: "48px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 12px",
+                    fontWeight: !notification.isRead ? "600" : "500",
+                    fontSize: "12px",
+                    color: !notification.isRead ? "#1a202c" : "#4a5568",
+                    marginBottom: "4px",
+                    lineHeight: "1.4",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
-                  <Bell size={20} style={{ color: "#64748b" }} />
+                  {notification.title}
                 </div>
                 <div
                   style={{
                     fontSize: "12px",
-                    fontWeight: "500",
-                    marginBottom: "4px",
+                    color: "#64748b",
+                    marginBottom: "6px",
+                    lineHeight: "1.4",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
-                  Không có thông báo nào
+                  {notification.message}
                 </div>
-                <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
-                  Bạn sẽ nhận được thông báo tại đây
+                <div
+                  style={{
+                    fontSize: "11px",
+                    color: "#94a3b8",
+                    fontWeight: "500",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                  }}
+                >
+                  <Clock size={10} />
+                  {notification.timestamp
+                    ? new Date(notification.timestamp).toLocaleString("vi-VN")
+                    : notification.createdAt
+                      ? new Date(notification.createdAt).toLocaleString("vi-VN")
+                      : "Vừa xong"}
                 </div>
               </div>
-            ),
-            disabled: true,
-          },
-        ]),
+            </div>
+          </div>
+        ),
+      }))
+      : [
+        {
+          key: "empty",
+          label: (
+            <div
+              style={{
+                padding: "32px 20px",
+                textAlign: "center",
+                color: "#94a3b8",
+              }}
+            >
+              <div
+                style={{
+                  background: "#ECF0F1",
+                  borderRadius: "50%",
+                  width: "48px",
+                  height: "48px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 12px",
+                }}
+              >
+                <Bell size={20} style={{ color: "#64748b" }} />
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  marginBottom: "4px",
+                }}
+              >
+                Không có thông báo nào
+              </div>
+              <div style={{ fontSize: "12px", color: "#cbd5e0" }}>
+                Bạn sẽ nhận được thông báo tại đây
+              </div>
+            </div>
+          ),
+          disabled: true,
+        },
+      ]),
     {
       type: "divider",
       style: {
@@ -1252,9 +1264,9 @@ const LearnerLayout = () => {
                   height: "40px"
                 }}
               >
-                <img 
-                  src={toeicLogo} 
-                  alt="TOEIC Logo" 
+                <img
+                  src={toeicLogo}
+                  alt="TOEIC Logo"
                   style={{
                     width: "100%",
                     height: "100%",
@@ -1343,9 +1355,9 @@ const LearnerLayout = () => {
                 padding: "4px"
               }}
             >
-              <img 
-                src={toeicLogo} 
-                alt="TOEIC Logo" 
+              <img
+                src={toeicLogo}
+                alt="TOEIC Logo"
                 style={{
                   width: "100%",
                   height: "100%",
@@ -1382,9 +1394,8 @@ const LearnerLayout = () => {
             {menuItems.map((item) => (
               <li key={item.key} className="nav-item">
                 <div
-                  className={`nav-link ${
-                    location.pathname === item.key ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === item.key ? "active" : ""
+                    }`}
                   onClick={() => {
                     if (item.children) {
                       // Toggle submenu for sidebar
@@ -1430,16 +1441,14 @@ const LearnerLayout = () => {
                 </div>
                 {item.children && !collapsed && (
                   <ul
-                    className={`nav-submenu ${
-                      openKeys.includes(item.key) ? "expanded" : "collapsed"
-                    }`}
+                    className={`nav-submenu ${openKeys.includes(item.key) ? "expanded" : "collapsed"
+                      }`}
                   >
                     {item.children.map((sub, index) => (
                       <li key={sub.key}>
                         <div
-                          className={`nav-link ${
-                            location.pathname === sub.key ? "active" : ""
-                          }`}
+                          className={`nav-link ${location.pathname === sub.key ? "active" : ""
+                            }`}
                           onClick={() => (window.location.pathname = sub.key)}
                           data-tooltip={sub.label?.props?.children || sub.label}
                         >

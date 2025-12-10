@@ -21,7 +21,6 @@ import {
   EyeOff,
   Languages,
   Volume2,
-  Play,
 } from "lucide-react";
 import "./style.css";
 
@@ -122,13 +121,7 @@ const TestPart4 = ({
     return questionNumbers[`${groupId}-${questionIndex}`] || 0;
   };
 
-  // Kiểm tra xem có nên hiển thị nội dung nhóm không
-  const shouldDisplayGroupContent = (groupQuestions) => {
-    return (
-      groupQuestions[0].questionGroup.groupImage ||
-      groupQuestions[0].questionGroup.groupPassage
-    );
-  };
+
 
   // Cuộn đến câu hỏi được chọn
   const scrollToQuestion = (groupId, index) => {
@@ -299,7 +292,7 @@ const TestPart4 = ({
                 {groupQuestions[0].questionGroup.groupImage ? (
                   <Row gutter={24}>
                     {/* Image Column */}
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={16} lg={14}>
                       <div
                         style={{
                           background: "var(--color-bg-secondary)",
@@ -313,8 +306,11 @@ const TestPart4 = ({
                             groupQuestions[0].questionGroup.groupImage
                           )}
                           alt="TOEIC Listening"
-                          style={{
-                            maxWidth: "100%",
+                            style={{
+                            width: "100%",
+                            height: "auto",
+                            maxHeight: 1000,
+                            objectFit: "contain",
                             borderRadius: "8px",
                           }}
                           preview={{
@@ -325,7 +321,7 @@ const TestPart4 = ({
                     </Col>
 
                     {/* Questions Column */}
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={8} lg={10}>
                       <Space
                         direction="vertical"
                         size="medium"

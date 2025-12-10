@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import PartPractice from "../PartPractice";
 import withSectionAccess from "../../../components/Learner/withSectionAccess";
+import { useParams } from "react-router-dom";
 
 const Part4 = () => {
   // Part 4: Talks - ID từ log của bạn
-  const sectionId = "686ce171b614dda1fc08f1d3";
+  const { sectionId } = useParams();
 
   useEffect(() => {
     document.title = "Part 4: Talks | TOEIC Learning Platform";
@@ -13,4 +14,4 @@ const Part4 = () => {
   return <PartPractice sectionId={sectionId} />;
 };
 
-export default withSectionAccess(Part4, "686ce171b614dda1fc08f1d3");
+export default withSectionAccess(Part4);

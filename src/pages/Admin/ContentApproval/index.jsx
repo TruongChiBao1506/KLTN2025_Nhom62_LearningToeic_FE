@@ -25,7 +25,8 @@ import {
   ReadOutlined,
   FileTextOutlined,
   EditOutlined,
-  FormOutlined
+  FormOutlined,
+  CheckCircleOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
 import socketService from '../../../services/socketService';
@@ -163,34 +164,23 @@ const ContentApproval = () => {
   const fetchPendingExams = useCallback(async () => {
     try {
       const response = await examSubmissionService.getPendingExams();
+      console.log('Pending exams response:', response);
       
-      if (response.success && Array.isArray(response.data)) {
-        const formattedExams = response.data.map(exam => ({
-          id: exam._id,
-          title: exam.examName,
-          contentType: 'exam',
-          status: exam.examStatus,
-          submittedAt: exam.submittedAt,
-          createdBy: exam.createdBy,
-          statistics: exam.statistics || {},
-          rawData: exam
-        }));
-        
-        const examCount = formattedExams.length;
-        setExamData(formattedExams);
-        setCounts(prev => ({ 
-          ...prev, 
-          exam: examCount,
-          total: prev.topic + prev.lesson + prev.grammar + prev.test + examCount
-        }));
-      } else {
-        setExamData([]);
-        setCounts(prev => ({ 
-          ...prev, 
-          exam: 0,
-          total: prev.topic + prev.lesson + prev.grammar + prev.test
-        }));
+      // Thống nhất với các hàm khác: Handle response là array trực tiếp hoặc {success, data}
+      let data = [];
+      if (Array.isArray(response)) {
+        data = response;  // Nếu response là array trực tiếp
+      } else if (response.success && Array.isArray(response.data)) {
+        data = response.data;  // Nếu response là {success, data}
       }
+      
+      const examCount = data.length;
+      setExamData(data);  // Set trực tiếp, không format
+      setCounts(prev => ({ 
+        ...prev, 
+        exam: examCount,
+        total: prev.topic + prev.lesson + prev.grammar + prev.test + examCount
+      }));
     } catch (error) {
       console.error('Failed to load pending exams:', error);
       setExamData([]);
@@ -199,8 +189,6 @@ const ContentApproval = () => {
         exam: 0,
         total: prev.topic + prev.lesson + prev.grammar + prev.test
       }));
-      // ❌ Không hiển thị message.error để tránh spam khi reload
-      // message.error('Failed to load pending exams');
     }
   }, []);
 
@@ -316,13 +304,27 @@ const ContentApproval = () => {
   // ✅ Approve content
   const handleApprove = async (content, contentType) => {
     Modal.confirm({
-      title: 'Phê Duyệt Content',
-      content: `Bạn có chắc chắn muốn phê duyệt ${contentType} này?`,
+      title: `Phê Duyệt ${contentType.toUpperCase()}`,
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '16px', marginBottom: '10px' }}>
+            Bạn có chắc chắn muốn phê duyệt <strong>{contentType}</strong> này?
+          </p>
+          <p style={{ color: '#666', fontSize: '14px' }}>
+            Sau khi phê duyệt, {contentType} sẽ được publish và không thể thay đổi.
+          </p>
+        </div>
+      ),
+      icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
       okText: 'Phê Duyệt',
       okType: 'primary',
       cancelText: 'Hủy',
+      okButtonProps: { style: { backgroundColor: '#52c41a', borderColor: '#52c41a' } },
+      cancelButtonProps: { style: { backgroundColor: '#d9d9d9' } },
       onOk: async () => {
         try {
+          console.log(`Approving ${contentType} with ID:`, content._id);
+          
           let response;
           
           // Use appropriate service based on content type
@@ -336,6 +338,9 @@ const ContentApproval = () => {
             response = await testSubmissionService.approveTest(content._id);
           } else if (contentType === 'exam') {
             response = await examSubmissionService.approveExam(content._id);
+            console.log('Exam approve response:', response);
+            console.log('Exam response.success:', response?.success);
+            console.log('Exam response.data:', response?.data);
           }
           
           if (response?.success) {
@@ -347,11 +352,12 @@ const ContentApproval = () => {
               detail: { action: 'approved', contentType } 
             }));
           } else {
-            message.error(response?.message || 'Phê duyệt thất bại');
+            console.log(`${contentType} approval failed: response.success is`, response?.success);
+            message.error(`Phê duyệt ${contentType} thất bại. Vui lòng thử lại.`);
           }
         } catch (error) {
-          message.error(error.response?.data?.message || 'Phê duyệt thất bại');
-          console.error(error);
+          console.error(`${contentType} approval error:`, error);
+          message.error(`Phê duyệt ${contentType} thất bại: ${error.response?.data?.message || 'Lỗi không xác định'}`);
         }
       }
     });
@@ -366,7 +372,7 @@ const ContentApproval = () => {
 
   const submitRejection = async () => {
     if (!rejectionReason || rejectionReason.length < 10) {
-      message.error('Lý do từ chối phải có ít nhất 10 ký tự');
+      message.error('Lý do từ chối phải có ít nhất 10 ký tự.');
       return;
     }
 
@@ -402,7 +408,7 @@ const ContentApproval = () => {
       }
       
       if (response?.success) {
-        message.success('Content đã bị từ chối!');
+        message.success(`${selectedContent.contentType} đã bị từ chối.`);
         setRejectModalVisible(false);
         setRejectionReason('');
         fetchAllPendingContent();
@@ -412,11 +418,10 @@ const ContentApproval = () => {
           detail: { action: 'rejected', contentType: selectedContent.contentType } 
         }));
       } else {
-        message.error(response?.message || 'Từ chối thất bại');
+        message.error(`Từ chối ${selectedContent.contentType} thất bại. Vui lòng thử lại.`);
       }
     } catch (error) {
-      message.error(error.response?.data?.message || 'Từ chối thất bại');
-      console.error(error);
+      message.error(`Từ chối ${selectedContent.contentType} thất bại: ${error.response?.data?.message || 'Lỗi không xác định'}`);
     }
   };
 

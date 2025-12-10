@@ -422,7 +422,7 @@ const LearnerRoutes = () => {
         />
         {/* TOEIC Parts Routes */}
         <Route
-          path="part-1"
+          path="part-1/:sectionId"
           element={
             <ProtectedRoute>
               <Part1 />
@@ -430,7 +430,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-2"
+          path="part-2/:sectionId"
           element={
             <ProtectedRoute>
               <Part2 />
@@ -438,7 +438,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-3"
+          path="part-3/:sectionId"
           element={
             <ProtectedRoute>
               <Part3 />
@@ -446,7 +446,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-4"
+          path="part-4/:sectionId"
           element={
             <ProtectedRoute>
               <Part4 />
@@ -454,7 +454,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-5"
+          path="part-5/:sectionId"
           element={
             <ProtectedRoute>
               <Part5 />
@@ -462,7 +462,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-6"
+          path="part-6/:sectionId"
           element={
             <ProtectedRoute>
               <Part6 />
@@ -470,7 +470,7 @@ const LearnerRoutes = () => {
           }
         />
         <Route
-          path="part-7"
+          path="part-7/:sectionId"
           element={
             <ProtectedRoute>
               <Part7 />

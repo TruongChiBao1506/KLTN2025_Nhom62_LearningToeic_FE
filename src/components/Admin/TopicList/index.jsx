@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
+import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -186,59 +187,36 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
         try {
             // 🚧 SKIP VALIDATION - Submit trực tiếp
             // Show confirmation
-            const result = await Swal.fire({
-                title: `Submit "${topicName}"?`,
-                html: `
-                    <div style="text-align: center;">
-                        <p style="margin: 20px 0; font-size: 16px;">
-                            Topic này sẽ được gửi đến admin để phê duyệt.
-                        </p>
-                        <p style="color: #6c757d; font-size: 12px;">
-                            ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi admin duyệt/từ chối.
-                        </p>
-                    </div>
-                `,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#198754',
-                cancelButtonColor: 'var(--color-draft)',
-                confirmButtonText: '📤 Gửi ngay',
-                cancelButtonText: '❌ Hủy',
+            const result = await new Promise((resolve) => {
+                Modal.confirm({
+                    title: `Xác nhận gửi duyệt Topic`,
+                    content: (
+                        <div>
+                            <p>Topic này sẽ được gửi đến admin để phê duyệt.</p>
+                            <p style={{ color: '#666', fontSize: '12px' }}>
+                                ⚠️ Sau khi submit, bạn không thể chỉnh sửa cho đến khi admin duyệt/từ chối.
+                            </p>
+                        </div>
+                    ),
+                    icon: <i className="fas fa-paper-plane" style={{ color: '#1890ff' }} />,
+                    okText: 'Gửi ngay',
+                    cancelText: 'Hủy',
+                    okButtonProps: { style: { backgroundColor: '#52c41a', borderColor: '#52c41a' } },
+                    onOk: () => resolve({ isConfirmed: true }),
+                    onCancel: () => resolve({ isConfirmed: false }),
+                });
             });
 
-            if (result.isConfirmed) {
-                // Show loading
-                Swal.fire({
-                    title: 'Đang gửi...',
-                    text: 'Vui lòng đợi',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+            if (!result.isConfirmed) return;
 
-                // Submit to admin
-                const submitResponse = await topicSubmissionService.submitTopic(topicId);
-                
-                if (submitResponse.success) {
-                    Swal.fire({
-                        title: '✅ Gửi thành công!',
-                        html: `
-                            <p>Topic "<strong>${topicName}</strong>" đã được gửi đến admin để phê duyệt</p>
-                            <p style="color: #6c757d; font-size: 12px; margin-top: 10px;">
-                                Bạn sẽ nhận thông báo khi admin xem xét topic của bạn.
-                            </p>
-                        `,
-                        icon: 'success',
-                        timer: 3000,
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                    });
-                    retrieveTopics(); // Refresh list
-                } else {
-                    throw new Error(submitResponse.message || 'Failed to submit');
-                }
+            // Submit to admin
+            const submitResponse = await topicSubmissionService.submitTopic(topicId);
+            
+            if (submitResponse.success) {
+                message.success(`Topic "${topicName}" đã được gửi đến admin để phê duyệt.`);
+                retrieveTopics(); // Refresh list
+            } else {
+                throw new Error(submitResponse.message || 'Failed to submit');
             }
         } catch (error) {
             console.error('Submit Error:', error);

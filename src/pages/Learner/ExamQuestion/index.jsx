@@ -62,7 +62,7 @@ const ExamQuestion = () => {
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const learnerToken = localStorage.getItem("learnerToken");
+        const learnerToken = sessionStorage.getItem("learnerToken");
         if (!learnerToken) {
           throw new Error("Không tìm thấy token người dùng");
         }
@@ -81,6 +81,24 @@ const ExamQuestion = () => {
     };
 
     const retrieveExamQuestions = async (userId) => {
+        // ...existing code...
+        const [
+          questionsResponse,
+          examData,
+          userGoalData,
+          listeningScores,
+          readingScores,
+        ] = await Promise.all([
+          examQuestionService.getQuestionsByExamId(examId),
+          examService.get(examId),
+          userGoalService.getUserGoalByUserId(userId).catch(() => ({ data: null })),
+          scoreTableService.getListeningScores(),
+          scoreTableService.getReadingScores(),
+        ]);
+
+        // Log dữ liệu trả về từ API để debug
+        console.log("questionsResponse:", questionsResponse);
+        console.log("questionsResponse.data:", questionsResponse?.data);
       try {
         setLoading(true);
 
@@ -93,14 +111,14 @@ const ExamQuestion = () => {
           readingScores,
         ] = await Promise.all([
           examQuestionService.getQuestionsByExamId(examId),
-          examService.getExamById(examId),
-          userGoalService.getByUserId(userId).catch(() => ({ data: null })),
+          examService.get(examId),
+          userGoalService.getUserGoalByUserId(userId).catch(() => ({ data: null })),
           scoreTableService.getListeningScores(),
           scoreTableService.getReadingScores(),
         ]);
 
         // Tạo user exam record
-        const userExamResponse = await userExamService.create({
+        const userExamResponse = await userExamService.createUserExam({
           userId: userId,
           examId: examId,
           startTime: new Date().toISOString(),
@@ -108,8 +126,26 @@ const ExamQuestion = () => {
         });
 
         // Thiết lập dữ liệu trạng thái
-        setUserExamId(userExamResponse.data.userExamId);
-        setCountdown(examData.data.examDuration);
+        let createdUserExamId = null;
+        if (userExamResponse && userExamResponse.data) {
+          // Trường hợp trả về trực tiếp userExamId
+          if (userExamResponse.data.userExamId) {
+            createdUserExamId = userExamResponse.data.userExamId;
+          } else if (userExamResponse.data._id) {
+            // Trường hợp trả về _id
+            createdUserExamId = userExamResponse.data._id;
+          }
+        }
+        setUserExamId(createdUserExamId);
+        let examDuration = 0;
+        if (examData && examData.data) {
+          if (typeof examData.data.examDuration === "number") {
+            examDuration = examData.data.examDuration;
+          } else if (typeof examData.data.examDurationMinutes === "number") {
+            examDuration = examData.data.examDurationMinutes;
+          }
+        }
+        setCountdown(examDuration);
 
         // Lấy và thiết lập mục tiêu
         if (userGoalData && userGoalData.data && userGoalData.data.goalScore) {
@@ -121,11 +157,13 @@ const ExamQuestion = () => {
         setTableReadingScores(readingScores.data);
 
         // Xử lý dữ liệu câu hỏi
-        const questions = questionsResponse.data;
+        const questions = Array.isArray(questionsResponse)
+          ? questionsResponse
+          : [];
 
         // Kiểm tra xem có bản lưu trong localStorage không
         const savedAnswers = localStorage.getItem(`exam_${examId}_answers`);
-        if (savedAnswers && !hasSubmitted) {
+        if (savedAnswers && !hasSubmitted && questions.length > 0) {
           try {
             const parsedAnswers = JSON.parse(savedAnswers);
             // Áp dụng câu trả lời đã lưu vào câu hỏi
@@ -540,8 +578,7 @@ const ExamQuestion = () => {
         suggestionsHtml =
           '<div class="mt-3"><h6>Đề xuất ôn tập:</h6><ul style="text-align: left;">';
         weaknesses.forEach((weak) => {
-          const partName = String(weak.part).replace("PART", "");
-          suggestionsHtml += `<li><strong>Phần ${partName}:</strong> ${weak.suggestion}</li>`;
+          suggestionsHtml += `<li><strong>Phần ${weak.part}:</strong> ${weak.suggestion}</li>`;
         });
         suggestionsHtml += "</ul></div>";
       }
