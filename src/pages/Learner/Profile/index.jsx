@@ -152,11 +152,11 @@ const Profile = () => {
         console.log("🔄 Updating Redux store with roles:", userData.roles || existingRoles);
         
         setInfo({
-          id: userData.id,
+          id: userData._id,
           username: userData.username,
           email: userData.email,
           name: userData.name || userData.fullName,
-          roles: userData.roles || existingRoles, // ✅ Preserve roles if API doesn't return them
+          roles: userData.roles || existingRoles, // Preserve roles if API doesn't return them
           avatar: userData.image || userData.avatar,
         });
       } else {

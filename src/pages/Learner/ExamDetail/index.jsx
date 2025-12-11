@@ -444,7 +444,7 @@ const ExamDetail = () => {
     timerRef.current = setInterval(() => {
       setRemainingTime((prevTime) => {
         if (prevTime <= 1) {
-          submitExam();
+          submitExam({ isAuto: true });
           return 0;
         }
         return prevTime - 1;
@@ -588,7 +588,8 @@ const ExamDetail = () => {
     }
   }, [currentQuestionIndex]);
 
-  const submitExam = async () => {
+  const submitExam = async (options = {}) => {
+    const { isAuto = false, forceEmpty = false } = options || {};
     // Dừng bộ đếm thời gian
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -596,7 +597,8 @@ const ExamDetail = () => {
 
     try {
       setLoading(true);
-      setError(null);
+      // close confirm modal (if open)
+      setShowConfirmSubmit(false);
 
       // Use the answers ref to avoid stale closure issues (timer auto-submit)
       const answersObj = userAnswersRef.current || {};
@@ -610,11 +612,47 @@ const ExamDetail = () => {
 
       console.log("🔁 submitExam - answersArray:", answersArray);
 
-      // Validate answers array to avoid backend "At least one answer is required" error
-      if (!answersArray || answersArray.length === 0) {
-        console.warn("Attempted to auto-submit with no answers.");
-        setError("Bạn chưa trả lời câu nào. Vui lòng chọn ít nhất 1 câu trước khi nộp.");
+      // If there are no answers and this is a manual submit (not auto) and not forced,
+      // ask for confirmation again to avoid accidental empty submission.
+      if (( !answersArray || answersArray.length === 0 ) && !isAuto && !forceEmpty) {
+        console.warn("Attempted to submit with no answers - asking for confirmation.");
         setLoading(false);
+        Modal.confirm({
+          title: "Bạn chưa trả lời câu nào",
+          content:
+            "Bạn chưa chọn đáp án cho câu nào. Bạn có chắc chắn vẫn muốn nộp bài không?",
+          okText: "Có, nộp",
+          okButtonProps: {
+            style: {
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              borderColor: "#10b981",
+              color: "var(--color-bg-primary)",
+              fontWeight: 700,
+              borderRadius: 8,
+              height: 44,
+              paddingLeft: 20,
+              paddingRight: 20,
+            },
+          },
+          cancelText: "Tiếp tục làm bài",
+          cancelButtonProps: {
+            style: {
+              background: "var(--color-bg-primary)",
+              border: "2px solid #e5e7eb",
+              color: "#374151",
+              fontWeight: 600,
+              borderRadius: 8,
+              height: 44,
+              paddingLeft: 20,
+              paddingRight: 20,
+            },
+          },
+          centered: true,
+          onOk: async () => {
+            // Force submission even with empty answers
+            await submitExam({ forceEmpty: true });
+          },
+        });
         return;
       }
 
@@ -624,11 +662,51 @@ const ExamDetail = () => {
       console.log("✅ Submit response (raw):", response);
       const data = response?.data || response;
 
-      // If backend returns a failure response (success flag or error), show message
+      // If backend returns a failure response (success flag or error)
       if (data && (data.success === false || data.error)) {
         const message = data.message || data.error || "Không thể nộp bài thi. Vui lòng thử lại.";
         console.warn("Backend reported submission failure:", message);
-        setError(message);
+        // If user explicitly forced an empty submission, proceed with a fallback
+        // result so they still see a result page (all questions skipped).
+        if (forceEmpty) {
+          const totalQuestionsCount = exam.questions.length;
+          const resultData = {
+            scores: { listening: 0, reading: 0, total: 0 },
+            details: {
+              correct: 0,
+              wrong: 0,
+              skipped: totalQuestionsCount,
+              listeningCorrect: 0,
+              readingCorrect: 0,
+              totalQuestions: totalQuestionsCount,
+            },
+            userExamId: data.userExamId || null,
+            message: data.message || message,
+            completedAt: data.completedAt || new Date().toISOString(),
+            totalQuestions: totalQuestionsCount,
+            percentage: 0,
+            correctCount: 0,
+            incorrectCount: 0,
+            unansweredCount: totalQuestionsCount,
+            listeningScore: 0,
+            readingScore: 0,
+            totalScore: 0,
+            listeningCorrect: 0,
+            readingCorrect: 0,
+            timeSpent: exam.duration * 60 - remainingTime,
+          };
+
+          setExamResult(resultData);
+          setExamSubmitted(true);
+          setLoading(false);
+          return;
+        }
+
+        Modal.error({
+          title: "Nộp bài thất bại",
+          content: message,
+          centered: true,
+        });
         setLoading(false);
         return;
       }
@@ -701,8 +779,94 @@ const ExamDetail = () => {
       setLoading(false);
     } catch (error) {
       console.error("Lỗi khi nộp bài thi:", error);
-      setError("Không thể nộp bài thi. Vui lòng thử lại.");
+      // If user forced empty submit, still show a fallback result instead of an error
+      if (forceEmpty) {
+
+        const totalQuestionsCount = exam.questions.length;
+        const resultData = {
+          scores: { listening: 0, reading: 0, total: 0 },
+          details: {
+            correct: 0,
+            wrong: 0,
+            skipped: totalQuestionsCount,
+            listeningCorrect: 0,
+            readingCorrect: 0,
+            totalQuestions: totalQuestionsCount,
+          },
+          userExamId: null,
+          message: "Nộp bài thành công (không có câu trả lời)",
+          completedAt: new Date().toISOString(),
+          totalQuestions: totalQuestionsCount,
+          percentage: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          unansweredCount: totalQuestionsCount,
+          listeningScore: 0,
+          readingScore: 0,
+          totalScore: 0,
+          listeningCorrect: 0,
+          readingCorrect: 0,
+          timeSpent: exam.duration * 60 - remainingTime,
+        };
+
+        setExamResult(resultData);
+        setExamSubmitted(true);
+        setLoading(false);
+        return;
+      }
+
+      Modal.error({
+        title: "Lỗi nộp bài",
+        content: "Không thể nộp bài thi. Vui lòng thử lại.",
+        centered: true,
+      });
       setLoading(false);
+    }
+  };
+
+  // Handler used by the confirm modal button to provide an explicit Yes/No when no answers
+  const handleConfirmSubmit = () => {
+    const answersCount = Object.keys(userAnswersRef.current || {}).length;
+    if (answersCount === 0) {
+      Modal.confirm({
+        title: "Bạn chưa trả lời câu nào",
+        content:
+          "Bạn chưa chọn đáp án cho câu nào. Bạn có chắc chắn vẫn muốn nộp bài không?",
+        okText: "Có, nộp",
+        okButtonProps: {
+          style: {
+            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            borderColor: "#10b981",
+            color: "var(--color-bg-primary)",
+            fontWeight: 700,
+            borderRadius: 8,
+            height: 44,
+            paddingLeft: 20,
+            paddingRight: 20,
+          },
+        },
+        cancelText: "Tiếp tục làm bài",
+        cancelButtonProps: {
+          style: {
+            background: "var(--color-bg-primary)",
+            border: "2px solid #e5e7eb",
+            color: "#374151",
+            fontWeight: 600,
+            borderRadius: 8,
+            height: 44,
+            paddingLeft: 20,
+            paddingRight: 20,
+          },
+        },
+        centered: true,
+        onOk: async () => {
+          setShowConfirmSubmit(false);
+          await submitExam({ forceEmpty: true });
+        },
+      });
+    } else {
+      setShowConfirmSubmit(false);
+      submitExam();
     }
   };
 
@@ -779,7 +943,7 @@ const ExamDetail = () => {
 
               {/* Actions */}
               <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-                <Button 
+                {/* <Button 
                   type="primary" 
                   size="large"
                   icon={<ArrowLeft size={18} />}
@@ -796,7 +960,7 @@ const ExamDetail = () => {
                   }}
                 >
                   Quay lại
-                </Button>
+                </Button> */}
                 
                 <Button 
                   size="large"
@@ -3610,7 +3774,7 @@ const ExamDetail = () => {
               <Button
                 type="primary"
                 size="large"
-                onClick={submitExam}
+                onClick={handleConfirmSubmit}
                 loading={loading}
                 icon={<CheckCircle size={16} />}
                 style={{

@@ -19,6 +19,8 @@ const Achievements = () => {
 
   const { info } = useAuthStore();
 
+  console.log('User Info in Achievements:', info);
+
   const fetchAchievements = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -81,6 +83,7 @@ const Achievements = () => {
   useEffect(() => {
     const originalTitle = document.title;
     document.title = "Thành tích | TOEIC Learning Platform";
+    
 
     if (info && info.id) {
       fetchAchievements();

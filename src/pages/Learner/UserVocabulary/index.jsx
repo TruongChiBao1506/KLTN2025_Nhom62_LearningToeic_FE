@@ -45,6 +45,7 @@ const UserVocabulary = () => {
     practicing: 0,
     mastered: 0,
   });
+  const [removingId, setRemovingId] = useState(null);
 
   useEffect(() => {
 
@@ -98,8 +99,8 @@ const UserVocabulary = () => {
 
   const getImageUrl = (vocabularyData) => {
     // Mapping hình ảnh phù hợp với từ vựng và chủ đề
-    const word = vocabularyData.word.toLowerCase();
-    const topicName = vocabularyData.topic.topicName.toLowerCase();
+    const word = (vocabularyData && vocabularyData.word ? vocabularyData.word : "").toLowerCase();
+    const topicName = (vocabularyData && vocabularyData.topic && vocabularyData.topic.topicName ? vocabularyData.topic.topicName : "").toLowerCase();
 
     // Mapping theo từ vựng cụ thể
     const specificWordImages = {
@@ -166,26 +167,35 @@ const UserVocabulary = () => {
   };
 
   const speakWord = (vocabulary) => {
-    const utterance = new SpeechSynthesisUtterance(vocabulary.word);
-    utterance.lang = "en-US";
-    utterance.rate = 0.8;
+    try {
+      // stop any ongoing speech so the new word plays cleanly
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        // trigger voices loading if not loaded yet
+        window.speechSynthesis.getVoices();
+      }
 
-    // Kiểm tra và chọn giọng nói phù hợp
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(
-      (voice) =>
-        voice.name === "Google US English" ||
-        voice.name ===
-        "Microsoft Aria Online (Natural) - English (United States)" ||
-        voice.lang === "en-US"
-    );
+      const utterance = new SpeechSynthesisUtterance(vocabulary.word);
+      utterance.lang = "en-US";
+      utterance.rate = 0.8;
 
-    if (englishVoice) {
-      utterance.voice = englishVoice;
+      // Kiểm tra và chọn giọng nói phù hợp
+      const voices = (window.speechSynthesis && window.speechSynthesis.getVoices && window.speechSynthesis.getVoices()) || [];
+      const englishVoice = voices.find(
+        (voice) =>
+          voice.name === "Google US English" ||
+          voice.name === "Microsoft Aria Online (Natural) - English (United States)" ||
+          voice.lang === "en-US"
+      );
+
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.error("Speech synthesis error:", err);
     }
-
-    window.speechSynthesis.speak(utterance);
-    // message.success(`Đang phát âm: ${vocabulary.word}`);
   };
 
   const practicePronunciation = (record, displayIndex) => {
@@ -336,21 +346,24 @@ const UserVocabulary = () => {
   // Hàm xóa từ vựng khỏi danh sách yêu thích
   const removeVocabularyFromFavorites = async (record) => {
     try {
-      setLoading(true);
-      
-      // Sử dụng vocabularyId từ record
-      const vocabularyId = record.vocabulary._id || record.vocabulary;
-      
-      console.log("Removing vocabulary with ID:", vocabularyId);
-      
+      // Sử dụng vocabularyId từ record - ưu tiên record.vocabulary._id
+      const vocabularyId = (record && record.vocabulary && record.vocabulary._id) ? record.vocabulary._id : (record._id || null);
+
+      if (!vocabularyId) {
+        message.error("Không xác định được ID từ vựng.");
+        return;
+      }
+
+      setRemovingId(vocabularyId);
       await userVocabularyService.removeFromFavorites(vocabularyId);
-      
-      // Cập nhật danh sách từ vựng local
-      const updatedVocabularies = userVocabularies.filter(
-        (item) => item._id !== record._id
-      );
+
+      // Cập nhật danh sách từ vựng local - so sánh theo item.vocabulary._id (fallback item._id)
+      const updatedVocabularies = userVocabularies.filter((item) => {
+        const itemVocabId = (item && item.vocabulary && item.vocabulary._id) ? item.vocabulary._id : (item._id || null);
+        return itemVocabId !== vocabularyId;
+      });
       setUserVocabularies(updatedVocabularies);
-      
+
       // Cập nhật lại thống kê
       const stats = {
         total: updatedVocabularies.length,
@@ -363,19 +376,19 @@ const UserVocabulary = () => {
         ).length,
       };
       setStatistics(stats);
-      
+
       // Reset về trang 1 nếu trang hiện tại không còn dữ liệu
       const totalPages = Math.ceil(updatedVocabularies.length / pageSize);
       if (currentPage > totalPages && totalPages > 0) {
         setCurrentPage(1);
       }
-      
-      message.success(`Đã xóa "${record.vocabulary.word}" khỏi danh sách yêu thích`);
+
+      message.success(`Đã xóa "${record.vocabulary && record.vocabulary.word ? record.vocabulary.word : "từ vựng"}" khỏi danh sách yêu thích`);
     } catch (error) {
       console.error("Lỗi khi xóa từ vựng:", error);
       message.error("Không thể xóa từ vựng. Vui lòng thử lại.");
     } finally {
-      setLoading(false);
+      setRemovingId(null);
     }
   };
 
@@ -724,6 +737,7 @@ const UserVocabulary = () => {
             danger
             icon={<Trash2 size={16} />}
             onClick={() => removeVocabularyFromFavorites(record)}
+            loading={removingId === ((record && record.vocabulary && record.vocabulary._id) ? record.vocabulary._id : (record._id || null))}
             style={{
               borderRadius: "8px",
               background: "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)",
@@ -738,16 +752,18 @@ const UserVocabulary = () => {
               transition: "all 0.3s ease"
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%)";
-              e.target.style.color = "white";
-              e.target.style.borderColor = "var(--color-danger)";
-              e.target.style.transform = "scale(1.05)";
+              const el = e.currentTarget;
+              el.style.background = "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%)";
+              el.style.color = "white";
+              el.style.borderColor = "var(--color-danger)";
+              el.style.transform = "scale(1.05)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)";
-              e.target.style.color = "#cf1322";
-              e.target.style.borderColor = "#ffaaa5";
-              e.target.style.transform = "scale(1)";
+              const el = e.currentTarget;
+              el.style.background = "linear-gradient(135deg, var(--color-danger-bg) 0%, #ffccc7 100%)";
+              el.style.color = "#cf1322";
+              el.style.borderColor = "#ffaaa5";
+              el.style.transform = "scale(1)";
             }}
             title="Xóa khỏi danh sách yêu thích"
           >
@@ -849,11 +865,6 @@ const UserVocabulary = () => {
           }
         }
 
-        @keyframes sparkle {
-          0% { transform: scale(1) rotate(0deg); }
-          50% { transform: scale(1.2) rotate(180deg); }
-          100% { transform: scale(1) rotate(360deg); }
-        }
 
         .proficiency-update {
           animation: pulse 0.6s ease-in-out;
@@ -871,9 +882,7 @@ const UserVocabulary = () => {
           transform: scale(1.05);
         }
 
-        .success-sparkle {
-          animation: sparkle 0.8s ease-in-out;
-        }
+        /* sparkle animation removed to avoid rotating effect on successful pronunciation */
 
         /* Custom Pagination Styles */
         .custom-pagination {
@@ -1156,9 +1165,7 @@ const UserVocabulary = () => {
                 borderRadius: "12px",
                 background: "white"
               }}
-              rowClassName={(record, index) => 
-                record.isCorrect === true ? "success-sparkle" : ""
-              }
+              
             />
           </div>
           

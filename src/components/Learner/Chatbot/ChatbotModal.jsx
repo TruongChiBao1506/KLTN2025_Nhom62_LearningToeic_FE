@@ -174,7 +174,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       const newSocket = io(
         window.location.hostname === "localhost"
           ? "http://localhost:5000"
-          :  process.env.REACT_APP_URL
+          : process.env.REACT_APP_URL
       );
       setSocket(newSocket);
 
@@ -324,7 +324,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       <FloatButton
         icon={
           <Badge count={unreadCount} size="small">
-            <MessageOutlined style={{color: "var(--color-bg-primary)", fontSize: "20px"}}/>
+            <MessageOutlined style={{ color: "var(--color-bg-primary)", fontSize: "20px" }} />
           </Badge>
         }
         onClick={() => {
@@ -464,7 +464,6 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                       padding: "10px 14px",
                       borderRadius: "18px",
                       backgroundColor: msg.isUser ? "var(--color-primary)" : "var(--color-bg-primary)",
-                      color: msg.isUser ? "var(--color-bg-primary)" : "var(--color-text-primary)",
                       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                       border:
                         msg.source === "fallback"
@@ -489,6 +488,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                         margin: 0,
                         whiteSpace: "pre-wrap",
                         fontSize: "12px",
+                        color: msg.isUser ? "var(--color-bg-primary)" : "var(--color-text-primary)",
                       }}
                     >
                       {msg.content}
@@ -573,7 +573,12 @@ const ChatbotModal = ({ isOpen, onClose }) => {
                 disabled={!inputValue.trim() || isLoading}
                 shape="circle"
                 size="large"
-                style={{ minWidth: "40px", height: "40px" }}
+                style={{
+                  minWidth: "40px", height: "40px",
+                  background: "var(--color-primary)",
+                  borderColor: "var(--color-primary)",
+                  color: "#fff"
+                }}
               />
             </div>
           </div>
