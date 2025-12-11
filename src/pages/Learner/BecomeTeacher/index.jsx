@@ -53,7 +53,7 @@ const BecomeTeacher = () => {
   const checkExistingRequest = async () => {
     try {
       const data = await teacherRequestService.getMyRequest();
-      
+
       if (data.success && data.data) {
         setRequestData(data.data);
       }
@@ -66,24 +66,24 @@ const BecomeTeacher = () => {
   const handleFileChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     // Trigger validation for certificates field
-    form.validateFields(['certificates']).catch(() => {});
+    form.validateFields(['certificates']).catch(() => { });
   };
 
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith('image/');
     const isPDF = file.type === 'application/pdf';
-    
+
     if (!isImage && !isPDF) {
       message.error('You can only upload image or PDF files!');
       return Upload.LIST_IGNORE;
     }
-    
+
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
       message.error('File must be smaller than 5MB!');
       return Upload.LIST_IGNORE;
     }
-    
+
     return false; // Prevent auto upload
   };
 
@@ -167,7 +167,7 @@ const BecomeTeacher = () => {
             subTitle="You already have teaching privileges."
             extra={
               <Button type="primary" onClick={() => navigate('/learner/dashboard')}>
-                Go to Dashboard
+                Về trang dashboard
               </Button>
             }
           />
@@ -209,11 +209,19 @@ const BecomeTeacher = () => {
               title="Your teacher request has been approved!"
               subTitle="Congratulations! You can now create content and help students learn."
               extra={[
-                <Button type="primary" key="dashboard" onClick={() => navigate('/learner/dashboard')}>
-                  Go to Dashboard
+                <Button type="primary"
+                  key="dashboard"
+                  onClick={() => navigate('/learner/dashboard')}
+                  style={{
+                    borderRadius: "8px",
+                    background: "var(--color-primary)",
+                    borderColor: "var(--color-primary)",
+                    color: "#fff"
+                  }}>
+                  Về trang dashboard
                 </Button>,
                 <Button key="view" onClick={() => navigate('/learner/my-teacher-request')}>
-                  View Request Details
+                  Xem chi tiết yêu cầu
                 </Button>
               ]}
             />
@@ -352,15 +360,15 @@ const BecomeTeacher = () => {
               name="phoneNumber"
               rules={[
                 { required: true, message: 'Please enter your phone number' },
-                { 
-                  pattern: /^[0-9]{10,11}$/, 
-                  message: 'Phone number must be 10-11 digits' 
+                {
+                  pattern: /^[0-9]{10,11}$/,
+                  message: 'Phone number must be 10-11 digits'
                 }
               ]}
             >
-              <Input 
-                size="large" 
-                placeholder="0912345678" 
+              <Input
+                size="large"
+                placeholder="0912345678"
                 maxLength={11}
               />
             </Form.Item>
@@ -369,7 +377,7 @@ const BecomeTeacher = () => {
             <Form.Item
               label={
                 <span>
-                  Teaching Experience 
+                  Teaching Experience
                   <Text type="secondary" style={{ marginLeft: 8 }}>
                     ({experienceCount}/50 characters minimum)
                   </Text>

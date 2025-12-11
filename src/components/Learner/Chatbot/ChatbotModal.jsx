@@ -174,7 +174,7 @@ const ChatbotModal = ({ isOpen, onClose }) => {
       const newSocket = io(
         window.location.hostname === "localhost"
           ? "http://localhost:5000"
-          : window.location.origin
+          :  process.env.REACT_APP_URL
       );
       setSocket(newSocket);
 

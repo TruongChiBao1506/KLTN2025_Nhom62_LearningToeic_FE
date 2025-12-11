@@ -300,9 +300,9 @@ const TeacherProfile = () => {
                             <div className="profile-header">
                                 <h1 className="profile-title">
                                     <i className="fas fa-user-circle me-3"></i>
-                                    Hồ Sơ Giảng Viên
+                                    Hồ Sơ Giáo Viên
                                 </h1>
-                                <p className="profile-subtitle">Quản lý thông tin tài khoản giảng viên của bạn</p>
+                                <p className="profile-subtitle">Quản lý thông tin tài khoản giáo viên của bạn</p>
                             </div>
 
                             <div className="profile-card">

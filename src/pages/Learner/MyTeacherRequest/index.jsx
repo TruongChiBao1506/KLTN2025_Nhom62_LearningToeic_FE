@@ -322,7 +322,7 @@ const MyTeacherRequest = () => {
                 size="large"
                 onClick={() => navigate('/learner/dashboard')}
               >
-                Go to Dashboard
+                Về trang dashboard
               </Button>
             )}
 

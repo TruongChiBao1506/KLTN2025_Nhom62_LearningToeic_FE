@@ -531,13 +531,13 @@ const GrammarDetail = () => {
                               <Tag
                                 color={
                                   question.selectedOption ===
-                                  getCorrectOptionValue(question)
+                                    getCorrectOptionValue(question)
                                     ? "success"
                                     : "error"
                                 }
                               >
                                 {question.selectedOption ===
-                                getCorrectOptionValue(question)
+                                  getCorrectOptionValue(question)
                                   ? "Chính xác"
                                   : "Sai"}
                               </Tag>
@@ -584,23 +584,23 @@ const GrammarDetail = () => {
                                       ? "var(--color-success-bg)"
                                       : option === question.selectedOption &&
                                         option !==
-                                          getCorrectOptionValue(question)
-                                      ? "var(--color-danger-bg)"
-                                      : "var(--color-bg-hover)"
+                                        getCorrectOptionValue(question)
+                                        ? "var(--color-danger-bg)"
+                                        : "var(--color-bg-hover)"
                                     : question.selectedOption === option
-                                    ? "var(--color-info-bg)"
-                                    : "white",
+                                      ? "var(--color-info-bg)"
+                                      : "white",
                                   borderColor: question.isGraded
                                     ? option === getCorrectOptionValue(question)
                                       ? "var(--color-success)"
                                       : option === question.selectedOption &&
                                         option !==
-                                          getCorrectOptionValue(question)
-                                      ? "var(--color-danger)"
-                                      : "#f0f0f0"
+                                        getCorrectOptionValue(question)
+                                        ? "var(--color-danger)"
+                                        : "#f0f0f0"
                                     : question.selectedOption === option
-                                    ? "var(--color-primary)"
-                                    : "#f0f0f0",
+                                      ? "var(--color-primary)"
+                                      : "#f0f0f0",
                                 }}
                               >
                                 <div
@@ -618,7 +618,7 @@ const GrammarDetail = () => {
                                   </Radio>
                                   {question.isGraded &&
                                     option ===
-                                      getCorrectOptionValue(question) && (
+                                    getCorrectOptionValue(question) && (
                                       <Check
                                         style={{
                                           width: "20px",
@@ -630,7 +630,7 @@ const GrammarDetail = () => {
                                   {question.isGraded &&
                                     option === question.selectedOption &&
                                     option !==
-                                      getCorrectOptionValue(question) && (
+                                    getCorrectOptionValue(question) && (
                                       <X
                                         style={{
                                           width: "20px",
@@ -650,13 +650,13 @@ const GrammarDetail = () => {
                             <Alert
                               message={
                                 question.selectedOption ===
-                                getCorrectOptionValue(question)
+                                  getCorrectOptionValue(question)
                                   ? "Chính xác!"
                                   : "Không chính xác"
                               }
                               type={
                                 question.selectedOption ===
-                                getCorrectOptionValue(question)
+                                  getCorrectOptionValue(question)
                                   ? "success"
                                   : "error"
                               }
@@ -691,7 +691,12 @@ const GrammarDetail = () => {
                                 showExplanation[index] ? "default" : "primary"
                               }
                               onClick={() => toggleExplanation(index)}
-                              style={{ borderRadius: "6px" }}
+                              style={{
+                                borderRadius: "6px",
+                                background: "var(--color-primary)",
+                                borderColor: "var(--color-primary)",
+                                color: "#fff"
+                              }}
                             >
                               {showExplanation[index]
                                 ? "Ẩn giải thích"
@@ -706,7 +711,12 @@ const GrammarDetail = () => {
                               <Button
                                 type="primary"
                                 onClick={() => gradeQuestion(question)}
-                                style={{ borderRadius: "6px" }}
+                                style={{
+                                  borderRadius: "6px",
+                                  background: "var(--color-primary)",
+                                  borderColor: "var(--color-primary)",
+                                  color: "#fff"
+                                }}
                               >
                                 <Target
                                   style={{
@@ -938,9 +948,8 @@ const GrammarDetail = () => {
                     renderItem={(grammar) => (
                       <List.Item style={{ padding: "8px 0", border: "none" }}>
                         <Link
-                          to={`/learner/grammar/${
-                            grammar._id || grammar.grammarId
-                          }`}
+                          to={`/learner/grammar/${grammar._id || grammar.grammarId
+                            }`}
                           style={{ textDecoration: "none", width: "100%" }}
                         >
                           <Card
@@ -967,7 +976,7 @@ const GrammarDetail = () => {
                                 style={{
                                   backgroundColor:
                                     (grammar._id || grammar.grammarId) ===
-                                    grammarId
+                                      grammarId
                                       ? "var(--color-brand-purple)"
                                       : "var(--color-primary)",
                                   marginRight: 12,
@@ -987,13 +996,13 @@ const GrammarDetail = () => {
                                 </Text>
                                 {(grammar._id || grammar.grammarId) ===
                                   grammarId && (
-                                  <Text
-                                    type="secondary"
-                                    style={{ fontSize: "12px" }}
-                                  >
-                                    Đang học
-                                  </Text>
-                                )}
+                                    <Text
+                                      type="secondary"
+                                      style={{ fontSize: "12px" }}
+                                    >
+                                      Đang học
+                                    </Text>
+                                  )}
                               </div>
                               <ChevronRight
                                 style={{
