@@ -77,7 +77,7 @@ const AIParticipant = ({ callId, meetingId, userCall }) => {
         console.log("✅ Removed AI_SPEAKING flag - recording can resume");
 
         // QUAN TRỌNG: Không force restart ở đây
-        // Để interval (mỗi 3 giây) tự động kiểm tra và restart recorder
+        // Để interval (mỗi 1 giây) tự động kiểm tra và restart recorder
         // Tránh xung đột giữa manual restart và interval restart
       };
     } catch (error) {
@@ -99,7 +99,7 @@ const AIParticipant = ({ callId, meetingId, userCall }) => {
    * Luồng hoạt động:
    * 1. Kiểm tra codec hỗ trợ (ưu tiên opus)
    * 2. Khởi tạo MediaRecorder
-   * 3. Ghi âm liên tục mỗi 3 giây
+   * 3. Ghi âm liên tục mỗi 1 giây
    * 4. Khi stop: gửi audio lên backend để AI xử lý
    * 5. Nhận phản hồi và phát audio từ AI
    * 6. Tự động restart recorder sau khi gửi xong
@@ -270,17 +270,17 @@ const AIParticipant = ({ callId, meetingId, userCall }) => {
       const audioCheckInterval = setInterval(checkAudioLevel, 2000);
 
       /**
-       * INTERVAL CHÍNH - Chạy mỗi 3 giây
+       * INTERVAL CHÍNH - Chạy mỗi 1 giây
        *
        * Nhiệm vụ:
        * 1. Kiểm tra nếu AI đang nói → skip
        * 2. Kiểm tra nếu recorder bị stuck inactive → FORCE START
        * 3. Nếu đang recording bình thường → stop để gửi → restart sau 300ms
        *
-       * Tại sao 3 giây?
-       * - Đủ dài để capture câu nói hoàn chỉnh
-       * - Đủ ngắn để phản hồi nhanh (user không phải đợi lâu)
-       * - Cân bằng giữa độ trễ và độ chính xác
+       * Tại sao 1 giây?
+       * - Phản hồi cực nhanh, tăng trải nghiệm real-time
+       * - User không phải đợi lâu để nhận phản hồi
+       * - Tối ưu cho cuộc hội thoại tự nhiên
        */
       recordingInterval = setInterval(() => {
         // RULE 1: Không ghi âm khi AI đang phát audio
@@ -393,7 +393,7 @@ const AIParticipant = ({ callId, meetingId, userCall }) => {
             isProcessing
           );
         }
-      }, 3000);
+      }, 1000);
 
       // Cleanup khi stream kết thúc
       const track = audioStream.getTracks()[0];
