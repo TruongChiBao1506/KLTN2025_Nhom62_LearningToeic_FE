@@ -275,6 +275,15 @@ const BlogDetail = () => {
             return;
         }
 
+        if (blog?.generationStatus !== 'completed') {
+            Swal.fire({
+                title: 'Content Not Ready',
+                text: 'Please wait for AI content generation to complete before publishing.',
+                icon: 'warning'
+            });
+            return;
+        }
+
         try {
             setIsSaving(true);
             await BlogService.publishBlog(blogId);
@@ -634,7 +643,7 @@ const BlogDetail = () => {
                                 </>
                             )}
 
-                            {content && blog?.status !== 'published' && !isEditing && (
+                            {content && blog?.status !== 'published' && !isEditing && blog?.generationStatus === 'completed' && (
                                 <button 
                                     className="btn btn-success rounded-3"
                                     onClick={handlePublish}

@@ -300,14 +300,14 @@ const BlogList = ({ blogs = [], retrieveBlogs }) => {
                                         <td>
                                             <div className="d-flex justify-content-center">
                                                 {/* View button */}
-                                                <button
+                                                {/* <button
                                                     type="button"
                                                     className="btn btn-white border-0"
                                                     onClick={() => alert('View content functionality - to be implemented')}
                                                     title={`Xem nội dung [${blog.title}]`}
                                                 >
                                                     <FontAwesomeIcon icon={faEye} style={{ color: 'rgb(13, 110, 253)' }} />
-                                                </button>
+                                                </button> */}
 
                                                 {/* Edit button */}
                                                 <button

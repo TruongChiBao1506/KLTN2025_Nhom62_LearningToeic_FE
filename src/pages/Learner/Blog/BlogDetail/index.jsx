@@ -143,7 +143,7 @@ const BlogDetail = () => {
                         />
 
                         {/* Tags */}
-                        {blog.tags && blog.tags.length > 0 && (
+                        {/* {blog.tags && blog.tags.length > 0 && (
                             <div className="blog-tags mt-5">
                                 <h5>
                                     <FontAwesomeIcon icon={faTags} className="me-2" />
@@ -157,7 +157,7 @@ const BlogDetail = () => {
                                     ))}
                                 </div>
                             </div>
-                        )}
+                        )} */}
                     </article>
                 </div>
             </div>
