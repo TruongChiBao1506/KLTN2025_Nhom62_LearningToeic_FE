@@ -10,6 +10,7 @@ export class NotificationService {
   async getUserNotifications(userId) {
     try {
       const response = await axiosClient.get(`${this.baseUrl}/${userId}`);
+      console.log('✅ Fetched notifications:', response.data);
       return {
         success: true,
         data: response.data || []

@@ -44,14 +44,14 @@ const { RangePicker } = DatePicker;
 const ContentApproval = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('topic'); // Default tab
-  
+
   // Separate state for each content type
   const [topicData, setTopicData] = useState([]);
   const [lessonData, setLessonData] = useState([]);
   const [grammarData, setGrammarData] = useState([]);
   const [testData, setTestData] = useState([]);
   const [examData, setExamData] = useState([]);
-  
+
   // Counts for badges
   const [counts, setCounts] = useState({
     topic: 0,
@@ -61,11 +61,11 @@ const ContentApproval = () => {
     exam: 0,
     total: 0
   });
-  
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [dateRange, setDateRange] = useState(null);
-  
+
   // Modal states
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -76,12 +76,12 @@ const ContentApproval = () => {
   const fetchPendingTopics = useCallback(async () => {
     try {
       const response = await topicSubmissionService.getPendingTopics();
-      
+
       if (response.success) {
         const topicCount = response.data?.length || 0;
         setTopicData(response.data || []);
-        setCounts(prev => ({ 
-          ...prev, 
+        setCounts(prev => ({
+          ...prev,
           topic: topicCount,
           total: topicCount + prev.lesson + prev.grammar + prev.test + prev.exam
         }));
@@ -98,12 +98,12 @@ const ContentApproval = () => {
   const fetchPendingLessons = useCallback(async () => {
     try {
       const response = await lessonSubmissionService.getPendingLessons();
-      
+
       if (response.success) {
         const lessonCount = response.data?.length || 0;
         setLessonData(response.data || []);
-        setCounts(prev => ({ 
-          ...prev, 
+        setCounts(prev => ({
+          ...prev,
           lesson: lessonCount,
           total: prev.topic + lessonCount + prev.grammar + prev.test + prev.exam
         }));
@@ -120,12 +120,12 @@ const ContentApproval = () => {
   const fetchPendingGrammar = useCallback(async () => {
     try {
       const response = await grammarSubmissionService.getPendingGrammars();
-      
+
       if (response.success) {
         const grammarCount = response.data?.length || 0;
         setGrammarData(response.data || []);
-        setCounts(prev => ({ 
-          ...prev, 
+        setCounts(prev => ({
+          ...prev,
           grammar: grammarCount,
           total: prev.topic + prev.lesson + grammarCount + prev.test + prev.exam
         }));
@@ -142,12 +142,12 @@ const ContentApproval = () => {
   const fetchPendingTests = useCallback(async () => {
     try {
       const response = await testSubmissionService.getPendingTests();
-      
+
       if (response.success) {
         const testCount = response.data?.length || 0;
         setTestData(response.data || []);
-        setCounts(prev => ({ 
-          ...prev, 
+        setCounts(prev => ({
+          ...prev,
           test: testCount,
           total: prev.topic + prev.lesson + prev.grammar + testCount + prev.exam
         }));
@@ -165,7 +165,7 @@ const ContentApproval = () => {
     try {
       const response = await examSubmissionService.getPendingExams();
       console.log('Pending exams response:', response);
-      
+
       // Thống nhất với các hàm khác: Handle response là array trực tiếp hoặc {success, data}
       let data = [];
       if (Array.isArray(response)) {
@@ -173,19 +173,19 @@ const ContentApproval = () => {
       } else if (response.success && Array.isArray(response.data)) {
         data = response.data;  // Nếu response là {success, data}
       }
-      
+
       const examCount = data.length;
       setExamData(data);  // Set trực tiếp, không format
-      setCounts(prev => ({ 
-        ...prev, 
+      setCounts(prev => ({
+        ...prev,
         exam: examCount,
         total: prev.topic + prev.lesson + prev.grammar + prev.test + examCount
       }));
     } catch (error) {
       console.error('Failed to load pending exams:', error);
       setExamData([]);
-      setCounts(prev => ({ 
-        ...prev, 
+      setCounts(prev => ({
+        ...prev,
         exam: 0,
         total: prev.topic + prev.lesson + prev.grammar + prev.test
       }));
@@ -204,7 +204,7 @@ const ContentApproval = () => {
         exam: 0,
         total: 0
       });
-      
+
       await Promise.all([
         fetchPendingTopics(),
         fetchPendingLessons(),
@@ -220,10 +220,10 @@ const ContentApproval = () => {
 
   // ✅ Handle real-time notifications
   const handleNewPendingContent = useCallback((data) => {
-    message.info(`New ${data.contentType} pending approval!`);
-    
+    // message.info(`New ${data.contentType} pending approval!`);
+
     // Refresh specific content type
-    switch(data.contentType) {
+    switch (data.contentType) {
       case 'topic':
         fetchPendingTopics();
         break;
@@ -247,11 +247,11 @@ const ContentApproval = () => {
   useEffect(() => {
     document.title = "Content Approval | Admin";
     fetchAllPendingContent();
-    
+
     // Setup real-time listeners for specific events only (không dùng 'notification' chung)
     socketService.on('new_pending_content', handleNewPendingContent);
     socketService.on('content_pending', handleNewPendingContent);
-    
+
     return () => {
       socketService.off('new_pending_content', handleNewPendingContent);
       socketService.off('content_pending', handleNewPendingContent);
@@ -261,8 +261,8 @@ const ContentApproval = () => {
   // ✅ Get current tab data with filters
   const getCurrentTabData = useCallback(() => {
     let data = [];
-    
-    switch(activeTab) {
+
+    switch (activeTab) {
       case 'topic':
         data = topicData;
         break;
@@ -324,9 +324,9 @@ const ContentApproval = () => {
       onOk: async () => {
         try {
           console.log(`Approving ${contentType} with ID:`, content._id);
-          
+
           let response;
-          
+
           // Use appropriate service based on content type
           if (contentType === 'topic') {
             response = await topicSubmissionService.approveTopic(content._id);
@@ -342,14 +342,14 @@ const ContentApproval = () => {
             console.log('Exam response.success:', response?.success);
             console.log('Exam response.data:', response?.data);
           }
-          
+
           if (response?.success) {
             message.success(`${contentType} đã được phê duyệt thành công!`);
             fetchAllPendingContent();
-            
+
             // 🔔 Notify sidebar to update badge
-            window.dispatchEvent(new CustomEvent('sidebar-update-badge', { 
-              detail: { action: 'approved', contentType } 
+            window.dispatchEvent(new CustomEvent('sidebar-update-badge', {
+              detail: { action: 'approved', contentType }
             }));
           } else {
             console.log(`${contentType} approval failed: response.success is`, response?.success);
@@ -378,7 +378,7 @@ const ContentApproval = () => {
 
     try {
       let response;
-      
+
       // Use appropriate service based on content type
       if (selectedContent.contentType === 'topic') {
         response = await topicSubmissionService.rejectTopic(
@@ -406,16 +406,16 @@ const ContentApproval = () => {
           { rejectionReason }
         );
       }
-      
+
       if (response?.success) {
         message.success(`${selectedContent.contentType} đã bị từ chối.`);
         setRejectModalVisible(false);
         setRejectionReason('');
         fetchAllPendingContent();
-        
+
         // 🔔 Notify sidebar to update badge
-        window.dispatchEvent(new CustomEvent('sidebar-update-badge', { 
-          detail: { action: 'rejected', contentType: selectedContent.contentType } 
+        window.dispatchEvent(new CustomEvent('sidebar-update-badge', {
+          detail: { action: 'rejected', contentType: selectedContent.contentType }
         }));
       } else {
         message.error(`Từ chối ${selectedContent.contentType} thất bại. Vui lòng thử lại.`);
@@ -427,7 +427,7 @@ const ContentApproval = () => {
 
   // ✅ Get content title based on type
   const getContentTitle = (content, type) => {
-    switch(type) {
+    switch (type) {
       case 'topic':
         return content.topicName;
       case 'lesson':
@@ -445,7 +445,7 @@ const ContentApproval = () => {
 
   // ✅ Get content description based on type
   const getContentDescription = (content, type) => {
-    switch(type) {
+    switch (type) {
       case 'topic':
         return content.topicDescription;
       case 'lesson':
@@ -475,10 +475,10 @@ const ContentApproval = () => {
   // ✅ Get content detail URL based on type
   const getContentDetailUrl = (content, contentType, subType = null) => {
     const baseUrl = '/teacher'; // Admin có thể truy cập route teacher
-    
+
     if (subType) {
       // Sub-content URLs (vocabularies, questions, contents)
-      switch(contentType) {
+      switch (contentType) {
         case 'topic':
           if (subType === 'vocabulary') {
             return `${baseUrl}/topics/${content._id}/vocabulary`;
@@ -486,14 +486,14 @@ const ContentApproval = () => {
             return `${baseUrl}/topics/${content._id}/vocabulary-question`;
           }
           return null;
-          
+
         case 'lesson':
           if (subType === 'content') {
             const sectionId = content.section?._id || content.sectionId;
             return sectionId ? `${baseUrl}/sections/${sectionId}/lesson/${content._id}/lesson-content` : null;
           }
           return null;
-          
+
         case 'grammar':
           if (subType === 'content') {
             return `${baseUrl}/grammar/${content._id}/grammar-content`;
@@ -501,27 +501,27 @@ const ContentApproval = () => {
             return `${baseUrl}/grammar/${content._id}/grammar-question`;
           }
           return null;
-          
+
         case 'test':
           if (subType === 'question') {
             const testSectionId = content.section?._id || content.sectionId;
             return testSectionId ? `${baseUrl}/sections/${testSectionId}/test/${content._id}/indicate-questions` : null;
           }
           return null;
-          
+
         case 'exam':
           if (subType === 'question') {
             return `${baseUrl}/exams/${content._id}/exam-question`;
           }
           return null;
-          
+
         default:
           return null;
       }
     }
-    
+
     // Main content URLs
-    switch(contentType) {
+    switch (contentType) {
       case 'topic':
         return `${baseUrl}/topics/${content._id}/vocabulary`;
       case 'lesson':
@@ -542,7 +542,7 @@ const ContentApproval = () => {
   // ✅ Navigate to content detail (same tab - preserves auth state)
   const handleViewInNewTab = (content, contentType, subType = null) => {
     const url = getContentDetailUrl(content, contentType, subType);
-    
+
     if (url) {
       // ✅ Navigate trong cùng tab để giữ sessionStorage
       navigate(url);
@@ -652,8 +652,8 @@ const ContentApproval = () => {
               <HomeOutlined style={{ color: 'var(--color-bg-primary)', fontSize: 22 }} />
             </span>
             <span style={{ color: 'var(--color-bg-primary)', fontWeight: 700, fontSize: 22 }}>Content Approval</span>
-            <Badge 
-              count={counts.total} 
+            <Badge
+              count={counts.total}
               style={{ marginLeft: 16, backgroundColor: 'var(--color-warning)' }}
             />
           </Breadcrumb.Item>
@@ -667,15 +667,15 @@ const ContentApproval = () => {
             <Space wrap>
               <Input.Search
                 placeholder={
-                  activeTab === 'lesson' 
-                    ? 'Search lesson by title...' 
+                  activeTab === 'lesson'
+                    ? 'Search lesson by title...'
                     : activeTab === 'grammar'
-                    ? 'Search grammar by title...'
-                    : activeTab === 'test'
-                    ? 'Search test by title...'
-                    : activeTab === 'exam'
-                    ? 'Search exam by title...'
-                    : `Search ${activeTab} by title...`
+                      ? 'Search grammar by title...'
+                      : activeTab === 'test'
+                        ? 'Search test by title...'
+                        : activeTab === 'exam'
+                          ? 'Search exam by title...'
+                          : `Search ${activeTab} by title...`
                 }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -702,9 +702,9 @@ const ContentApproval = () => {
 
           {/* 🚧 Coming Soon Notice for non-implemented tabs */}
           {!['topic', 'lesson', 'grammar', 'test', 'exam'].includes(activeTab) && (
-            <Card 
-              style={{ 
-                textAlign: 'center', 
+            <Card
+              style={{
+                textAlign: 'center',
                 padding: '60px 20px',
                 background: 'var(--color-primary)',
                 border: 'none'
@@ -712,19 +712,19 @@ const ContentApproval = () => {
             >
               <Space direction="vertical" size="large">
                 <div style={{ fontSize: '72px' }}>🚧</div>
-                <Text 
-                  strong 
-                  style={{ 
-                    fontSize: '24px', 
+                <Text
+                  strong
+                  style={{
+                    fontSize: '24px',
                     color: 'white',
                     display: 'block'
                   }}
                 >
                   Tính Năng Đang Phát Triển
                 </Text>
-                <Text 
-                  style={{ 
-                    fontSize: '16px', 
+                <Text
+                  style={{
+                    fontSize: '16px',
                     color: 'rgba(255,255,255,0.9)',
                     display: 'block'
                   }}
@@ -733,11 +733,11 @@ const ContentApproval = () => {
                   <br />
                   Hiện tại chỉ có <strong>TOPIC</strong>, <strong>LESSON</strong>, <strong>GRAMMAR</strong>, <strong>TEST</strong> và <strong>EXAM</strong> submission đã sẵn sàng.
                 </Text>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   size="large"
                   onClick={() => setActiveTab('topic')}
-                  style={{ 
+                  style={{
                     background: 'white',
                     color: 'var(--color-brand-purple)',
                     border: 'none',
@@ -776,8 +776,8 @@ const ContentApproval = () => {
                       <td>
                         <Space>
                           <Avatar size="small" style={{ backgroundColor: 'var(--color-primary)' }}>
-                            {record.createdBy?.name?.charAt(0).toUpperCase() || 
-                             record.createdBy?.username?.charAt(0).toUpperCase() || 'U'}
+                            {record.createdBy?.name?.charAt(0).toUpperCase() ||
+                              record.createdBy?.username?.charAt(0).toUpperCase() || 'U'}
                           </Avatar>
                           <Text style={{ fontSize: '12px', color: 'var(--color-brand-navy)' }}>
                             {record.createdBy?.name || record.createdBy?.username || 'Unknown'}
@@ -830,9 +830,6 @@ const ContentApproval = () => {
                             <span className="badge bg-success rounded-pill px-3 py-1">
                               ❓ {record.statistics.questionCount || 0} questions
                             </span>
-                            <span className="badge bg-info rounded-pill px-3 py-1">
-                              {record.rawData?.examType === 1 ? '📝 Full Test' : '⚡ Mini Test'}
-                            </span>
                           </Space>
                         ) : (
                           <Text type="secondary">-</Text>
@@ -856,8 +853,8 @@ const ContentApproval = () => {
                           <button
                             className="btn btn-sm btn-success rounded-pill px-3"
                             onClick={() => handleApprove(record, activeTab)}
-                            style={{ 
-                              fontSize: '12px', 
+                            style={{
+                              fontSize: '12px',
                               fontWeight: '500',
                               background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
                               border: 'none',
@@ -870,8 +867,8 @@ const ContentApproval = () => {
                           <button
                             className="btn btn-sm btn-danger rounded-pill px-3"
                             onClick={() => handleReject(record, activeTab)}
-                            style={{ 
-                              fontSize: '12px', 
+                            style={{
+                              fontSize: '12px',
                               fontWeight: '500',
                               boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)'
                             }}
@@ -932,6 +929,7 @@ const ContentApproval = () => {
             key="approve"
             type="primary"
             icon={<CheckOutlined />}
+            style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
             onClick={() => {
               setViewModalVisible(false);
               handleApprove(selectedContent, selectedContent.contentType);
@@ -940,9 +938,15 @@ const ContentApproval = () => {
             Phê Duyệt
           </Button>,
           <Button
+            className="btn btn-sm btn-danger rounded-pill px-3"
             key="reject"
-            danger
+            // danger
             icon={<CloseOutlined />}
+            style={{
+              fontSize: '12px',
+              fontWeight: '500',
+              boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)'
+            }}
             onClick={() => {
               setViewModalVisible(false);
               handleReject(selectedContent, selectedContent.contentType);
@@ -969,8 +973,8 @@ const ContentApproval = () => {
               <>
                 <Descriptions.Item label="Số Vocabularies">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.vocabularyCount} 
+                    <Badge
+                      count={selectedContent.statistics.vocabularyCount}
                       style={{ backgroundColor: 'var(--color-success)' }}
                       showZero
                     />
@@ -987,8 +991,8 @@ const ContentApproval = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Tổng Số Questions">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.totalQuestions} 
+                    <Badge
+                      count={selectedContent.statistics.totalQuestions}
                       style={{ backgroundColor: 'var(--color-primary)' }}
                       showZero
                     />
@@ -1009,8 +1013,8 @@ const ContentApproval = () => {
               <>
                 <Descriptions.Item label="Số Lesson Contents">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.contentCount || 0} 
+                    <Badge
+                      count={selectedContent.statistics.contentCount || 0}
                       style={{ backgroundColor: 'var(--color-success)' }}
                       showZero
                     />
@@ -1042,8 +1046,8 @@ const ContentApproval = () => {
               <>
                 <Descriptions.Item label="Số Grammar Contents">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.contentCount || 0} 
+                    <Badge
+                      count={selectedContent.statistics.contentCount || 0}
                       style={{ backgroundColor: 'var(--color-success)' }}
                       showZero
                     />
@@ -1060,8 +1064,8 @@ const ContentApproval = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Số Grammar Questions">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.questionCount || 0} 
+                    <Badge
+                      count={selectedContent.statistics.questionCount || 0}
                       style={{ backgroundColor: 'var(--color-primary)' }}
                       showZero
                     />
@@ -1082,8 +1086,8 @@ const ContentApproval = () => {
               <>
                 <Descriptions.Item label="Số Test Questions">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.questionCount || 0} 
+                    <Badge
+                      count={selectedContent.statistics.questionCount || 0}
                       style={{ backgroundColor: 'var(--color-primary)' }}
                       showZero
                     />
@@ -1105,8 +1109,8 @@ const ContentApproval = () => {
               <>
                 <Descriptions.Item label="Số Exam Questions">
                   <Space>
-                    <Badge 
-                      count={selectedContent.statistics.questionCount || 0} 
+                    <Badge
+                      count={selectedContent.statistics.questionCount || 0}
                       style={{ backgroundColor: 'var(--color-primary)' }}
                       showZero
                     />
@@ -1121,30 +1125,30 @@ const ContentApproval = () => {
                     </Button>
                   </Space>
                 </Descriptions.Item>
-                <Descriptions.Item label="Loại Exam">
+                {/* <Descriptions.Item label="Loại Exam">
                   <Tag color={selectedContent.rawData?.examType === 1 ? 'blue' : 'green'}>
                     {selectedContent.rawData?.examType === 1 ? 'Full Test' : 'Mini Test'}
                   </Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label="Thời Lượng">
+                </Descriptions.Item> */}
+                {/* <Descriptions.Item label="Thời Lượng">
                   <Badge 
                     count={`${(selectedContent.rawData?.examDuration || 0) / 60} phút`} 
                     style={{ backgroundColor: 'var(--color-warning)' }}
                   />
-                </Descriptions.Item>
+                </Descriptions.Item> */}
               </>
             )}
             <Descriptions.Item label="Người Tạo">
               <Space>
                 <Avatar size="small">
-                  {selectedContent.createdBy?.name?.charAt(0).toUpperCase() || 
-                   selectedContent.createdBy?.username?.charAt(0).toUpperCase() || 'U'}
+                  {selectedContent.createdBy?.name?.charAt(0).toUpperCase() ||
+                    selectedContent.createdBy?.username?.charAt(0).toUpperCase() || 'U'}
                 </Avatar>
                 {selectedContent.createdBy?.name || selectedContent.createdBy?.username || 'Unknown'}
               </Space>
             </Descriptions.Item>
             <Descriptions.Item label="Thời Gian Submit">
-              {selectedContent.submittedAt 
+              {selectedContent.submittedAt
                 ? moment(selectedContent.submittedAt).format('DD/MM/YYYY HH:mm')
                 : 'Không có'}
             </Descriptions.Item>

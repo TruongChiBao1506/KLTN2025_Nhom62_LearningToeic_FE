@@ -314,6 +314,7 @@ const Sidebar = ({ isToggled, isAnimating }) => {
             socketService.on('teacher_request_status_changed', handlePendingUpdate); // 🔧 NEW: Listen for status changes
             socketService.on('content_approved', handlePendingUpdate);
             socketService.on('content_rejected', handlePendingUpdate);
+            socketService.on('content_withdrawn', handlePendingUpdate);
             
             // Listen for browser custom events from TeacherRequests page
             const handleBadgeUpdate = (event) => {
@@ -331,6 +332,7 @@ const Sidebar = ({ isToggled, isAnimating }) => {
                 socketService.off('teacher_request_status_changed', handlePendingUpdate); // 🔧 NEW: Cleanup
                 socketService.off('content_approved', handlePendingUpdate);
                 socketService.off('content_rejected', handlePendingUpdate);
+                socketService.off('content_withdrawn', handlePendingUpdate);
                 
                 // 🔧 NEW: Cleanup browser event listener
                 window.removeEventListener('sidebar-update-badge', handleBadgeUpdate);

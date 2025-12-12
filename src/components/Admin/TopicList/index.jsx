@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 import TopicService from '../../../services/topicService';
 import topicSubmissionService from '../../../services/topicSubmissionService';
@@ -40,22 +41,48 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
         label: `${option} mục/trang`
     }));
 
+    // Get current user from auth store
+    const { info, role } = useAuthStore();
+    const effectiveUserId = info?._id || null;
+
+    // Helper: Normalize creator id in topic object
+    const getCreatorId = (topic) => {
+        if (!topic) return null;
+        const c = topic.createdBy || null;
+        if (!c) return null;
+        if (typeof c === 'string') return c;
+        if (typeof c === 'object') {
+            if (c._id) return c._id;
+            if (c.id) return c.id;
+            if (c.userId) return c.userId;
+            if (c.$oid) return c.$oid;
+        }
+        return null;
+    };
+
     // Filtered topics based on search text
     const filteredTopics = useMemo(() => {
         if (!topics || !Array.isArray(topics)) {
             return [];
         }
 
-        if (!searchText) {
-            return topics.slice();
+        // Start from the full list
+        let base = topics.slice();
+        // If we have a current user id and user is not admin, filter to only topics created by them
+        if (effectiveUserId && role !== 'admin') {
+            base = base.filter((t) => getCreatorId(t) === effectiveUserId);
         }
 
-        return topics.filter((topic) =>
+        if (!searchText) {
+            return base;
+        }
+
+        return base.filter((topic) =>
             Object.values(topic).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
             )
         );
-    }, [topics, searchText]);
+    }, [topics, searchText, effectiveUserId, role]);
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredTopics.length / itemsPerPage);
@@ -73,7 +100,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
     // Reset to first page when topics change
     useEffect(() => {
         setCurrentPage(1);
-    }, [topics]);
+    }, [topics, effectiveUserId, role]);
 
     // Modal handlers
     const handleShowAddModal = () => {

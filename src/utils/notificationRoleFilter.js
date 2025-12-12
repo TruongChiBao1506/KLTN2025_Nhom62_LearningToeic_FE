@@ -7,6 +7,9 @@ export const getNotificationsByRole = (notifications, userRole) => {
       
       // Content Approval 
       'content_pending',
+
+      // content_withdrawn
+      'content_withdrawn',
       
       // System
       'system',

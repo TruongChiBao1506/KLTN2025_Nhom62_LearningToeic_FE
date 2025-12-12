@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 import TestService from '../../../services/testService';
 import testSubmissionService from '../../../services/testSubmissionService';
@@ -40,22 +41,48 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
         label: `${option} mục/trang`
     }));
 
+    // Get current user from auth store
+    const { info, role } = useAuthStore();
+    const effectiveUserId = info?.id || null;
+
+    // Helper: Normalize creator id in test object
+    const getCreatorId = (test) => {
+        if (!test) return null;
+        const c = test.createdBy || null;
+        if (!c) return null;
+        if (typeof c === 'string') return c;
+        if (typeof c === 'object') {
+            if (c._id) return c._id;
+            if (c.id) return c.id;
+            if (c.userId) return c.userId;
+            if (c.$oid) return c.$oid;
+        }
+        return null;
+    };
+
     // Filtered tests based on search text
     const filteredTests = useMemo(() => {
         if (!tests || !Array.isArray(tests)) {
             return [];
         }
 
-        if (!searchText) {
-            return tests.slice();
+        // Start from the full list
+        let base = tests.slice();
+        // If we have a current user id and user is not admin, filter to only tests created by them
+        if (effectiveUserId && role !== 'admin') {
+            base = base.filter((t) => getCreatorId(t) === effectiveUserId);
         }
 
-        return tests.filter((test) =>
+        if (!searchText) {
+            return base;
+        }
+
+        return base.filter((test) =>
             Object.values(test).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
             )
         );
-    }, [tests, searchText]);
+    }, [tests, searchText, effectiveUserId, role]);
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredTests.length / itemsPerPage);
@@ -73,7 +100,7 @@ const TestBySectionList = ({ tests = [], sectionId, retrieveTests }) => {
     // Reset to first page when tests change
     useEffect(() => {
         setCurrentPage(1);
-    }, [tests]);
+    }, [tests, effectiveUserId, role]);
 
     // Modal handlers
     const handleShowAddModal = () => {

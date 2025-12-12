@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 import ExamService from '../../../services/examService';
 import examSubmissionService from '../../../services/examSubmissionService';
@@ -40,22 +41,48 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
         label: `${option} mục/trang`
     }));
 
+    // Get current user from auth store
+    const { info, role } = useAuthStore();
+    const effectiveUserId = info?._id || null;
+
+    // Helper: Normalize creator id in exam object
+    const getCreatorId = (exam) => {
+        if (!exam) return null;
+        const c = exam.createdBy || null;
+        if (!c) return null;
+        if (typeof c === 'string') return c;
+        if (typeof c === 'object') {
+            if (c._id) return c._id;
+            if (c.id) return c.id;
+            if (c.userId) return c.userId;
+            if (c.$oid) return c.$oid;
+        }
+        return null;
+    };
+
     // Filtered exams based on search text
     const filteredExams = useMemo(() => {
         if (!exams || !Array.isArray(exams)) {
             return [];
         }
 
-        if (!searchText) {
-            return exams.slice();
+        // Start from full list
+        let base = exams.slice();
+        // If we have a current user id and user is not admin, filter to only exams created by them
+        if (effectiveUserId && role !== 'admin') {
+            base = base.filter((e) => getCreatorId(e) === effectiveUserId);
         }
 
-        return exams.filter((exam) =>
+        if (!searchText) {
+            return base;
+        }
+
+        return base.filter((exam) =>
             Object.values(exam).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
             )
         );
-    }, [exams, searchText]);
+    }, [exams, searchText, effectiveUserId, role]);
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredExams.length / itemsPerPage);
@@ -73,7 +100,7 @@ const ExamList = ({ exams = [], retrieveExams, showFullTest, setShowFullTest }) 
     // Reset to first page when exams change
     useEffect(() => {
         setCurrentPage(1);
-    }, [exams]);
+    }, [exams, effectiveUserId, role]);
 
     // Modal handlers
     const handleShowAddModal = () => {

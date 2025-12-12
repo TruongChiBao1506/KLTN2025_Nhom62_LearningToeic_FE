@@ -78,6 +78,7 @@ const notificationSlice = createSlice({
         case 'content_pending':
         case 'content_approved':
         case 'content_rejected':
+        case 'content_withdrawn':
           state.counts.contentApproval += 1;
           break;
         case 'role_promoted':
@@ -134,6 +135,7 @@ const notificationSlice = createSlice({
             case 'content_pending':
             case 'content_approved':
             case 'content_rejected':
+            case 'content_withdrawn':
               acc.contentApproval += 1;
               break;
             case 'role_promoted':
@@ -190,6 +192,7 @@ const notificationSlice = createSlice({
             case 'content_pending':
             case 'content_approved':
             case 'content_rejected':
+            case 'content_withdrawn':
               state.counts.contentApproval = Math.max(0, state.counts.contentApproval - 1);
               break;
             case 'role_promoted':

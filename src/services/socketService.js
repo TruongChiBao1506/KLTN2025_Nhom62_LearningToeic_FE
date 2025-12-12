@@ -52,66 +52,78 @@ class SocketService {
       // 🔧 FIXED: Backend emit event 'notification', không phải 'new_notification'
       this.socket.on('notification', (data) => {
         console.log('🔔 New notification received:', data);
-        console.log('   Type:', data.type); // achievement/system/reminder
-        console.log('   Original Type:', data.data?.originalType); // teacher_approved, etc.
-        
-        // 🔧 FIXED: originalType nằm trong data.originalType, không phải notification.data.originalType
-        const originalType = data.data?.originalType;
-        
-        if (originalType) {
-          switch(originalType) {
+        console.log('   Type:', data.type); // top-level type
+        console.log('   Original Type (nested):', data.data?.originalType); // teacher_approved, etc.
+
+        // Support multiple payload shapes - prefer top-level `type`, then nested `data.originalType`
+        const resolvedType = data.type || data.originalType || data.data?.originalType || data.data?.type;
+        console.log('   Resolved Type:', resolvedType);
+
+        // Normalized payload for listeners
+        const normalized = {
+          ...data,
+          payload: data.data || data.payload || {}
+        };
+
+        if (resolvedType) {
+          switch (resolvedType) {
             // ==================== TEACHER REQUEST NOTIFICATIONS ====================
             case 'teacher_request':
-              this._emitToListeners('new_teacher_request', data);
-              this._emitToListeners('new_pending_content', data); // Update sidebar badge
+              this._emitToListeners('new_teacher_request', normalized);
+              this._emitToListeners('new_pending_content', normalized); // Update sidebar badge
               break;
             case 'teacher_approved':
-              this._emitToListeners('teacher_request_approved', data);
+              this._emitToListeners('teacher_request_approved', normalized);
               break;
             case 'teacher_rejected':
-              this._emitToListeners('teacher_request_rejected', data);
+              this._emitToListeners('teacher_request_rejected', normalized);
               break;
-            
+
             // ==================== CONTENT APPROVAL NOTIFICATIONS ====================
             case 'content_pending':
-              this._emitToListeners('new_pending_content', data);
-              this._emitToListeners('content_pending', data);
+              this._emitToListeners('new_pending_content', normalized);
+              this._emitToListeners('content_pending', normalized);
               break;
             case 'content_approved':
-              this._emitToListeners('content_approved', data);
-              this._emitToListeners('new_pending_content', data); // Update sidebar badge (decrement)
+              this._emitToListeners('content_approved', normalized);
+              this._emitToListeners('new_pending_content', normalized); // Update sidebar badge (decrement)
               break;
             case 'content_rejected':
-              this._emitToListeners('content_rejected', data);
-              this._emitToListeners('new_pending_content', data); // Update sidebar badge (decrement)
+              this._emitToListeners('content_rejected', normalized);
+              this._emitToListeners('new_pending_content', normalized); // Update sidebar badge (decrement)
               break;
-            
+            case 'content_withdrawn':
+              // A teacher has withdrawn submitted content, may reduce pending counts
+              this._emitToListeners('content_withdrawn', normalized);
+              this._emitToListeners('new_pending_content', normalized); // Update sidebar badge (decrement)
+              break;
+
             // ==================== USER ROLE NOTIFICATIONS ====================
             case 'role_promoted':
-              this._emitToListeners('role_promoted', data);
-              this._emitToListeners('user_role_changed', data);
+              this._emitToListeners('role_promoted', normalized);
+              this._emitToListeners('user_role_changed', normalized);
               break;
             case 'role_demoted':
-              this._emitToListeners('role_demoted', data);
-              this._emitToListeners('user_role_changed', data);
+              this._emitToListeners('role_demoted', normalized);
+              this._emitToListeners('user_role_changed', normalized);
               break;
-            
+
             default:
-              console.log('Unknown notification originalType:', originalType);
+              console.log('Unknown notification type:', resolvedType);
           }
         }
-        
-        // Check mapped type (achievement/system/reminder)
+
+        // Check mapped type (achievement/system/reminder) using top-level `data.type`
         if (data.type === 'achievement') {
-          this._emitToListeners('new_achievement', data);
+          this._emitToListeners('new_achievement', normalized);
         } else if (data.type === 'system') {
-          this._emitToListeners('system_notification', data);
+          this._emitToListeners('system_notification', normalized);
         } else if (data.type === 'reminder') {
-          this._emitToListeners('reminder_notification', data);
+          this._emitToListeners('reminder_notification', normalized);
         }
-        
+
         // Always emit the generic new_notification event
-        this._emitToListeners('new_notification', data);
+        this._emitToListeners('new_notification', normalized);
       });
 
       // ==================== OTHER BACKEND EVENTS ====================

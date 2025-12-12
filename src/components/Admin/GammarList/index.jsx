@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 import GrammarService from '../../../services/grammarService';
 import grammarSubmissionService from '../../../services/grammarSubmissionService';
@@ -40,22 +41,48 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
         label: `${option} mục/trang`
     }));
 
+    // Get current user from auth store
+    const { info, role } = useAuthStore();
+    const effectiveUserId = info?._id || null;
+
+    // Helper: Normalize creator id in grammar object
+    const getCreatorId = (grammar) => {
+        if (!grammar) return null;
+        const c = grammar.createdBy || null;
+        if (!c) return null;
+        if (typeof c === 'string') return c;
+        if (typeof c === 'object') {
+            if (c._id) return c._id;
+            if (c.id) return c.id;
+            if (c.userId) return c.userId;
+            if (c.$oid) return c.$oid;
+        }
+        return null;
+    };
+
     // Filtered grammars based on search text
     const filteredGrammars = useMemo(() => {
         if (!grammars || !Array.isArray(grammars)) {
             return [];
         }
 
-        if (!searchText) {
-            return grammars.slice();
+        // Start from the full list
+        let base = grammars.slice();
+        // If we have a current user id and the role is not admin, filter to only grammars created by them
+        if (effectiveUserId && role !== 'admin') {
+            base = base.filter((g) => getCreatorId(g) === effectiveUserId);
         }
 
-        return grammars.filter((grammar) =>
+        if (!searchText) {
+            return base;
+        }
+
+        return base.filter((grammar) =>
             Object.values(grammar).some((value) =>
                 String(value).toLowerCase().includes(searchText.toLowerCase())
             )
         );
-    }, [grammars, searchText]);
+    }, [grammars, searchText, effectiveUserId, role]);
 
     // Pagination calculations
     const totalPageCount = Math.ceil(filteredGrammars.length / itemsPerPage);
@@ -73,7 +100,7 @@ const GrammarList = ({ grammars = [], retrieveGrammars }) => {
     // Reset to first page when grammars change
     useEffect(() => {
         setCurrentPage(1);
-    }, [grammars]);
+    }, [grammars, effectiveUserId, role]);
 
     // Modal handlers
     const handleShowAddModal = () => {
