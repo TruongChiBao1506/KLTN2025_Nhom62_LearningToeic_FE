@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BlogService from '../../../../services/blogService';
@@ -9,6 +9,9 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generationProgress, setGenerationProgress] = useState(0);
+    const [generationError, setGenerationError] = useState(null);
+    const generationPollRef = useRef(null);
+    const generationTimeoutRef = useRef(null);
     const [currentContent, setCurrentContent] = useState('');
 
     // Validation schema
@@ -50,10 +53,10 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
             setLoading(true);
             const response = await BlogService.getBlog(blogId);
             const blogData = response.data || response;
-            
+
             setBlog(blogData);
             setCurrentContent(blogData.content || '');
-            
+
             // Set form values
             formik.setValues({
                 title: blogData.title || '',
@@ -61,7 +64,7 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
                 tags: blogData.tags || [],
                 content: blogData.content || ''
             });
-            
+
         } catch (error) {
             console.error('Error fetching blog:', error);
             notification.error({
@@ -80,26 +83,60 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
         }
     }, [blogId]);
 
+    // Cleanup generation polls on unmount
+    useEffect(() => {
+        return () => {
+            if (generationPollRef.current) {
+                clearInterval(generationPollRef.current);
+                generationPollRef.current = null;
+            }
+            if (generationTimeoutRef.current) {
+                clearTimeout(generationTimeoutRef.current);
+                generationTimeoutRef.current = null;
+            }
+        };
+    }, []);
+
     // Handle AI content generation
     const handleGenerateContent = async () => {
         try {
-            const values = await formik.validateFields(['title', 'category']);
-            if (Object.keys(values).length === 0) return;
+            // Validate required fields using Formik
+            const errors = await formik.validateForm();
+            if (errors.title || errors.category) {
+                notification.error({
+                    message: 'Validation Failed',
+                    description: 'Please fill Title and Category before generating.'
+                });
+                return;
+            }
+
+            // Reset any previous error and clear previous polls
+            setGenerationError(null);
+            if (generationPollRef.current) {
+                clearInterval(generationPollRef.current);
+                generationPollRef.current = null;
+            }
+            if (generationTimeoutRef.current) {
+                clearTimeout(generationTimeoutRef.current);
+                generationTimeoutRef.current = null;
+            }
 
             setIsGenerating(true);
             setGenerationProgress(10);
-            
+
             // Request AI generation
-            await BlogService.requestAIGeneration(blogId);
-            
+            await BlogService.requestAIGeneration(blogId, { force: Boolean(generationError) });
+
             // Start polling for progress
             pollGenerationStatus(blogId);
 
         } catch (error) {
             console.error('Generation error:', error);
+            const msg = error.response?.data?.message || error.message || 'Please check your inputs and try again.';
+            setGenerationError(msg);
             notification.error({
                 message: 'Generation Failed',
-                description: error.response?.data?.message || 'Please check your inputs and try again.'
+                description: msg
             });
             setIsGenerating(false);
             setGenerationProgress(0);
@@ -108,36 +145,67 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
 
     // Poll generation status
     const pollGenerationStatus = async (blogId) => {
+        // Clear any existing polling timers
+        if (generationPollRef.current) {
+            clearInterval(generationPollRef.current);
+            generationPollRef.current = null;
+        }
+        if (generationTimeoutRef.current) {
+            clearTimeout(generationTimeoutRef.current);
+            generationTimeoutRef.current = null;
+        }
+
         const pollInterval = setInterval(async () => {
             try {
                 const response = await BlogService.getBlog(blogId);
                 const blogData = response.data || response;
-                
-                if (blogData.aiGenerationStatus === 'completed') {
+
+                if (blogData.generationStatus === 'completed') {
                     setCurrentContent(blogData.content);
                     formik.setFieldValue('content', blogData.content);
                     setIsGenerating(false);
                     setGenerationProgress(100);
-                    clearInterval(pollInterval);
-                    
+                    setGenerationError(null);
+                    if (generationPollRef.current) {
+                        clearInterval(generationPollRef.current);
+                        generationPollRef.current = null;
+                    }
+                    if (generationTimeoutRef.current) {
+                        clearTimeout(generationTimeoutRef.current);
+                        generationTimeoutRef.current = null;
+                    }
+
                     notification.success({
                         message: 'AI Generation Complete',
                         description: 'Blog content has been generated successfully!'
                     });
-                } else if (blogData.aiGenerationStatus === 'failed') {
+                } else if (blogData.generationStatus === 'failed') {
                     setIsGenerating(false);
                     setGenerationProgress(0);
-                    clearInterval(pollInterval);
-                    
+                    setGenerationError('AI content generation failed. Please try again.');
+                    setGenerationError('AI content generation failed. Please try again.');
+                    if (generationPollRef.current) {
+                        clearInterval(generationPollRef.current);
+                        generationPollRef.current = null;
+                    }
+                    if (generationTimeoutRef.current) {
+                        clearTimeout(generationTimeoutRef.current);
+                        generationTimeoutRef.current = null;
+                    }
+
                     notification.error({
                         message: 'Generation Failed',
                         description: 'AI content generation failed. Please try again.'
                     });
-                } else if (blogData.aiGenerationStatus === 'processing') {
-                    setGenerationProgress(prev => Math.min(prev + 10, 90));
+                } else if (blogData.generationStatus === 'processing') {
+                    const backendProgress = blogData.generationProgress || 0;
+                    setGenerationProgress(backendProgress > 0 ? backendProgress : prev => Math.min(prev + 10, 90));
                 }
             } catch (error) {
-                clearInterval(pollInterval);
+                if (generationPollRef.current) {
+                    clearInterval(generationPollRef.current);
+                    generationPollRef.current = null;
+                }
                 setIsGenerating(false);
                 setGenerationProgress(0);
                 notification.error({
@@ -147,17 +215,20 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
             }
         }, 2000);
 
+        generationPollRef.current = pollInterval;
+
         // Clear interval after 5 minutes timeout
-        setTimeout(() => {
-            clearInterval(pollInterval);
-            if (isGenerating) {
-                setIsGenerating(false);
-                setGenerationProgress(0);
-                notification.warning({
-                    message: 'Generation Timeout',
-                    description: 'AI generation is taking longer than expected.'
-                });
+        generationTimeoutRef.current = setTimeout(() => {
+            if (generationPollRef.current) {
+                clearInterval(generationPollRef.current);
+                generationPollRef.current = null;
             }
+            setIsGenerating(false);
+            setGenerationProgress(0);
+            notification.warning({
+                message: 'Generation Timeout',
+                description: 'AI generation is taking longer than expected.'
+            });
         }, 300000);
     };
 
@@ -165,10 +236,10 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
     const updateBlog = async (values) => {
         try {
             console.log('🚀 Starting updateBlog with values:', values);
-            
+
             // Update content
-            await BlogService.updateContent(blogId, { 
-                content: currentContent || values.content 
+            await BlogService.updateContent(blogId, {
+                content: currentContent || values.content
             });
 
             notification.success({
@@ -180,7 +251,7 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
             if (retrieveBlogs) {
                 retrieveBlogs();
             }
-            
+
             // Close modal
             if (onClose) {
                 onClose();
@@ -244,13 +315,13 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
             }
 
             // Update content first
-            await BlogService.updateContent(blogId, { 
-                content: currentContent || formik.values.content 
+            await BlogService.updateContent(blogId, {
+                content: currentContent || formik.values.content
             });
-            
+
             // Publish the blog
             await BlogService.publishBlog(blogId);
-            
+
             notification.success({
                 message: 'Blog Published',
                 description: 'Your blog has been published successfully!'
@@ -285,7 +356,7 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
                     <i className="fas fa-exclamation-triangle me-2"></i>
                     Blog not found or failed to load.
                 </div>
-                <button 
+                <button
                     className="btn btn-secondary"
                     onClick={handleClose}
                 >
@@ -306,9 +377,8 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
                     <input
                         name="title"
                         type="text"
-                        className={`form-control border-secondary custom-font ${
-                            formik.touched.title && formik.errors.title ? 'is-invalid' : ''
-                        }`}
+                        className={`form-control border-secondary custom-font ${formik.touched.title && formik.errors.title ? 'is-invalid' : ''
+                            }`}
                         value={formik.values.title}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -327,9 +397,8 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
                             </label>
                             <select
                                 name="category"
-                                className={`form-control border-secondary custom-font ${
-                                    formik.touched.category && formik.errors.category ? 'is-invalid' : ''
-                                }`}
+                                className={`form-control border-secondary custom-font ${formik.touched.category && formik.errors.category ? 'is-invalid' : ''
+                                    }`}
                                 value={formik.values.category}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -367,11 +436,11 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label className="form-label">
-                        Status: 
+                        Status:
                         <span className={`ms-2 badge ${blog.status === 'published' ? 'bg-success' : 'bg-warning'}`}>
                             {blog.status === 'published' ? 'Published' : 'Draft'}
                         </span>
-                        {blog.aiGenerationStatus === 'processing' && (
+                        {blog.generationStatus === 'processing' && (
                             <span className="ms-2 badge bg-info">AI Generating...</span>
                         )}
                     </label>
@@ -379,22 +448,29 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
 
                 <div className="form-group mb-3">
                     <label className="form-label">Content</label>
-                    
+
                     {!currentContent && !isGenerating && (
                         <div className="text-center p-4 border border-2 border-dashed rounded">
                             <i className="fas fa-robot fa-3x text-primary mb-3"></i>
                             <p className="mb-3 text-muted">
                                 No content available. Generate AI content!
                             </p>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={handleGenerateContent}
-                                disabled={!formik.values.title || !formik.values.category}
-                            >
-                                <i className="fas fa-magic me-2"></i>
-                                Generate AI Content
-                            </button>
+                            <div>
+                                {generationError && (
+                                    <div className="alert alert-danger" role="alert">
+                                        {generationError}
+                                    </div>
+                                )}
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={handleGenerateContent}
+                                    disabled={!formik.values.title || !formik.values.category}
+                                >
+                                    <i className="fas fa-magic me-2"></i>
+                                    Generate AI Content
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -402,99 +478,100 @@ const EditBlog = ({ blogId, retrieveBlogs, onClose }) => {
                         <div className="text-center p-4 border border-primary border-2 border-dashed rounded">
                             <div className="spinner-border text-primary mb-3" role="status">
                                 <span className="visually-hidden">Loading...</span>
-                            </div>
-                            <p className="mb-3">AI is generating your blog content...</p>
-                            <div className="progress mb-3">
-                                <div 
-                                    className="progress-bar progress-bar-striped progress-bar-animated" 
-                                    role="progressbar" 
-                                    style={{ width: `${generationProgress}%` }}
-                                >
-                                    {generationProgress}%
-                                </div>
-                            </div>
-                            <small className="text-muted">
-                                This may take a few moments. Please don't close this window.
-                            </small>
-                        </div>
-                    )}
-
-                    {currentContent && (
-                        <div>
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <span className="fw-medium">Content (You can edit below):</span>
-                                <button
-                                    type="button"
-                                    className="btn btn-link btn-sm p-0"
-                                    onClick={handleGenerateContent}
-                                    disabled={isGenerating}
-                                >
-                                    <i className="fas fa-redo me-1"></i>
-                                    Regenerate
-                                </button>
-                            </div>
-                            <textarea
-                                name="content"
-                                className={`form-control border-secondary custom-font ${
-                                    formik.touched.content && formik.errors.content ? 'is-invalid' : ''
+                                <>
+                                    <div className="spinner-border text-primary mb-3" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p className="mb-3">AI is generating your blog content...</p>
+                                    <div className="progress mb-3">
+                                        <div
+                                            className="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar"
+                                            style={{ width: `${generationProgress}%` }}
+                                        >
+                                            {generationProgress}%
+                                        </div>
+                                    </div>
+                                    <small className="text-muted">
+                                        This may take a few moments. Please don't close this window.
+                                    </small>
+                                </>
+                                {currentContent && (
+                                    <div>
+                                        <div className="d-flex justify-content-between align-items-center mb-2">
+                                            setGenerationError(blogData.generationMetadata?.errorMessage || 'AI content generation failed. Please try again.');
+                                            <button
+                                                type="button"
+                                                className="btn btn-link btn-sm p-0"
+                                                onClick={handleGenerateContent}
+                                                disabled={isGenerating}
+                                            >
+                                                <i className="fas fa-redo me-1"></i>
+                                                Regenerate
+                                            </button>
+                                        </div>
+                                        <textarea
+                                            name="content"
+                                            className={`form-control border-secondary custom-font ${formik.touched.content && formik.errors.content ? 'is-invalid' : ''
+                                                const backendProgress= blogData.generationProgress || 0;
                                 }`}
-                                rows="15"
-                                value={currentContent}
-                                onChange={(e) => setCurrentContent(e.target.value)}
-                                onBlur={formik.handleBlur}
-                                placeholder="Your blog content will appear here..."
+                                        rows="15"
+                                        value={currentContent}
+                                        onChange={(e) => setCurrentContent(e.target.value)}
+                                        onBlur={formik.handleBlur}
+                                        placeholder="Your blog content will appear here..."
                             />
-                            {formik.touched.content && formik.errors.content && (
-                                <div className="error-feedback">{formik.errors.content}</div>
-                            )}
+                                        {formik.touched.content && formik.errors.content && (
+                                            <div className="error-feedback">{formik.errors.content}</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    )}
-                </div>
-            </div>
 
-            {/* Modal Footer */}
-            <div className="modal-footer">
-                <button
-                    type="button"
-                    className="btn btn-secondary rounded-5"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleClose();
-                    }}
-                    disabled={isGenerating}
-                >
-                    Close
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-info rounded-5"
-                    disabled={formik.isSubmitting || isGenerating}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleSubmit(e);
-                    }}
-                >
-                    {formik.isSubmitting ? 'Saving...' : 'Save Changes'}
-                </button>
-                {blog.status !== 'published' && (
-                    <button
-                        type="button"
-                        className="btn btn-success rounded-5"
-                        disabled={!currentContent || formik.isSubmitting || isGenerating}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handlePublish(e);
-                        }}
-                    >
-                        {formik.isSubmitting ? 'Publishing...' : 'Publish Blog'}
-                    </button>
-                )}
-            </div>
-        </>
-    );
+                {/* Modal Footer */}
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary rounded-5"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleClose();
+                            }}
+                            disabled={isGenerating}
+                        >
+                            Close
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-info rounded-5"
+                            disabled={formik.isSubmitting || isGenerating}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleSubmit(e);
+                            }}
+                        >
+                            {formik.isSubmitting ? 'Saving...' : 'Save Changes'}
+                        </button>
+                        {blog.status !== 'published' && (
+                            <button
+                                type="button"
+                                className="btn btn-success rounded-5"
+                                disabled={!currentContent || formik.isSubmitting || isGenerating}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handlePublish(e);
+                                }}
+                            >
+                                {formik.isSubmitting ? 'Publishing...' : 'Publish Blog'}
+                            </button>
+                        )}
+                    </div>
+                </>
+                );
 };
 
-export default EditBlog;
+                export default EditBlog;

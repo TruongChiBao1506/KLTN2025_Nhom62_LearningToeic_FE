@@ -133,7 +133,7 @@ const SectionList = ({ sections = [], retrieveSections }) => {
     if (imageName) {
       return imageName;
     }
-    return "http://localhost:5000/images/default-image.png";
+    return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png";
   };
 
   const toggleStatus = async (sectionId, newStatus) => {

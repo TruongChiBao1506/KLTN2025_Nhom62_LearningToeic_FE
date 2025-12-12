@@ -45,10 +45,14 @@ const BlogService = {
     },
 
     // Request AI generation
-    requestAIGeneration: async (blogId) => {
+    requestAIGeneration: async (blogId, options = {}) => {
         try {
-            console.log("Requesting AI generation for blog:", blogId); // Debug
-            const response = await axiosClient.post(`/blogs/${blogId}/generate`);
+            console.log("Requesting AI generation for blog:", blogId, 'options:', options); // Debug
+            let url = `/blogs/${blogId}/generate`;
+            if (options.force) {
+                url += '?force=true';
+            }
+            const response = await axiosClient.post(url);
             console.log("AI generation request response:", response); // Debug
             return response;
         } catch (error) {
@@ -73,9 +77,9 @@ const BlogService = {
     // Publish blog
     publishBlog: async (blogId) => {
         try {
-            console.log("Publishing blog:", blogId); // Debug
+            console.log("Publishing blog:", blogId);
             const response = await axiosClient.put(`/blogs/${blogId}/publish`);
-            console.log("Publish response:", response); // Debug
+            console.log("Publish response:", response);
             return response;
         } catch (error) {
             console.error(`Error publishing blog ${blogId}:`, error);

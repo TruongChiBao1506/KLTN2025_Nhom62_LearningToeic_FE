@@ -164,7 +164,7 @@ const TopicList = ({ topics = [], retrieveTopics }) => {
         if (imageName) {
             return imageName;
         }
-        return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsfjXYvk-1w7U3EVJgTlll6d6I0ntyjj18fg&s";
+        return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png";
     };
 
     const toggleStatus = async (topicId, newStatus) => {

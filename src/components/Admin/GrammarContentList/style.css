@@ -100,11 +100,11 @@ td {
 }
 
 /* Action buttons */
-.table td:nth-child(7) .d-flex {
+.grammar-content-list .table td:nth-child(7) .d-flex {
     gap: 8px;
 }
 
-.table td:nth-child(7) .btn {
+.grammar-content-list .table td:nth-child(7) .btn {
     padding: 8px 10px;
     font-size: 1rem;
 }

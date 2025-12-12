@@ -33,6 +33,7 @@ import Study from "../pages/Learner/Study";
 import StudySW from "../pages/Learner/StudySW";
 import ImproveStudy from "../pages/Learner/ImproveStudy";
 import Blog from "../pages/Learner/Blog";
+import BlogDetail from "../pages/Learner/Blog/BlogDetail";
 import Notification from "../pages/Learner/Notification/NotificationPage";
 import ProtectedRoute from "../components/Learner/ProtectedRoute/index";
 import AITutor from "../pages/Learner/AITutor";
@@ -321,6 +322,7 @@ const LearnerRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="blog/:slug" element={<BlogDetail />} />
         <Route path="blog" element={<Blog />} />
         <Route
           path="notifications"

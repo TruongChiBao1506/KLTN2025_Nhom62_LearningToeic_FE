@@ -545,24 +545,24 @@ const ImproveStudy = () => {
   const getImageUrl = (imageName) => {
     if (!imageName) return "";
     
-    // ✅ Nếu đã có URL đầy đủ (http/https), dùng luôn
+    // Nếu đã có URL đầy đủ (http/https), dùng luôn
     if (imageName.startsWith("http")) {
       return imageName;
     }
 
-    // ✅ Nếu chưa có, thêm localhost prefix
+    // Nếu chưa có, thêm localhost prefix
     return `http://localhost:5000/images/${imageName}`;
   };
 
   const getAudioUrl = (audioName) => {
     if (!audioName) return "";
     
-    // ✅ Nếu đã có URL đầy đủ (http/https), dùng luôn
+    // Nếu đã có URL đầy đủ (http/https), dùng luôn
     if (audioName.startsWith("http")) {
       return audioName;
     }
 
-    // ✅ Nếu chưa có, thêm localhost prefix
+    // Nếu chưa có, thêm localhost prefix
     return `http://localhost:5000/audios/${audioName}`;
   };
 

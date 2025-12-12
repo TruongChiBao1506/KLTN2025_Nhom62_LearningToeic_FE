@@ -19,7 +19,7 @@ import './style.css';
 import './notification-styles.css';
 
 const TeacherHeader = ({ toggleSidebar }) => {
-    // ✅ Use Redux store instead of local state
+    // Use Redux store instead of local state
     const { info: teacherUserData, setIsAuthenticated } = useAuthStore();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const TeacherHeader = ({ toggleSidebar }) => {
     
     const unreadCount = roleCounts.total || 0;
 
-    // ✅ Improved signOut with authService helper
+    // Improved signOut with authService helper
     const signOut = async () => {
         try {
             await authService.signOut();
@@ -65,14 +65,14 @@ const TeacherHeader = ({ toggleSidebar }) => {
         }
     };
 
-    // ✅ Simplified image URL helper
+    // Simplified image URL helper
     const getImageUrl = (imageName) => {
         if (!imageName) return "https://media.istockphoto.com/id/1223671392/vi/vec-to/%E1%BA%A3nh-h%E1%BB%93-s%C6%A1-m%E1%BA%B7c-%C4%91%E1%BB%8Bnh-h%C3%ACnh-%C4%91%E1%BA%A1i-di%E1%BB%87n-ch%E1%BB%97-d%C3%A0nh-s%E1%BA%B5n-cho-%E1%BA%A3nh-minh-h%E1%BB%8Da-vect%C6%A1.jpg?s=612x612&w=0&k=20&c=l9x3h9RMD16-z4kNjo3z7DXVEORzkxKCMn2IVwn9liI=";
         if (imageName.startsWith('http')) return imageName;
         return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/images/${imageName}`;
     };
 
-    // ❌ REMOVED: getUserById function - use Redux store instead
+    // getUserById function - use Redux store instead
 
     // Notification menu items    // Notification menu items
     const notificationMenuItems = [

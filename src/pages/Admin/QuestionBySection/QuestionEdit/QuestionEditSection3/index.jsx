@@ -198,10 +198,10 @@ const QuestionEditSection3 = ({ sectionId, groupId, retrieveQuestions, onClose }
   };
 
   const getImageUrl = (imageName) =>
-    imageName ? `http://localhost:9004/images/${imageName}` : "https://demofree.sirv.com/nope-not-here.jpg";
+    imageName ? imageName : "https://demofree.sirv.com/nope-not-here.jpg";
 
   const getAudioUrl = (audioName) =>
-    audioName ? `http://localhost:9004/audios/${audioName}` : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
+    audioName ? audioName : "https://static.vecteezy.com/system/resources/thumbnails/016/089/966/small_2x/sound-error-black-glyph-icon-device-breakage-media-player-failure-loudspeaker-is-broken-warning-signal-silhouette-symbol-on-white-space-solid-pictogram-isolated-illustration-vector.jpg";
 
   if (!questions.length) return <div>Đang tải...</div>;
 

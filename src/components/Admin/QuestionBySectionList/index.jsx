@@ -139,7 +139,7 @@ const QuestionSectionPage = ({
     }
     
     // Nếu chỉ là tên file, tạo URL local
-    return `http://localhost:9004/images/${imageName}`;
+    return `https://demofree.sirv.com/nope-not-here.jpg`;
   };
 
   // ✅ Hỗ trợ cả S3 URL và local URL

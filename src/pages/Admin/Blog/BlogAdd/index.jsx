@@ -86,13 +86,13 @@ const AddBlog = ({ retrieveBlogs, onClose }) => {
             };
 
             const response = await BlogService.createDraft(blogData);
-            console.log('📥 Create blog response:', response); // Debug
+            console.log('📥 Create blog response:', response);
             
             const createdBlog = response.data || response;
-            console.log('📊 Created blog data:', createdBlog); // Debug
+            console.log('📊 Created blog data:', createdBlog);
             
             const blogId = getBlogId(createdBlog);
-            console.log('🆔 Blog ID for navigation:', blogId); // Debug
+            console.log('🆔 Blog ID for navigation:', blogId);
             
             if (!blogId) {
                 console.error('❌ No valid blog ID in response');

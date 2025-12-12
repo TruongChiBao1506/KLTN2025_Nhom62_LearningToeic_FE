@@ -350,13 +350,13 @@ const Sidebar = ({ isToggled, isAnimating }) => {
         {
             key: '/admin/content-approval',
             icon: <CheckSquareOutlined />,
-            label: 'Content Approval',
+            label: 'Duyệt nội dung',
             badge: pendingContentCount
         },
         {
             key: '/admin/teacher-requests',
             icon: <UserAddOutlined />,
-            label: 'Teacher Requests',
+            label: 'Duyệt yêu cầu giáo viên',
             badge: pendingRequestCount
         },
         {

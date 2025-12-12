@@ -198,7 +198,7 @@ const GrammarContentList = ({
     };
 
     return (
-        <div className="page-heading">
+        <div className="page-heading grammar-content-list">
             <section className="section">
                 <div className="card border-0">
                     {/* Header Controls */}

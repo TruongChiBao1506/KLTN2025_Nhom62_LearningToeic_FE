@@ -113,9 +113,7 @@ const SpeakingWriting = () => {
           height: '180px',
           overflow: 'hidden',
           position: 'relative',
-          background: sectionType === 3
-            ? '#2C5F8D'
-            : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          background: '#2C5F8D',
           flexShrink: 0
         }}>
           <img
@@ -195,12 +193,8 @@ const SpeakingWriting = () => {
         <div className="mb-5">
           <div className="text-center mb-4">
             <h2 className="fw-bold mb-3" style={{
-              color: '#2c3e50',
-              fontSize: '2.2rem',
-              background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              color: 'var(--color-primary)',
+              fontSize: '40px',           
             }}>
               🗣️ NÓI - Speaking Practice
             </h2>
@@ -221,12 +215,8 @@ const SpeakingWriting = () => {
         <div className="mb-5">
           <div className="text-center mb-4">
             <h2 className="fw-bold mb-3" style={{
-              color: '#2c3e50',
-              fontSize: '2.2rem',
-              background: 'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              color: 'var(--color-primary)',
+              fontSize: '40px',
             }}>
               ✍️ VIẾT - Writing Practice
             </h2>

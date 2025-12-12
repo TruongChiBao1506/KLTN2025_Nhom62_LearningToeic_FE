@@ -109,7 +109,7 @@ const QuestionEditNo3To4 = ({ sectionId, questionId, retrieveQuestions, onClose 
   };
 
   const getImageUrl = (imageName) =>
-    imageName ? `http://localhost:9004/images/${imageName}` : "https://demofree.sirv.com/nope-not-here.jpg";
+    imageName ? imageName : "https://demofree.sirv.com/nope-not-here.jpg";
 
   if (!question) return <div>Đang tải...</div>;
 

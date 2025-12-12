@@ -481,7 +481,7 @@ const LearnerLayout = () => {
     {
       key: "/learner/speaking-writing",
       icon: <PenTool size={18} />,
-      label: <Link to="/learner/speaking-writing">Luyện S&W</Link>,
+      label: <Link to="/learner/speaking-writing">Luyện Speaking & Writing</Link>,
     },
 
     // {
@@ -492,7 +492,7 @@ const LearnerLayout = () => {
     {
       key: "/learner/listening-reading",
       icon: <Headphones size={18} />,
-      label: "Luyện L&R",
+      label: "Luyện Listening & Reading",
       children: generateListeningReadingMenuItems(),
     },
     {
@@ -523,6 +523,11 @@ const LearnerLayout = () => {
       label: <Link to="/learner/leaderboard">Bảng xếp hạng</Link>,
     },
     {
+      key: "/learner/blog",
+      icon: <FileText size={18} />,
+      label: <Link to="/learner/blog">Blog</Link>,
+    },
+    {
       key: "others",
       icon: <Settings size={18} />,
       label: "Khác",
@@ -530,7 +535,7 @@ const LearnerLayout = () => {
         {
           key: "/learner/become-teacher",
           icon: <UserPlus size={16} />,
-          label: <Link to="/learner/become-teacher">Đăng ký làm Teacher</Link>,
+          label: <Link to="/learner/become-teacher">Đăng ký làm giáo viên</Link>,
         },
         {
           key: "/learner/feedback",

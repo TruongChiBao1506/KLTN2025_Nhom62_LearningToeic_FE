@@ -348,6 +348,7 @@ const LearningPathPage = () => {
                 title: 'Phân tích AI thành công',
                 content: 'AI đã phân tích tiến độ học tập của bạn. Kéo xuống để xem chi tiết phân tích.',
                 okText: 'Xem phân tích',
+                okButtonProps: { style: { backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-primary)', color: '#fff' } },
                 onOk: () => {
                     // Scroll đến dashboard phân tích AI
                     const dashboard = document.getElementById('ai-learning-path-dashboard');
@@ -456,9 +457,9 @@ const LearningPathPage = () => {
                                             onClick={handleAnalyzeProgress}
                                             loading={loading}
                                             style={{
-                                                background: 'linear-gradient(90deg, #1890ff 0%, #36cfc9 100%)',
+                                                background: 'var(--color-primary)',
                                                 border: 'none',
-                                                color: 'var(--color-bg-primary)',
+                                                color: '#fff',
                                                 fontWeight: 700,
                                                 boxShadow: '0 4px 16px rgba(24,144,255,0.18)',
                                                 letterSpacing: 0.5,
@@ -855,7 +856,11 @@ const LearningPathPage = () => {
                     {/* AI Insights */}
                     {currentPath && currentPath.aiInsights && (
                         <Col span={24}>
-                            <Card title={<><BulbOutlined /> Phân tích AI</>} className="ai-insights-card">
+                            <Card 
+                            title={<><BulbOutlined /> Phân tích AI</>} 
+                            className="ai-insights-card"
+
+                            >
                                 <Row gutter={[16, 16]}>
                                     <Col xs={24} sm={8}>
                                         <div className="insight-section">
@@ -999,8 +1004,8 @@ const LearningPathPage = () => {
                             <div className="quick-create-info">
                                 <RocketOutlined className="quick-create-icon" />
                                 <div>
-                                    <Title level={4}>Lộ trình nhanh 4 tuần</Title>
-                                    <Paragraph>
+                                    <Title level={4} style={{ color: '#fff' }}>Lộ trình nhanh 4 tuần</Title>
+                                    <Paragraph style={{color: '#fff'}}>
                                         AI sẽ tự động tạo lộ trình học tập 4 tuần phù hợp với trình độ hiện tại của bạn,
                                         tập trung vào các kỹ năng cần thiết để cải thiện điểm số TOEIC. Lộ trình sẽ bắt đầu từ hôm nay.
                                     </Paragraph>

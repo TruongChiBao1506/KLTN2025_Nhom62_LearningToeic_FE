@@ -437,7 +437,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                                                 <span
                                                     onClick={() => toggleStatus(vocabulary._id, 0)}
                                                     className="btn badge text-bg-success rounded-5"
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{ cursor: 'pointer', fontSize: '10px' }}
                                                 >
                                                     Enable
                                                 </span>

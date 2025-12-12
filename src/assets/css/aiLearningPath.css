@@ -58,7 +58,7 @@
 }
 
 .ai-insights-card .ant-card-head {
-  background: linear-gradient(135deg, var(--color-primary), #36cfc9);
+  background: var(--color-primary);
   color: white;
   border: none;
 }
@@ -135,8 +135,9 @@
 
 /* Quick Create Card */
 .quick-create-card {
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  background:  var(--color-primary);
   border: none;
+  color: #fff;
   text-align: center;
 }
 
