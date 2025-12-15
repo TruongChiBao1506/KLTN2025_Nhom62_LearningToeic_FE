@@ -113,6 +113,18 @@ const GrammarDetail = () => {
           createdAt: c.createdAt,
           updatedAt: c.updatedAt,
         }));
+        // Sort contents for predictable reading order.
+        // Priority: explicit order key (order/position/...), else createdAt ascending (older first), else title alphabetical
+        const orderKeys = ['order','position','sortOrder','displayOrder','index','sequence','orderNumber'];
+        const existingKey = orderKeys.find(k => formattedContents.some(fc => fc[k] !== undefined && fc[k] !== null));
+        if (existingKey) {
+          formattedContents.sort((a, b) => (Number(a[existingKey]) || 0) - (Number(b[existingKey]) || 0));
+        } else if (formattedContents.some(fc => fc.createdAt)) {
+          formattedContents.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        } else {
+          formattedContents.sort((a, b) => ('' + (a.title || '')).localeCompare(b.title || ''));
+        }
+
         setGrammarContents(formattedContents);
 
         // Get grammar questions
@@ -384,7 +396,7 @@ const GrammarDetail = () => {
                         {questions.length > 0 && (
                           <Badge
                             count={questions.length}
-                            style={{ backgroundColor: "var(--color-brand-purple)" }}
+                            style={{ backgroundColor: "var(--color-primary)" }}
                           />
                         )}
                       </Space>
@@ -439,7 +451,7 @@ const GrammarDetail = () => {
                             <Space>
                               <Avatar
                                 style={{
-                                  backgroundColor: "var(--color-brand-purple)",
+                                  backgroundColor: "var(--color-primary)",
                                   color: "white",
                                 }}
                               >
@@ -519,7 +531,7 @@ const GrammarDetail = () => {
                           <Space style={{ marginBottom: 16 }}>
                             <Avatar
                               style={{
-                                backgroundColor: "var(--color-brand-purple)",
+                                backgroundColor: "var(--color-primary)",
                                 color: "white",
                                 fontSize: "16px",
                               }}

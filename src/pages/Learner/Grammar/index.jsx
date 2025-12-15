@@ -87,7 +87,20 @@ const Grammar = () => {
         console.log("🚀 ~ grammarData final:", grammarData);
         console.log("🚀 ~ sectionData final:", sectionData);
         
-        setGrammars(Array.isArray(grammarData) ? grammarData : []);
+        // Normalize and sort grammars so that reading order is predictable.
+        const normalized = Array.isArray(grammarData) ? grammarData : [];
+        const mapped = normalized.map(g => ({ ...g, grammarId: g._id || g.grammarId }));
+        const orderKeys = ['order','position','sortOrder','displayOrder','index','sequence','orderNumber'];
+        const existingKey = orderKeys.find(k => mapped.some(m => m[k] !== undefined && m[k] !== null));
+        if (existingKey) {
+          mapped.sort((a, b) => (Number(a[existingKey]) || 0) - (Number(b[existingKey]) || 0));
+        } else if (mapped.some(m => m.createdAt)) {
+          mapped.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        } else {
+          mapped.sort((a, b) => ('' + (a.grammarName || '')).localeCompare(b.grammarName || ''));
+        }
+
+        setGrammars(mapped);
         setSections(Array.isArray(sectionData) ? sectionData : []);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu ngữ pháp:", error);

@@ -7,7 +7,7 @@ import {
     faSearch,
     faDownload,
     faUpload,
-    faFileExcel
+    faRobot
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 
@@ -39,6 +39,7 @@ const GrammarQuestionList = ({
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedGrammarQuestionId, setSelectedGrammarQuestionId] = useState(null);
+    const [isGenerating, setIsGenerating] = useState(false);
 
     // File import ref
     const fileInputRef = useRef(null);
@@ -191,26 +192,7 @@ const GrammarQuestionList = ({
         }
     };
 
-    const handleExportQuestions = async () => {
-        try {
-            if (normalizedGrammarQuestions.length === 0) {
-                toast.warning('Không có câu hỏi nào để export!', {
-                    autoClose: 2000,
-                });
-                return;
-            }
 
-            await GrammarQuestionService.exportByGrammar(grammarId);
-            toast.success('Export câu hỏi thành công!', {
-                autoClose: 2000,
-            });
-        } catch (error) {
-            console.error('Error exporting questions:', error);
-            toast.error(error.message || 'Lỗi khi export câu hỏi!', {
-                autoClose: 2000,
-            });
-        }
-    };
 
     const handleImportQuestions = () => {
         fileInputRef.current?.click();
@@ -390,26 +372,63 @@ const GrammarQuestionList = ({
                                 Import
                             </button>
 
-                            {/* Export Button */}
+                            {/* Generate with AI Button */}
                             <button
-                                className="btn btn-success d-flex align-items-center"
-                                onClick={handleExportQuestions}
-                                disabled={normalizedGrammarQuestions.length === 0}
-                                title="Export tất cả câu hỏi ra file Excel"
-                                style={{ 
-                                    borderRadius: '20px', 
-                                    fontSize: '12px', 
+                                className="btn btn-primary d-flex align-items-center"
+                                onClick={async () => {
+                                    const { value: count } = await Swal.fire({
+                                        title: 'Tạo câu hỏi ngữ pháp bằng AI',
+                                        input: 'number',
+                                        inputLabel: 'Số lượng câu hỏi cần tạo (1 - 200)',
+                                        inputValue: 10,
+                                        inputAttributes: {
+                                            min: 1,
+                                            max: 200,
+                                            step: 1
+                                        },
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Tạo',
+                                        cancelButtonText: 'Hủy',
+                                        preConfirm: (v) => {
+                                            const n = Number(v);
+                                            if (!n || n < 1 || n > 200) {
+                                                Swal.showValidationMessage('Vui lòng nhập số nguyên từ 1 đến 200');
+                                            }
+                                            return n;
+                                        }
+                                    });
+
+                                    if (!count) return;
+
+                                    try {
+                                        setIsGenerating(true);
+                                        await GrammarQuestionService.generateWithAI(grammarId, count);
+                                        await retrieveGrammarQuestions();
+                                        toast.success(`Tạo ${count} câu hỏi ngữ pháp bằng AI thành công`, { autoClose: 1500 });
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error('Lỗi khi tạo câu hỏi ngữ pháp bằng AI', { autoClose: 2000 });
+                                    } finally {
+                                        setIsGenerating(false);
+                                    }
+                                }}
+                                title="Tạo câu hỏi tự động bằng AI"
+                                disabled={isGenerating}
+                                style={{
+                                    borderRadius: '20px',
+                                    fontSize: '12px',
                                     padding: '10px 18px',
                                     whiteSpace: 'nowrap',
                                     flexShrink: 0,
-                                    minWidth: '110px',
-                                    justifyContent: 'center',
-                                    opacity: normalizedGrammarQuestions.length === 0 ? 0.6 : 1
+                                    minWidth: '140px',
+                                    justifyContent: 'center'
                                 }}
                             >
-                                <FontAwesomeIcon icon={faFileExcel} className="me-2" />
-                                Export
+                                <FontAwesomeIcon icon={faRobot} className="me-2" />
+                                {isGenerating ? 'Đang tạo...' : 'Generate (AI)'}
                             </button>
+
+
 
                             {/* Add new button */}
                             <button

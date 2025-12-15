@@ -6,7 +6,8 @@ import {
     faTrash,
     faSearch,
     faFileImport,
-    faFileDownload
+    faFileDownload,
+    faRobot
 } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
@@ -26,6 +27,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedVocabularyId, setSelectedVocabularyId] = useState(null);
+    const [isGenerating, setIsGenerating] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -204,6 +206,45 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
         }
     };
 
+    // Generate vocabularies using AI
+    const handleGenerateWithAI = async () => {
+        const { value: count } = await Swal.fire({
+            title: 'Tạo từ vựng bằng AI',
+            input: 'number',
+            inputLabel: 'Số lượng từ cần tạo (1 - 200)',
+            inputValue: 20,
+            inputAttributes: {
+                min: 1,
+                max: 200,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Tạo',
+            cancelButtonText: 'Hủy',
+            preConfirm: (v) => {
+                const n = Number(v);
+                if (!n || n < 1 || n > 200) {
+                    Swal.showValidationMessage('Vui lòng nhập số nguyên từ 1 đến 200');
+                }
+                return n;
+            }
+        });
+
+        if (!count) return;
+
+        try {
+            setIsGenerating(true);
+            await VocabularyService.generateWithAI(topicId, count);
+            await retrieveVocabularies();
+            toast.success(`Tạo ${count} từ vựng bằng AI thành công`, { autoClose: 1500 });
+        } catch (err) {
+            console.error(err);
+            toast.error('Lỗi khi tạo từ vựng bằng AI', { autoClose: 2000 });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     // Format date
     const formatDate = (dateTimeString) => {
         if (!dateTimeString) return 'N/A';
@@ -289,11 +330,12 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Search input */}
-                        <div className="col-4">
+                        <div className="col-3">
                             <div className="input-group rounded-5">
                                 <input
                                     type="text"
                                     className="form-control"
+                                    style={{ maxWidth: 420 }}
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
                                     placeholder="Tìm kiếm từ vựng..."
@@ -307,7 +349,7 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                         </div>
 
                         {/* Add button and Import/Export buttons */}
-                        <div className="col-5" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
+                        <div className="col-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', flexDirection: 'row' }}>
                             {/* Download Template Button */}
                             <button
                                 className="btn btn-success d-flex align-items-center"
@@ -325,6 +367,26 @@ const VocabularyList = ({ vocabularies = [], topicId, retrieveVocabularies }) =>
                             >
                                 <FontAwesomeIcon icon={faFileDownload} className="me-2" />
                                 Template
+                            </button>
+
+                            {/* Generate with AI Button */}
+                            <button
+                                className="btn btn-primary d-flex align-items-center"
+                                onClick={handleGenerateWithAI}
+                                title="Tạo từ vựng bằng AI"
+                                disabled={isGenerating}
+                                style={{
+                                    borderRadius: '20px',
+                                    fontSize: '12px',
+                                    padding: '10px 18px',
+                                    whiteSpace: 'nowrap',
+                                    flexShrink: 0,
+                                    minWidth: '140px',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faRobot} className="me-2" />
+                                {isGenerating ? 'Đang tạo...' : 'Generate (AI)'}
                             </button>
 
                             {/* Import Button */}

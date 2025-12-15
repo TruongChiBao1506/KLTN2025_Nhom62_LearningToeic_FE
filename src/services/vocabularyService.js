@@ -96,6 +96,20 @@ class VocabularyService {
     return response;
   }
 
+  /**
+   * Generate vocabularies for a topic using AI
+   * Backend endpoint: POST /vocabularies/generate
+   * @param {string} topicId
+   * @param {number} count
+   */
+  async generateWithAI(topicId, count = 20) {
+    const response = await axiosClient.post(`${this.baseUrl}/generate`, {
+      topicId,
+      count,
+    });
+    return response;
+  }
+
   async updateStatus(vocabularyId, newStatus) {
     const response = await axiosClient.put(
       `${this.baseUrl}/${vocabularyId}/status`,

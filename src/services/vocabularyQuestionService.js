@@ -250,6 +250,27 @@ class VocabularyQuestionService {
         }
     }
 
+    /**
+     * Generate vocabulary questions for a topic using AI
+     * Backend endpoint: POST /vocabulary-questions/generate
+     * @param {string} topicId
+     * @param {number} count
+     */
+    async generateWithAI(topicId, count = 20) {
+        try {
+            console.log('🤖 Generating vocabulary questions with AI', { topicId, count });
+            const response = await axiosClient.post(`${this.baseUrl}/generate`, {
+                topicId,
+                count,
+            });
+            console.log('  AI generation response:', response);
+            return response;
+        } catch (error) {
+            console.error('❌ Error generating vocabulary questions with AI:', error);
+            throw error;
+        }
+    }
+
     async exportByTopic(topicId) {
         try {
             console.log('📥 Exporting vocabulary questions for topic:', topicId);

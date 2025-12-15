@@ -416,6 +416,27 @@ class GrammarQuestionService {
       throw error;
     }
   }
+
+  /**
+   * Generate grammar questions for a grammar using AI
+   * Backend endpoint: POST /grammar-questions/generate
+   * @param {string} grammarId
+   * @param {number} count
+   */
+  async generateWithAI(grammarId, count = 10) {
+    try {
+      console.log('🤖 Generating grammar questions with AI', { grammarId, count });
+      const response = await axiosClient.post(`${this.baseUrl}/generate`, {
+        grammarId,
+        count,
+      });
+      console.log('✅ AI generation response:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Error generating grammar questions with AI:', error);
+      throw error;
+    }
+  }
 }
 
 export default new GrammarQuestionService();
