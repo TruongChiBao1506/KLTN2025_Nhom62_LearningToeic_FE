@@ -46,6 +46,7 @@ import {
 
 // Import services
 import adminDashboardService from '../../../services/adminDashboardService';
+import userExamService from '../../../services/userExamService';
 import './style.css';
 
 const { TabPane } = Tabs;
@@ -58,6 +59,8 @@ const Dashboard = () => {
     const [teacherRequests, setTeacherRequests] = useState(null);
     const [topContent, setTopContent] = useState([]);
     const [topPerformers, setTopPerformers] = useState(null);
+    const [totalExamCounts, setTotalExamCounts] = useState([]);
+    const [dailyExamCounts, setDailyExamCounts] = useState([]);
     
     // Loading states
     const [isLoading, setIsLoading] = useState(true);
@@ -98,6 +101,14 @@ const Dashboard = () => {
                     console.warn('Top performers endpoint failed:', err.response?.data?.message || err.message);
                     return { data: null };
                 })
+                , userExamService.getTotalExamCountsByExamNameAndType().catch(err => {
+                    console.warn('getTotalExamCountsByExamNameAndType failed:', err.response?.data?.message || err.message);
+                    return { data: [] };
+                })
+                , userExamService.getDailyExamCounts().catch(err => {
+                    console.warn('getDailyExamCounts failed:', err.response?.data?.message || err.message);
+                    return { data: [] };
+                })
             ]);
 
             // Extract data from settled promises
@@ -107,7 +118,9 @@ const Dashboard = () => {
                 userStatsData,
                 requestsData,
                 contentData,
-                performersData
+                performersData,
+                totalExamCountsData,
+                dailyCountsData
             ] = results.map(result => result.status === 'fulfilled' ? result.value : { data: null });
 
             // Helper function to extract data from response
@@ -125,6 +138,9 @@ const Dashboard = () => {
             setTeacherRequests(extractData(requestsData));
             setTopContent(extractData(contentData) || []);
             setTopPerformers(extractData(performersData));
+            // userExam endpoints (may return array or object with data)
+            setTotalExamCounts(extractData(totalExamCountsData) || []);
+            setDailyExamCounts(extractData(dailyCountsData) || []);
 
             console.log('✅ Dashboard data loaded successfully');
         } catch (error) {
@@ -203,6 +219,48 @@ const Dashboard = () => {
         name: item.username.length > 10 ? item.username.substring(0, 10) + '...' : item.username,
         content: item.approvedContent
     })) || [];
+
+    // Total exam counts by exam name (supports array or object)
+    // Example array: [{ examName: 'Bài thi 1', totalExams: 12 }, ...]
+    const totalExamCountsChartData = (() => {
+        if (!totalExamCounts) return [];
+        if (Array.isArray(totalExamCounts)) {
+            return totalExamCounts.map(item => ({
+                name: item.examName || item.name || item.label || '',
+                count: item.totalExams !== undefined ? item.totalExams : item.total || item.count || item.value || 0
+            })).sort((a, b) => b.count - a.count).slice(0, 10);
+        }
+
+        if (typeof totalExamCounts === 'object') {
+            return Object.entries(totalExamCounts).map(([name, count]) => ({
+                name,
+                count: Number(count) || 0
+            })).sort((a, b) => b.count - a.count).slice(0, 10);
+        }
+
+        return [];
+    })();
+
+    // Daily exam counts - support array or object response
+    // Example object response: { "2025-10-24": 30, "2025-12-04": 15, ... }
+    const dailyExamCountsChartData = (() => {
+        if (!dailyExamCounts) return [];
+        if (Array.isArray(dailyExamCounts)) {
+            return dailyExamCounts.map(item => ({
+                date: item.date ? item.date.substring(0, 10) : item.label || item.day || '',
+                count: item.totalExams !== undefined ? item.totalExams : item.count || item.value || 0
+            })).sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+
+        if (typeof dailyExamCounts === 'object') {
+            return Object.entries(dailyExamCounts).map(([date, count]) => ({
+                date: date.substring(0, 10),
+                count: Number(count) || 0
+            })).sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+
+        return [];
+    })();
 
     // Custom label for pie chart
     const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
@@ -643,6 +701,49 @@ const Dashboard = () => {
                                             />
                                         )}
                                     </>
+                                )}
+                            </Card>
+                        </Col>
+                    </Row>
+                </TabPane>
+
+                {/* Exams Tab */}
+                <TabPane tab={<span><LineChartOutlined /> Exams</span>} key="exams">
+                    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+                        <Col xs={24} lg={12}>
+                            <Card title={<span><BarChartOutlined style={{ marginRight: 8 }} />Tổng số bài thi theo đề</span>} bordered={false} style={{ borderRadius: 8 }}>
+                                {totalExamCountsChartData && totalExamCountsChartData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height={350}>
+                                        <BarChart data={totalExamCountsChartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="count" fill="var(--color-primary)" name="Số bài thi" radius={[8, 8, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <Alert message="Không có dữ liệu" description="Chưa có dữ liệu tổng số bài thi theo đề" type="info" showIcon />
+                                )}
+                            </Card>
+                        </Col>
+
+                        <Col xs={24} lg={12}>
+                            <Card title={<span><BarChartOutlined style={{ marginRight: 8 }} />Số bài thi hàng ngày</span>} bordered={false} style={{ borderRadius: 8 }}>
+                                {dailyExamCountsChartData && dailyExamCountsChartData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height={350}>
+                                        <BarChart data={dailyExamCountsChartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="date" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="count" fill="var(--color-primary)" name="Số bài thi" radius={[8, 8, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <Alert message="Không có dữ liệu" description="Chưa có dữ liệu số bài thi theo ngày" type="info" showIcon />
                                 )}
                             </Card>
                         </Col>
