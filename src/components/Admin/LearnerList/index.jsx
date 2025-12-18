@@ -82,20 +82,20 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     // Handle promote learner to teacher
     const handlePromoteToTeacher = async (userId, userName) => {
         const result = await Swal.fire({
-            title: 'Promote lên Teacher',
+            title: 'Xác nhận nâng quyền thành giáo viên',
             html: `
                 <div style="text-align: left;">
-                    <p>Bạn có chắc muốn <strong>promote</strong> learner này lên teacher?</p>
+                    <p>Bạn có chắc muốn <strong>nâng quyền</strong> học viên này thành giáo viên?</p>
                     <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                        <strong style="color: #0c5460;">ℹ️ Quyền Teacher:</strong>
+                        <strong style="color: #0c5460;">ℹ️ Quyền Giáo viên:</strong>
                         <ul style="margin: 8px 0 0 20px; color: #0c5460;">
                             <li>Có thể tạo nội dung học tập</li>
                             <li>Quản lý bài học và bài tập</li>
-                            <li>Truy cập các tính năng teacher</li>
+                            <li>Truy cập các tính năng dành cho giáo viên</li>
                         </ul>
                     </div>
                     <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 12px;">
-                        <strong>Learner:</strong> ${userName}
+                        <strong>Học viên:</strong> ${userName}
                     </div>
                 </div>
             `,
@@ -103,7 +103,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
             showCancelButton: true,
             confirmButtonColor: 'var(--color-approved)',
             cancelButtonColor: 'var(--color-draft)',
-            confirmButtonText: '✓ Promote lên Teacher',
+            confirmButtonText: '✓ Nâng quyền thành Giáo viên',
             cancelButtonText: 'Hủy',
             width: 500
         });
@@ -112,15 +112,15 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
             try {
                 await UserService.promoteToTeacher(userId);
                 
-                toast.success('✓ Promote lên teacher thành công!', {
+                toast.success('✓ Nâng quyền giáo viên thành công!', {
                     autoClose: 1500,
                 });
                 
                 // Reload data
                 getAllLearners();
             } catch (error) {
-                console.error('Promote error:', error);
-                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi promote learner!', {
+                console.error('Lỗi khi nâng quyền:', error);
+                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi nâng quyền học viên!', {
                     autoClose: 2000,
                 });
             }
@@ -130,20 +130,20 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     // Handle demote teacher to learner
     const handleDemoteTeacher = async (userId, userName) => {
         const result = await Swal.fire({
-            title: 'Demote Teacher',
+            title: 'Xác nhận thu hồi quyền giáo viên',
             html: `
                 <div style="text-align: left;">
-                    <p>Bạn có chắc muốn <strong>demote</strong> teacher này về learner?</p>
+                    <p>Bạn có chắc muốn <strong>thu hồi quyền</strong> giáo viên này về học viên?</p>
                     <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin: 12px 0;">
                         <strong style="color: #856404;">⚠️ Lưu ý:</strong>
                         <ul style="margin: 8px 0 0 20px; color: #856404;">
-                            <li>User sẽ mất quyền Teacher</li>
+                            <li>Người dùng sẽ mất quyền giảng viên</li>
                             <li>Không thể tạo nội dung mới</li>
                             <li>Nội dung cũ vẫn được giữ lại</li>
                         </ul>
                     </div>
                     <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 12px;">
-                        <strong>Teacher:</strong> ${userName}
+                        <strong>Giáo viên:</strong> ${userName}
                     </div>
                 </div>
             `,
@@ -151,7 +151,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: 'var(--color-draft)',
-            confirmButtonText: '✓ Demote về Learner',
+            confirmButtonText: '✓ Hạ về Học viên',
             cancelButtonText: 'Hủy',
             width: 500
         });
@@ -160,15 +160,15 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
             try {
                 await UserService.demoteToLearner(userId);
                 
-                toast.success('✓ Demote teacher thành công!', {
+                toast.success('✓ Thu hồi quyền giáo viên thành công!', {
                     autoClose: 1500,
                 });
                 
                 // Reload data
                 getAllLearners();
             } catch (error) {
-                console.error('Demote error:', error);
-                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi demote teacher!', {
+                console.error('Lỗi khi thu hồi quyền:', error);
+                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi thu hồi quyền giáo viên!', {
                     autoClose: 2000,
                 });
             }
@@ -178,7 +178,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
     // Handle delete learner
     const handleDeleteLearner = async (learnerId, learnerName) => {
         const result = await Swal.fire({
-            title: `Bạn muốn xóa learner "${learnerName}"?`,
+            title: `Bạn muốn xóa học viên "${learnerName}"?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -190,13 +190,13 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
         if (result.isConfirmed) {
             try {
                 await UserService.delete(learnerId);
-                toast.success('Xóa learner thành công!', {
+                toast.success('Xóa học viên thành công!', {
                     autoClose: 1000,
                 });
                 getAllLearners();
             } catch (error) {
                 console.log(error);
-                toast.error('Có lỗi xảy ra khi xóa learner!', {
+                toast.error('Có lỗi xảy ra khi xóa học viên!', {
                     autoClose: 2000,
                 });
             }
@@ -456,7 +456,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                                             e.currentTarget.style.opacity = '1';
                                                                             e.currentTarget.style.transform = 'scale(1)';
                                                                         }}
-                                                                        title="Click để demote về Learner"
+                                                                        title="Nhấn để hạ quyền về Học viên"
                                                                     >
                                                                         {icon} {role.name}
                                                                     </span>
@@ -485,7 +485,7 @@ const LearnerList = ({ learners = [], getAllLearners }) => {
                                                                             e.currentTarget.style.opacity = '1';
                                                                             e.currentTarget.style.transform = 'scale(1)';
                                                                         }}
-                                                                        title="Click để promote lên Teacher"
+                                                                        title="Nhấn để nâng quyền thành Giảng viên"
                                                                     >
                                                                         {icon} {role.name}
                                                                     </span>

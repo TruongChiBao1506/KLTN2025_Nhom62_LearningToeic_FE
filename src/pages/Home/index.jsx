@@ -33,6 +33,7 @@ import {
   LoginOutlined,
   UserAddOutlined
 } from '@ant-design/icons';
+import Toeic_logo from '../../assets/Toeic_logo.png';
 import './style.css';
 
 const { Header, Content, Footer } = Layout;
@@ -152,7 +153,15 @@ const HomePage = () => {
           <div className="header-content">
             <div className="logo">
               <Link to="/" className="logo-link">
-                <GlobalOutlined className="logo-icon" />
+                {/* <GlobalOutlined className="logo-icon" /> */}
+                <img src={Toeic_logo}
+                  alt="TOEIC Learning Logo"
+                  className="logo"
+                  style={{
+                    borderRadius: '50px',
+                    width: '60px',
+                    height: '60px'
+                  }} />
                 <span className="logo-text">TOEIC Learning</span>
               </Link>
             </div>
@@ -255,7 +264,7 @@ const HomePage = () => {
                         navigate('/auth/signup');
                         setMobileMenuVisible(false);
                       }}
-                      style={{color:"#1677ff"}}
+                      style={{ color: "#1677ff" }}
                     >
                       Đăng ký
                     </Button>
@@ -499,7 +508,17 @@ const HomePage = () => {
             <Col xs={24} md={8}>
               <div className="footer-brand">
                 <div className="footer-logo">
-                  <GlobalOutlined className="logo-icon" />
+                  {/* <GlobalOutlined className="logo-icon" />
+                   */}
+                  <img src={Toeic_logo}
+                    alt="TOEIC Learning Logo"
+                    className="logo"
+                    style={{
+                      borderRadius: '50px',
+                      width: '60px',
+                      height: '60px',
+                      marginRight: '8px'
+                    }} />
                   <span className="logo-text">TOEIC Learning</span>
                 </div>
                 <Paragraph className="footer-description">

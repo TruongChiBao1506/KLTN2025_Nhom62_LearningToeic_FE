@@ -848,7 +848,7 @@ const Dashboard = () => {
                                                     title={<span style={{ fontWeight: 'bold' }}>{item.username}</span>}
                                                     description={
                                                         <div>
-                                                            <div>Điểm TB: <Tag color="gold">{item.avgScore?.toFixed(1)}%</Tag></div>
+                                                            <div>Điểm TB: <Tag color="gold">{item.avgScore}</Tag></div>
                                                             <div>Số bài thi: <Tag color="blue">{item.totalExams}</Tag></div>
                                                         </div>
                                                     }
